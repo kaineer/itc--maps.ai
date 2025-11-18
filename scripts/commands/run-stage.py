@@ -163,10 +163,20 @@ class RunStage:
 
 
 def main():
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 2 or sys.argv[1] in ["-h", "--help"]:
         print("Usage: run-stage <stage>")
         print("Available stages: import, maps, buildings, backend, server, all")
-        sys.exit(1)
+        print("")
+        print("Examples:")
+        print("  run-stage import     # Download map data from Overpass API")
+        print("  run-stage buildings  # Parse buildings from map data")
+        print("  run-stage all        # Run complete pipeline")
+        print("")
+        print("Features:")
+        print("  - Dependency tracking with hash-based change detection")
+        print("  - Incremental builds (only runs when dependencies change)")
+        print("  - Clear status reporting and error handling")
+        sys.exit(0 if sys.argv[1] in ["-h", "--help"] else 1)
 
     stage = sys.argv[1]
     runner = RunStage()
