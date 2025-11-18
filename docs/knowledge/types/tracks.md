@@ -11,4 +11,4 @@
 * **Название**: Track
 * **Поля**:
  * name: string -- название экскурсии
- * points: TrackPoint[]
+ * points: TrackPoint[] -- точки экскурсии
