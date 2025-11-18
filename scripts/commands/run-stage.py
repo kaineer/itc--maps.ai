@@ -129,6 +129,17 @@ class RunStage:
 
         if saved_hash != current_hash:
             print("API specification changed, building backend...")
+            print("⚠️  Backend code generation requires ai-assist intervention")
+            print("Please update stages/serve_buildings/index.js manually based on:")
+            print(f"  {spec_file}")
+            print("")
+            print("Current API specification includes:")
+            print("  - GET /start - returns ITC center coordinates")
+            print("  - PUT /buildings - returns buildings within distance")
+            print("")
+            print(
+                "After manual code update, run 'run-stage backend' again to save hash"
+            )
 
             # Install dependencies if needed
             backend_dir = self.base_dir / "stages/serve_buildings"
@@ -146,12 +157,12 @@ class RunStage:
                     print(f"Error installing dependencies: {result.stderr}")
                     return False
 
-            self.save_hash("serve_buildings", current_hash)
-            print("✅ Backend stage completed")
-            return True
+            # Don't save hash until code is manually updated
+            print("❌ Backend stage requires manual code update")
+            return False
         else:
             print("✅ Backend stage already up to date")
-            return False
+            return True
 
     def run_all(self):
         """Run all stages."""

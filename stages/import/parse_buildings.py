@@ -189,6 +189,8 @@ def parse_buildings(
                     xz_coords = transform_coordinates(
                         node_data["lat"], node_data["lon"], translation_type, bounds
                     )
+                    # Invert X coordinate to fix mirroring issue
+                    xz_coords[0] = -xz_coords[0]
                     nodes.append(xz_coords)
 
             # Build address string
@@ -245,6 +247,7 @@ def parse_buildings(
         if nodes:
             center_x = sum(node[0] for node in nodes) / len(nodes)
             center_z = sum(node[1] for node in nodes) / len(nodes)
+            # Note: X coordinate is already inverted at import level
 
             itc_data = {"center": [center_x, center_z]}
 
