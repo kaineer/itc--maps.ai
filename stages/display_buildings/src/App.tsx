@@ -221,12 +221,13 @@ const App: React.FC = () => {
           enableZoom={true}
           enableRotate={true}
           target={[ITC_CENTER.x, 1.8, ITC_CENTER.z]}
-          minDistance={1}
-          maxDistance={1}
         />
 
         {/* Camera Controller for WASD movement */}
         <CameraController />
+
+        {/* Debug arrow showing camera direction */}
+        <DebugArrow />
       </Canvas>
     </>
   );
@@ -301,6 +302,10 @@ const CameraController: React.FC = () => {
     ) {
       console.log("Movement active:", moveState.current);
       console.log("Camera position before:", camera.position);
+      console.log(
+        "Camera direction:",
+        camera.getWorldDirection(new THREE.Vector3()),
+      );
     }
 
     // Calculate movement direction based on camera rotation
@@ -313,9 +318,12 @@ const CameraController: React.FC = () => {
       moveState.current.left ||
       moveState.current.right
     ) {
-      // Get camera direction
+      // Get camera direction (points FROM camera, so we need to invert for movement)
       const cameraDirection = new THREE.Vector3();
       camera.getWorldDirection(cameraDirection);
+
+      // For movement, we want to move in the direction the camera is looking
+      // cameraDirection already points where camera is looking, so we can use it directly
 
       // Remove vertical component to keep movement horizontal
       cameraDirection.y = 0;
@@ -327,36 +335,18 @@ const CameraController: React.FC = () => {
 
       // Apply movement based on camera direction
       if (moveState.current.forward) {
-        moveX += cameraDirection.x * moveSpeed * delta;
-        moveZ += cameraDirection.z * moveSpeed * delta;
+        moveX += cameraDirection.x * moveSpeed;
+        moveZ += cameraDirection.z * moveSpeed;
       }
       if (moveState.current.backward) {
-        moveX -= cameraDirection.x * moveSpeed * delta;
-        moveZ -= cameraDirection.z * moveSpeed * delta;
+        moveX -= cameraDirection.x * moveSpeed;
+        moveZ -= cameraDirection.z * moveSpeed;
       }
-      if (moveState.current.left) {
-        moveX -= rightVector.x * moveSpeed * delta;
-        moveZ -= rightVector.z * moveSpeed * delta;
-      }
-      if (moveState.current.right) {
-        moveX += rightVector.x * moveSpeed * delta;
-        moveZ += rightVector.z * moveSpeed * delta;
-      }
-
-      console.log({ moveX, moveZ });
 
       // Apply movement
       if (moveX !== 0 || moveZ !== 0) {
-        const oldPos = camera.position.clone();
         camera.position.x += moveX;
         camera.position.z += moveZ;
-
-        console.log("Movement applied:", {
-          moveX,
-          moveZ,
-          oldPos,
-          newPos: camera.position,
-        });
 
         // Update OrbitControls target to match camera position
         if (controls) {
@@ -373,6 +363,39 @@ const CameraController: React.FC = () => {
   });
 
   return null;
+};
+
+// Debug component to visualize camera direction
+const DebugArrow: React.FC = () => {
+  const arrowRef = useRef<THREE.ArrowHelper>(null);
+
+  useFrame((state) => {
+    const { camera } = state;
+
+    if (arrowRef.current) {
+      const direction = new THREE.Vector3();
+      camera.getWorldDirection(direction);
+
+      // Position arrow slightly above camera
+      const arrowPosition = camera.position.clone();
+      arrowPosition.y += 0.5;
+
+      arrowRef.current.position.copy(arrowPosition);
+      arrowRef.current.setDirection(direction);
+    }
+  });
+
+  return (
+    <arrowHelper
+      ref={arrowRef}
+      args={[
+        new THREE.Vector3(0, 0, -1),
+        new THREE.Vector3(0, 0, 0),
+        5,
+        0xff0000,
+      ]}
+    />
+  );
 };
 
 export default App;
