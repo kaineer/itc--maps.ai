@@ -15,7 +15,7 @@ from pathlib import Path
 
 class RunStage:
     def __init__(self):
-        self.base_dir = Path(__file__).parent.parent
+        self.base_dir = Path(__file__).parent.parent.parent
 
     def get_file_hash(self, filepath):
         """Calculate MD5 hash of a file."""
