@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Text } from "@react-three/drei";
+import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 
 interface BuildingNode {
@@ -154,6 +154,9 @@ const App: React.FC = () => {
         <p>
           <strong>D</strong> - Move right
         </p>
+        <p>
+          <strong>Mouse + Left Click</strong> - Rotate camera
+        </p>
         <p>Camera height is fixed at 1.8m</p>
       </div>
 
@@ -211,16 +214,27 @@ const App: React.FC = () => {
           ITC Center
         </Text>
 
-        {/* Camera Controller */}
+        {/* Controls */}
+        <OrbitControls
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          target={[ITC_CENTER.x, 1.8, ITC_CENTER.z]}
+          minDistance={1}
+          maxDistance={1}
+        />
+
+        {/* Camera Controller for WASD movement */}
         <CameraController />
       </Canvas>
     </>
   );
 };
 
-// Camera controller with fixed height and WASD movement
+// Camera controller for WASD movement with fixed height
 const CameraController: React.FC = () => {
   const cameraRef = useRef<THREE.Camera>(null);
+  const controlsRef = useRef<any>(null);
   const moveState = useRef({
     forward: false,
     backward: false,
@@ -279,30 +293,56 @@ const CameraController: React.FC = () => {
     const camera = cameraRef.current;
     const moveSpeed = 2.0;
 
-    // Calculate movement direction
+    // Calculate movement direction based on camera rotation
     let moveX = 0;
     let moveZ = 0;
 
-    if (moveState.current.forward) {
-      moveZ -= moveSpeed;
-    }
-    if (moveState.current.backward) {
-      moveZ += moveSpeed;
-    }
-    if (moveState.current.left) {
-      moveX -= moveSpeed;
-    }
-    if (moveState.current.right) {
-      moveX += moveSpeed;
-    }
+    if (
+      moveState.current.forward ||
+      moveState.current.backward ||
+      moveState.current.left ||
+      moveState.current.right
+    ) {
+      // Get camera direction
+      const cameraDirection = new THREE.Vector3();
+      camera.getWorldDirection(cameraDirection);
 
-    // Apply movement
-    if (moveX !== 0 || moveZ !== 0) {
-      camera.position.x += moveX;
-      camera.position.z += moveZ;
+      // Remove vertical component to keep movement horizontal
+      cameraDirection.y = 0;
+      cameraDirection.normalize();
 
-      // Update camera look target to maintain forward direction
-      state.camera.lookAt(camera.position.x, 0, camera.position.z - 10);
+      // Calculate right vector
+      const rightVector = new THREE.Vector3();
+      rightVector.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
+
+      // Apply movement based on camera direction
+      if (moveState.current.forward) {
+        moveX += cameraDirection.x * moveSpeed;
+        moveZ += cameraDirection.z * moveSpeed;
+      }
+      if (moveState.current.backward) {
+        moveX -= cameraDirection.x * moveSpeed;
+        moveZ -= cameraDirection.z * moveSpeed;
+      }
+      if (moveState.current.left) {
+        moveX -= rightVector.x * moveSpeed;
+        moveZ -= rightVector.z * moveSpeed;
+      }
+      if (moveState.current.right) {
+        moveX += rightVector.x * moveSpeed;
+        moveZ += rightVector.z * moveSpeed;
+      }
+
+      // Apply movement
+      if (moveX !== 0 || moveZ !== 0) {
+        camera.position.x += moveX;
+        camera.position.z += moveZ;
+
+        // Update OrbitControls target to match camera position
+        if (state.controls) {
+          state.controls.target.set(camera.position.x, 1.8, camera.position.z);
+        }
+      }
     }
 
     // Ensure fixed height of 1.8
