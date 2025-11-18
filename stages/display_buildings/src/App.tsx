@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Text } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { Text } from "@react-three/drei";
 import * as THREE from "three";
 
 interface BuildingNode {
@@ -139,71 +139,177 @@ const App: React.FC = () => {
   }
 
   return (
-    <Canvas
-      camera={{
-        position: [ITC_CENTER.x, 200, ITC_CENTER.z + 200],
-        fov: 60,
-      }}
-      shadows
-    >
-      <color attach="background" args={["#87CEEB"]} />
+    <>
+      <div className="controls-info">
+        <h3>Controls</h3>
+        <p>
+          <strong>W</strong> - Move forward
+        </p>
+        <p>
+          <strong>S</strong> - Move backward
+        </p>
+        <p>
+          <strong>A</strong> - Move left
+        </p>
+        <p>
+          <strong>D</strong> - Move right
+        </p>
+        <p>Camera height is fixed at 1.8m</p>
+      </div>
 
-      {/* Lighting */}
-      <ambientLight intensity={0.4} />
-      <directionalLight
-        position={[100, 200, 100]}
-        intensity={0.8}
-        castShadow
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
-        shadow-camera-far={1000}
-        shadow-camera-left={-500}
-        shadow-camera-right={500}
-        shadow-camera-top={500}
-        shadow-camera-bottom={-500}
-      />
-
-      {/* Ground */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.1, 0]}
-        receiveShadow
+      <Canvas
+        camera={{
+          position: [ITC_CENTER.x, 1.8, ITC_CENTER.z + 10],
+          fov: 60,
+        }}
+        shadows
       >
-        <planeGeometry args={[2000, 2000]} />
-        <meshStandardMaterial color="#90EE90" />
-      </mesh>
+        <color attach="background" args={["#87CEEB"]} />
 
-      {/* Buildings */}
-      {buildings.map((building, index) => (
-        <BuildingMesh key={index} building={building} />
-      ))}
+        {/* Lighting */}
+        <ambientLight intensity={0.4} />
+        <directionalLight
+          position={[100, 200, 100]}
+          intensity={0.8}
+          castShadow
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+          shadow-camera-far={1000}
+          shadow-camera-left={-500}
+          shadow-camera-right={500}
+          shadow-camera-top={500}
+          shadow-camera-bottom={-500}
+        />
 
-      {/* ITC Center Marker */}
-      <mesh position={[ITC_CENTER.x, 5, ITC_CENTER.z]}>
-        <sphereGeometry args={[3, 16, 16]} />
-        <meshStandardMaterial color="#FF0000" />
-      </mesh>
-      <Text
-        position={[ITC_CENTER.x, 15, ITC_CENTER.z]}
-        fontSize={8}
-        color="#FF0000"
-        anchorX="center"
-        anchorY="middle"
-      >
-        ITC Center
-      </Text>
+        {/* Ground */}
+        <mesh
+          rotation={[-Math.PI / 2, 0, 0]}
+          position={[0, -0.1, 0]}
+          receiveShadow
+        >
+          <planeGeometry args={[2000, 2000]} />
+          <meshStandardMaterial color="#90EE90" />
+        </mesh>
 
-      {/* Controls */}
-      <OrbitControls
-        enablePan={true}
-        enableZoom={true}
-        enableRotate={true}
-        target={[ITC_CENTER.x, 0, ITC_CENTER.z]}
-        minDistance={50}
-        maxDistance={1000}
-      />
-    </Canvas>
+        {/* Buildings */}
+        {buildings.map((building, index) => (
+          <BuildingMesh key={index} building={building} />
+        ))}
+
+        {/* ITC Center Marker */}
+        <mesh position={[ITC_CENTER.x, 5, ITC_CENTER.z]}>
+          <sphereGeometry args={[3, 16, 16]} />
+          <meshStandardMaterial color="#FF0000" />
+        </mesh>
+        <Text
+          position={[ITC_CENTER.x, 15, ITC_CENTER.z]}
+          fontSize={8}
+          color="#FF0000"
+          anchorX="center"
+          anchorY="middle"
+        >
+          ITC Center
+        </Text>
+
+        {/* Camera Controller */}
+        <CameraController />
+      </Canvas>
+    </>
   );
+};
+
+// Camera controller with fixed height and WASD movement
+const CameraController: React.FC = () => {
+  const cameraRef = useRef<THREE.Camera>(null);
+  const moveState = useRef({
+    forward: false,
+    backward: false,
+    left: false,
+    right: false,
+  });
+
+  // Handle keyboard input
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case "w":
+          moveState.current.forward = true;
+          break;
+        case "s":
+          moveState.current.backward = true;
+          break;
+        case "a":
+          moveState.current.left = true;
+          break;
+        case "d":
+          moveState.current.right = true;
+          break;
+      }
+    };
+
+    const handleKeyUp = (event: KeyboardEvent) => {
+      switch (event.key.toLowerCase()) {
+        case "w":
+          moveState.current.forward = false;
+          break;
+        case "s":
+          moveState.current.backward = false;
+          break;
+        case "a":
+          moveState.current.left = false;
+          break;
+        case "d":
+          moveState.current.right = false;
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  useFrame((state) => {
+    if (!cameraRef.current) return;
+
+    const camera = cameraRef.current;
+    const moveSpeed = 2.0;
+
+    // Calculate movement direction
+    let moveX = 0;
+    let moveZ = 0;
+
+    if (moveState.current.forward) {
+      moveZ -= moveSpeed;
+    }
+    if (moveState.current.backward) {
+      moveZ += moveSpeed;
+    }
+    if (moveState.current.left) {
+      moveX -= moveSpeed;
+    }
+    if (moveState.current.right) {
+      moveX += moveSpeed;
+    }
+
+    // Apply movement
+    if (moveX !== 0 || moveZ !== 0) {
+      camera.position.x += moveX;
+      camera.position.z += moveZ;
+
+      // Update camera look target to maintain forward direction
+      state.camera.lookAt(camera.position.x, 0, camera.position.z - 10);
+    }
+
+    // Ensure fixed height of 1.8
+    camera.position.y = 1.8;
+  });
+
+  return null;
 };
 
 export default App;
