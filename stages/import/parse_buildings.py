@@ -14,7 +14,7 @@ def lat_lng_to_mercator(lat: float, lng: float) -> List[float]:
         lng: Longitude coordinate in degrees
 
     Returns:
-        List [x, z] coordinates in Mercator projection
+        Dict {"x": x, "z": z} coordinates in Mercator projection
     """
     # Convert to radians
     lat_rad = math.radians(lat)
@@ -24,7 +24,7 @@ def lat_lng_to_mercator(lat: float, lng: float) -> List[float]:
     x = lng_rad
     z = math.log(math.tan(math.pi / 4 + lat_rad / 2))
 
-    return [x, z]
+    return {"x": x, "z": z}
 
 
 def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]) -> List[float]:
@@ -37,7 +37,7 @@ def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]) -> List[
         bounds: Dictionary with minlat, maxlat, minlon, maxlon from XML bounds
 
     Returns:
-        List [x, z] coordinates normalized to 0-1000 range
+        Dict {"x": x, "z": z} coordinates normalized to 0-1000 range
     """
     minlat = bounds["minlat"]
     maxlat = bounds["maxlat"]
@@ -52,7 +52,7 @@ def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]) -> List[
     x = normalized_x * 1000
     z = normalized_z * 1000
 
-    return [x, z]
+    return {"x": x, "z": z}
 
 
 def transform_coordinates(
@@ -68,10 +68,10 @@ def transform_coordinates(
         bounds: Dictionary with bounds for linear transformation
 
     Returns:
-        List [x, z] transformed coordinates
+        Dict {"x": x, "z": z} transformed coordinates
     """
     if translation_type == "none":
-        return [lng, lat]  # Keep as lat/lng
+        return {"x": lng, "z": lat}  # Keep as lat/lng
     elif translation_type == "mercator":
         return lat_lng_to_mercator(lat, lng)
     elif translation_type == "linear":
@@ -190,7 +190,7 @@ def parse_buildings(
                         node_data["lat"], node_data["lon"], translation_type, bounds
                     )
                     # Invert X coordinate to fix mirroring issue
-                    xz_coords[0] = -xz_coords[0]
+                    xz_coords["x"] = -xz_coords["x"]
                     nodes.append(xz_coords)
 
             # Build address string
@@ -245,11 +245,11 @@ def parse_buildings(
         # Calculate center coordinates (average of all nodes)
         nodes = itc_building["nodes"]
         if nodes:
-            center_x = sum(node[0] for node in nodes) / len(nodes)
-            center_z = sum(node[1] for node in nodes) / len(nodes)
+            center_x = sum(node["x"] for node in nodes) / len(nodes)
+            center_z = sum(node["z"] for node in nodes) / len(nodes)
             # Note: X coordinate is already inverted at import level
 
-            itc_data = {"center": [center_x, center_z]}
+            itc_data = {"center": {"x": center_x, "z": center_z}}
 
             try:
                 with open(itc_file_path, "w", encoding="utf-8") as f:

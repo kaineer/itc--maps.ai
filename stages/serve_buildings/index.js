@@ -9,8 +9,8 @@ let itcData = {};
 
 // Function to calculate distance between two points
 function calculateDistance(point1, point2) {
-  const dx = point1[0] - point2[0];
-  const dz = point1[1] - point2[1];
+  const dx = point1.x - point2.x;
+  const dz = point1.z - point2.z;
   return Math.sqrt(dx * dx + dz * dz);
 }
 
@@ -81,10 +81,12 @@ fastify.put(
                   nodes: {
                     type: "array",
                     items: {
-                      type: "array",
-                      items: { type: "number" },
-                      minItems: 2,
-                      maxItems: 2,
+                      type: "object",
+                      properties: {
+                        x: { type: "number" },
+                        z: { type: "number" },
+                      },
+                      required: ["x", "z"],
                     },
                   },
                 },
@@ -104,7 +106,7 @@ fastify.put(
 
     // Filter buildings that have at least one node within the specified distance
     const filteredBuildings = buildingsData.filter((building) =>
-      isBuildingWithinDistance(building, [position.x, position.z], distance),
+      isBuildingWithinDistance(building, position, distance),
     );
 
     fastify.log.info(
@@ -136,14 +138,15 @@ fastify.get(
             x: { type: "number" },
             z: { type: "number" },
           },
+          required: ["x", "z"],
         },
       },
     },
   },
   async (request, reply) => {
     return {
-      x: itcData.center[0],
-      z: itcData.center[1],
+      x: itcData.center.x,
+      z: itcData.center.z,
     };
   },
 );

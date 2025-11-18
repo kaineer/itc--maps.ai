@@ -11,7 +11,17 @@
 
 ## API Endpoints
 
-### `GET /start`
+### GET /start
+
+Returns the ITC center coordinates in object format.
+
+**Response**:
+```json
+{
+  "x": -326.3075974725192,
+  "z": 668.0390612696756
+}
+```
 
 Возвращает координаты центра ITC здания.
 

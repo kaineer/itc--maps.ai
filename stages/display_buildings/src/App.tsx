@@ -34,10 +34,18 @@ const BuildingMesh: React.FC<{ building: Building }> = ({ building }) => {
     const current = building.nodes[i];
     const next = building.nodes[(i + 1) % building.nodes.length];
 
-    const [currentX, currentZ] = current;
-    const [nextX, nextZ] = next;
+    const currentX = current.x;
+    const currentZ = current.z;
+    const nextX = next.x;
+    const nextZ = next.z;
 
-    if (!current || !next) continue;
+    if (
+      currentX === undefined ||
+      currentZ === undefined ||
+      nextX === undefined ||
+      nextZ === undefined
+    )
+      continue;
 
     // Calculate wall position and dimensions
     const midX = (currentX + nextX) / 2;
@@ -68,33 +76,6 @@ const BuildingMesh: React.FC<{ building: Building }> = ({ building }) => {
         </mesh>,
       );
     }
-  }
-
-  // Create roof (simple flat plane for now)
-  if (building.nodes.length >= 3) {
-    const roofShape = new THREE.Shape();
-    building.nodes.forEach((node, index) => {
-      if (index === 0) {
-        roofShape.moveTo(node.x, node.z);
-      } else {
-        roofShape.lineTo(node.x, node.z);
-      }
-    });
-    roofShape.lineTo(building.nodes[0].x, building.nodes[0].z);
-
-    const roofGeometry = new THREE.ShapeGeometry(roofShape);
-
-    meshes.push(
-      <mesh
-        key="roof"
-        position={[0, building.height, 0]}
-        rotation={[-Math.PI / 2, 0, 0]}
-        receiveShadow
-      >
-        <primitive object={roofGeometry} />
-        <meshStandardMaterial color="#654321" roughness={0.9} metalness={0.1} />
-      </mesh>,
-    );
   }
 
   return <group ref={meshRef}>{meshes}</group>;

@@ -34,8 +34,8 @@ def generate_buildings_visualization():
         return
 
     # Calculate bounds
-    x_coords = [coord[0] for coord in all_coords]
-    z_coords = [coord[1] for coord in all_coords]
+    x_coords = [coord["x"] for coord in all_coords]
+    z_coords = [coord["z"] for coord in all_coords]
 
     min_x, max_x = min(x_coords), max(x_coords)
     min_z, max_z = min(z_coords), max(z_coords)
@@ -61,7 +61,7 @@ def generate_buildings_visualization():
             continue
 
         # Create polygon points string
-        points = " ".join([f"{node[0]},{node[1]}" for node in nodes])
+        points = " ".join([f"{node['x']},{node['z']}" for node in nodes])
 
         # Get building info for tooltip
         address = building.get("address", "No address")

@@ -69,3 +69,9 @@ git config --global core.pager cat
 - Provide informative error messages
 - Handle edge cases gracefully
 - Log relevant debugging information
+
+### Frontend/Backend Launch Policy
+- **User-initiated only**: Frontend and backend parts must be launched exclusively by the user
+- **Request permission**: If needed, ai-assist may request the user to launch frontend or backend components
+- **No automatic launches**: Never launch frontend or backend automatically without explicit user confirmation
+- **Clear communication**: Always inform the user when frontend/backend components need to be running for specific tasks
