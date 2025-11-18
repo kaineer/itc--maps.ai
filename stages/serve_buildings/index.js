@@ -77,6 +77,7 @@ fastify.put(
                 type: "object",
                 properties: {
                   address: { type: ["string", "null"] },
+                  height: { type: "number" },
                   nodes: {
                     type: "array",
                     items: {
