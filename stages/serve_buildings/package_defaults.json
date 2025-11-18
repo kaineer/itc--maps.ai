@@ -1,0 +1,17 @@
+{
+  "name": "@ekb-maps/serve-buildings",
+  "private": true,
+  "version": "1.0.0",
+  "description": "API server for serving building data from OpenStreetMap",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "dependencies": {
+    "fastify": "^4.0.0"
+  },
+  "keywords": ["api", "buildings", "openstreetmap"],
+  "author": "Maps.ai Team",
+  "license": "MIT"
+}
