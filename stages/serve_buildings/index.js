@@ -1,4 +1,5 @@
 const fastify = require("fastify")({ logger: true });
+const cors = require("@fastify/cors");
 const fs = require("fs").promises;
 const path = require("path");
 
@@ -112,6 +113,7 @@ fastify.put(
     // Format response according to specification
     const responseBuildings = filteredBuildings.map((building) => ({
       address: building.address,
+      height: building.height,
       nodes: building.nodes,
     }));
 
@@ -160,9 +162,16 @@ const start = async () => {
     // Load data first
     await loadData();
 
+    // Register CORS
+    await fastify.register(cors, {
+      origin: true, // Allow all origins
+      methods: ["GET", "PUT", "POST", "DELETE"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    });
+
     // Start server
-    await fastify.listen({ port: 3000, host: "0.0.0.0" });
-    fastify.log.info(`Server running on http://localhost:3000`);
+    await fastify.listen({ port: 5000, host: "0.0.0.0" });
+    fastify.log.info(`Server running on http://localhost:5000`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
