@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 
@@ -233,8 +233,6 @@ const App: React.FC = () => {
 
 // Camera controller for WASD movement with fixed height
 const CameraController: React.FC = () => {
-  const cameraRef = useRef<THREE.Camera>(null);
-  const controlsRef = useRef<any>(null);
   const moveState = useRef({
     forward: false,
     backward: false,
@@ -278,19 +276,19 @@ const CameraController: React.FC = () => {
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup", handleKeyUp);
+    const eventTarget = document;
+
+    eventTarget.addEventListener("keydown", handleKeyDown);
+    eventTarget.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup", handleKeyUp);
+      eventTarget.removeEventListener("keydown", handleKeyDown);
+      eventTarget.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
-  useFrame((state) => {
-    if (!cameraRef.current) return;
-
-    const camera = cameraRef.current;
+  useFrame((state, delta) => {
+    const { camera, controls } = state;
     const moveSpeed = 2.0;
 
     // Calculate movement direction based on camera rotation
@@ -339,8 +337,8 @@ const CameraController: React.FC = () => {
         camera.position.z += moveZ;
 
         // Update OrbitControls target to match camera position
-        if (state.controls) {
-          state.controls.target.set(camera.position.x, 1.8, camera.position.z);
+        if (controls) {
+          controls.target.set(camera.position.x, 1.8, camera.position.z);
         }
       }
     }
