@@ -7,6 +7,7 @@
 ### Тело ответа
 
 ```yaml
+# Позиция из файла itc.json/center
 x: number
 z: number
 ```
