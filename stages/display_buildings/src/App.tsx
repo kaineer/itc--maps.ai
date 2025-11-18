@@ -216,6 +216,7 @@ const App: React.FC = () => {
 
         {/* Controls */}
         <OrbitControls
+          makeDefault
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
@@ -289,7 +290,18 @@ const CameraController: React.FC = () => {
 
   useFrame((state, delta) => {
     const { camera, controls } = state;
-    const moveSpeed = 2.0;
+    const moveSpeed = 2.0 * delta;
+
+    // Debug logging
+    if (
+      moveState.current.forward ||
+      moveState.current.backward ||
+      moveState.current.left ||
+      moveState.current.right
+    ) {
+      console.log("Movement active:", moveState.current);
+      console.log("Camera position before:", camera.position);
+    }
 
     // Calculate movement direction based on camera rotation
     let moveX = 0;
@@ -315,30 +327,43 @@ const CameraController: React.FC = () => {
 
       // Apply movement based on camera direction
       if (moveState.current.forward) {
-        moveX += cameraDirection.x * moveSpeed;
-        moveZ += cameraDirection.z * moveSpeed;
+        moveX += cameraDirection.x * moveSpeed * delta;
+        moveZ += cameraDirection.z * moveSpeed * delta;
       }
       if (moveState.current.backward) {
-        moveX -= cameraDirection.x * moveSpeed;
-        moveZ -= cameraDirection.z * moveSpeed;
+        moveX -= cameraDirection.x * moveSpeed * delta;
+        moveZ -= cameraDirection.z * moveSpeed * delta;
       }
       if (moveState.current.left) {
-        moveX -= rightVector.x * moveSpeed;
-        moveZ -= rightVector.z * moveSpeed;
+        moveX -= rightVector.x * moveSpeed * delta;
+        moveZ -= rightVector.z * moveSpeed * delta;
       }
       if (moveState.current.right) {
-        moveX += rightVector.x * moveSpeed;
-        moveZ += rightVector.z * moveSpeed;
+        moveX += rightVector.x * moveSpeed * delta;
+        moveZ += rightVector.z * moveSpeed * delta;
       }
+
+      console.log({ moveX, moveZ });
 
       // Apply movement
       if (moveX !== 0 || moveZ !== 0) {
+        const oldPos = camera.position.clone();
         camera.position.x += moveX;
         camera.position.z += moveZ;
+
+        console.log("Movement applied:", {
+          moveX,
+          moveZ,
+          oldPos,
+          newPos: camera.position,
+        });
 
         // Update OrbitControls target to match camera position
         if (controls) {
           controls.target.set(camera.position.x, 1.8, camera.position.z);
+          // Force update of OrbitControls internal state
+          controls.update();
+          console.log("Controls target updated:", controls.target);
         }
       }
     }
