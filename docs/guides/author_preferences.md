@@ -2,6 +2,38 @@
 
 This document outlines the preferred development practices and tool configurations for this project.
 
+## Code Export Preferences
+
+### Named Exports
+All exports from files **MUST** use named exports, even when only one component is exported from a file. This ensures consistency and makes refactoring easier.
+
+#### Required Pattern
+
+```typescript
+// ✅ Correct - named export
+export { ComponentName }
+
+// ❌ Avoid - default export
+export default ComponentName
+```
+
+#### Import Usage
+
+```typescript
+// ✅ Correct - named import
+import { ComponentName } from './path/to/Component'
+
+// ❌ Avoid - default import
+import ComponentName from './path/to/Component'
+```
+
+#### Rationale
+- **Consistency**: Uniform export patterns across the codebase
+- **Refactoring**: Easier to rename components without breaking imports
+- **Tree-shaking**: Better optimization with bundlers
+- **IDE Support**: Improved autocomplete and navigation
+- **Multiple Exports**: Ready for future expansion without changing patterns
+
 ## Git Command Preferences
 
 ### Pager Avoidance

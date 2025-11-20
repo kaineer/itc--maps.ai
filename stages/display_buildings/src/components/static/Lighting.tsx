@@ -23,4 +23,4 @@ const Lighting: React.FC = () => {
   );
 };
 
-export default Lighting;
+export { Lighting };

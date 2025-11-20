@@ -9,4 +9,4 @@ const Ground: React.FC = () => {
   );
 };
 
-export default Ground;
+export { Ground };

@@ -23,4 +23,4 @@ const ControlsInfo: React.FC<ControlsInfoProps> = ({ className = "" }) => {
   );
 };
 
-export default ControlsInfo;
+export { ControlsInfo };
