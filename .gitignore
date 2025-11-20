@@ -3,6 +3,10 @@ stages/import/map_data.xml
 stages/import/buildings.json
 stages/import/itc.json
 
+# Build outputs
+stages/*/dist/
+stages/*/build/
+
 # Node.js dependencies
 node_modules/
 npm-debug.log*

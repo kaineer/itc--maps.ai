@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
+import ControlsInfo from "./components/shared/ui/ControlsInfo";
+import Ground from "./components/static/Ground";
+import Lighting from "./components/static/Lighting";
 
 interface BuildingNode {
   x: number;
@@ -140,25 +143,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <div className="controls-info">
-        <h3>Controls</h3>
-        <p>
-          <strong>W</strong> - Move forward
-        </p>
-        <p>
-          <strong>S</strong> - Move backward
-        </p>
-        <p>
-          <strong>A</strong> - Move left
-        </p>
-        <p>
-          <strong>D</strong> - Move right
-        </p>
-        <p>
-          <strong>Mouse + Left Click</strong> - Rotate camera
-        </p>
-        <p>Camera height is fixed at 1.8m</p>
-      </div>
+      <ControlsInfo />
 
       <Canvas
         camera={{
@@ -170,29 +155,10 @@ const App: React.FC = () => {
         <color attach="background" args={["#87CEEB"]} />
 
         {/* Lighting */}
-        <ambientLight intensity={0.4} />
-        <directionalLight
-          position={[100, 200, 100]}
-          intensity={0.8}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
-          shadow-camera-far={1000}
-          shadow-camera-left={-500}
-          shadow-camera-right={500}
-          shadow-camera-top={500}
-          shadow-camera-bottom={-500}
-        />
+        <Lighting />
 
         {/* Ground */}
-        <mesh
-          rotation={[-Math.PI / 2, 0, 0]}
-          position={[0, -0.1, 0]}
-          receiveShadow
-        >
-          <planeGeometry args={[2000, 2000]} />
-          <meshStandardMaterial color="#90EE90" />
-        </mesh>
+        <Ground />
 
         {/* Buildings */}
         {buildings.map((building, index) => (
@@ -215,6 +181,10 @@ const App: React.FC = () => {
         </Text>
 
         {/* Controls */}
+        {/*
+          OrbitControls handles mouse rotation while CameraController handles WASD movement.
+          Both work together by moving both camera position and controls target simultaneously.
+        */}
         <OrbitControls
           makeDefault
           enablePan={true}
@@ -225,9 +195,6 @@ const App: React.FC = () => {
 
         {/* Camera Controller for WASD movement */}
         <CameraController />
-
-        {/* Debug arrow showing camera direction */}
-        <DebugArrow />
       </Canvas>
     </>
   );
@@ -238,8 +205,6 @@ const CameraController: React.FC = () => {
   const moveState = useRef({
     forward: false,
     backward: false,
-    left: false,
-    right: false,
   });
 
   // Handle keyboard input
@@ -252,12 +217,6 @@ const CameraController: React.FC = () => {
         case "s":
           moveState.current.backward = true;
           break;
-        case "a":
-          moveState.current.left = true;
-          break;
-        case "d":
-          moveState.current.right = true;
-          break;
       }
     };
 
@@ -268,12 +227,6 @@ const CameraController: React.FC = () => {
           break;
         case "s":
           moveState.current.backward = false;
-          break;
-        case "a":
-          moveState.current.left = false;
-          break;
-        case "d":
-          moveState.current.right = false;
           break;
       }
     };
@@ -291,69 +244,40 @@ const CameraController: React.FC = () => {
 
   useFrame((state, delta) => {
     const { camera, controls } = state;
-    const moveSpeed = 2.0 * delta;
+    const moveSpeed = 5.0 * delta;
 
-    // Debug logging
-    if (
-      moveState.current.forward ||
-      moveState.current.backward ||
-      moveState.current.left ||
-      moveState.current.right
-    ) {
-      console.log("Movement active:", moveState.current);
-      console.log("Camera position before:", camera.position);
-      console.log(
-        "Camera direction:",
-        camera.getWorldDirection(new THREE.Vector3()),
-      );
-    }
-
-    // Calculate movement direction based on camera rotation
-    let moveX = 0;
-    let moveZ = 0;
-
-    if (
-      moveState.current.forward ||
-      moveState.current.backward ||
-      moveState.current.left ||
-      moveState.current.right
-    ) {
-      // Get camera direction (points FROM camera, so we need to invert for movement)
+    if (moveState.current.forward || moveState.current.backward) {
+      // Get camera direction
       const cameraDirection = new THREE.Vector3();
       camera.getWorldDirection(cameraDirection);
-
-      // For movement, we want to move in the direction the camera is looking
-      // cameraDirection already points where camera is looking, so we can use it directly
 
       // Remove vertical component to keep movement horizontal
       cameraDirection.y = 0;
       cameraDirection.normalize();
 
-      // Calculate right vector
-      const rightVector = new THREE.Vector3();
-      rightVector.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
+      // Calculate movement vector
+      const moveVector = new THREE.Vector3();
 
-      // Apply movement based on camera direction
       if (moveState.current.forward) {
-        moveX += cameraDirection.x * moveSpeed;
-        moveZ += cameraDirection.z * moveSpeed;
+        moveVector.add(cameraDirection);
       }
       if (moveState.current.backward) {
-        moveX -= cameraDirection.x * moveSpeed;
-        moveZ -= cameraDirection.z * moveSpeed;
+        moveVector.sub(cameraDirection);
       }
 
-      // Apply movement
-      if (moveX !== 0 || moveZ !== 0) {
-        camera.position.x += moveX;
-        camera.position.z += moveZ;
+      // Normalize diagonal movement
+      if (moveVector.length() > 0) {
+        moveVector.normalize();
+        moveVector.multiplyScalar(moveSpeed);
 
-        // Update OrbitControls target to match camera position
-        if (controls) {
-          controls.target.set(camera.position.x, 1.8, camera.position.z);
-          // Force update of OrbitControls internal state
-          controls.update();
-          console.log("Controls target updated:", controls.target);
+        // Move both camera and controls target simultaneously
+        // This maintains OrbitControls rotation while allowing WASD movement
+        if (controls && "target" in controls) {
+          const controlsTarget = (controls as any).target;
+          controlsTarget.x += moveVector.x;
+          controlsTarget.z += moveVector.z;
+          camera.position.x += moveVector.x;
+          camera.position.z += moveVector.z;
         }
       }
     }
@@ -363,39 +287,6 @@ const CameraController: React.FC = () => {
   });
 
   return null;
-};
-
-// Debug component to visualize camera direction
-const DebugArrow: React.FC = () => {
-  const arrowRef = useRef<THREE.ArrowHelper>(null);
-
-  useFrame((state) => {
-    const { camera } = state;
-
-    if (arrowRef.current) {
-      const direction = new THREE.Vector3();
-      camera.getWorldDirection(direction);
-
-      // Position arrow slightly above camera
-      const arrowPosition = camera.position.clone();
-      arrowPosition.y += 0.5;
-
-      arrowRef.current.position.copy(arrowPosition);
-      arrowRef.current.setDirection(direction);
-    }
-  });
-
-  return (
-    <arrowHelper
-      ref={arrowRef}
-      args={[
-        new THREE.Vector3(0, 0, -1),
-        new THREE.Vector3(0, 0, 0),
-        5,
-        0xff0000,
-      ]}
-    />
-  );
 };
 
 export default App;
