@@ -7,6 +7,22 @@ const path = require("path");
 let buildingsData = [];
 let itcData = {};
 
+const modelsData = [
+  {
+    modelId: "1",
+    modelUrl: "/itc.fbx",
+    buildingIds: ["59831701", "59831708", "59831705"],
+  },
+];
+
+const modelsCache = modelsData.reduce((acc, item) => {
+  const { modelId, buildingIds } = item;
+  buildingIds.forEach((bid) => (acc[bid] = modelId));
+  return acc;
+}, {});
+
+console.log(modelsCache);
+
 // Function to calculate distance between two points
 function calculateDistance(point1, point2) {
   const dx = point1.x - point2.x;
@@ -47,6 +63,15 @@ async function loadData() {
   }
 }
 
+const positionScheme = {
+  type: "object",
+  required: ["x", "z"],
+  properties: {
+    x: { type: "number" },
+    z: { type: "number" },
+  },
+};
+
 // Define PUT /buildings endpoint
 fastify.put(
   "/buildings",
@@ -56,14 +81,7 @@ fastify.put(
         type: "object",
         required: ["position", "distance"],
         properties: {
-          position: {
-            type: "object",
-            required: ["x", "z"],
-            properties: {
-              x: { type: "number" },
-              z: { type: "number" },
-            },
-          },
+          position: positionScheme,
           distance: { type: "number", minimum: 0 },
         },
       },
@@ -81,11 +99,7 @@ fastify.put(
                   nodes: {
                     type: "array",
                     items: {
-                      type: "object",
-                      properties: {
-                        x: { type: "number" },
-                        z: { type: "number" },
-                      },
+                      ...positionScheme,
                       required: ["x", "z"],
                     },
                   },
@@ -104,21 +118,59 @@ fastify.put(
       `Received request: position=${JSON.stringify(position)}, distance=${distance}`,
     );
 
+    const createMapPolygonData = () => {
+      const usedModelCache = {};
+
+      const filterPolygon = (polygon) => {
+        if (polygon.id.startsWith("598")) {
+          console.log("Checking polygon: " + polygon.id);
+        }
+        const modelId = modelsCache[polygon.id];
+        if (modelId) {
+          console.log("Found model: " + modelId);
+
+          if (!usedModelCache[modelId]) {
+            usedModelCache[modelId] = true;
+
+            console.log(
+              "Found model " + modelId + " for polygon " + polygon.id,
+            );
+
+            return {
+              ...polygon,
+              nodes: [],
+              modelId,
+              modelUrl: modelsData.find((d) => d.modelId === modelId).modelUrl,
+            };
+          }
+          return null;
+        }
+        return polygon;
+      };
+
+      return filterPolygon;
+    };
+
     // Filter buildings that have at least one node within the specified distance
-    const filteredBuildings = buildingsData.filter((building) =>
-      isBuildingWithinDistance(building, position, distance),
-    );
+    const filteredBuildings = buildingsData
+      .filter((building) =>
+        isBuildingWithinDistance(building, position, distance),
+      )
+      .map(createMapPolygonData())
+      .filter((x) => x !== null);
 
     fastify.log.info(
       `Found ${filteredBuildings.length} buildings within distance ${distance}`,
     );
 
     // Format response according to specification
-    const responseBuildings = filteredBuildings.map((building) => ({
-      address: building.address,
-      height: building.height,
-      nodes: building.nodes,
-    }));
+    const responseBuildings = filteredBuildings.map(
+      ({ address, height, nodes }) => ({
+        address,
+        height,
+        nodes,
+      }),
+    );
 
     return {
       buildings: responseBuildings,
@@ -171,6 +223,12 @@ const start = async () => {
       origin: true, // Allow all origins
       methods: ["GET", "PUT", "POST", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
+    });
+
+    // Serve static files from public directory
+    await fastify.register(require("@fastify/static"), {
+      root: path.join(__dirname, "public"),
+      prefix: "/",
     });
 
     // Start server
