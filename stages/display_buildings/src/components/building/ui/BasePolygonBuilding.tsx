@@ -5,7 +5,7 @@ import { Building } from "../../../types/types";
 interface Props {
   building: Building;
   opacity?: number;
-  onClick?: (building: Building) => void;
+  onClick?: (buildingId: string) => void;
 }
 
 export const BasePolygonBuilding = ({
@@ -61,7 +61,8 @@ export const BasePolygonBuilding = ({
           onClick={(event) => {
             event.stopPropagation();
             if (onClick) {
-              onClick(building);
+              const buildingId = `${building.address}|${building.position?.x},${building.position?.z}`;
+              onClick(buildingId);
             }
             console.log("Building clicked:", {
               address: building.address,

@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import uiReducer from "./uiSlice";
+import { uiSlice } from "./uiSlice";
+import { buildingsSlice } from "./buildingsSlice";
 
 export function setupStore() {
   const store = configureStore({
     reducer: {
-      ui: uiReducer,
+      [uiSlice.reducerPath]: uiSlice.reducer,
+      [buildingsSlice.reducerPath]: buildingsSlice.reducer,
       // Add other reducers here as they are created
     },
     middleware: (getDefaultMiddleware) =>

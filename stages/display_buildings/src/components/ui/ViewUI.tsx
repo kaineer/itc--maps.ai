@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
+import { buildingsSlice } from "../../store/buildingsSlice";
 import { OrbitControls, Text } from "@react-three/drei";
 import * as THREE from "three";
 import { ControlsInfo } from "../shared/ui/ControlsInfo";
@@ -24,50 +26,27 @@ interface BuildingsResponse {
   buildings: Building[];
 }
 
-interface Props {}
+interface Props {
+  onBuildingSelect?: (buildingId: string) => void;
+}
 
 const ITC_CENTER = { x: -326.31, z: 668.04 };
 
-export const ViewUI: React.FC<Props> = () => {
-  const [buildings, setBuildings] = useState<Building[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export const ViewUI: React.FC<Props> = ({ onBuildingSelect }) => {
+  const dispatch = useDispatch();
+  const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
+  const buildings = useSelector(getBuildings);
+  const loading = useSelector(getLoading);
+  const error = useSelector(getError);
 
   useEffect(() => {
-    const fetchBuildings = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const response = await fetch("http://localhost:5000/buildings", {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            position: ITC_CENTER,
-            distance: 500, // Load buildings within 500 units
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data: BuildingsResponse = await response.json();
-        setBuildings(data.buildings || []);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to load buildings",
-        );
-        console.error("Error fetching buildings:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBuildings();
-  }, []);
+    dispatch(
+      buildingsSlice.actions.fetchBuildings({
+        position: ITC_CENTER,
+        distance: 500,
+      }),
+    );
+  }, [dispatch]);
 
   if (loading) {
     return <div className="loading">Loading 3D buildings visualization...</div>;
@@ -105,7 +84,7 @@ export const ViewUI: React.FC<Props> = () => {
         <Ground />
 
         {/* Buildings */}
-        <ViewStage buildings={buildings} />
+        <ViewStage buildings={buildings} onBuildingClick={onBuildingSelect} />
 
         {/* ITC Center Marker */}
         <mesh position={[ITC_CENTER.x, 5, ITC_CENTER.z]}>
