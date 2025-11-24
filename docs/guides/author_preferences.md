@@ -2,6 +2,36 @@
 
 This document outlines the preferred development practices and tool configurations for this project.
 
+## Package Manager Preferences
+
+### pnpm Usage
+Whenever possible, use `pnpm` instead of `npm` for package management operations. pnpm offers better performance, disk space efficiency, and strict dependency management.
+
+#### Preferred Pattern
+
+```bash
+# ✅ Preferred - use pnpm
+pnpm install
+pnpm add package-name
+pnpm run dev
+
+# ❌ Avoid - using npm when pnpm is available
+npm install
+npm add package-name  
+npm run dev
+```
+
+#### Rationale
+- **Performance**: Faster installation times through efficient dependency resolution
+- **Disk Space**: Shared dependency store reduces duplicate packages
+- **Strictness**: Prevents phantom dependencies and ensures package isolation
+- **Consistency**: Lockfile format ensures reproducible installations across environments
+
+#### When to Use npm
+- In environments where pnpm is not available
+- For specific npm-only commands or workflows
+- When working with legacy projects that require npm
+
 ## Interface Naming Preferences
 
 ### Props Interface Naming
