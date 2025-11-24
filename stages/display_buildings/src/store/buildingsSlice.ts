@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Building, BuildingNode } from "../types/types";
-
-interface BuildingsResponse {
-  buildings: Building[];
-}
+import { putBackend, BuildingsResponse } from "../utils/backend";
 
 interface BuildingsState {
   buildings: Building[];
@@ -37,22 +34,10 @@ export const fetchBuildings = createAsyncThunk(
     position: BuildingNode;
     distance: number;
   }) => {
-    const response = await fetch("http://localhost:5000/buildings", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        position,
-        distance,
-      }),
+    const data: BuildingsResponse = await putBackend("/buildings", {
+      position,
+      distance,
     });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const data: BuildingsResponse = await response.json();
     return data.buildings || [];
   },
 );
@@ -141,3 +126,23 @@ export const buildingsSlice = createSlice({
     },
   },
 });
+
+export const {
+  setSelectedBuilding,
+  setSearchQuery,
+  setHasModelFilter,
+  clearFilters,
+  resetBuildings,
+} = buildingsSlice.actions;
+
+export const {
+  getBuildings,
+  getSelectedBuildingId,
+  getSelectedBuilding,
+  getLoading,
+  getError,
+  getFilters,
+  getFilteredBuildings,
+} = buildingsSlice.selectors;
+
+export default buildingsSlice.reducer;
