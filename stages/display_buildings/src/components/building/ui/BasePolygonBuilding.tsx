@@ -1,18 +1,18 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
+import { Building } from "../../../types/types";
 
-interface BuildingNode {
-  x: number;
-  z: number;
+interface Props {
+  building: Building;
+  opacity?: number;
+  onClick?: (building: Building) => void;
 }
 
-interface Building {
-  address: string | null;
-  nodes: BuildingNode[];
-  height: number;
-}
-
-const BuildingMesh: React.FC<{ building: Building }> = ({ building }) => {
+export const BasePolygonBuilding = ({
+  building,
+  opacity = 1.0,
+  onClick,
+}: Props) => {
   const meshRef = useRef<THREE.Group>(null);
 
   if (!building.nodes || building.nodes.length < 2) {
@@ -58,12 +58,26 @@ const BuildingMesh: React.FC<{ building: Building }> = ({ building }) => {
           rotation={[0, -rotation, 0]}
           castShadow
           receiveShadow
+          onClick={(event) => {
+            event.stopPropagation();
+            if (onClick) {
+              onClick(building);
+            }
+            console.log("Building clicked:", {
+              address: building.address,
+              position: building.position,
+              height: building.height,
+              nodes: building.nodes,
+            });
+          }}
         >
           <boxGeometry args={[length, height, 0.1]} />
           <meshStandardMaterial
             color={building.address ? "#8B4513" : "#A9A9A9"}
             roughness={0.8}
             metalness={0.2}
+            transparent={opacity < 1.0}
+            opacity={opacity}
           />
         </mesh>,
       );
@@ -72,5 +86,3 @@ const BuildingMesh: React.FC<{ building: Building }> = ({ building }) => {
 
   return <group ref={meshRef}>{meshes}</group>;
 };
-
-export { BuildingMesh };

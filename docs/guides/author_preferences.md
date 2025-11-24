@@ -2,6 +2,66 @@
 
 This document outlines the preferred development practices and tool configurations for this project.
 
+## Interface Naming Preferences
+
+### Props Interface Naming
+When creating a component in a file that exports exactly one component, use the simple name `Props` for the component's interface. This reduces unnecessary verbosity and follows common React patterns.
+
+#### Preferred Pattern
+
+```typescript
+// ✅ Correct - simple Props interface name
+interface Props {
+  building: Building;
+  onClick?: (building: Building) => void;
+}
+
+export const ComponentName = ({ building, onClick }: Props) => {
+  // component implementation
+}
+```
+
+#### When to Use Alternative Names
+Only use more specific interface names when:
+- The file exports multiple components
+- The interface is used by multiple components
+- The interface represents a shared type used across the codebase
+
+#### Examples
+
+✅ **Single component file:**
+```typescript
+// ViewStage.tsx - exports only ViewStage component
+interface Props {
+  buildings: Building[];
+}
+
+export const ViewStage = ({ buildings }: Props) => {
+  // implementation
+}
+```
+
+✅ **Multiple components file:**
+```typescript
+// building-components.tsx - exports multiple components
+interface BuildingProps {
+  building: Building;
+}
+
+interface BuildingListProps {
+  buildings: Building[];
+}
+
+export const BuildingItem = ({ building }: BuildingProps) => { /* ... */ }
+export const BuildingList = ({ buildings }: BuildingListProps) => { /* ... */ }
+```
+
+#### Rationale
+- **Simplicity**: Reduces cognitive overhead for single-component files
+- **Consistency**: Follows established React community patterns
+- **Readability**: Clear that `Props` refers to the main component's props
+- **Maintainability**: Easy to understand and modify
+
 ## Code Export Preferences
 
 ### Named Exports

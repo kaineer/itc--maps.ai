@@ -1,84 +1,132 @@
-# Task List: Coordinate Format Unification
+# Model Alignment Tool Implementation Plan
 
-## Problem Statement
-Currently, coordinate formats are inconsistent across the project:
-- **Parser**: Outputs coordinates as arrays `[x, z]`
-- **Backend**: Passes coordinates as arrays in API responses
-- **Frontend**: Expects coordinates as objects `{x: number, z: number}`
+## Overview
+Create a system for aligning 3D models with their corresponding building polygons, allowing precise positioning and scaling adjustments with visual feedback.
 
-This causes type mismatches and runtime errors in the 3D visualization.
+## Implementation Phases
 
-## Task Sequence
+### Phase 1: Transparent Polygon Buildings
+**Create base and specialized polygon building components**
 
-### Phase 1: Backend API Enhancement
-**Priority: High** - Fixes immediate frontend issues
+1. **Task P1**: ✅ Create `BasePolygonBuilding` component
+   - Extract common logic from current `PolygonBuilding`
+   - Accept `opacity` as prop for material transparency
 
-1. **Task B1**: ✅ Update backend API to convert coordinate arrays to objects
-   - Modify `stages/serve_buildings/index.js` response format
-   - Transform `nodes: [[x, z], ...]` → `nodes: [{x, z}, ...]`
-   - Maintain backward compatibility during transition
+2. **Task P2**: ✅ Create `TransparentPolygonBuilding` component
+   - Extends `BasePolygonBuilding` with `opacity: 0.5`
+   - Used during model alignment for visual reference
 
-2. **Task B2**: ✅ Update API schema documentation
-   - Update Fastify response schema to reflect new format
-   - Ensure type safety in backend responses
+3. **Task P3**: ✅ Create `SolidPolygonBuilding` component  
+   - Extends `BasePolygonBuilding` with `opacity: 1.0`
+   - Used for normal building display
 
-### Phase 2: Frontend Type Fixes
-**Priority: High** - Fixes runtime errors
+### Phase 1.5: Stage Components
+**Create main scene components for different display modes**
 
-3. **Task F1**: ✅ Update frontend TypeScript interfaces
-   - Fix `BuildingNode` interface in `App.tsx`
-   - Update coordinate access patterns in rendering logic
-   - Remove roof generation (not needed for 1.8m height view)
+4. **Task S1**: Create `ViewStage` component
+   - Main component for normal viewing mode
+   - Displays solid polygons and models
+   - Located in `stage/ui/ViewStage.tsx`
 
-4. **Task F2**: ✅ Test frontend with updated backend
-   - Verify 3D building rendering works correctly
-   - Test coordinate transformations and wall generation
-   - Frontend successfully loads and displays buildings
+5. **Task S2**: Create `AlignmentStage` component
+   - Main component for model alignment mode
+   - Displays transparent polygons and aligned models
+   - Located in `stage/ui/AlignmentStage.tsx`
 
-### Phase 3: Data Source Standardization
-**Priority: Medium** - Long-term consistency
+### Phase 2: Backend Alignment API
+**Add API endpoints for storing model alignment data**
 
-5. **Task P1**: ✅ Update parser output format
-   - Modify `stages/import/parse_buildings.py` to output objects
-   - Change `nodes: [[x, z], ...]` → `nodes: [{"x": x, "z": z}, ...]`
+6. **Task B1**: Define `ModelAlignment` type in TypeScript
+   - Add to `types/types.ts`
+   - Include `modelId`, `position`, `scale`, `rotation` properties
 
-6. **Task P2**: ✅ Update ITC coordinate format
-   - Change ITC center from `[x, z]` to `{"x": x, "z": z}`
-   - Update all references to ITC coordinates
+7. **Task B2**: Add PUT endpoint `/building/:buildingId/alignment`
+   - Create in `stages/serve_buildings/index.js`
+   - Store alignment data in memory or file-based storage
+   - Return current alignment settings
 
-### Phase 4: Testing and Validation
-**Priority: Medium** - Ensure system stability
+8. **Task B3**: Add GET endpoint `/building/:buildingId/alignment`
+   - Retrieve stored alignment data
+   - Return default values if no alignment exists
 
-7. **Task T1**: End-to-end testing
-   - Test full pipeline from import to visualization
-   - Verify coordinate transformations work correctly
+### Phase 3: Aligned Model Component
+**Create interactive model component with alignment controls**
 
-8. **Task T2**: Performance validation
-   - Ensure no performance regressions with new format
-   - Test with large datasets
+9. **Task M1**: Create `AlignedModel` component
+   - Extends current model loading functionality
+   - Applies stored alignment transformations
+   - Handles interactive positioning (drag & drop or input controls)
 
-### Phase 5: Documentation and Cleanup
-**Priority: Low** - Maintainability
+10. **Task M2**: Add real-time transformation updates
+    - Update model position/scale when controls change
+    - Visual feedback during transformations
+    - Optional snapping to grid for precise alignment
 
-9. **Task D1**: ✅ Update project documentation
-   - Document new coordinate format standard
-   - Update API documentation
-   - Created `docs/knowledge/types/coordinate_format.md`
+### Phase 4: Alignment Controls Interface
+**Build the control panel for model adjustments**
 
-10. **Task D2**: ✅ Remove temporary compatibility code
-    - Clean up any transitional code
-    - Ensure consistent format throughout
-    - Updated 2D visualization tool to work with new format
+11. **Task C1**: Create `AlignmentControls` component
+    - Numeric inputs for X/Z position adjustment
+    - Scale slider with precision controls
+    - Rotation controls (if needed)
+    - Save/Reset functionality
+
+12. **Task C2**: Implement model selection
+    - Dropdown to select which model to align
+    - Visual highlighting of selected model
+    - Load corresponding polygon for reference
+
+### Phase 5: Model Alignment Tool
+**Integrate all components into a cohesive tool**
+
+13. **Task T1**: Create `ModelAlignmentTool` component
+    - Main container for alignment mode
+    - Toggle between normal and alignment modes
+    - Coordinate display of transparent polygons and aligned models
+
+14. **Task T2**: Add visual helpers
+    - Coordinate grid overlay
+    - Bounding box visualization for both model and polygon
+    - Distance measurements between corresponding points
+
+### Phase 6: Integration and Testing
+**Ensure the system works end-to-end**
+
+15. **Task I1**: Integrate alignment tool into main application
+    - Add mode switching mechanism
+    - Persist alignment data between sessions
+    - Handle multiple models and buildings
+
+16. **Task I2**: Comprehensive testing
+    - Test alignment precision and accuracy
+    - Verify data persistence
+    - Performance testing with multiple models
+
+## Technical Considerations
+
+### Data Flow
+- Alignment changes → API call → State update → Visual refresh
+- Real-time preview with debounced save operations
+
+### User Experience
+- Intuitive controls for non-technical users
+- Visual feedback for all interactions
+- Undo/redo capabilities for alignment adjustments
+
+### Performance
+- Efficient re-rendering during transformations
+- Optimized polygon rendering with transparency
+- Lazy loading of alignment data
 
 ## Success Criteria
-- ✅ Frontend renders 3D buildings without errors
-- ✅ All coordinate transformations work correctly
-- ✅ TypeScript types are consistent across project
-- ✅ API responses match frontend expectations
-- ✅ No data loss or coordinate corruption
+- Models can be precisely aligned with their corresponding polygons
+- Alignment data persists between sessions
+- Users can easily switch between normal and alignment modes
+- System handles multiple buildings and models efficiently
+- Visual feedback clearly shows alignment progress
 
-## Notes
-- Each task should be completed and tested before moving to the next
-- Coordinate format should be standardized as `{x: number, z: number}` everywhere
-- Maintain data integrity during transitions
-- Test each change with the visualization to ensure it works
+## Future Enhancements
+- Batch alignment for multiple models
+- Import/export of alignment presets
+- Automated alignment suggestions based on polygon matching
+- Advanced transformation controls (rotation, skew)

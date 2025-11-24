@@ -21,8 +21,6 @@ const modelsCache = modelsData.reduce((acc, item) => {
   return acc;
 }, {});
 
-console.log(modelsCache);
-
 // Function to calculate distance between two points
 function calculateDistance(point1, point2) {
   const dx = point1.x - point2.x;
@@ -96,12 +94,18 @@ fastify.put(
                 properties: {
                   address: { type: ["string", "null"] },
                   height: { type: "number" },
+                  modelUrl: { type: ["string", "null"] },
                   nodes: {
                     type: "array",
                     items: {
                       ...positionScheme,
                       required: ["x", "z"],
                     },
+                  },
+                  position: {
+                    ...positionScheme,
+                    type: ["object", "null"],
+                    required: ["x", "z"],
                   },
                 },
               },
@@ -136,12 +140,17 @@ fastify.put(
               "Found model " + modelId + " for polygon " + polygon.id,
             );
 
-            return {
+            const importedModel = {
               ...polygon,
               nodes: [],
+              position: polygon.nodes[0],
               modelId,
               modelUrl: modelsData.find((d) => d.modelId === modelId).modelUrl,
             };
+
+            console.log({ importedModel });
+
+            return importedModel;
           }
           return null;
         }
@@ -165,10 +174,12 @@ fastify.put(
 
     // Format response according to specification
     const responseBuildings = filteredBuildings.map(
-      ({ address, height, nodes }) => ({
+      ({ address, height, nodes, modelUrl, position }) => ({
         address,
         height,
         nodes,
+        modelUrl,
+        position,
       }),
     );
 

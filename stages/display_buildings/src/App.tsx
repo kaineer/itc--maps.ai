@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { ControlsInfo } from "./components/shared/ui/ControlsInfo";
 import { Ground } from "./components/static/Ground";
 import { Lighting } from "./components/static/Lighting";
-import { BuildingMesh } from "./components/building/ui/BuildingMesh";
+import { RenderBuilding } from "./components/building/ui/RenderBuilding";
 
 interface BuildingNode {
   x: number;
@@ -102,7 +102,7 @@ const App: React.FC = () => {
 
         {/* Buildings */}
         {buildings.map((building, index) => (
-          <BuildingMesh key={index} building={building} />
+          <RenderBuilding key={index} building={building} />
         ))}
 
         {/* ITC Center Marker */}
