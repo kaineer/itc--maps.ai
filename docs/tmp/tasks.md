@@ -23,12 +23,12 @@ Create a system for aligning 3D models with their corresponding building polygon
 ### Phase 1.5: Stage Components
 **Create main scene components for different display modes**
 
-4. **Task S1**: Create `ViewStage` component
+4. **Task S1**: ✅ Create `ViewStage` component
    - Main component for normal viewing mode
    - Displays solid polygons and models
    - Located in `stage/ui/ViewStage.tsx`
 
-5. **Task S2**: Create `AlignmentStage` component
+5. **Task S2**: ✅ Create `AlignmentStage` component
    - Main component for model alignment mode
    - Displays transparent polygons and aligned models
    - Located in `stage/ui/AlignmentStage.tsx`
