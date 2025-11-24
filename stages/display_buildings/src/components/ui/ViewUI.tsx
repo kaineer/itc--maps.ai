@@ -10,17 +10,7 @@ import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { CameraController } from "./CameraController";
 
-interface BuildingNode {
-  x: number;
-  z: number;
-}
-
-interface Building {
-  address: string | null;
-  nodes: BuildingNode[];
-  height: number;
-  position?: BuildingNode;
-}
+import { Building, BuildingNode } from "../../types/types";
 
 interface BuildingsResponse {
   buildings: Building[];

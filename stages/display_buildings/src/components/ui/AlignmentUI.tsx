@@ -5,13 +5,7 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { AlignmentStage } from "../stage/ui/AlignmentStage";
 
-interface Building {
-  address: string | null;
-  nodes: Array<{ x: number; z: number }>;
-  height: number;
-  position?: { x: number; z: number };
-  modelUrl?: string;
-}
+import { Building } from "../../types/types";
 
 interface Props {
   buildings: Building[];
@@ -23,16 +17,16 @@ const ITC_CENTER = { x: -326.31, z: 668.04 };
 export const AlignmentUI: React.FC<Props> = ({ buildings, onModeChange }) => {
   return (
     <>
-      <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1000 }}>
+      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1000 }}>
         <button
           onClick={onModeChange}
           style={{
-            padding: '8px 16px',
-            backgroundColor: '#28a745',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
+            padding: "8px 16px",
+            backgroundColor: "#28a745",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
           }}
         >
           Switch to View Mode
