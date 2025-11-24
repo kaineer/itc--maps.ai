@@ -1,5 +1,3 @@
-import { Building } from "../types/types";
-
 const BACKEND_BASE_URL = "http://localhost:5000";
 
 /**
@@ -12,10 +10,12 @@ const BACKEND_BASE_URL = "http://localhost:5000";
  */
 export async function fetchBackend(
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
 ): Promise<Response> {
   // Normalize endpoint - ensure it starts with a slash
-  const normalizedEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const normalizedEndpoint = endpoint.startsWith("/")
+    ? endpoint
+    : `/${endpoint}`;
   const url = `${BACKEND_BASE_URL}${normalizedEndpoint}`;
 
   return fetch(url, {
@@ -33,7 +33,7 @@ export async function fetchBackend(
 export async function putBackend<T = any>(
   endpoint: string,
   body: any,
-  options: Omit<RequestInit, "method" | "body"> = {}
+  options: Omit<RequestInit, "method" | "body"> = {},
 ): Promise<T> {
   const response = await fetchBackend(endpoint, {
     method: "PUT",
@@ -53,7 +53,7 @@ export async function putBackend<T = any>(
  */
 export async function getBackend<T = any>(
   endpoint: string,
-  options: Omit<RequestInit, "method"> = {}
+  options: Omit<RequestInit, "method"> = {},
 ): Promise<T> {
   const response = await fetchBackend(endpoint, {
     method: "GET",
@@ -73,7 +73,7 @@ export async function getBackend<T = any>(
 export async function postBackend<T = any>(
   endpoint: string,
   body: any,
-  options: Omit<RequestInit, "method" | "body"> = {}
+  options: Omit<RequestInit, "method" | "body"> = {},
 ): Promise<T> {
   const response = await fetchBackend(endpoint, {
     method: "POST",
@@ -93,7 +93,7 @@ export async function postBackend<T = any>(
  */
 export async function deleteBackend<T = any>(
   endpoint: string,
-  options: Omit<RequestInit, "method"> = {}
+  options: Omit<RequestInit, "method"> = {},
 ): Promise<T> {
   const response = await fetchBackend(endpoint, {
     method: "DELETE",
@@ -105,9 +105,4 @@ export async function deleteBackend<T = any>(
   }
 
   return response.json();
-}
-
-// Type definitions for common backend responses
-export interface BuildingsResponse {
-  buildings: Building[];
 }
