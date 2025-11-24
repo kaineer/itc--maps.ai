@@ -7,12 +7,19 @@ interface BuildingsResponse {
 }
 
 interface BuildingsState {
+  // List of all loaded buildings
   buildings: Building[];
+  // ID of currently selected building (for alignment/model setup)
   selectedBuildingId: string | null;
+  // Loading state for async operations
   loading: boolean;
+  // Error message if any operation fails
   error: string | null;
+  // Active filters for building list
   filters: {
+    // Filter by model presence: true=has model, false=no model, null=show all
     hasModel: boolean | null;
+    // Search query for filtering by address
     searchQuery: string;
   };
 }
@@ -23,12 +30,13 @@ const initialState: BuildingsState = {
   loading: false,
   error: null,
   filters: {
-    hasModel: null,
-    searchQuery: "",
+    hasModel: null, // Show all buildings by default
+    searchQuery: "", // No search filter by default
   },
 };
 
-// Async thunk for fetching buildings
+// Async thunk for fetching buildings from backend API
+// Fetches buildings within specified distance from given position
 export const fetchBuildings = createAsyncThunk(
   "buildings/fetchBuildings",
   async ({
@@ -50,19 +58,24 @@ export const buildingsSlice = createSlice({
   name: "buildings",
   initialState,
   reducers: {
+    // Select or deselect a building for operations like alignment or model setup
     setSelectedBuilding: (state, action: PayloadAction<string | null>) => {
       state.selectedBuildingId = action.payload;
     },
+    // Set search query for filtering buildings by address
     setSearchQuery: (state, action: PayloadAction<string>) => {
       state.filters.searchQuery = action.payload;
     },
+    // Filter buildings by model presence (true = has model, false = no model, null = show all)
     setHasModelFilter: (state, action: PayloadAction<boolean | null>) => {
       state.filters.hasModel = action.payload;
     },
+    // Clear all active filters (search query and model filter)
     clearFilters: (state) => {
       state.filters.searchQuery = "";
       state.filters.hasModel = null;
     },
+    // Reset entire buildings state to initial values
     resetBuildings: (state) => {
       state.buildings = [];
       state.selectedBuildingId = null;
@@ -74,25 +87,34 @@ export const buildingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle building fetch request start
       .addCase(fetchBuildings.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
+      // Handle successful building fetch
       .addCase(fetchBuildings.fulfilled, (state, action) => {
         state.loading = false;
         state.buildings = action.payload;
       })
+      // Handle building fetch failure
       .addCase(fetchBuildings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch buildings";
       });
   },
   selectors: {
+    // Get all buildings (unfiltered)
     getBuildings: (state) => state.buildings,
+    // Get currently selected building ID
     getSelectedBuildingId: (state) => state.selectedBuildingId,
+    // Get loading state for building operations
     getLoading: (state) => state.loading,
+    // Get error message if any
     getError: (state) => state.error,
+    // Get current filter settings
     getFilters: (state) => state.filters,
+    // Get buildings filtered by current search query and model presence
     getFilteredBuildings: (state) => {
       let filtered = state.buildings;
 
@@ -113,6 +135,7 @@ export const buildingsSlice = createSlice({
 
       return filtered;
     },
+    // Get the currently selected building object by ID
     getSelectedBuilding: (state) => {
       if (!state.selectedBuildingId) return null;
 
