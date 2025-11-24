@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
+
+const defaultUIMode = "view";
 
 export type UIMode = "view" | "alignment" | "modelSetup";
 
@@ -7,24 +9,27 @@ interface UIState {
 }
 
 const initialState: UIState = {
-  currentMode: "view",
+  currentMode: defaultUIMode,
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setUIMode: (state, action: PayloadAction<UIMode>) => {
-      state.currentMode = action.payload;
-    },
-    resetUI: (state) => {
+    selectViewMode: (state) => {
       state.currentMode = "view";
     },
+    selectAligmentMode: (state) => {
+      state.currentMode = "alignment";
+    },
+    selectModelSetupMode: (state) => {
+      state.currentMode = "modelSetup";
+    },
+    resetUI: (state) => {
+      state.currentMode = defaultUIMode;
+    },
+  },
+  selectors: {
+    getUIMode: (state) => state.currentMode,
   },
 });
-
-export const { setUIMode, resetUI } = uiSlice.actions;
-
-export const selectUIMode = (state: { ui: UIState }) => state.ui.currentMode;
-
-export default uiSlice.reducer;

@@ -1,14 +1,14 @@
 import React from "react";
-import { Provider, useSelector, useDispatch } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { setupStore } from "./store";
 import { ViewUI } from "./components/ui/ViewUI";
-import { selectUIMode, setUIMode } from "./store/uiSlice";
+import { uiSlice } from "./store/uiSlice";
 
 const store = setupStore();
 
 const AppContent: React.FC = () => {
-  const currentMode = useSelector(selectUIMode);
-  const dispatch = useDispatch();
+  const { getUIMode } = uiSlice.selectors;
+  const currentMode = useSelector(getUIMode);
 
   return (
     <>
