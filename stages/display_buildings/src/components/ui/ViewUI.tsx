@@ -24,13 +24,11 @@ interface BuildingsResponse {
   buildings: Building[];
 }
 
-interface Props {
-  onModeChange?: () => void;
-}
+interface Props {}
 
 const ITC_CENTER = { x: -326.31, z: 668.04 };
 
-export const ViewUI: React.FC<Props> = ({ onModeChange }) => {
+export const ViewUI: React.FC<Props> = () => {
   const [buildings, setBuildings] = useState<Building[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -90,22 +88,6 @@ export const ViewUI: React.FC<Props> = ({ onModeChange }) => {
   return (
     <>
       <ControlsInfo />
-
-      <div style={{ position: 'absolute', top: 10, right: 10, zIndex: 1000 }}>
-        <button
-          onClick={onModeChange}
-          style={{
-            padding: '8px 16px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '4px',
-            cursor: 'pointer'
-          }}
-        >
-          Switch to Alignment Mode
-        </button>
-      </div>
 
       <Canvas
         camera={{
