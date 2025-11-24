@@ -1,38 +1,30 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
+export type UIMode = "view" | "alignment" | "modelSetup";
+
 interface UIState {
-  alignmentBuildingId: string | null;
-  isControlsVisible: boolean;
+  currentMode: UIMode;
 }
 
 const initialState: UIState = {
-  alignmentBuildingId: null,
-  isControlsVisible: true,
+  currentMode: "view",
 };
 
 export const uiSlice = createSlice({
   name: "ui",
   initialState,
   reducers: {
-    setAlignmentBuilding: (state, action: PayloadAction<string | null>) => {
-      state.alignmentBuildingId = action.payload;
-    },
-    toggleControls: (state) => {
-      state.isControlsVisible = !state.isControlsVisible;
+    setUIMode: (state, action: PayloadAction<UIMode>) => {
+      state.currentMode = action.payload;
     },
     resetUI: (state) => {
-      state.alignmentBuildingId = null;
-      state.isControlsVisible = true;
+      state.currentMode = "view";
     },
   },
 });
 
-export const { setAlignmentBuilding, toggleControls, resetUI } =
-  uiSlice.actions;
+export const { setUIMode, resetUI } = uiSlice.actions;
 
-export const selectAlignmentBuildingId = (state: { ui: UIState }) =>
-  state.ui.alignmentBuildingId;
-export const selectIsControlsVisible = (state: { ui: UIState }) =>
-  state.ui.isControlsVisible;
+export const selectUIMode = (state: { ui: UIState }) => state.ui.currentMode;
 
 export default uiSlice.reducer;

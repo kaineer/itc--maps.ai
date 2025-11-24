@@ -29,12 +29,22 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
    - Track current alignment state for each building
    - Handle alignment updates and resets
 
-5. **Task S2**: Create `uiSlice`
-   - Manage modal/dialog visibility states
-   - Track current active mode (view/alignment)
-   - Handle loading states and notifications
+5. **Task S2**: Create `modelSetupSlice`
+   - Manage Model Setup Mode state
+   - Track uploaded model file and metadata
+   - Store selected building polygons for model association
+   - Handle address assignment and model validation
 
-6. **Task S3**: Create `buildingsSlice`
+6. **Task S3**: Create `uiSlice`
+   - Track current active mode (view/alignment/modelSetup)
+   - Handle basic UI state management
+
+7. **Task S4**: Create `notificationsSlice`
+   - Manage notification messages and toasts
+   - Handle notification visibility and timing
+   - Support different notification types (success, error, warning)
+
+8. **Task S5**: Create `buildingsSlice`
    - Cache building data from API
    - Handle building selection state
    - Manage building filters and search
@@ -42,25 +52,36 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
 ### Phase 3: Integration with Existing Components
 **Migrate component state to Redux where appropriate**
 
-7. **Task I1**: Update alignment components
-   - Connect `AlignmentStage` to alignmentSlice
-   - Update transformation controls to dispatch actions
-   - Handle real-time state synchronization
+9. **Task I1**: Create `ModelSetupUI` component
+   - File upload interface for 3D models
+   - Address selection/input form
+   - Polygon selection interface with visual highlighting
+   - Basic model positioning controls
 
-8. **Task I2**: Update UI components
-   - Connect modal/dialog components to uiSlice
-   - Implement mode switching functionality
-   - Add loading states for API calls
+10. **Task I2**: Update alignment components
+    - Connect `AlignmentStage` to alignmentSlice
+    - Update transformation controls to dispatch actions
+    - Handle real-time state synchronization
+
+11. **Task I3**: Update UI components
+    - Implement mode switching functionality using uiSlice
+    - Add notification components using notificationsSlice
+    - Handle loading states for API calls
 
 ### Phase 4: API Integration and Async Logic
 **Add middleware for API calls and async operations**
 
-9. **Task A1**: Create API service layer
-   - Define API endpoints for alignment data
-   - Create async thunks for alignment operations
-   - Handle error states and retry logic
+12. **Task A1**: Create API service layer
+    - Define API endpoints for alignment data
+    - Create async thunks for alignment operations
+    - Handle error states and retry logic
 
-10. **Task A2**: Integrate with backend alignment API
+13. **Task A2**: Create model upload API integration
+    - File upload endpoints for 3D models
+    - Model validation and processing
+    - Model-polygon association endpoints
+
+14. **Task A3**: Integrate with backend alignment API
     - Connect alignmentSlice to backend endpoints
     - Implement auto-save functionality
     - Handle offline/online state
@@ -68,12 +89,17 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
 ### Phase 5: Advanced Features
 **Add sophisticated state management features**
 
-11. **Task F1**: Implement undo/redo functionality
+15. **Task F1**: Implement Model Setup Mode workflow
+    - Seamless transition: View → Model Setup → Alignment → View
+    - Context-aware mode activation (building selection)
+    - Progress tracking through setup steps
+
+16. **Task F2**: Implement undo/redo functionality
     - Add history tracking for alignment changes
     - Create undo/redo actions
     - Limit history size for performance
 
-12. **Task F2**: Add persistence
+17. **Task F3**: Add persistence
     - Save alignment state to localStorage
     - Restore state on app reload
     - Handle version migration
@@ -84,11 +110,26 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
 ```typescript
 interface RootState {
   alignment: AlignmentState;
+  modelSetup: ModelSetupState;
   ui: UIState;
+  notifications: NotificationsState;
   buildings: BuildingsState;
   // Future: models: ModelsState;
 }
 ```
+
+### Model Setup Mode Flow
+1. **Activation**: Click on building or "Add Model" button
+2. **Model Upload**: Drag & drop or file selection (.fbx, .gltf)
+3. **Address Assignment**: Select existing address or create new
+4. **Polygon Selection**: Choose one or multiple corresponding polygons
+5. **Basic Positioning**: Rough alignment with polygons
+6. **Transition**: Move to Alignment Mode for precise adjustments
+
+### Visual Distinctions Between Modes
+- **View Mode**: Solid polygons, no setup UI
+- **Model Setup Mode**: Transparent polygons + uploaded model + setup panel
+- **Alignment Mode**: Transparent polygons + model + precision controls
 
 ### Key Dependencies
 - `@reduxjs/toolkit` - Core Redux Toolkit
@@ -99,6 +140,13 @@ interface RootState {
 - Start with new features using Redux
 - Gradually migrate existing useState where beneficial
 - Maintain backward compatibility during transition
+
+### User Experience Considerations
+- Clear visual feedback for mode transitions
+- Intuitive polygon selection with highlighting
+- Progress indicators during model upload
+- Contextual help for each setup step
+- Easy cancellation/rollback at any stage
 
 ## Success Criteria
 - Centralized state management for alignment data
