@@ -177,9 +177,10 @@ export function calculateTopCameraPosition(
   ];
 
   // Target is the center of the model (looking straight down)
+  // Target is horizontally aligned with camera position (looking straight ahead)
   const target: [number, number, number] = [
     modelCenter.x,
-    modelCenter.y,
+    EYE_LEVEL_HEIGHT, // Same height as camera for horizontal view
     modelCenter.z,
   ];
 
@@ -220,7 +221,7 @@ export function calculatePerspectiveCameraPosition(
   // Target is the center of the model
   const target: [number, number, number] = [
     modelCenter.x,
-    modelCenter.y,
+    EYE_LEVEL_HEIGHT,
     modelCenter.z,
   ];
 
