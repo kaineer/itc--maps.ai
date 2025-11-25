@@ -4,14 +4,15 @@ import { Box3, Vector3 } from "three";
 
 import { Building } from "../types/types";
 
-// TODO: Define proper ModelData interface when available
+// Model data loaded via useFBX() from @react-three/drei
 export interface ModelData {
   id: string;
-  geometry: any; // Three.js geometry
+  // The loaded model object from useFBX() - typically a Group containing meshes
+  modelObject: any; // Three.js Group or Object3D
   metadata: {
-    boundingBox?: BoundingBox;
     fileFormat: string;
     vertexCount: number;
+    boundingBox?: Box3; // Can be pre-calculated and cached
   };
 }
 
@@ -70,8 +71,13 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
  * @returns Model bounding box
  */
 export function calculateModelBoundingBox(model: ModelData): Box3 {
-  // TODO: Extract actual bounding box from Three.js geometry
-  // For now, return a default bounding box
+  if (model.modelObject) {
+    // Use Three.js setFromObject to calculate bounding box from the loaded model
+    const bbox = new Box3().setFromObject(model.modelObject);
+    return bbox;
+  }
+
+  // Fallback: return a default bounding box
   return new Box3(new Vector3(-5, 0, -5), new Vector3(5, 10, 5));
 }
 
