@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ModelData } from "../utils/modelTransform";
+import { Building } from "../types/types";
 
 export type CameraView = "perspective" | "top";
 
@@ -31,15 +33,31 @@ export interface CameraState {
 // }
 
 export interface AlignmentState {
-  // TODO: Implement based on alignment scenarios documentation
-  // Basic camera state for now
+  // Camera management
   currentCameraView: CameraView;
   cameraStates: Record<CameraView, CameraState>;
 
-  // TODO: Add model and polygon data based on scenarios
-  // selectedPolygons: Polygon[];
-  // currentModel: ModelData | null;
-  // modelTransform: ModelTransform;
+  // Alignment process state
+  selectedPolygons: Building[];
+  currentModel: ModelData | null;
+  modelTransform: {
+    position: [number, number, number];
+    rotation: [number, number, number];
+    scale: [number, number, number];
+  };
+
+  // Alignment tools and settings
+  snapToPolygon: boolean;
+  showGrid: boolean;
+  showAxes: boolean;
+
+  // Step configuration
+  positionStep: number; // meters (0.5 to 20, exponential 1.5x)
+  rotationStep: number; // degrees (1 to 90, grid: 1, 2, 5, 10, 15, 30, 60, 90)
+
+  // Process state
+  isAligning: boolean;
+  alignmentProgress: number;
 }
 
 // Default camera configurations
@@ -62,14 +80,27 @@ const initialState: AlignmentState = {
     top: defaultTopCamera,
   },
 
-  // TODO: Initialize model and polygon data based on scenarios
-  // selectedPolygons: [],
-  // currentModel: null,
-  // modelTransform: {
-  //   position: [0, 0, 0],
-  //   rotation: [0, 0, 0],
-  //   scale: [1, 1, 1],
-  // },
+  // Alignment process state
+  selectedPolygons: [],
+  currentModel: null,
+  modelTransform: {
+    position: [0, 0, 0],
+    rotation: [0, 0, 0],
+    scale: [1, 1, 1],
+  },
+
+  // Alignment tools and settings
+  snapToPolygon: true,
+  showGrid: true,
+  showAxes: true,
+
+  // Step configuration
+  positionStep: 1, // meters
+  rotationStep: 15, // degrees
+
+  // Process state
+  isAligning: false,
+  alignmentProgress: 0,
 };
 
 export const alignmentSlice = createSlice({
@@ -142,32 +173,113 @@ export const alignmentSlice = createSlice({
     // Reset everything
     resetAlignment: () => initialState,
 
-    // TODO: Add scenario-specific actions
-    // autoPositionModel: (state) => {
-    //   // TODO: Implement automatic positioning logic from scenarios
-    // },
-    //
-    // moveModel: (state, action: PayloadAction<{ x: number; z: number }>) => {
-    //   // TODO: Implement model translation (Shift+WASD)
-    // },
-    //
-    // rotateModel: (state, action: PayloadAction<number>) => {
-    //   // TODO: Implement model rotation (Alt+A/D)
-    // },
+    // Model selection and polygon management
+    selectModelForAlignment: (state, action: PayloadAction<ModelData>) => {
+      // TODO: Implement model selection logic
+    },
+
+    addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
+      // TODO: Implement polygon addition logic
+    },
+
+    resetAlignmentPolygons: (state) => {
+      // TODO: Implement polygon reset logic
+    },
+
+    // Alignment process control
+    startAlignmentProcess: (state) => {
+      // TODO: Check that polygons are added and model is selected with non-zero bounding box
+      // TODO: Implement alignment process start logic
+    },
+
+    // Model transformation actions
+    moveModelInDirection: (
+      state,
+      action: PayloadAction<"north" | "south" | "east" | "west">,
+    ) => {
+      // TODO: Implement model movement in specified direction using positionStep
+    },
+
+    increasePositionStep: (state) => {
+      // TODO: Implement position step increase (exponential 1.5x, max 20m)
+    },
+
+    decreasePositionStep: (state) => {
+      // TODO: Implement position step decrease (exponential 1.5x, min 0.5m)
+    },
+
+    rotateModelAroundY: (
+      state,
+      action: PayloadAction<"clockwise" | "counterclockwise">,
+    ) => {
+      // TODO: Implement model rotation around Y axis using rotationStep
+    },
+
+    increaseRotationStep: (state) => {
+      // TODO: Implement rotation step increase (grid: 1, 2, 5, 10, 15, 30, 60, 90)
+    },
+
+    decreaseRotationStep: (state) => {
+      // TODO: Implement rotation step decrease (grid: 1, 2, 5, 10, 15, 30, 60, 90)
+    },
   },
 
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
 
-    // TODO: Add selectors for model and polygon data based on scenarios
-    // getSelectedModel: (state) => state.currentModel,
-    // getSelectedPolygons: (state) => state.selectedPolygons,
-    // getModelTransform: (state) => state.modelTransform,
-    // getAlignmentTools: (state) => ({
-    //   snapToPolygon: state.snapToPolygon,
-    //   showGrid: state.showGrid,
-    //   showAxes: state.showAxes,
-    // }),
+    // Model and polygon selectors
+    getSelectedModel: (state) => state.currentModel,
+    getSelectedPolygons: (state) => state.selectedPolygons,
+    getModelTransform: (state) => state.modelTransform,
+
+    // Alignment tools selectors
+    getAlignmentTools: (state) => ({
+      snapToPolygon: state.snapToPolygon,
+      showGrid: state.showGrid,
+      showAxes: state.showAxes,
+    }),
+
+    // Step configuration selectors
+    getPositionStep: (state) => state.positionStep,
+    getRotationStep: (state) => state.rotationStep,
+
+    // Process state selectors
+    getAlignmentProgress: (state) => ({
+      isAligning: state.isAligning,
+      progress: state.alignmentProgress,
+    }),
   },
 });
+
+export const {
+  setCameraView,
+  updateCameraState,
+  resetCamera,
+  resetAllCameras,
+  resetAlignment,
+  selectModelForAlignment,
+  addPolygonForAlignment,
+  resetAlignmentPolygons,
+  startAlignmentProcess,
+  moveModelInDirection,
+  increasePositionStep,
+  decreasePositionStep,
+  rotateModelAroundY,
+  increaseRotationStep,
+  decreaseRotationStep,
+} = alignmentSlice.actions;
+
+export const {
+  getCurrentCamera,
+  getCurrentCameraView,
+  getSelectedModel,
+  getSelectedPolygons,
+  getModelTransform,
+  getAlignmentTools,
+  getPositionStep,
+  getRotationStep,
+  getAlignmentProgress,
+} = alignmentSlice.selectors;
+
+export default alignmentSlice.reducer;
