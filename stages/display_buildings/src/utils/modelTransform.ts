@@ -125,12 +125,12 @@ export function calculateInitialModelPosition(
  * @returns Top camera state
  */
 export function calculateTopCameraPosition(
-  modelCenter: [number, number, number],
+  modelCenter: Vector3,
   modelHeight: number = 20,
 ): CameraState {
   return {
-    position: [modelCenter[0], modelHeight, modelCenter[2]],
-    target: [modelCenter[0], 0, modelCenter[2]], // Look at ground level
+    position: [modelCenter.x, modelHeight, modelCenter.z],
+    target: [modelCenter.x, 0, modelCenter.z], // Look at ground level
     fov: 60,
     isOrthographic: true,
     orthographicSize: Math.max(modelHeight * 1.5, 30), // Ensure good view coverage
@@ -144,12 +144,12 @@ export function calculateTopCameraPosition(
  * @returns Perspective camera state
  */
 export function calculatePerspectiveCameraPosition(
-  modelCenter: [number, number, number],
+  modelCenter: Vector3,
   distance: number = 30,
 ): CameraState {
   return {
-    position: [modelCenter[0], 1.8, modelCenter[2] - distance], // North of model at eye level
-    target: modelCenter, // Always look at model center
+    position: [modelCenter.x, 1.8, modelCenter.z - distance], // North of model at eye level
+    target: [modelCenter.x, modelCenter.y, modelCenter.z], // Always look at model center
     fov: 60,
     isOrthographic: false,
   };
@@ -175,14 +175,14 @@ export function calculateTopCameraTarget(
  * @returns Orbital camera position
  */
 export function calculateOrbitalCameraPosition(
-  modelCenter: [number, number, number],
+  modelCenter: Vector3,
   angleRadians: number,
   distance: number,
   height: number = 1.8,
 ): [number, number, number] {
   return [
-    modelCenter[0] + Math.sin(angleRadians) * distance,
+    modelCenter.x + Math.sin(angleRadians) * distance,
     height,
-    modelCenter[2] + Math.cos(angleRadians) * distance,
+    modelCenter.z + Math.cos(angleRadians) * distance,
   ];
 }
