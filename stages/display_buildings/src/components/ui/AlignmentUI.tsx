@@ -1,9 +1,13 @@
 import React from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { useSelector } from "react-redux";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { AlignmentStage } from "../stage/ui/AlignmentStage";
+import { CameraControls } from "./CameraControls";
+import { getCurrentCamera } from "../../store/alignmentSlice";
+import { RootState } from "../../store";
 
 import { Building } from "../../types/types";
 
@@ -12,9 +16,11 @@ interface Props {
   onModeChange?: () => void;
 }
 
-const ITC_CENTER = { x: -326.31, z: 668.04 };
-
 export const AlignmentUI: React.FC<Props> = ({ buildings, onModeChange }) => {
+  const currentCamera = useSelector((state: RootState) =>
+    getCurrentCamera(state),
+  );
+
   return (
     <>
       <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1000 }}>
@@ -33,10 +39,12 @@ export const AlignmentUI: React.FC<Props> = ({ buildings, onModeChange }) => {
         </button>
       </div>
 
+      <CameraControls />
+
       <Canvas
         camera={{
-          position: [ITC_CENTER.x, 1.8, ITC_CENTER.z + 10],
-          fov: 60,
+          position: currentCamera.position,
+          fov: currentCamera.fov,
         }}
         shadows
       >
@@ -57,7 +65,7 @@ export const AlignmentUI: React.FC<Props> = ({ buildings, onModeChange }) => {
           enablePan={true}
           enableZoom={true}
           enableRotate={true}
-          target={[ITC_CENTER.x, 1.8, ITC_CENTER.z]}
+          target={currentCamera.target}
         />
       </Canvas>
     </>

@@ -24,10 +24,12 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
 ### Phase 2: Core Slices Design
 **Design and implement essential slices for model alignment**
 
-4. **Task S1**: Create `alignmentSlice`
+4. **Task S1**: ✅ Create `alignmentSlice`
    - Store model transformation data (position, rotation, scale)
    - Track current alignment state for each building
    - Handle alignment updates and resets
+   - Camera management with multiple views (perspective, top, front, side)
+   - Alignment tools state (snap to polygon, grid, axes)
 
 5. **Task S2**: Create `modelSetupSlice`
    - Manage Model Setup Mode state
@@ -44,7 +46,7 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
    - Handle notification visibility and timing
    - Support different notification types (success, error, warning)
 
-8. **Task S5**: Create `buildingsSlice`
+8. **Task S5**: ✅ Create `buildingsSlice`
    - Cache building data from API
    - Handle building selection state
    - Manage building filters and search
@@ -52,21 +54,34 @@ Add Redux Toolkit for centralized state management to handle model alignment tra
 ### Phase 3: Integration with Existing Components
 **Migrate component state to Redux where appropriate**
 
-9. **Task I1**: Create `ModelSetupUI` component
-   - File upload interface for 3D models
-   - Address selection/input form
-   - Polygon selection interface with visual highlighting
-   - Basic model positioning controls
+9. **Task I1**: ✅ Create `CameraControls` component
+    - Camera view selection (perspective, top, front, side)
+    - Camera reset functionality
+    - Real-time camera state display
+    - Integration with AlignmentUI
 
-10. **Task I2**: Update alignment components
+10. **Task I2**: ✅ Update `AlignmentUI` component
+    - Connect to alignmentSlice for camera management
+    - Use Redux state for camera position and target
+    - Real-time synchronization with camera controls
+
+11. **Task I3**: Create `ModelSetupUI` component
+    - File upload interface for 3D models
+    - Address selection/input form
+    - Polygon selection interface with visual highlighting
+    - Basic model positioning controls
+
+12. **Task I4**: Update alignment components
     - Connect `AlignmentStage` to alignmentSlice
     - Update transformation controls to dispatch actions
     - Handle real-time state synchronization
 
-11. **Task I3**: Update UI components
+13. **Task I5**: Update UI components
     - Implement mode switching functionality using uiSlice
     - Add notification components using notificationsSlice
     - Handle loading states for API calls
+
+
 
 ### Phase 4: API Integration and Async Logic
 **Add middleware for API calls and async operations**
