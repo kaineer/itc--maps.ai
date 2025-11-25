@@ -21,7 +21,8 @@ This document describes the detailed user scenarios and technical workflows for 
    - **Polygon Bounding Box**: Calculate combined bounding box of selected polygons
      ```typescript
      // Uses Three.js Box3 class for bounding box calculations
-     // Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize()
+     // Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize(), union()
+     // The union() method efficiently combines multiple bounding boxes
      ```
    - **Model Bounding Box**: Extract bounding box from 3D model geometry
    - **Scale Calculation**: Compute optimal scale to match model to polygon footprint
@@ -172,6 +173,7 @@ interface CameraState {
 ### Utility Functions (`src/utils/modelTransform.ts`)
 ```typescript
 // Bounding box calculations (using Three.js Box3)
+// calculatePolygonBoundingBox uses Box3.union() to efficiently combine multiple polygon bounding boxes
 export function calculatePolygonBoundingBox(polygons: Polygon[]): Box3;
 export function calculateModelBoundingBox(model: ModelData): Box3;
 

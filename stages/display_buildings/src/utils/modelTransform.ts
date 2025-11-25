@@ -44,7 +44,7 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
     return bbox;
   }
 
-  // Extract all vertices from all polygons and expand the Box3
+  // Calculate individual bounding boxes for each polygon and union them
   polygons.forEach((polygon) => {
     // TODO: Extract actual vertices from polygon geometry
     // For now, use position as center point
@@ -52,15 +52,13 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
     // Create a simple bounding box around the center
     const size = 10; // Default building size
 
-    const minPoint = new Vector3(center[0] - size / 2, 0, center[2] - size / 2);
-    const maxPoint = new Vector3(
-      center[0] + size / 2,
-      10, // Default building height
-      center[2] + size / 2,
+    const polygonBBox = new Box3(
+      new Vector3(center[0] - size / 2, 0, center[2] - size / 2),
+      new Vector3(center[0] + size / 2, 10, center[2] + size / 2),
     );
 
-    bbox.expandByPoint(minPoint);
-    bbox.expandByPoint(maxPoint);
+    // Union this polygon's bounding box with the combined bounding box
+    bbox.union(polygonBBox);
   });
 
   return bbox;
