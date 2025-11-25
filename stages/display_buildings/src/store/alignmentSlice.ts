@@ -13,32 +13,8 @@ export interface CameraState {
 type ModelRotation = number;
 
 // Rotation step configuration
-const ROTATION_STEPS = [1, 2, 5, 10, 15, 30, 60, 90] as const;
-type RotationStep = (typeof ROTATION_STEPS)[number];
-
-// TODO: Define proper interfaces based on alignment scenarios
-// interface AlignmentState {
-//   // Camera management
-//   currentCameraView: CameraView;
-//   cameraStates: Record<CameraView, CameraState>;
-//
-//   // Model transformation
-//   selectedModelId: string | null;
-//   modelPosition: [number, number, number];
-//   modelRotation: [number, number, number];
-//   modelScale: [number, number, number];
-//
-//   // Alignment tools
-//   snapToPolygon: boolean;
-//   showGrid: boolean;
-//   showAxes: boolean;
-//
-//   // Temporary alignment data
-//   isAligning: boolean;
-//   alignmentProgress: number;
-// }
-
-const rotationSteps = [1, 2, 5, 10, 15, 30, 60, 90];
+const rotationSteps = [1, 2, 5, 10, 15, 30, 60, 90] as const;
+type RotationStep = (typeof rotationSteps)[number];
 
 export interface AlignmentState {
   // Camera management
@@ -265,11 +241,8 @@ export const alignmentSlice = createSlice({
     }),
 
     // Step configuration selectors
-    getRotationStep: (state) => ROTATION_STEPS[state.rotationStepIndex],
-
-    getRotationSteps: () => ROTATION_STEPS,
-
-    getRotationStepIndex: (state) => state.rotationStepIndex,
+    getRotationStep: (state): RotationStep =>
+      rotationSteps[state.rotationStepIndex],
     getScaleStep: (state) => state.scaleStep,
 
     // Process state selectors
