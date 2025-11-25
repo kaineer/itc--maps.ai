@@ -8,25 +8,38 @@ export interface CameraState {
   fov: number;
 }
 
+// TODO: Define proper interfaces based on alignment scenarios
+// interface AlignmentState {
+//   // Camera management
+//   currentCameraView: CameraView;
+//   cameraStates: Record<CameraView, CameraState>;
+//
+//   // Model transformation
+//   selectedModelId: string | null;
+//   modelPosition: [number, number, number];
+//   modelRotation: [number, number, number];
+//   modelScale: [number, number, number];
+//
+//   // Alignment tools
+//   snapToPolygon: boolean;
+//   showGrid: boolean;
+//   showAxes: boolean;
+//
+//   // Temporary alignment data
+//   isAligning: boolean;
+//   alignmentProgress: number;
+// }
+
 export interface AlignmentState {
-  // Camera management
+  // TODO: Implement based on alignment scenarios documentation
+  // Basic camera state for now
   currentCameraView: CameraView;
   cameraStates: Record<CameraView, CameraState>;
 
-  // Model transformation
-  selectedModelId: string | null;
-  modelPosition: [number, number, number];
-  modelRotation: [number, number, number];
-  modelScale: [number, number, number];
-
-  // Alignment tools
-  snapToPolygon: boolean;
-  showGrid: boolean;
-  showAxes: boolean;
-
-  // Temporary alignment data
-  isAligning: boolean;
-  alignmentProgress: number;
+  // TODO: Add model and polygon data based on scenarios
+  // selectedPolygons: Polygon[];
+  // currentModel: ModelData | null;
+  // modelTransform: ModelTransform;
 }
 
 // Default camera configurations
@@ -49,17 +62,14 @@ const initialState: AlignmentState = {
     top: defaultTopCamera,
   },
 
-  selectedModelId: null,
-  modelPosition: [0, 0, 0],
-  modelRotation: [0, 0, 0],
-  modelScale: [1, 1, 1],
-
-  snapToPolygon: true,
-  showGrid: true,
-  showAxes: true,
-
-  isAligning: false,
-  alignmentProgress: 0,
+  // TODO: Initialize model and polygon data based on scenarios
+  // selectedPolygons: [],
+  // currentModel: null,
+  // modelTransform: {
+  //   position: [0, 0, 0],
+  //   rotation: [0, 0, 0],
+  //   scale: [1, 1, 1],
+  // },
 };
 
 export const alignmentSlice = createSlice({
@@ -104,120 +114,60 @@ export const alignmentSlice = createSlice({
       };
     },
 
-    // Model selection and transformation
-    selectModel: (state, action: PayloadAction<string | null>) => {
-      state.selectedModelId = action.payload;
-    },
-
-    setModelPosition: (
-      state,
-      action: PayloadAction<[number, number, number]>,
-    ) => {
-      state.modelPosition = action.payload;
-    },
-
-    setModelRotation: (
-      state,
-      action: PayloadAction<[number, number, number]>,
-    ) => {
-      state.modelRotation = action.payload;
-    },
-
-    setModelScale: (state, action: PayloadAction<[number, number, number]>) => {
-      state.modelScale = action.payload;
-    },
-
-    resetModelTransform: (state) => {
-      state.modelPosition = [0, 0, 0];
-      state.modelRotation = [0, 0, 0];
-      state.modelScale = [1, 1, 1];
-    },
-
-    // Alignment tools
-    toggleSnapToPolygon: (state) => {
-      state.snapToPolygon = !state.snapToPolygon;
-    },
-
-    toggleGrid: (state) => {
-      state.showGrid = !state.showGrid;
-    },
-
-    toggleAxes: (state) => {
-      state.showAxes = !state.showAxes;
-    },
-
-    // Alignment process
-    startAlignment: (state) => {
-      state.isAligning = true;
-      state.alignmentProgress = 0;
-    },
-
-    updateAlignmentProgress: (state, action: PayloadAction<number>) => {
-      state.alignmentProgress = action.payload;
-    },
-
-    completeAlignment: (state) => {
-      state.isAligning = false;
-      state.alignmentProgress = 100;
-    },
-
-    cancelAlignment: (state) => {
-      state.isAligning = false;
-      state.alignmentProgress = 0;
-    },
+    // TODO: Implement model and transformation actions based on scenarios
+    // selectModelAndPolygons: (state, action: PayloadAction<{ model: ModelData; polygons: Polygon[] }>) => {
+    //   state.currentModel = action.payload.model;
+    //   state.selectedPolygons = action.payload.polygons;
+    //   // TODO: Calculate automatic positioning
+    // },
+    //
+    // setModelTransform: (state, action: PayloadAction<Partial<ModelTransform>>) => {
+    //   state.modelTransform = { ...state.modelTransform, ...action.payload };
+    // },
+    //
+    // // Alignment tools
+    // toggleSnapToPolygon: (state) => {
+    //   state.snapToPolygon = !state.snapToPolygon;
+    // },
+    //
+    // toggleGrid: (state) => {
+    //   state.showGrid = !state.showGrid;
+    // },
+    //
+    // toggleAxes: (state) => {
+    //   state.showAxes = !state.showAxes;
+    // },
+    // },
 
     // Reset everything
     resetAlignment: () => initialState,
+
+    // TODO: Add scenario-specific actions
+    // autoPositionModel: (state) => {
+    //   // TODO: Implement automatic positioning logic from scenarios
+    // },
+    //
+    // moveModel: (state, action: PayloadAction<{ x: number; z: number }>) => {
+    //   // TODO: Implement model translation (Shift+WASD)
+    // },
+    //
+    // rotateModel: (state, action: PayloadAction<number>) => {
+    //   // TODO: Implement model rotation (Alt+A/D)
+    // },
   },
 
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
-    getSelectedModelId: (state) => state.selectedModelId,
-    getModelTransform: (state) => ({
-      position: state.modelPosition,
-      rotation: state.modelRotation,
-      scale: state.modelScale,
-    }),
-    getAlignmentTools: (state) => ({
-      snapToPolygon: state.snapToPolygon,
-      showGrid: state.showGrid,
-      showAxes: state.showAxes,
-    }),
-    getAlignmentProgress: (state) => ({
-      isAligning: state.isAligning,
-      progress: state.alignmentProgress,
-    }),
+
+    // TODO: Add selectors for model and polygon data based on scenarios
+    // getSelectedModel: (state) => state.currentModel,
+    // getSelectedPolygons: (state) => state.selectedPolygons,
+    // getModelTransform: (state) => state.modelTransform,
+    // getAlignmentTools: (state) => ({
+    //   snapToPolygon: state.snapToPolygon,
+    //   showGrid: state.showGrid,
+    //   showAxes: state.showAxes,
+    // }),
   },
 });
-
-export const {
-  setCameraView,
-  updateCameraState,
-  resetCamera,
-  resetAllCameras,
-  selectModel,
-  setModelPosition,
-  setModelRotation,
-  setModelScale,
-  resetModelTransform,
-  toggleSnapToPolygon,
-  toggleGrid,
-  toggleAxes,
-  startAlignment,
-  updateAlignmentProgress,
-  completeAlignment,
-  cancelAlignment,
-  resetAlignment,
-} = alignmentSlice.actions;
-
-export const {
-  getCurrentCamera,
-  getCurrentCameraView,
-  getSelectedModelId,
-  getModelTransform,
-  getAlignmentTools,
-  getAlignmentProgress,
-} = alignmentSlice.selectors;
-
-export default alignmentSlice.reducer;
