@@ -2,6 +2,9 @@
 // Based on alignment scenarios documentation
 import { Box3, Vector3 } from "three";
 
+// Constants
+const EYE_LEVEL_HEIGHT = 1.8; // Human eye level in meters
+
 import { Building } from "../types/types";
 
 // Model data loaded via useFBX() from @react-three/drei
@@ -207,10 +210,10 @@ export function calculatePerspectiveCameraPosition(
   const maxHorizontalSize = Math.max(modelSize.x, modelSize.z);
   const distance = maxHorizontalSize * 1.5;
 
-  // Position camera north of model at eye level (1.8m)
+  // Position camera north of model at eye level
   const position: [number, number, number] = [
     modelCenter.x,
-    1.8, // Eye level height
+    EYE_LEVEL_HEIGHT, // Eye level height
     modelCenter.z - distance, // North of model
   ];
 
@@ -252,7 +255,7 @@ export function calculateOrbitalCameraPosition(
   modelCenter: Vector3,
   angleRadians: number,
   distance: number,
-  height: number = 1.8,
+  height: number = EYE_LEVEL_HEIGHT,
 ): [number, number, number] {
   return [
     modelCenter.x + Math.sin(angleRadians) * distance,
