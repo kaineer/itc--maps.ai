@@ -20,12 +20,8 @@ This document describes the detailed user scenarios and technical workflows for 
 2. **Automatic Calculations** (`src/utils/modelTransform.ts`):
    - **Polygon Bounding Box**: Calculate combined bounding box of selected polygons
      ```typescript
-     interface BoundingBox {
-       min: [number, number, number];
-       max: [number, number, number];
-       center: [number, number, number];
-       size: [number, number, number];
-     }
+     // Uses Three.js Box3 class for bounding box calculations
+     // Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize()
      ```
    - **Model Bounding Box**: Extract bounding box from 3D model geometry
    - **Scale Calculation**: Compute optimal scale to match model to polygon footprint
@@ -157,11 +153,10 @@ interface AlignmentState {
   showGrid: boolean;
   showAxes: boolean;
   
-  // Calculation Cache
-  polygonBoundingBox: BoundingBox | null;
-  modelBoundingBox: BoundingBox | null;
+  // Calculation Cache (using Three.js Box3)
+  polygonBoundingBox: Box3 | null;
+  modelBoundingBox: Box3 | null;
 }
-```
 
 ### Camera State Structure
 ```typescript
@@ -176,9 +171,9 @@ interface CameraState {
 
 ### Utility Functions (`src/utils/modelTransform.ts`)
 ```typescript
-// Bounding box calculations
-export function calculatePolygonBoundingBox(polygons: Polygon[]): BoundingBox;
-export function calculateModelBoundingBox(model: ModelData): BoundingBox;
+// Bounding box calculations (using Three.js Box3)
+export function calculatePolygonBoundingBox(polygons: Polygon[]): Box3;
+export function calculateModelBoundingBox(model: ModelData): Box3;
 
 // Automatic positioning
 export function calculateInitialModelPosition(

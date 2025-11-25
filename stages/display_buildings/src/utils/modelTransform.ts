@@ -1,5 +1,6 @@
 // Model transformation utilities for 3D model alignment
 // Based on alignment scenarios documentation
+import { Box3, Vector3 } from "three";
 
 import { Building } from "../types/types";
 
@@ -14,12 +15,8 @@ export interface ModelData {
   };
 }
 
-export interface BoundingBox {
-  min: [number, number, number];
-  max: [number, number, number];
-  center: [number, number, number];
-  size: [number, number, number];
-}
+// Use Three.js Box3 for bounding box calculations
+// Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize()
 
 export interface CameraState {
   position: [number, number, number];
@@ -40,57 +37,33 @@ export interface ModelTransform {
  * @param polygons Array of building polygons
  * @returns Combined bounding box
  */
-export function calculatePolygonBoundingBox(polygons: Building[]): BoundingBox {
+export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
+  const bbox = new Box3();
+
   if (!polygons.length) {
-    return {
-      min: [0, 0, 0],
-      max: [0, 0, 0],
-      center: [0, 0, 0],
-      size: [0, 0, 0],
-    };
+    return bbox;
   }
 
-  // Extract all vertices from all polygons
-  const allVertices: [number, number, number][] = [];
-
-  polygons.forEach(polygon => {
+  // Extract all vertices from all polygons and expand the Box3
+  polygons.forEach((polygon) => {
     // TODO: Extract actual vertices from polygon geometry
     // For now, use position as center point
     const center = polygon.position || [0, 0, 0];
     // Create a simple bounding box around the center
     const size = 10; // Default building size
-    allVertices.push(
-      [center[0] - size/2, 0, center[2] - size/2],
-      [center[0] + size/2, 0, center[2] + size/2]
+
+    const minPoint = new Vector3(center[0] - size / 2, 0, center[2] - size / 2);
+    const maxPoint = new Vector3(
+      center[0] + size / 2,
+      10, // Default building height
+      center[2] + size / 2,
     );
+
+    bbox.expandByPoint(minPoint);
+    bbox.expandByPoint(maxPoint);
   });
 
-  // Calculate min/max from all vertices
-  const min: [number, number, number] = [Infinity, Infinity, Infinity];
-  const max: [number, number, number] = [-Infinity, -Infinity, -Infinity];
-
-  allVertices.forEach(vertex => {
-    min[0] = Math.min(min[0], vertex[0]);
-    min[1] = Math.min(min[1], vertex[1]);
-    min[2] = Math.min(min[2], vertex[2]);
-    max[0] = Math.max(max[0], vertex[0]);
-    max[1] = Math.max(max[1], vertex[1]);
-    max[2] = Math.max(max[2], vertex[2]);
-  });
-
-  const center: [number, number, number] = [
-    (min[0] + max[0]) / 2,
-    (min[1] + max[1]) / 2,
-    (min[2] + max[2]) / 2,
-  ];
-
-  const size: [number, number, number] = [
-    max[0] - min[0],
-    max[1] - min[1],
-    max[2] - min[2],
-  ];
-
-  return { min, max, center, size };
+  return bbox;
 }
 
 /**
@@ -98,15 +71,10 @@ export function calculatePolygonBoundingBox(polygons: Building[]): BoundingBox {
  * @param model 3D model data
  * @returns Model bounding box
  */
-export function calculateModelBoundingBox(model: ModelData): BoundingBox {
+export function calculateModelBoundingBox(model: ModelData): Box3 {
   // TODO: Extract actual bounding box from Three.js geometry
   // For now, return a default bounding box
-  return {
-    min: [-5, 0, -5],
-    max: [5, 10, 5],
-    center: [0, 5, 0],
-    size: [10, 10, 10],
-  };
+  return new Box3(new Vector3(-5, 0, -5), new Vector3(5, 10, 5));
 }
 
 /**
@@ -116,19 +84,27 @@ export function calculateModelBoundingBox(model: ModelData): BoundingBox {
  * @returns Initial transform data
  */
 export function calculateInitialModelPosition(
-  polygonBBox: BoundingBox,
-  modelBBox: BoundingBox
+  polygonBBox: Box3,
+  modelBBox: Box3,
 ): ModelTransform {
   // Position model over polygon center
+  const polygonCenter = new Vector3();
+  polygonBBox.getCenter(polygonCenter);
+
   const position: [number, number, number] = [
-    polygonBBox.center[0],
+    polygonCenter.x,
     0, // Ground level
-    polygonBBox.center[2],
+    polygonCenter.z,
   ];
 
   // Calculate scale to match polygon footprint
-  const polygonFootprintSize = Math.max(polygonBBox.size[0], polygonBBox.size[2]);
-  const modelFootprintSize = Math.max(modelBBox.size[0], modelBBox.size[2]);
+  const polygonSize = new Vector3();
+  polygonBBox.getSize(polygonSize);
+  const modelSize = new Vector3();
+  modelBBox.getSize(modelSize);
+
+  const polygonFootprintSize = Math.max(polygonSize.x, polygonSize.z);
+  const modelFootprintSize = Math.max(modelSize.x, modelSize.z);
 
   const scaleFactor = polygonFootprintSize / modelFootprintSize;
   const scale: [number, number, number] = [
@@ -152,7 +128,7 @@ export function calculateInitialModelPosition(
  */
 export function calculateTopCameraPosition(
   modelCenter: [number, number, number],
-  modelHeight: number = 20
+  modelHeight: number = 20,
 ): CameraState {
   return {
     position: [modelCenter[0], modelHeight, modelCenter[2]],
@@ -171,7 +147,7 @@ export function calculateTopCameraPosition(
  */
 export function calculatePerspectiveCameraPosition(
   modelCenter: [number, number, number],
-  distance: number = 30
+  distance: number = 30,
 ): CameraState {
   return {
     position: [modelCenter[0], 1.8, modelCenter[2] - distance], // North of model at eye level
@@ -187,7 +163,7 @@ export function calculatePerspectiveCameraPosition(
  * @returns Target position (always at ground level)
  */
 export function calculateTopCameraTarget(
-  cameraPosition: [number, number, number]
+  cameraPosition: [number, number, number],
 ): [number, number, number] {
   return [cameraPosition[0], 0, cameraPosition[2]];
 }
@@ -204,7 +180,7 @@ export function calculateOrbitalCameraPosition(
   modelCenter: [number, number, number],
   angleRadians: number,
   distance: number,
-  height: number = 1.8
+  height: number = 1.8,
 ): [number, number, number] {
   return [
     modelCenter[0] + Math.sin(angleRadians) * distance,
