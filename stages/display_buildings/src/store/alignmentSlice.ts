@@ -10,6 +10,12 @@ export interface CameraState {
   fov: number;
 }
 
+type ModelRotation = number;
+
+// Rotation step configuration
+const ROTATION_STEPS = [1, 2, 5, 10, 15, 30, 60, 90] as const;
+type RotationStep = (typeof ROTATION_STEPS)[number];
+
 // TODO: Define proper interfaces based on alignment scenarios
 // interface AlignmentState {
 //   // Camera management
@@ -32,6 +38,8 @@ export interface CameraState {
 //   alignmentProgress: number;
 // }
 
+const rotationSteps = [1, 2, 5, 10, 15, 30, 60, 90];
+
 export interface AlignmentState {
   // Camera management
   currentCameraView: CameraView;
@@ -42,7 +50,7 @@ export interface AlignmentState {
   currentModel: ModelData | null;
   modelTransform: {
     position: [number, number, number];
-    rotation: [number, number, number];
+    rotation: ModelRotation;
     scale: Scale;
   };
 
@@ -53,7 +61,9 @@ export interface AlignmentState {
 
   // Step configuration
   positionStep: number; // meters (0.5 to 20, exponential 1.5x)
-  rotationStep: number; // degrees (1 to 90, grid: 1, 2, 5, 10, 15, 30, 60, 90)
+
+  rotationStep: number; // degrees
+  rotationStepIndex: number; // index in rotationSteps
   scaleStep: number; // percentage (1% or 5%)
 
   // Process state
@@ -86,7 +96,7 @@ const initialState: AlignmentState = {
   currentModel: null,
   modelTransform: {
     position: [0, 0, 0],
-    rotation: [0, 0, 0],
+    rotation: 0,
     scale: 1,
   },
 
@@ -97,7 +107,12 @@ const initialState: AlignmentState = {
 
   // Step configuration
   positionStep: 1, // meters
-  rotationStep: 15, // degrees
+
+  // Most large rotation step
+  rotationStepIndex: rotationSteps.length - 1,
+  rotationStep: rotationSteps[rotationSteps.length - 1], // degrees
+
+  // Scale toggles between 1 and 5
   scaleStep: 5, // percentage
 
   // Process state
@@ -189,15 +204,26 @@ export const alignmentSlice = createSlice({
       state,
       action: PayloadAction<"clockwise" | "counterclockwise">,
     ) => {
-      // TODO: Implement model rotation around Y axis using rotationStep
+      const direction = action.payload;
+      if (direction === "clockwise") {
+        state.modelTransform.rotation -= state.rotationStep;
+      } else {
+        state.modelTransform.rotation += state.rotationStep;
+      }
     },
 
     increaseRotationStep: (state) => {
-      // TODO: Implement rotation step increase (grid: 1, 2, 5, 10, 15, 30, 60, 90)
+      if (state.rotationStepIndex < rotationSteps.length - 1) {
+        state.rotationStepIndex += 1;
+        state.rotationStep = rotationSteps[state.rotationStepIndex];
+      }
     },
 
     decreaseRotationStep: (state) => {
-      // TODO: Implement rotation step decrease (grid: 1, 2, 5, 10, 15, 30, 60, 90)
+      if (state.rotationStepIndex > 0) {
+        state.rotationStepIndex -= 1;
+        state.rotationStep = rotationSteps[state.rotationStepIndex];
+      }
     },
 
     // Scale transformation actions
@@ -239,8 +265,11 @@ export const alignmentSlice = createSlice({
     }),
 
     // Step configuration selectors
-    getPositionStep: (state) => state.positionStep,
-    getRotationStep: (state) => state.rotationStep,
+    getRotationStep: (state) => ROTATION_STEPS[state.rotationStepIndex],
+
+    getRotationSteps: () => ROTATION_STEPS,
+
+    getRotationStepIndex: (state) => state.rotationStepIndex,
     getScaleStep: (state) => state.scaleStep,
 
     // Process state selectors
