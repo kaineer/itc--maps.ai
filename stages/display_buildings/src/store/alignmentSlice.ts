@@ -54,6 +54,7 @@ export interface AlignmentState {
   // Step configuration
   positionStep: number; // meters (0.5 to 20, exponential 1.5x)
   rotationStep: number; // degrees (1 to 90, grid: 1, 2, 5, 10, 15, 30, 60, 90)
+  scaleStep: number; // percentage (1% or 5%)
 
   // Process state
   isAligning: boolean;
@@ -97,6 +98,7 @@ const initialState: AlignmentState = {
   // Step configuration
   positionStep: 1, // meters
   rotationStep: 15, // degrees
+  scaleStep: 5, // percentage
 
   // Process state
   isAligning: false,
@@ -222,6 +224,19 @@ export const alignmentSlice = createSlice({
     decreaseRotationStep: (state) => {
       // TODO: Implement rotation step decrease (grid: 1, 2, 5, 10, 15, 30, 60, 90)
     },
+
+    // Scale transformation actions
+    increaseModelScale: (state) => {
+      // TODO: Implement model scale increase by scaleStep percentage
+    },
+
+    decreaseModelScale: (state) => {
+      // TODO: Implement model scale decrease by scaleStep percentage
+    },
+
+    setScaleStep: (state, action: PayloadAction<number>) => {
+      // TODO: Implement scale step change (1% or 5%)
+    },
   },
 
   selectors: {
@@ -243,6 +258,7 @@ export const alignmentSlice = createSlice({
     // Step configuration selectors
     getPositionStep: (state) => state.positionStep,
     getRotationStep: (state) => state.rotationStep,
+    getScaleStep: (state) => state.scaleStep,
 
     // Process state selectors
     getAlignmentProgress: (state) => ({
@@ -268,6 +284,9 @@ export const {
   rotateModelAroundY,
   increaseRotationStep,
   decreaseRotationStep,
+  increaseModelScale,
+  decreaseModelScale,
+  setScaleStep,
 } = alignmentSlice.actions;
 
 export const {
@@ -279,6 +298,7 @@ export const {
   getAlignmentTools,
   getPositionStep,
   getRotationStep,
+  getScaleStep,
   getAlignmentProgress,
 } = alignmentSlice.selectors;
 
