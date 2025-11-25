@@ -164,21 +164,34 @@ export const alignmentSlice = createSlice({
 
     // Model selection and polygon management
     selectModelForAlignment: (state, action: PayloadAction<ModelData>) => {
-      // TODO: Implement model selection logic
+      state.currentModel = action.payload;
     },
 
     addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
-      // TODO: Implement polygon addition logic
+      state.selectedPolygons.push(action.payload);
     },
 
     resetAlignmentPolygons: (state) => {
-      // TODO: Implement polygon reset logic
+      state.selectedPolygons = [];
     },
 
     // Alignment process control
     startAlignmentProcess: (state) => {
-      // TODO: Check that polygons are added and model is selected with non-zero bounding box
-      // TODO: Implement alignment process start logic
+      // Check that polygons are added and model is selected with non-zero bounding box
+      if (state.selectedPolygons.length === 0) {
+        throw new Error("Cannot start alignment: no polygons selected");
+      }
+
+      if (!state.currentModel) {
+        throw new Error("Cannot start alignment: no model selected");
+      }
+
+      // TODO: Check if model has non-zero bounding box
+      // This would require calculating the bounding box from the model object
+
+      // Start the alignment process
+      state.isAligning = true;
+      state.alignmentProgress = 0;
     },
 
     // Model transformation actions
