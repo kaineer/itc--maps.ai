@@ -48,13 +48,13 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
   polygons.forEach((polygon) => {
     // TODO: Extract actual vertices from polygon geometry
     // For now, use position as center point
-    const center = polygon.position || [0, 0, 0];
+    const center = polygon.position || { x: 0, z: 0 };
     // Create a simple bounding box around the center
     const size = 10; // Default building size
 
     const polygonBBox = new Box3(
-      new Vector3(center[0] - size / 2, 0, center[2] - size / 2),
-      new Vector3(center[0] + size / 2, 10, center[2] + size / 2),
+      new Vector3(center.x - size / 2, 0, center.z - size / 2),
+      new Vector3(center.x + size / 2, 10, center.z + size / 2),
     );
 
     // Union this polygon's bounding box with the combined bounding box
