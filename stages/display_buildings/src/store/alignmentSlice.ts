@@ -2,6 +2,16 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ModelData } from "../utils/modelTransform";
 import { Building } from "../types/types";
 
+// Helper function for scale transformation
+function applyScaleChange(
+  currentScale: [number, number, number],
+  factor: number,
+): [number, number, number] {
+  const [scale] = currentScale;
+  const newScale = scale * factor;
+  return [newScale, newScale, newScale];
+}
+
 export type CameraView = "perspective" | "top";
 
 export interface CameraState {
@@ -43,7 +53,7 @@ export interface AlignmentState {
   modelTransform: {
     position: [number, number, number];
     rotation: [number, number, number];
-    scale: [number, number, number];
+    scale: number;
   };
 
   // Alignment tools and settings
@@ -87,7 +97,7 @@ const initialState: AlignmentState = {
   modelTransform: {
     position: [0, 0, 0],
     rotation: [0, 0, 0],
-    scale: [1, 1, 1],
+    scale: 1,
   },
 
   // Alignment tools and settings
@@ -147,31 +157,6 @@ export const alignmentSlice = createSlice({
       };
     },
 
-    // TODO: Implement model and transformation actions based on scenarios
-    // selectModelAndPolygons: (state, action: PayloadAction<{ model: ModelData; polygons: Polygon[] }>) => {
-    //   state.currentModel = action.payload.model;
-    //   state.selectedPolygons = action.payload.polygons;
-    //   // TODO: Calculate automatic positioning
-    // },
-    //
-    // setModelTransform: (state, action: PayloadAction<Partial<ModelTransform>>) => {
-    //   state.modelTransform = { ...state.modelTransform, ...action.payload };
-    // },
-    //
-    // // Alignment tools
-    // toggleSnapToPolygon: (state) => {
-    //   state.snapToPolygon = !state.snapToPolygon;
-    // },
-    //
-    // toggleGrid: (state) => {
-    //   state.showGrid = !state.showGrid;
-    // },
-    //
-    // toggleAxes: (state) => {
-    //   state.showAxes = !state.showAxes;
-    // },
-    // },
-
     // Reset everything
     resetAlignment: () => initialState,
 
@@ -227,15 +212,27 @@ export const alignmentSlice = createSlice({
 
     // Scale transformation actions
     increaseModelScale: (state) => {
-      // TODO: Implement model scale increase by scaleStep percentage
+      state.modelTransform.scale = applyScaleChange(
+        state.modelTransform.scale,
+        1 + state.scaleStep / 100,
+      );
     },
 
     decreaseModelScale: (state) => {
-      // TODO: Implement model scale decrease by scaleStep percentage
+      state.modelTransform.scale = applyScaleChange(
+        state.modelTransform.scale,
+        1 - state.scaleStep / 100,
+      );
     },
 
-    setScaleStep: (state, action: PayloadAction<number>) => {
-      // TODO: Implement scale step change (1% or 5%)
+    // Scale step toggle (1% or 5%)
+    toggleScaleStep: (state) => {
+      if (state.scaleStep < 2) {
+        // 1
+        state.scaleStep = 5;
+      } else {
+        state.scaleStep = 1;
+      }
     },
   },
 
@@ -267,39 +264,3 @@ export const alignmentSlice = createSlice({
     }),
   },
 });
-
-export const {
-  setCameraView,
-  updateCameraState,
-  resetCamera,
-  resetAllCameras,
-  resetAlignment,
-  selectModelForAlignment,
-  addPolygonForAlignment,
-  resetAlignmentPolygons,
-  startAlignmentProcess,
-  moveModelInDirection,
-  increasePositionStep,
-  decreasePositionStep,
-  rotateModelAroundY,
-  increaseRotationStep,
-  decreaseRotationStep,
-  increaseModelScale,
-  decreaseModelScale,
-  setScaleStep,
-} = alignmentSlice.actions;
-
-export const {
-  getCurrentCamera,
-  getCurrentCameraView,
-  getSelectedModel,
-  getSelectedPolygons,
-  getModelTransform,
-  getAlignmentTools,
-  getPositionStep,
-  getRotationStep,
-  getScaleStep,
-  getAlignmentProgress,
-} = alignmentSlice.selectors;
-
-export default alignmentSlice.reducer;
