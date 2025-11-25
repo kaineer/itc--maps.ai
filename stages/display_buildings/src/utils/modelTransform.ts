@@ -31,6 +31,7 @@ export interface ModelTransform {
   position: [number, number, number];
   rotation: [number, number, number];
   scale: [number, number, number];
+  yOffset?: number; // Optional Y offset for ground level placement
 }
 
 /**
@@ -85,22 +86,57 @@ export function calculateModelBoundingBox(model: ModelData): Box3 {
  * Calculate initial model position and scale to match polygons
  * @param polygonBBox Combined bounding box of selected polygons
  * @param modelBBox Bounding box of 3D model
- * @returns Initial transform data
+ * @param targetSize Target size for the model (default: 20)
+ * @returns Initial transform data with position, scale, and Y offset
  */
 export function calculateInitialModelPosition(
   polygonBBox: Box3,
   modelBBox: Box3,
-): ModelTransform {
+  targetSize: number = 20,
+): ModelTransform & { yOffset: number } {
   // Position model over polygon center
   const polygonCenter = new Vector3();
   polygonBBox.getCenter(polygonCenter);
 
+  // Calculate scale based on model bounding box (like DebugModelBuilding)
+  const modelSize = modelBBox.getSize(new Vector3());
+  const maxDimension = Math.max(modelSize.x, modelSize.y, modelSize.z);
+  const calculatedScale = targetSize / maxDimension;
+
+  // Calculate Y offset to place bottom of model at ground level (y=0)
+  const minY = modelBBox.min.y * calculatedScale;
+  const yOffset = -minY;
+
   const position: [number, number, number] = [
     polygonCenter.x,
-    0, // Ground level
+    yOffset, // Adjusted for ground level placement
     polygonCenter.z,
   ];
 
+  const scale: [number, number, number] = [
+    calculatedScale,
+    calculatedScale,
+    calculatedScale,
+  ];
+
+  return {
+    position,
+    rotation: [0, 0, 0], // Initial rotation
+    scale,
+    yOffset,
+  };
+}
+
+/**
+ * Calculate model scale to match polygon footprint (alternative approach)
+ * @param polygonBBox Combined bounding box of selected polygons
+ * @param modelBBox Bounding box of 3D model
+ * @returns Scale factor to match model footprint to polygon footprint
+ */
+export function calculateModelScaleToPolygons(
+  polygonBBox: Box3,
+  modelBBox: Box3,
+): number {
   // Calculate scale to match polygon footprint
   const polygonSize = new Vector3();
   polygonBBox.getSize(polygonSize);
@@ -110,18 +146,7 @@ export function calculateInitialModelPosition(
   const polygonFootprintSize = Math.max(polygonSize.x, polygonSize.z);
   const modelFootprintSize = Math.max(modelSize.x, modelSize.z);
 
-  const scaleFactor = polygonFootprintSize / modelFootprintSize;
-  const scale: [number, number, number] = [
-    scaleFactor,
-    scaleFactor,
-    scaleFactor,
-  ];
-
-  return {
-    position,
-    rotation: [0, 0, 0], // Initial rotation
-    scale,
-  };
+  return polygonFootprintSize / modelFootprintSize;
 }
 
 /**
