@@ -43,6 +43,9 @@ const positionStepMin = 0.5;
 const positionStepMax = 20;
 const positionStepFactor = 1.5;
 
+// Minimal size for bounding box
+const minExtent = 1.0;
+
 // /-- CONFIG
 
 export interface AlignmentState {
@@ -200,8 +203,12 @@ export const alignmentSlice = createSlice({
 
       // Check if model has non-zero bounding box
       const modelSize = modelBBox.getSize(new Vector3());
-      if (modelSize.x === 0 && modelSize.y === 0 && modelSize.z === 0) {
-        throw new Error("Cannot start alignment: model has zero bounding box");
+      if (
+        modelSize.x < minExtent &&
+        modelSize.y < minExtent &&
+        modelSize.z < minExtent
+      ) {
+        throw new Error("Cannot start alignment: model is too small");
       }
 
       // Calculate initial model position and scale
@@ -211,7 +218,7 @@ export const alignmentSlice = createSlice({
       );
       state.modelTransform = {
         position: initialTransform.position,
-        rotation: initialTransform.rotation,
+        rotation: 0,
         scale: initialTransform.scale[0], // Use uniform scale from first axis
       };
 
