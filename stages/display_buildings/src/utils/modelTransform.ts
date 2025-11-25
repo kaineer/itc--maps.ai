@@ -192,16 +192,38 @@ export function calculateTopCameraPosition(
 /**
  * Calculate perspective camera position around model
  * @param modelCenter Center of the model
- * @param distance Distance from model center
+ * @param modelBBox Bounding box of the model
  * @returns Perspective camera state
  */
 export function calculatePerspectiveCameraPosition(
   modelCenter: Vector3,
-  distance: number = 30,
+  modelBBox: Box3,
 ): CameraState {
+  // Get model size from bounding box
+  const modelSize = new Vector3();
+  modelBBox.getSize(modelSize);
+
+  // Take maximum of width and length, multiply by 1.5
+  const maxHorizontalSize = Math.max(modelSize.x, modelSize.z);
+  const distance = maxHorizontalSize * 1.5;
+
+  // Position camera north of model at eye level (1.8m)
+  const position: [number, number, number] = [
+    modelCenter.x,
+    1.8, // Eye level height
+    modelCenter.z - distance, // North of model
+  ];
+
+  // Target is the center of the model
+  const target: [number, number, number] = [
+    modelCenter.x,
+    modelCenter.y,
+    modelCenter.z,
+  ];
+
   return {
-    position: [modelCenter.x, 1.8, modelCenter.z - distance], // North of model at eye level
-    target: [modelCenter.x, modelCenter.y, modelCenter.z], // Always look at model center
+    position,
+    target,
     fov: 60,
     isOrthographic: false,
   };
