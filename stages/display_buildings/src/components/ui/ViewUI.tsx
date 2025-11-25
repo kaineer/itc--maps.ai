@@ -22,7 +22,7 @@ interface Props {
 
 const ITC_CENTER = { x: -326.31, z: 668.04 };
 
-export const ViewUI: React.FC<Props> = ({ onBuildingSelect }) => {
+export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
   const buildings = useSelector(getBuildings);

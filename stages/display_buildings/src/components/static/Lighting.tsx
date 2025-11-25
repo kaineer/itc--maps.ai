@@ -1,6 +1,6 @@
 import React from "react";
 
-const Lighting: React.FC = () => {
+const Lighting = () => {
   return (
     <>
       {/* Ambient Light */}

@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
-import { useFrame } from '@react-three/fiber';
-import * as THREE from 'three';
+import React, { useRef, useEffect } from "react";
+import { useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
-export const CameraController: React.FC = () => {
+export const CameraController = () => {
   const moveState = useRef({
     forward: false,
     backward: false,
@@ -14,16 +14,16 @@ export const CameraController: React.FC = () => {
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.key.toLowerCase()) {
-        case 'w':
+        case "w":
           moveState.current.forward = true;
           break;
-        case 's':
+        case "s":
           moveState.current.backward = true;
           break;
-        case 'a':
+        case "a":
           moveState.current.left = true;
           break;
-        case 'd':
+        case "d":
           moveState.current.right = true;
           break;
       }
@@ -31,16 +31,16 @@ export const CameraController: React.FC = () => {
 
     const handleKeyUp = (event: KeyboardEvent) => {
       switch (event.key.toLowerCase()) {
-        case 'w':
+        case "w":
           moveState.current.forward = false;
           break;
-        case 's':
+        case "s":
           moveState.current.backward = false;
           break;
-        case 'a':
+        case "a":
           moveState.current.left = false;
           break;
-        case 'd':
+        case "d":
           moveState.current.right = false;
           break;
       }
@@ -48,12 +48,12 @@ export const CameraController: React.FC = () => {
 
     const eventTarget = document;
 
-    eventTarget.addEventListener('keydown', handleKeyDown);
-    eventTarget.addEventListener('keyup', handleKeyUp);
+    eventTarget.addEventListener("keydown", handleKeyDown);
+    eventTarget.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      eventTarget.removeEventListener('keydown', handleKeyDown);
-      eventTarget.removeEventListener('keyup', handleKeyUp);
+      eventTarget.removeEventListener("keydown", handleKeyDown);
+      eventTarget.removeEventListener("keyup", handleKeyUp);
     };
   }, []);
 
@@ -61,9 +61,12 @@ export const CameraController: React.FC = () => {
     const { camera, controls } = state;
     const moveSpeed = 5.0 * delta;
 
-    if (moveState.current.forward || moveState.current.backward ||
-        moveState.current.left || moveState.current.right) {
-
+    if (
+      moveState.current.forward ||
+      moveState.current.backward ||
+      moveState.current.left ||
+      moveState.current.right
+    ) {
       // Get camera direction
       const cameraDirection = new THREE.Vector3();
       camera.getWorldDirection(cameraDirection);
@@ -100,7 +103,7 @@ export const CameraController: React.FC = () => {
 
         // Move both camera and controls target simultaneously
         // This maintains OrbitControls rotation while allowing WASD movement
-        if (controls && 'target' in controls) {
+        if (controls && "target" in controls) {
           const controlsTarget = (controls as any).target;
           controlsTarget.x += moveVector.x;
           controlsTarget.z += moveVector.z;

@@ -16,7 +16,7 @@ interface Props {
   onModeChange?: () => void;
 }
 
-export const AlignmentUI: React.FC<Props> = ({ buildings, onModeChange }) => {
+export const AlignmentUI = ({ buildings, onModeChange }: Props) => {
   const currentCamera = useSelector((state: RootState) =>
     getCurrentCamera(state),
   );

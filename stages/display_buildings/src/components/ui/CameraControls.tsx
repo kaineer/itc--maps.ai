@@ -9,7 +9,7 @@ import {
 } from "../../store/alignmentSlice";
 import { RootState } from "../../store";
 
-export const CameraControls: React.FC = () => {
+export const CameraControls = () => {
   const dispatch = useDispatch();
   const currentCameraView = useSelector((state: RootState) =>
     getCurrentCameraView(state),

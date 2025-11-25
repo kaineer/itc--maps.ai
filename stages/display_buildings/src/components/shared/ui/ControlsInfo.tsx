@@ -4,7 +4,7 @@ interface ControlsInfoProps {
   className?: string;
 }
 
-const ControlsInfo: React.FC<ControlsInfoProps> = ({ className = "" }) => {
+const ControlsInfo = ({ className = "" }: ControlsInfoProps) => {
   return (
     <div className={`controls-info ${className}`}>
       <h3>Controls</h3>
