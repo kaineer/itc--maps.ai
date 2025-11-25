@@ -11,7 +11,7 @@ This document outlines the step-by-step implementation plan for the revised mode
 
 **Tasks**:
 - [x] Create `BoundingBox` interface and calculation functions (using Three.js Box3)
-- [ ] Implement `calculatePolygonBoundingBox()` for multiple polygons
+- [x] Implement `calculatePolygonBoundingBox()` for multiple polygons (using Three.js Box3.union())
 - [ ] Implement `calculateModelBoundingBox()` for 3D models
 - [ ] Create automatic positioning logic (`calculateInitialModelPosition()`)
 - [ ] Add camera positioning utilities (`calculateTopCameraPosition()`, `calculatePerspectiveCameraPosition()`)
