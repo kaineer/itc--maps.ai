@@ -12,9 +12,18 @@ export interface CameraState {
 
 type ModelRotation = number;
 
+// --- CONFIG
+
 // Rotation step configuration
 const rotationSteps = [1, 2, 5, 10, 15, 30, 60, 90] as const;
 type RotationStep = (typeof rotationSteps)[number];
+
+// Movement step configuration
+const positionStepMin = 0.5;
+const positionStepMax = 20;
+const positionStepFactor = 1.5;
+
+// /-- CONFIG
 
 export interface AlignmentState {
   // Camera management
@@ -169,11 +178,17 @@ export const alignmentSlice = createSlice({
     },
 
     increasePositionStep: (state) => {
-      // TODO: Implement position step increase (exponential 1.5x, max 20m)
+      state.positionStep = Math.min(
+        positionStepMax,
+        state.positionStep * positionStepFactor,
+      );
     },
 
     decreasePositionStep: (state) => {
-      // TODO: Implement position step decrease (exponential 1.5x, min 0.5m)
+      state.positionStep = Math.max(
+        positionStepMin,
+        state.positionStep / positionStepFactor,
+      );
     },
 
     rotateModelAroundY: (
