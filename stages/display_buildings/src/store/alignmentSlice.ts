@@ -11,12 +11,24 @@ export interface CameraState {
 }
 
 type ModelRotation = number;
+type ModelPosition = [number, number, number];
 
 // --- CONFIG
 
 // Rotation step configuration
 const rotationSteps = [1, 2, 5, 10, 15, 30, 60, 90] as const;
 type RotationStep = (typeof rotationSteps)[number];
+
+interface MovementFunction {
+  (step: number, origin: ModelPosition): ModelPosition;
+}
+
+const moveModel: { [id: string]: MovementFunction } = {
+  north: (step, [x, y, z]) => [x, y, z - step],
+  east: (step, [x, y, z]) => [x + step, y, z],
+  south: (step, [x, y, z]) => [x, y, z + step],
+  west: (step, [x, y, z]) => [x - step, y, z],
+};
 
 // Movement step configuration
 const positionStepMin = 0.5;
@@ -34,7 +46,7 @@ export interface AlignmentState {
   selectedPolygons: Building[];
   currentModel: ModelData | null;
   modelTransform: {
-    position: [number, number, number];
+    position: ModelPosition;
     rotation: ModelRotation;
     scale: Scale;
   };
@@ -174,7 +186,11 @@ export const alignmentSlice = createSlice({
       state,
       action: PayloadAction<"north" | "south" | "east" | "west">,
     ) => {
-      // TODO: Implement model movement in specified direction using positionStep
+      const direction = action.payload;
+      state.modelTransform.position = moveModel[direction](
+        state.positionStep,
+        state.modelTransform.position,
+      );
     },
 
     increasePositionStep: (state) => {
