@@ -1,16 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ModelData } from "../utils/modelTransform";
-import { Building } from "../types/types";
-
-// Helper function for scale transformation
-function applyScaleChange(
-  currentScale: [number, number, number],
-  factor: number,
-): [number, number, number] {
-  const [scale] = currentScale;
-  const newScale = scale * factor;
-  return [newScale, newScale, newScale];
-}
+import { Building, Scale } from "../types/types";
 
 export type CameraView = "perspective" | "top";
 
@@ -53,7 +43,7 @@ export interface AlignmentState {
   modelTransform: {
     position: [number, number, number];
     rotation: [number, number, number];
-    scale: number;
+    scale: Scale;
   };
 
   // Alignment tools and settings
@@ -212,17 +202,13 @@ export const alignmentSlice = createSlice({
 
     // Scale transformation actions
     increaseModelScale: (state) => {
-      state.modelTransform.scale = applyScaleChange(
-        state.modelTransform.scale,
-        1 + state.scaleStep / 100,
-      );
+      state.modelTransform.scale =
+        state.modelTransform.scale * 1 + state.scaleStep / 100;
     },
 
     decreaseModelScale: (state) => {
-      state.modelTransform.scale = applyScaleChange(
-        state.modelTransform.scale,
-        1 - state.scaleStep / 100,
-      );
+      state.modelTransform.scale =
+        state.modelTransform.scale * 1 - state.scaleStep / 100;
     },
 
     // Scale step toggle (1% or 5%)

@@ -12,6 +12,8 @@ export interface Position {
   z: number;
 }
 
+export type Scale = number;
+
 export interface BuildingNode {
   x: number;
   z: number;
