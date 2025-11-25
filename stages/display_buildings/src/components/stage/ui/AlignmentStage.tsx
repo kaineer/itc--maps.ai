@@ -1,4 +1,4 @@
-import { Building } from "../../../types/types";
+уцimport { Building } from "../../../types/types";
 import { TransparentPolygonBuilding } from "../../building/ui/TransparentPolygonBuilding";
 import { DebugModelBuilding } from "../../building/ui/DebugModelBuilding";
 
