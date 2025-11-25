@@ -1,6 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ModelData } from "../utils/modelTransform";
+import {
+  ModelData,
+  calculatePolygonBoundingBox,
+  calculateModelBoundingBox,
+  calculateInitialModelPosition,
+  calculateTopCameraPosition,
+  calculatePerspectiveCameraPosition,
+} from "../utils/modelTransform";
 import { Building, Scale } from "../types/types";
+import { Vector3 } from "three";
 
 export type CameraView = "perspective" | "top";
 
@@ -186,8 +194,43 @@ export const alignmentSlice = createSlice({
         throw new Error("Cannot start alignment: no model selected");
       }
 
-      // TODO: Check if model has non-zero bounding box
-      // This would require calculating the bounding box from the model object
+      // Calculate bounding boxes
+      const polygonBBox = calculatePolygonBoundingBox(state.selectedPolygons);
+      const modelBBox = calculateModelBoundingBox(state.currentModel);
+
+      // Check if model has non-zero bounding box
+      const modelSize = modelBBox.getSize(new Vector3());
+      if (modelSize.x === 0 && modelSize.y === 0 && modelSize.z === 0) {
+        throw new Error("Cannot start alignment: model has zero bounding box");
+      }
+
+      // Calculate initial model position and scale
+      const initialTransform = calculateInitialModelPosition(
+        polygonBBox,
+        modelBBox,
+      );
+      state.modelTransform = {
+        position: initialTransform.position,
+        rotation: initialTransform.rotation,
+        scale: initialTransform.scale[0], // Use uniform scale from first axis
+      };
+
+      // Calculate model center for camera positioning
+      const modelCenter = new Vector3(
+        initialTransform.position[0],
+        initialTransform.position[1],
+        initialTransform.position[2],
+      );
+
+      // Set up cameras
+      state.cameraStates.top = calculateTopCameraPosition(
+        modelCenter,
+        modelBBox,
+      );
+      state.cameraStates.perspective = calculatePerspectiveCameraPosition(
+        modelCenter,
+        modelBBox,
+      );
 
       // Start the alignment process
       state.isAligning = true;
