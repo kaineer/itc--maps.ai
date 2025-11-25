@@ -14,7 +14,7 @@ This document outlines the step-by-step implementation plan for the revised mode
 - [x] Implement `calculatePolygonBoundingBox()` for multiple polygons (using Three.js Box3.union())
 - [x] Implement `calculateModelBoundingBox()` for 3D models (using Three.js Box3.setFromObject())
 - [x] Create automatic positioning logic (`calculateInitialModelPosition()`)
-- [ ] Add camera positioning utilities (`calculateTopCameraPosition()`, `calculatePerspectiveCameraPosition()`)
+- [x] Add camera positioning utilities (`calculateTopCameraPosition()`, `calculatePerspectiveCameraPosition()`)
 
 **Deliverables**:
 - Complete utility module with TypeScript types
