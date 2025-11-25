@@ -1,20 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
-import { buildingsSlice } from "../../store/buildingsSlice";
+import { buildingsSlice, fetchBuildings } from "../../store/buildingsSlice";
 import { OrbitControls, Text } from "@react-three/drei";
-import * as THREE from "three";
 import { ControlsInfo } from "../shared/ui/ControlsInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { CameraController } from "./CameraController";
-
-import { Building, BuildingNode } from "../../types/types";
-
-interface BuildingsResponse {
-  buildings: Building[];
-}
 
 interface Props {
   onBuildingSelect?: (buildingId: string) => void;
@@ -31,7 +24,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   useEffect(() => {
     dispatch(
-      buildingsSlice.actions.fetchBuildings({
+      fetchBuildings({
         position: ITC_CENTER,
         distance: 500,
       }),

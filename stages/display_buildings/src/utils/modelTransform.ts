@@ -152,19 +152,40 @@ export function calculateModelScaleToPolygons(
 /**
  * Calculate top camera position above model
  * @param modelCenter Center of the model
- * @param modelHeight Height of the model
+ * @param modelBBox Bounding box of the model
  * @returns Top camera state
  */
 export function calculateTopCameraPosition(
   modelCenter: Vector3,
-  modelHeight: number = 20,
+  modelBBox: Box3,
 ): CameraState {
+  // Get model size from bounding box
+  const modelSize = new Vector3();
+  modelBBox.getSize(modelSize);
+
+  // Calculate camera height: 1.5 times model height
+  const cameraHeight = modelSize.y * 1.5;
+
+  // Position camera directly above model center
+  const position: [number, number, number] = [
+    modelCenter.x,
+    cameraHeight,
+    modelCenter.z,
+  ];
+
+  // Target is the center of the model (looking straight down)
+  const target: [number, number, number] = [
+    modelCenter.x,
+    modelCenter.y,
+    modelCenter.z,
+  ];
+
   return {
-    position: [modelCenter.x, modelHeight, modelCenter.z],
-    target: [modelCenter.x, 0, modelCenter.z], // Look at ground level
+    position,
+    target,
     fov: 60,
     isOrthographic: true,
-    orthographicSize: Math.max(modelHeight * 1.5, 30), // Ensure good view coverage
+    orthographicSize: Math.max(cameraHeight * 1.5, 30), // Ensure good view coverage
   };
 }
 

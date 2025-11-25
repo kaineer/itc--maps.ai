@@ -1,6 +1,4 @@
-import React from "react";
-
-const Lighting = () => {
+export const Lighting = () => {
   return (
     <>
       {/* Ambient Light */}
@@ -22,5 +20,3 @@ const Lighting = () => {
     </>
   );
 };
-
-export { Lighting };

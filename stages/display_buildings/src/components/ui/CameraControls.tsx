@@ -1,22 +1,15 @@
-import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setCameraView,
-  resetCamera,
-  resetAllCameras,
-  getCurrentCameraView,
-  getCurrentCamera,
-} from "../../store/alignmentSlice";
-import { RootState } from "../../store";
+import { alignmentSlice } from "../../store/alignmentSlice";
+
+const {
+  selectors: { getCurrentCamera, getCurrentCameraView },
+  actions: { setCameraView, resetCamera, resetAllCameras },
+} = alignmentSlice;
 
 export const CameraControls = () => {
   const dispatch = useDispatch();
-  const currentCameraView = useSelector((state: RootState) =>
-    getCurrentCameraView(state),
-  );
-  const currentCamera = useSelector((state: RootState) =>
-    getCurrentCamera(state),
-  );
+  const currentCamera = useSelector(getCurrentCamera);
+  const currentCameraView = useSelector(getCurrentCameraView);
 
   const cameraViews = [
     { id: "perspective" as const, label: "Perspective", icon: "👁️" },
