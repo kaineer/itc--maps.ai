@@ -40,14 +40,51 @@ const TEST_BUILDINGS = [
   },
 ];
 
-// Simple test model - use null modelObject to trigger fallback in calculateModelBoundingBox
+// Simple test model with box geometry
 const TEST_MODEL: ModelData = {
   id: "test-model",
-  modelObject: null,
+  modelObject: {
+    geometry: {
+      boundingBox: null,
+      computeBoundingBox: function () {
+        this.boundingBox = {
+          min: { x: -5, y: 0, z: -5 },
+          max: { x: 5, y: 10, z: 5 },
+          getSize: function (target) {
+            target.x = 10;
+            target.y = 10;
+            target.z = 10;
+            return target;
+          },
+          getCenter: function (target) {
+            target.x = 0;
+            target.y = 5;
+            target.z = 0;
+            return target;
+          },
+        };
+      },
+    },
+  },
   metadata: {
     fileFormat: "test",
     vertexCount: 8,
-    boundingBox: undefined,
+    boundingBox: {
+      min: { x: -5, y: 0, z: -5 },
+      max: { x: 5, y: 10, z: 5 },
+      getSize: function (target) {
+        target.x = 10;
+        target.y = 10;
+        target.z = 10;
+        return target;
+      },
+      getCenter: function (target) {
+        target.x = 0;
+        target.y = 5;
+        target.z = 0;
+        return target;
+      },
+    },
   },
 };
 

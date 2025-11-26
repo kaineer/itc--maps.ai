@@ -25,7 +25,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   useEffect(() => {
     if (!enabled) return;
 
-    // Configure camera properties for top view
+    // Configure camera properties for top view (only on initialization)
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
     camera.up.set(0, 0, 1); // Z-up coordinate system
@@ -37,7 +37,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     if (onCameraUpdate) {
       onCameraUpdate(camera);
     }
-  }, [enabled, cameraState, camera, onCameraUpdate]);
+  }, [enabled, camera, onCameraUpdate]);
 
   useFrame(() => {
     if (!enabled || !currentModel) return;
@@ -58,9 +58,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     const center = new Vector3();
     boundingBox.getCenter(center);
 
-    // Position camera above the model
-    camera.position.set(...cameraState.position);
-    camera.lookAt(...cameraState.target);
+    // Position camera above the model (keep current position for manual movement)
+    // Only update target to look at model center
+    camera.lookAt(center.x, 0, center.z);
 
     // For orthographic camera, adjust bounds based on model size
     if (camera instanceof OrthographicCamera) {
@@ -76,7 +76,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     // Update projection matrix
     camera.updateProjectionMatrix();
 
-    // Update camera state in Redux
+    // Update camera state in Redux (only target, position is managed by user)
     dispatch(
       updateCameraState({
         view: "top",

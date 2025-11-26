@@ -75,6 +75,10 @@ export const buildingsSlice = createSlice({
       state.filters.searchQuery = "";
       state.filters.hasModel = null;
     },
+    // Set buildings directly (for testing and development)
+    setBuildings: (state, action: PayloadAction<Building[]>) => {
+      state.buildings = action.payload;
+    },
     // Reset entire buildings state to initial values
     resetBuildings: (state) => {
       state.buildings = [];
@@ -159,6 +163,7 @@ export const {
   setSearchQuery,
   setHasModelFilter,
   clearFilters,
+  setBuildings,
   resetBuildings,
 } = buildingsSlice.actions;
 

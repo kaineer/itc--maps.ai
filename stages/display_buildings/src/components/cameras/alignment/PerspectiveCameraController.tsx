@@ -1,47 +1,34 @@
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
-import { PerspectiveCamera, Vector3 } from "three";
-import { useAppDispatch, useAppSelector } from "../../../store/hooks";
-import { alignmentSlice } from "../alignmentSlice";
+import { Vector3, PerspectiveCamera } from "three";
+import { useDispatch, useSelector } from "react-redux";
+import { alignmentSlice } from "../../../store/alignmentSlice";
+import { calculateModelBoundingBox } from "../../../utils/modelTransform";
 
 interface Props {
   enabled: boolean;
-  onCameraUpdate?: (camera: PerspectiveCamera) => void;
+  onCameraUpdate?: (camera: any) => void;
 }
 
 export const PerspectiveCameraController = ({
   enabled,
   onCameraUpdate,
 }: Props) => {
-  const cameraRef = useRef<PerspectiveCamera>(null);
-  const { scene, setDefaultCamera } = useThree();
-  const dispatch = useAppDispatch();
-  const alignmentState = useAppSelector((state) => state.alignment);
+  const { camera } = useThree();
+  const dispatch = useDispatch();
 
-  // Camera configuration
-  const cameraDistance = 50;
-  const fov = 60;
-  const nearPlane = 0.1;
-  const farPlane = 1000;
-  const orbitRadius = 30;
-  const orbitSpeed = 0.002;
+  const { getSelectedModel, getPerspectiveCameraState } =
+    alignmentSlice.selectors;
+  const { updateCameraState } = alignmentSlice.actions;
+  const currentModel = useSelector(getSelectedModel);
+  const cameraState = useSelector(getPerspectiveCameraState);
 
   useEffect(() => {
-    if (!cameraRef.current || !enabled) return;
+    if (!enabled) return;
 
-    const camera = cameraRef.current;
-
-    // Set as default camera when enabled
-    if (enabled) {
-      setDefaultCamera(camera);
-    }
-
-    // Configure camera properties
-    camera.fov = fov;
-    camera.near = nearPlane;
-    camera.far = farPlane;
-    camera.position.set(cameraDistance, cameraDistance, cameraDistance);
-    camera.lookAt(0, 0, 0);
+    // Configure camera properties for perspective view (only on initialization)
+    camera.position.set(...cameraState.position);
+    camera.lookAt(...cameraState.target);
     camera.up.set(0, 0, 1); // Z-up coordinate system
 
     // Update camera projection matrix
@@ -51,18 +38,16 @@ export const PerspectiveCameraController = ({
     if (onCameraUpdate) {
       onCameraUpdate(camera);
     }
-  }, [enabled, setDefaultCamera, onCameraUpdate]);
+  }, [enabled, camera, onCameraUpdate]);
 
-  useFrame((state, delta) => {
-    if (!cameraRef.current || !enabled || !alignmentState.currentModel) return;
-
-    const camera = cameraRef.current;
-    const model = alignmentState.currentModel;
+  useFrame(() => {
+    if (!enabled || !currentModel) return;
 
     // Calculate bounding box for the model
-    const boundingBox = model.geometry.boundingBox;
+    const boundingBox =
+      currentModel.metadata.boundingBox ||
+      calculateModelBoundingBox(currentModel);
     if (!boundingBox) {
-      model.geometry.computeBoundingBox();
       return;
     }
 
@@ -70,36 +55,22 @@ export const PerspectiveCameraController = ({
     const center = new Vector3();
     boundingBox.getCenter(center);
 
-    // Calculate model dimensions for camera distance
-    const size = new Vector3();
-    boundingBox.getSize(size);
-    const maxDimension = Math.max(size.x, size.y, size.z);
-    const optimalDistance = maxDimension * 2;
-
-    // Smooth orbit around the model
-    const time = state.clock.getElapsedTime();
-    const orbitX = center.x + Math.cos(time * orbitSpeed) * orbitRadius;
-    const orbitZ = center.z + Math.sin(time * orbitSpeed) * orbitRadius;
-
-    // Position camera with smooth orbit
-    camera.position.set(orbitX, optimalDistance * 0.7, orbitZ);
+    // Position camera based on current position (keep for manual movement)
+    // Only update target to look at model center
     camera.lookAt(center.x, center.y, center.z);
 
-    // Adjust field of view based on model size for better viewing
-    const dynamicFov = Math.min(fov, 45 + maxDimension * 0.5);
-    if (Math.abs(camera.fov - dynamicFov) > 0.1) {
-      camera.fov = dynamicFov;
+    // Update field of view for perspective camera (only if needed)
+    if (camera instanceof PerspectiveCamera && camera.fov !== cameraState.fov) {
+      camera.fov = cameraState.fov;
       camera.updateProjectionMatrix();
     }
 
-    // Update camera state in Redux
+    // Update camera state in Redux (only target and fov, position is managed by user)
     dispatch(
-      alignmentSlice.actions.updateCameraState({
+      updateCameraState({
         view: "perspective",
         cameraState: {
-          position: [camera.position.x, camera.position.y, camera.position.z],
           target: [center.x, center.y, center.z],
-          fov: camera.fov,
         },
       }),
     );
@@ -110,18 +81,5 @@ export const PerspectiveCameraController = ({
     }
   });
 
-  if (!enabled) {
-    return null;
-  }
-
-  return (
-    <PerspectiveCamera
-      ref={cameraRef}
-      makeDefault={enabled}
-      position={[cameraDistance, cameraDistance, cameraDistance]}
-      fov={fov}
-      near={nearPlane}
-      far={farPlane}
-    />
-  );
+  return null;
 };
