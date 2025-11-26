@@ -10,6 +10,7 @@ This project is organized with a single entry point for all information:
 - **`docs/README.md`** - Main documentation index
 - **`docs/guides/`** - How-to guides and tutorials
 - **`docs/knowledge/`** - Project knowledge base
+- **`docs/tmp/summary.md`** - Current project status and development summary
 
 ### 🔧 Development
 - **`docs/guides/aliases.md`** - Git aliases and development commands
@@ -41,6 +42,8 @@ The project includes useful development commands defined in `docs/guides/aliases
 ### Getting Help
 
 For detailed information about any aspect of the project, refer to the documentation in the `docs/` directory. All project knowledge, guides, and configuration details are accessible through this centralized structure.
+
+**For current development status and next steps, check `docs/tmp/summary.md` at the start of each session.**
 
 ## Contributing
 
