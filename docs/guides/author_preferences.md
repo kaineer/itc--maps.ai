@@ -204,3 +204,68 @@ git config --global core.pager cat
 - **Efficiency**: Avoid delays in automated workflows
 - **User Experience**: Prevent confusion when commands appear to "hang"
 - **Consistency**: Ensure predictable behavior across all environments
+
+## Redux Slice Access Preferences
+
+### Slice Access Patterns
+Access to Redux slices **MUST** be limited to using selectors and actions from the slice itself. Direct access to the root state should be avoided to maintain encapsulation and type safety.
+
+#### Preferred Pattern
+
+```typescript
+// ✅ Correct - use slice selectors and actions
+import { alignmentSlice } from './alignmentSlice';
+
+// Use selectors from the slice
+const currentModel = useAppSelector(alignmentSlice.selectors.getSelectedModel);
+
+// Use actions from the slice
+dispatch(alignmentSlice.actions.setCameraView('top'));
+
+// ❌ Avoid - direct root state access
+const currentModel = useAppSelector(state => state.alignment.currentModel);
+```
+
+#### Selector Usage
+
+```typescript
+// ✅ Correct - destructure selectors first, then use them
+const { getSelectedModel, getModelTransform } = alignmentSlice.selectors;
+const currentModel = useSelector(getSelectedModel);
+const modelTransform = useSelector(getModelTransform);
+
+// ❌ Avoid - direct selector calls in useAppSelector
+const currentModel = useAppSelector(alignmentSlice.selectors.getSelectedModel);
+const modelTransform = useAppSelector(alignmentSlice.selectors.getModelTransform);
+
+// ❌ Avoid - direct state access
+const alignmentState = useAppSelector(state => state.alignment);
+const currentCamera = useAppSelector(state => state.alignment.cameraStates[state.currentCameraView]);
+```
+
+#### Action Usage
+
+```typescript
+// ✅ Correct - destructure actions first, then use them
+const { updateCameraState } = alignmentSlice.actions;
+dispatch(updateCameraState({
+  view: 'top',
+  cameraState: { position: [0, 20, 0], target: [0, 0, 0], fov: 60 }
+}));
+
+// ✅ Also correct - use slice actions directly
+dispatch(alignmentSlice.actions.updateCameraState({
+  view: 'top',
+  cameraState: { position: [0, 20, 0], target: [0, 0, 0], fov: 60 }
+}));
+
+// ❌ Avoid - manual action creation
+dispatch({ type: 'alignment/updateCameraState', payload: { /* ... */ } });
+```
+
+#### Rationale
+- **Encapsulation**: Keeps slice implementation details private
+- **Type Safety**: Selectors and actions provide proper TypeScript typing
+- **Refactoring**: Easier to change slice structure without breaking components
+- **Consistency**: Uniform access patterns across the codebase
+- **Testability**: Selectors can be easily mocked and tested in isolation

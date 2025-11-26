@@ -1,10 +1,8 @@
-import React from "react";
-
-interface ControlsInfoProps {
+interface Props {
   className?: string;
 }
 
-const ControlsInfo = ({ className = "" }: ControlsInfoProps) => {
+export const ControlsInfo = ({ className = "" }: Props) => {
   return (
     <div className={`controls-info ${className}`}>
       <h3>Controls</h3>
@@ -22,5 +20,3 @@ const ControlsInfo = ({ className = "" }: ControlsInfoProps) => {
     </div>
   );
 };
-
-export { ControlsInfo };

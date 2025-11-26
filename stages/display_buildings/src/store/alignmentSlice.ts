@@ -12,14 +12,15 @@ import { Vector3 } from "three";
 
 export type CameraView = "perspective" | "top";
 
+type ModelPosition = [number, number, number];
+
 export interface CameraState {
-  position: [number, number, number];
-  target: [number, number, number];
+  position: ModelPosition;
+  target: ModelPosition;
   fov: number;
 }
 
 type ModelRotation = number;
-type ModelPosition = [number, number, number];
 
 // --- CONFIG
 
@@ -224,9 +225,10 @@ export const alignmentSlice = createSlice({
 
       // Calculate model center for camera positioning
       const modelCenter = new Vector3(
-        initialTransform.position[0],
-        initialTransform.position[1],
-        initialTransform.position[2],
+        ...initialTransform.position,
+        // initialTransform.position[0],
+        // initialTransform.position[1],
+        // initialTransform.position[2],
       );
 
       // Set up cameras
@@ -321,6 +323,10 @@ export const alignmentSlice = createSlice({
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
+
+    // Camera state selectors
+    getTopCameraState: (state) => state.cameraStates.top,
+    getPerspectiveCameraState: (state) => state.cameraStates.perspective,
 
     // Model and polygon selectors
     getSelectedModel: (state) => state.currentModel,
