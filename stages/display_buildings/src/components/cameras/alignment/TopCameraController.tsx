@@ -1,17 +1,17 @@
-import { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
-import { OrthographicCamera, Vector3 } from "three";
+import { Vector3, OrthographicCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
+import { calculateModelBoundingBox } from "../../../utils/modelTransform";
 
 interface Props {
   enabled: boolean;
-  onCameraUpdate?: (camera: OrthographicCamera) => void;
+  onCameraUpdate?: (camera: any) => void;
 }
 
 export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
-  const cameraRef = useRef<OrthographicCamera>(null);
-  const { scene } = useThree();
+  const { camera } = useThree();
   const dispatch = useDispatch();
 
   const { getSelectedModel, getTopCameraState } = alignmentSlice.selectors;
@@ -20,21 +20,15 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const cameraState = useSelector(getTopCameraState);
 
   // Camera configuration
-  const nearPlane = 0.1;
-  const farPlane = 1000;
   const zoomFactor = 1.2;
 
   useEffect(() => {
-    if (!cameraRef.current || !enabled) return;
+    if (!enabled) return;
 
-    const camera = cameraRef.current;
-
-    // Configure camera properties
+    // Configure camera properties for top view
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
     camera.up.set(0, 0, 1); // Z-up coordinate system
-    camera.near = nearPlane;
-    camera.far = farPlane;
 
     // Update camera projection matrix
     camera.updateProjectionMatrix();
@@ -43,18 +37,16 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     if (onCameraUpdate) {
       onCameraUpdate(camera);
     }
-  }, [enabled, onCameraUpdate]);
+  }, [enabled, cameraState, camera, onCameraUpdate]);
 
   useFrame(() => {
-    if (!cameraRef.current || !enabled || !currentModel) return;
-
-    const camera = cameraRef.current;
-    const model = currentModel;
+    if (!enabled || !currentModel) return;
 
     // Calculate bounding box for the model
-    const boundingBox = model.geometry.boundingBox;
+    const boundingBox =
+      currentModel.metadata.boundingBox ||
+      calculateModelBoundingBox(currentModel);
     if (!boundingBox) {
-      model.geometry.computeBoundingBox();
       return;
     }
 
@@ -70,14 +62,16 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
 
-    // Adjust orthographic camera bounds based on model size
-    const maxDimension = Math.max(size.x, size.z);
-    const viewSize = maxDimension * zoomFactor;
+    // For orthographic camera, adjust bounds based on model size
+    if (camera instanceof OrthographicCamera) {
+      const maxDimension = Math.max(size.x, size.z);
+      const viewSize = maxDimension * zoomFactor;
 
-    camera.left = -viewSize / 2;
-    camera.right = viewSize / 2;
-    camera.top = viewSize / 2;
-    camera.bottom = -viewSize / 2;
+      camera.left = -viewSize / 2;
+      camera.right = viewSize / 2;
+      camera.top = viewSize / 2;
+      camera.bottom = -viewSize / 2;
+    }
 
     // Update projection matrix
     camera.updateProjectionMatrix();
@@ -100,17 +94,5 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     }
   });
 
-  if (!enabled) {
-    return null;
-  }
-
-  return (
-    <OrthographicCamera
-      ref={cameraRef}
-      makeDefault={enabled}
-      position={cameraState.position}
-      near={nearPlane}
-      far={farPlane}
-    />
-  );
+  return null;
 };
