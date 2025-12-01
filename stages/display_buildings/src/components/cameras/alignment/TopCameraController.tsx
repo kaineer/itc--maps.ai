@@ -43,9 +43,15 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         // Check if Shift key is pressed
         if (event.shiftKey) {
           // Shift + WASD: Move model
+          console.log(
+            `🔄 Shift+${event.key.toUpperCase()}: Moving model ${direction}`,
+          );
           dispatch(moveModelInDirection(direction));
         } else {
           // WASD only: Move camera
+          console.log(
+            `🎥 ${event.key.toUpperCase()}: Moving camera ${direction}`,
+          );
           dispatch(moveTopCameraInDirection(direction));
         }
         return;
@@ -55,9 +61,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (event.shiftKey) {
         if (event.key === "ArrowUp" || event.key === "Up") {
           event.preventDefault();
+          console.log("📏 Shift+↑: Increasing position step");
           dispatch(increasePositionStep());
         } else if (event.key === "ArrowDown" || event.key === "Down") {
           event.preventDefault();
+          console.log("📏 Shift+↓: Decreasing position step");
           dispatch(decreasePositionStep());
         }
       }

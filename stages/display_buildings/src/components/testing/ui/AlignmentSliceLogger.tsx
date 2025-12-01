@@ -55,6 +55,12 @@ export const AlignmentSliceLogger = ({
   useEffect(() => {
     if (!enabled || !logCameraState) return;
 
+    // Log significant camera position changes outside group
+    const [prevX, prevY, prevZ] = topCameraState.position;
+    console.log(
+      `📷 Camera moved to: [${prevX.toFixed(1)}, ${prevY.toFixed(1)}, ${prevZ.toFixed(1)}]`,
+    );
+
     console.group("📷 Camera State Update");
     console.log("Current Camera View:", currentCameraView);
     console.log("Top Camera:", {
@@ -68,24 +74,50 @@ export const AlignmentSliceLogger = ({
       fov: perspectiveCameraState.fov,
     });
     console.groupEnd();
-  }, [enabled, logCameraState, currentCameraView, topCameraState, perspectiveCameraState]);
+  }, [
+    enabled,
+    logCameraState,
+    currentCameraView,
+    topCameraState,
+    perspectiveCameraState,
+  ]);
 
   // Log model transform changes
   useEffect(() => {
     if (!enabled || !logModelTransform) return;
 
+    // Log model position changes outside group
+    const [posX, posY, posZ] = modelTransform.position;
+    console.log(
+      `🎯 Model at: [${posX.toFixed(1)}, ${posY.toFixed(1)}, ${posZ.toFixed(1)}], Rot: ${modelTransform.rotation}°, Scale: ${modelTransform.scale.toFixed(2)}`,
+    );
+
     console.group("🎯 Model Transform Update");
     console.log("Position:", modelTransform.position);
     console.log("Rotation:", modelTransform.rotation, "degrees");
     console.log("Scale:", modelTransform.scale);
-    console.log("Selected Model:", selectedModel ? `Yes (${selectedModel.id})` : "No");
+    console.log(
+      "Selected Model:",
+      selectedModel ? `Yes (${selectedModel.id})` : "No",
+    );
     console.log("Selected Polygons:", selectedPolygons.length);
     console.groupEnd();
-  }, [enabled, logModelTransform, modelTransform, selectedModel, selectedPolygons]);
+  }, [
+    enabled,
+    logModelTransform,
+    modelTransform,
+    selectedModel,
+    selectedPolygons,
+  ]);
 
   // Log step configuration changes
   useEffect(() => {
     if (!enabled || !logStepConfig) return;
+
+    // Log step changes outside group
+    console.log(
+      `⚙️ Position step: ${positionStep.toFixed(2)}m, Rotation: ${rotationStep}°, Scale: ${scaleStep}%`,
+    );
 
     console.group("⚙️ Step Configuration Update");
     console.log("Position Step:", positionStep.toFixed(2), "meters");
