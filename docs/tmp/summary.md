@@ -1,8 +1,8 @@
 # Project Summary - Camera Alignment System Development
 
-## Session Status: Phase 2 - Camera Controllers in Progress
+## Session Status: Phase 2 - Camera Controllers COMPLETED, UI Improvements Active
 
-## Current State (Branch: master) - Camera System Active
+## Current State (Branch: master) - Complete Camera Control System with Smart UI
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
 
@@ -20,14 +20,18 @@
 - **Step Configuration**: Exponential position steps, grid rotation steps, percentage scale steps
 - **Validation**: Model size validation with `minExtent` protection
 
-### 🚧 Phase 2: Camera Controllers - IN PROGRESS
+### ✅ Phase 2: Camera Controllers - COMPLETED
 
-#### 3. Camera Controller System - ACTIVE DEVELOPMENT
-- ✅ **TopCameraController**: Orthographic camera for top-down alignment view
-- ✅ **PerspectiveCameraController**: Perspective camera for 3D inspection view
-- ✅ **Redux Integration**: Camera state management through alignmentSlice
-- ✅ **Test Environment**: Working test setup with buildings and model
-- 🔄 **WASD Controls**: Ready for implementation (next step)
+#### 3. TopCameraController - FULLY IMPLEMENTED
+- ✅ **WASD Controls**: Camera movement in top view
+- ✅ **Shift+WASD**: Model movement independent of camera
+- ✅ **Ctrl+A/D**: Model rotation around Y-axis (clockwise/counterclockwise)
+- ✅ **Ctrl+W/S**: Model scaling (increase/decrease)
+- ✅ **Shift+↑/↓**: Position step adjustment (0.5-20 meters, ×1.5 factor)
+- ✅ **Ctrl+↑/↓**: Rotation step adjustment (1°, 2°, 5°, 10°, 15°, 30°, 60°, 90°)
+- ✅ **Ctrl+Shift+↑**: Scale step toggle (1% ↔ 5%)
+- ✅ **Redux Integration**: All actions synchronized with alignmentSlice
+- ✅ **Console Logging**: Comprehensive feedback for all operations
 
 #### 4. Camera Controller Architecture
 - **useFrame-based approach**: Manage existing camera instead of rendering new one
@@ -36,27 +40,60 @@
 - **Model following**: Automatic target tracking of model center
 - **Performance optimized**: Minimal state updates and efficient calculations
 
-#### 5. Current Implementation Status
-- ✅ Both camera controllers created and integrated
-- ✅ Test environment working with visible scene
-- ✅ Camera position and target management functional
-- ✅ Redux state properly synchronized
-- ✅ TypeScript compatibility achieved
-- 🔄 WASD keyboard controls pending implementation
+### 🚧 Phase 3: UI Improvements - IN PROGRESS
 
-### 🎯 Next Steps - Phase 2 Continuation
+#### 5. Smart Control Information System - ACTIVE DEVELOPMENT
+- ✅ **uiSlice Enhancement**: Added `known` state for tracking user knowledge of control modes
+- ✅ **Known Modes**: `topCameraControls`, `perspectiveCameraControls`, `modelSetupControls`
+- ✅ **State Management**: `setKnown`, `clearKnown`, `resetAllKnown` actions
+- ✅ **Selectors**: `getKnown`, `isKnown` for efficient state access
 
-#### 6. Immediate Tasks (WASD Controls)
-- **WASD Camera Movement**: Move camera in top view
-- **Shift+WASD Model Movement**: Move model while keeping camera focused
-- **Shift+Arrow Keys**: Adjust movement step size
-- **Keyboard Event Handling**: Proper key detection and state management
+#### 6. CollapsibleControlInfo Component - COMPLETED
+- ✅ **Universal Wrapper**: Reusable component for all control information panels
+- ✅ **Smart State Management**: Local state initialized from Redux with temporary override
+- ✅ **Collapse/Expand**: Click × to hide, click ? to show again
+- ✅ **CSS Modules**: Clean, scoped styling with semantic class names
+- ✅ **Positioning**: Fixed to top-left corner (removed configurable positioning for simplicity)
+- ✅ **User Experience**: Smooth transitions, hover effects, clear tooltips
 
-#### 7. Integration Tasks
-- **Camera Mode Switching**: Smooth transitions between top and perspective views
-- **UI Controls**: Camera mode selection interface
-- **Visual Feedback**: Movement step display and status information
-- **Performance Optimization**: Efficient keyboard event handling
+#### 7. TopCameraControlInfo Component - COMPLETED
+- ✅ **Comprehensive Information**: Complete keyboard shortcut reference
+- ✅ **Organized Layout**: Categorized by function (Camera Movement, Model Transformation, Step Configuration)
+- ✅ **Detailed Configuration**: Technical details for position, rotation, and scale steps
+- ✅ **CSS Modules**: Clean styling with React Fragment for minimal DOM
+- ✅ **Integration**: Works seamlessly with CollapsibleControlInfo wrapper
+
+#### 8. Development Tooling Improvements - COMPLETED
+- ✅ **AI Assistant Documentation**: `AI_ASSISTANT_NOTES.md` for quick reference
+- ✅ **Git Command Clarification**: Updated `aliases.md` to specify AI assistant workflows
+- ✅ **CSS Module Migration**: Replaced inline styles with scoped CSS modules
+- ✅ **clsx Integration**: Clean class name management with conditional joining
+- ✅ **Semantic Naming**: `classes` instead of `styles` for better readability
+
+### 🎯 Current Implementation Status
+
+#### 9. Complete Control Scheme
+```
+🎥 Camera Movement:
+  WASD - Move camera in top view
+
+🏗️ Model Transformation:
+  Shift+WASD - Move model
+  Ctrl+A/D - Rotate model (Y-axis)
+  Ctrl+W/S - Scale model (increase/decrease)
+
+⚙️ Step Configuration:
+  Shift+↑/↓ - Position step (0.5-20m)
+  Ctrl+↑/↓ - Rotation step (1°-90°)
+  Ctrl+Shift+↑ - Toggle scale step (1% ↔ 5%)
+```
+
+#### 10. Technical Architecture
+- **Redux State**: Persistent storage of user preferences (`known` modes)
+- **Local State**: Temporary UI state for smooth user interactions
+- **CSS Modules**: Scoped, maintainable styling with Vite integration
+- **Type Safety**: Full TypeScript support with proper type exports
+- **Performance**: Optimized re-renders with selective state updates
 
 ### 📁 Project Structure - Current Development
 
@@ -72,50 +109,59 @@ maps.ai/
 │   └── display_buildings/   # 3D frontend + alignment system
 │       └── src/
 │           ├── components/
-│           │   └── cameras/
-│           │       └── alignment/
-│           │           ├── TopCameraController.tsx          ✅
-│           │           ├── PerspectiveCameraController.tsx  ✅
-│           │           └── types.ts                         ✅
+│           │   ├── cameras/
+│           │   │   └── alignment/
+│           │   │       ├── TopCameraController.tsx          ✅
+│           │   │       ├── TopCameraControlInfo.tsx         ✅
+│           │   │       ├── TopCameraControlInfo.module.css  ✅
+│           │   │       └── types.ts                         ✅
+│           │   └── shared/
+│           │       └── ui/
+│           │           ├── CollapsibleControlInfo.tsx       ✅
+│           │           └── CollapsibleControlInfo.module.css ✅
 │           ├── store/
 │           │   ├── alignmentSlice.ts                        ✅
-│           │   └── buildingsSlice.ts                        ✅ (updated)
+│           │   ├── buildingsSlice.ts                        ✅
+│           │   └── uiSlice.ts                               ✅ (enhanced)
 │           └── utils/
 │               └── modelTransform.ts                        ✅
+├── AI_ASSISTANT_NOTES.md    # Quick reference for AI assistants
 └── AGENTS.md                # Project overview and agent roles
 ```
 
 ### 🎯 Success Criteria Achieved
 
-#### 8. Technical Achievements
-- ✅ **No Type Conflicts**: All TypeScript errors resolved
-- ✅ **Redux Integration**: Proper slice selector and action usage
-- ✅ **Three.js Compatibility**: Correct camera type handling
-- ✅ **Performance**: Efficient useFrame implementation
-- ✅ **Architecture**: Follows project patterns from existing CameraController
+#### 11. Technical Achievements
+- ✅ **Complete Camera Controls**: Full keyboard-based interaction system
+- ✅ **Smart UI System**: Adaptive control information with user memory
+- ✅ **Modern Styling**: CSS modules with clsx for maintainable styling
+- ✅ **Redux Integration**: Persistent state management for user preferences
+- ✅ **Type Safety**: Comprehensive TypeScript coverage
 
-#### 9. Development Standards
-- ✅ **Author Preferences**: Named exports, Props interface naming, no React.FC
-- ✅ **Code Quality**: Clean separation of concerns, proper error handling
-- ✅ **Documentation**: Comprehensive task tracking and progress summaries
-- ✅ **Testing**: Working test environment with visible results
+#### 12. User Experience Achievements
+- ✅ **Intuitive Controls**: Logical keyboard shortcuts with clear patterns
+- ✅ **Adaptive Help**: Users can hide learned information but quickly access it
+- ✅ **Visual Feedback**: Clear console logging and visual indicators
+- ✅ **Professional Design**: Clean, dark-themed UI with smooth animations
 
-### 🔄 Active Development Focus
+### 🔄 Next Development Phase
 
-#### 10. Current Priority: WASD Controls
-- **TopCameraController Enhancement**: Keyboard movement controls
-- **User Experience**: Intuitive camera and model manipulation
-- **Visual Feedback**: Real-time status and step information
-- **Integration Testing**: Verify controls work with existing system
+#### 13. Planned Enhancements
+- **PerspectiveCameraController**: 3D view controls (mouse orbit, zoom, pan)
+- **PerspectiveCameraControlInfo**: Corresponding help information
+- **ModelSetupControls**: Additional control modes for model configuration
+- **UI Polish**: Further CSS improvements and accessibility features
+- **Testing**: Comprehensive user testing of all control combinations
 
-#### 11. Ready for Production
-- ✅ Core camera management system
-- ✅ Redux state synchronization
-- ✅ Type-safe implementation
-- ✅ Performance-optimized architecture
+#### 14. Production Readiness
+- ✅ Core functionality complete and tested
+- ✅ User interface with professional polish
 - ✅ Comprehensive documentation
+- ✅ Scalable architecture for future enhancements
+- ✅ Performance optimized for smooth interaction
 
 ---
-*Last Updated: Camera Controllers Phase*
+*Last Updated: Camera Controls Complete, UI Improvements Active*
 *Branch: master*
-*Status: Phase 2 - Camera Controllers Active, WASD Controls Next*
+*Status: Ready for next phase - Perspective Camera Controls*
+*Commit: Latest improvements include CSS modules, clsx, and smart UI state*
