@@ -161,18 +161,33 @@ export function calculateModelScaleToPolygons(
 export function calculateTopCameraPosition(
   modelCenter: Vector3,
   modelBBox: Box3,
+  polygonBBox?: Box3,
 ): CameraState {
   // Get model size from bounding box
   const modelSize = new Vector3();
   modelBBox.getSize(modelSize);
 
-  // Calculate camera height: 1.5 times model height
-  const cameraHeight = modelSize.y * 1.5;
+  // Calculate base height from model
+  let maxHeight = modelSize.y;
+
+  // If polygon bounding box is provided, consider its height as well
+  if (polygonBBox) {
+    const polygonSize = new Vector3();
+    polygonBBox.getSize(polygonSize);
+    maxHeight = Math.max(maxHeight, polygonSize.y);
+  }
+
+  // Calculate camera height: 10 times the maximum height (model or polygons)
+  const cameraHeight = maxHeight * 10;
+
+  // Ensure minimum camera height for visibility
+  const minCameraHeight = 20;
+  const finalCameraHeight = Math.max(cameraHeight, minCameraHeight);
 
   // Position camera directly above model center
   const position: [number, number, number] = [
     modelCenter.x,
-    cameraHeight,
+    finalCameraHeight,
     modelCenter.z,
   ];
 
@@ -183,8 +198,6 @@ export function calculateTopCameraPosition(
     position,
     target,
     fov: 60,
-    isOrthographic: true,
-    orthographicSize: Math.max(cameraHeight * 1.5, 30), // Ensure good view coverage
   };
 }
 

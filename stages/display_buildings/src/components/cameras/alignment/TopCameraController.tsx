@@ -54,10 +54,13 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     camera.up.set(0, 1, 0);
 
     // For top-down view, always look downward (negative Y direction)
-    // Calculate lookAt point directly below camera position
+    // Calculate lookAt point based on camera height
+    const cameraHeight = cameraState.position[1];
+    const lookDownDistance = Math.max(cameraHeight * 0.2, 10); // Look 20% down or at least 10 units
+
     const lookAtPoint = new Vector3(
       cameraState.position[0], // Same X as camera
-      cameraState.position[1] - 10, // 10 units below camera
+      cameraState.position[1] - lookDownDistance, // Look downward based on height
       cameraState.position[2], // Same Z as camera
     );
 

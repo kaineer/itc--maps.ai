@@ -90,7 +90,7 @@ const defaultPerspectiveCamera: CameraState = {
 };
 
 const defaultTopCamera: CameraState = {
-  position: [0, 20, 0],
+  position: [0, 50, 0],
   target: [0, 0, 0],
   fov: 60,
 };
@@ -237,6 +237,7 @@ export const alignmentSlice = createSlice({
       state.cameraStates.top = calculateTopCameraPosition(
         modelCenter,
         modelBBox,
+        polygonBBox,
       );
       state.cameraStates.perspective = calculatePerspectiveCameraPosition(
         modelCenter,
