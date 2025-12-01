@@ -1,18 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiSlice, KnownMode } from "../../../store/uiSlice";
 
 interface Props {
   mode: KnownMode;
   children: React.ReactNode;
-  position?: "top-left" | "top-right" | "bottom-left" | "bottom-right";
   className?: string;
 }
 
 export const CollapsibleControlInfo = ({
   mode,
   children,
-  position = "top-left",
   className = "",
 }: Props) => {
   const dispatch = useDispatch();
@@ -20,35 +18,35 @@ export const CollapsibleControlInfo = ({
   const { setKnown } = uiSlice.actions;
 
   const known = useSelector(getKnown);
-  const isKnown = known[mode];
+  const isKnownFromRedux = known[mode];
+
+  // Local state that can be temporarily overridden
+  const [isKnownLocal, setIsKnownLocal] = useState(isKnownFromRedux);
+
+  // Update local state when Redux state changes
+  useEffect(() => {
+    setIsKnownLocal(isKnownFromRedux);
+  }, [isKnownFromRedux]);
 
   const handleClose = () => {
     dispatch(setKnown(mode));
+    setIsKnownLocal(true);
   };
 
   const handleExpand = () => {
-    // For now, we don't have an "expand" action, so we'll just clear the known state
-    // In the future, we might want to add a toggleKnown action
-    // For now, clicking the collapsed version will show the full version
-    // by not marking it as known
-  };
-
-  // Position styles
-  const positionStyles = {
-    "top-left": { top: "20px", left: "20px" },
-    "top-right": { top: "20px", right: "20px" },
-    "bottom-left": { bottom: "20px", left: "20px" },
-    "bottom-right": { bottom: "20px", right: "20px" },
+    // Temporarily show the expanded version without changing Redux state
+    setIsKnownLocal(false);
   };
 
   // If the mode is known (user has closed it), show collapsed version
-  if (isKnown) {
+  if (isKnownLocal) {
     return (
       <div
         className={`collapsible-control-info collapsed ${className}`}
         style={{
           position: "absolute",
-          ...positionStyles[position],
+          top: "20px",
+          left: "20px",
           zIndex: 1000,
           cursor: "pointer",
         }}
@@ -91,7 +89,8 @@ export const CollapsibleControlInfo = ({
       className={`collapsible-control-info expanded ${className}`}
       style={{
         position: "absolute",
-        ...positionStyles[position],
+        top: "20px",
+        left: "20px",
         zIndex: 1000,
         maxWidth: "500px",
       }}
@@ -140,9 +139,7 @@ export const CollapsibleControlInfo = ({
         </button>
 
         {/* Content */}
-        <div style={{ paddingRight: "20px" }}>
-          {children}
-        </div>
+        <div style={{ paddingRight: "20px" }}>{children}</div>
 
         {/* Footer note */}
         <div

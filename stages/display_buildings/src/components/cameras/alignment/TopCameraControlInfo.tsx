@@ -233,11 +233,7 @@ export const TopCameraControlInfo = ({
   );
 
   return (
-    <CollapsibleControlInfo
-      mode="topCameraControls"
-      position="top-left"
-      className={className}
-    >
+    <CollapsibleControlInfo mode="topCameraControls" className={className}>
       {content}
     </CollapsibleControlInfo>
   );
