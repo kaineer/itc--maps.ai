@@ -10,6 +10,8 @@ import {
 import { Building, Scale } from "../types/types";
 import { Vector3 } from "three";
 
+export type WorldDirection = "north" | "south" | "east" | "west";
+
 export type CameraView = "perspective" | "top";
 
 type ModelPosition = [number, number, number];
@@ -32,7 +34,7 @@ interface MovementFunction {
   (step: number, origin: ModelPosition): ModelPosition;
 }
 
-const moveModel: { [id: string]: MovementFunction } = {
+const movePosition: { [id in WorldDirection]: MovementFunction } = {
   north: (step, [x, y, z]) => [x, y, z - step],
   east: (step, [x, y, z]) => [x + step, y, z],
   south: (step, [x, y, z]) => [x, y, z + step],
@@ -247,14 +249,22 @@ export const alignmentSlice = createSlice({
     },
 
     // Model transformation actions
-    moveModelInDirection: (
-      state,
-      action: PayloadAction<"north" | "south" | "east" | "west">,
-    ) => {
+    moveModelInDirection: (state, action: PayloadAction<WorldDirection>) => {
       const direction = action.payload;
-      state.modelTransform.position = moveModel[direction](
+      state.modelTransform.position = movePosition[direction](
         state.positionStep,
         state.modelTransform.position,
+      );
+    },
+
+    moveTopCameraInDirection: (
+      state,
+      action: PayloadAction<WorldDirection>,
+    ) => {
+      const direction = action.payload;
+      state.cameraStates.top.position = movePosition[direction](
+        state.positionStep,
+        state.cameraStates.top.position,
       );
     },
 

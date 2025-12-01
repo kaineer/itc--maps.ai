@@ -1,8 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Vector3, OrthographicCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/alignmentSlice";
+import { alignmentSlice, WorldDirection } from "../../../store/alignmentSlice";
 import { calculateModelBoundingBox } from "../../../utils/modelTransform";
 
 interface Props {
@@ -15,12 +15,36 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const dispatch = useDispatch();
 
   const { getSelectedModel, getTopCameraState } = alignmentSlice.selectors;
-  const { updateCameraState } = alignmentSlice.actions;
+  const { updateCameraState, moveTopCameraInDirection } =
+    alignmentSlice.actions;
   const currentModel = useSelector(getSelectedModel);
   const cameraState = useSelector(getTopCameraState);
 
   // Camera configuration
   const zoomFactor = 1.2;
+
+  // Key to direction mapping
+  const keyToDirection: { [key: string]: WorldDirection } = {
+    w: "north",
+    a: "west",
+    s: "south",
+    d: "east",
+  };
+
+  // Keyboard event handler
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabled) return;
+
+      const direction = keyToDirection[event.key.toLowerCase()];
+
+      if (direction) {
+        event.preventDefault();
+        dispatch(moveTopCameraInDirection(direction));
+      }
+    },
+    [enabled, dispatch, moveTopCameraInDirection],
+  );
 
   useEffect(() => {
     if (!enabled) return;
@@ -38,6 +62,17 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       onCameraUpdate(camera);
     }
   }, [enabled, camera, onCameraUpdate]);
+
+  // Add keyboard event listeners
+  useEffect(() => {
+    if (!enabled) return;
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [enabled, handleKeyDown]);
 
   useFrame(() => {
     if (!enabled || !currentModel) return;
