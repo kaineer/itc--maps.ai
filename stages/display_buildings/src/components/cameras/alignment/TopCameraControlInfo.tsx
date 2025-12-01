@@ -1,11 +1,15 @@
 import React from "react";
+import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
 
 interface Props {
   showDetailed?: boolean;
   className?: string;
 }
 
-export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Props) => {
+export const TopCameraControlInfo = ({
+  showDetailed = true,
+  className = "",
+}: Props) => {
   const controls = [
     {
       category: "🎥 Camera Movement",
@@ -18,15 +22,27 @@ export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Pr
       items: [
         { keys: ["Shift", "W", "A", "S", "D"], description: "Move model" },
         { keys: ["Ctrl", "A", "/", "D"], description: "Rotate model (Y-axis)" },
-        { keys: ["Ctrl", "W", "/", "S"], description: "Scale model (increase/decrease)" },
+        {
+          keys: ["Ctrl", "W", "/", "S"],
+          description: "Scale model (increase/decrease)",
+        },
       ],
     },
     {
       category: "⚙️ Step Configuration",
       items: [
-        { keys: ["Shift", "↑", "/", "↓"], description: "Position step (0.5-20m)" },
-        { keys: ["Ctrl", "↑", "/", "↓"], description: "Rotation step (1°-90°)" },
-        { keys: ["Ctrl", "Shift", "↑"], description: "Toggle scale step (1% ↔ 5%)" },
+        {
+          keys: ["Shift", "↑", "/", "↓"],
+          description: "Position step (0.5-20m)",
+        },
+        {
+          keys: ["Ctrl", "↑", "/", "↓"],
+          description: "Rotation step (1°-90°)",
+        },
+        {
+          keys: ["Ctrl", "Shift", "↑"],
+          description: "Toggle scale step (1% ↔ 5%)",
+        },
       ],
     },
   ];
@@ -34,7 +50,8 @@ export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Pr
   const detailedInfo = [
     {
       title: "Position Step Adjustment",
-      description: "Controls how far the camera/model moves with each key press",
+      description:
+        "Controls how far the camera/model moves with each key press",
       range: "0.5m to 20m",
       factor: "×1.5 multiplier",
     },
@@ -51,66 +68,72 @@ export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Pr
     },
   ];
 
-  return (
-    <div className={`top-camera-control-info ${className}`} style={{
-      backgroundColor: "rgba(0, 0, 0, 0.8)",
-      color: "white",
-      padding: "20px",
-      borderRadius: "8px",
-      fontFamily: "monospace",
-      fontSize: "14px",
-      maxWidth: "500px",
-      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-    }}>
-      <h3 style={{
-        marginTop: 0,
-        marginBottom: "20px",
-        color: "#4fc3f7",
-        borderBottom: "2px solid #4fc3f7",
-        paddingBottom: "8px",
-      }}>
+  const content = (
+    <>
+      <h3
+        style={{
+          marginTop: 0,
+          marginBottom: "20px",
+          color: "#4fc3f7",
+          borderBottom: "2px solid #4fc3f7",
+          paddingBottom: "8px",
+        }}
+      >
         🎮 Top Camera Controls
       </h3>
 
       <div style={{ marginBottom: "20px" }}>
         {controls.map((section, sectionIndex) => (
           <div key={sectionIndex} style={{ marginBottom: "16px" }}>
-            <h4 style={{
-              margin: "0 0 8px 0",
-              color: "#81c784",
-              fontSize: "14px",
-            }}>
+            <h4
+              style={{
+                margin: "0 0 8px 0",
+                color: "#81c784",
+                fontSize: "14px",
+              }}
+            >
               {section.category}
             </h4>
             {section.items.map((item, itemIndex) => (
-              <div key={itemIndex} style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "6px",
-                paddingLeft: "8px",
-              }}>
-                <div style={{
+              <div
+                key={itemIndex}
+                style={{
                   display: "flex",
-                  gap: "4px",
-                  marginRight: "12px",
-                  minWidth: "120px",
-                }}>
+                  alignItems: "center",
+                  marginBottom: "6px",
+                  paddingLeft: "8px",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "4px",
+                    marginRight: "12px",
+                    minWidth: "120px",
+                  }}
+                >
                   {item.keys.map((key, keyIndex) => (
                     <React.Fragment key={keyIndex}>
-                      {keyIndex > 0 && key !== "/" && <span style={{ margin: "0 2px" }}>+</span>}
+                      {keyIndex > 0 && key !== "/" && (
+                        <span style={{ margin: "0 2px" }}>+</span>
+                      )}
                       {key === "/" ? (
-                        <span style={{ margin: "0 4px", color: "#bbb" }}>/</span>
+                        <span style={{ margin: "0 4px", color: "#bbb" }}>
+                          /
+                        </span>
                       ) : (
-                        <kbd style={{
-                          backgroundColor: "#333",
-                          padding: "2px 6px",
-                          borderRadius: "4px",
-                          border: "1px solid #555",
-                          fontSize: "12px",
-                          minWidth: "24px",
-                          textAlign: "center",
-                          display: "inline-block",
-                        }}>
+                        <kbd
+                          style={{
+                            backgroundColor: "#333",
+                            padding: "2px 6px",
+                            borderRadius: "4px",
+                            border: "1px solid #555",
+                            fontSize: "12px",
+                            minWidth: "24px",
+                            textAlign: "center",
+                            display: "inline-block",
+                          }}
+                        >
                           {key}
                         </kbd>
                       )}
@@ -125,30 +148,39 @@ export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Pr
       </div>
 
       {showDetailed && (
-        <div style={{
-          borderTop: "1px solid #444",
-          paddingTop: "16px",
-          marginTop: "16px",
-        }}>
-          <h4 style={{
-            margin: "0 0 12px 0",
-            color: "#ffb74d",
-            fontSize: "14px",
-          }}>
+        <div
+          style={{
+            borderTop: "1px solid #444",
+            paddingTop: "16px",
+            marginTop: "16px",
+          }}
+        >
+          <h4
+            style={{
+              margin: "0 0 12px 0",
+              color: "#ffb74d",
+              fontSize: "14px",
+            }}
+          >
             📊 Detailed Configuration
           </h4>
           {detailedInfo.map((info, index) => (
-            <div key={index} style={{
-              marginBottom: "12px",
-              padding: "8px",
-              backgroundColor: "rgba(255, 255, 255, 0.05)",
-              borderRadius: "4px",
-            }}>
-              <div style={{
-                fontWeight: "bold",
-                color: "#ffb74d",
-                marginBottom: "4px",
-              }}>
+            <div
+              key={index}
+              style={{
+                marginBottom: "12px",
+                padding: "8px",
+                backgroundColor: "rgba(255, 255, 255, 0.05)",
+                borderRadius: "4px",
+              }}
+            >
+              <div
+                style={{
+                  fontWeight: "bold",
+                  color: "#ffb74d",
+                  marginBottom: "4px",
+                }}
+              >
                 {info.title}
               </div>
               <div style={{ color: "#ccc", marginBottom: "4px" }}>
@@ -184,17 +216,29 @@ export const TopCameraControlInfo = ({ showDetailed = true, className = "" }: Pr
         </div>
       )}
 
-      <div style={{
-        marginTop: "16px",
-        paddingTop: "12px",
-        borderTop: "1px solid #444",
-        fontSize: "12px",
-        color: "#888",
-        textAlign: "center",
-      }}>
+      <div
+        style={{
+          marginTop: "16px",
+          paddingTop: "12px",
+          borderTop: "1px solid #444",
+          fontSize: "12px",
+          color: "#888",
+          textAlign: "center",
+        }}
+      >
         <div>All changes are logged in console</div>
         <div>Use AlignmentSliceLogger for detailed state monitoring</div>
       </div>
-    </div>
+    </>
+  );
+
+  return (
+    <CollapsibleControlInfo
+      mode="topCameraControls"
+      position="top-left"
+      className={className}
+    >
+      {content}
+    </CollapsibleControlInfo>
   );
 };

@@ -120,16 +120,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   return (
     <>
-      <div
-        style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          zIndex: 1000,
-        }}
-      >
-        <TopCameraControlInfo />
-      </div>
+      <TopCameraControlInfo />
 
       <Canvas
         camera={{
