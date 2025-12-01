@@ -2,6 +2,24 @@
 
 This document outlines the preferred development practices and tool configurations for this project.
 
+## Important Note for AI Assistants
+
+The commands `git-commit` and `git-push` described in `docs/guides/aliases.md` are **AI assistant commands**, not system commands. When the user requests these commands:
+
+1. **`git-commit`** means: Analyze git changes and create meaningful commits
+   - Check `git --no-pager status` and analyze `git --no-pager diff` output
+   - Create descriptive commit messages in English explaining what and why was changed
+   - Stage all changes with `git add .`
+   - Commit with `git commit -m "Title" -m "Detailed description"`
+   - Verify with `git --no-pager log --oneline -3`
+
+2. **`git-push`** means: Combined commit and push workflow
+   - Check for working tree changes with `git --no-pager status`, run git-commit workflow if needed
+   - Push commits with `git push origin master`
+   - Provide status reporting
+
+These are workflows for the AI to execute, not commands to run in terminal.
+
 ## Package Manager Preferences
 
 ### pnpm Usage
