@@ -6,7 +6,6 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { AlignmentStage } from "../stage/ui/AlignmentStage";
 import { CameraControls } from "./CameraControls";
-import { getCurrentCamera } from "../../store/alignmentSlice";
 import { RootState } from "../../store";
 
 import { Building } from "../../types/types";

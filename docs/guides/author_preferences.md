@@ -205,6 +205,101 @@ git config --global core.pager cat
 - **User Experience**: Prevent confusion when commands appear to "hang"
 - **Consistency**: Ensure predictable behavior across all environments
 
+## Component Testing Methodology
+
+### Dual-Component Testing Pattern
+When developing or testing any component that requires isolated test data or environment, use a dual-component approach to separate testing from production code while maintaining easy switching between versions.
+
+#### Preferred Pattern
+
+```typescript
+// ✅ Correct - test version for component development
+// During development/testing phase
+import { ComponentName } from "./components/path/ComponentName.test-version";
+
+// ✅ Correct - production version when ready
+// After development/testing is complete
+import { ComponentName } from "./components/path/ComponentName";
+```
+
+#### File Naming Convention
+
+```
+components/path/
+├── ComponentName.tsx                    # Production version (clean, no test data)
+├── ComponentName.test-version.tsx       # Generic test version
+├── ComponentName.alignment-test.tsx     # Camera alignment testing
+├── ComponentName.api-test.tsx           # API integration testing
+├── ComponentName.state-test.tsx         # State management testing
+├── ComponentName.ui-test.tsx            # UI component testing
+└── ...
+```
+
+#### Common Suffix Patterns
+- `.test-version` - Generic test version
+- `.alignment-test` - Camera/3D alignment testing
+- `.api-test` - API integration/mocking testing
+- `.state-test` - Redux/state management testing
+- `.ui-test` - UI component/visual testing
+- `.perf-test` - Performance testing
+- `.integration-test` - Integration testing
+
+#### Development Workflow
+
+1. **Create test version**: Duplicate production component with `.test-version` suffix
+2. **Add test data**: Include sample data, mock APIs, and visualization aids as needed
+3. **Modify imports**: Change import to test version with TODO comment indicating when to switch back
+4. **Develop/test features**: Work on component features using isolated test environment
+5. **Switch back**: When features are ready and tested, revert import to production version
+
+#### Example TODO Comments
+
+```typescript
+// During component development
+// TODO: Change back after ComponentName feature development is complete
+import { ComponentName } from "./components/path/ComponentName.test-version";
+
+// During specific feature testing
+// TODO: Change back after camera alignment testing is complete
+import { ViewUI } from "./components/ui/ViewUI.alignment-test";
+
+// During API integration testing
+// TODO: Change back after API integration testing is complete
+import { DataFetcher } from "./components/data/DataFetcher.api-test";
+
+// During state management testing
+// TODO: Change back after Redux state testing is complete
+import { UserProfile } from "./components/profile/UserProfile.state-test";
+```
+
+#### Use Cases and Suffix Recommendations
+
+| Use Case | Recommended Suffix | Example |
+|----------|-------------------|---------|
+| **Camera/3D Alignment Testing** | `.alignment-test` | `ViewUI.alignment-test.tsx` |
+| **API Integration Testing** | `.api-test` | `DataFetcher.api-test.tsx` |
+| **State Management Testing** | `.state-test` | `UserProfile.state-test.tsx` |
+| **UI Component Testing** | `.ui-test` | `Button.ui-test.tsx` |
+| **Performance Testing** | `.perf-test` | `ChartRenderer.perf-test.tsx` |
+| **Integration Testing** | `.integration-test` | `CheckoutFlow.integration-test.tsx` |
+| **Generic Testing** | `.test-version` | `Component.test-version.tsx` |
+
+**Common Testing Scenarios:**
+- **Camera/UI Component Testing**: Isolate camera controllers with test 3D scenes
+- **API Integration Testing**: Mock API responses without affecting production
+- **Complex State Management**: Test Redux/state logic with controlled data
+- **Visual Component Testing**: Test UI components with various data states
+- **Performance Testing**: Isolate performance-sensitive components
+- **Integration Testing**: Test multi-component workflows
+
+#### Rationale
+- **Isolation**: Test environment doesn't affect production code
+- **Safety**: Production version remains clean and deployable
+- **Traceability**: Clear TODO comments track development state
+- **Reversibility**: Easy to switch between test and production
+- **Documentation**: Test files serve as examples and documentation
+- **Flexibility**: Pattern works for any component type, not just specific cases
+
 ## Redux Slice Access Preferences
 
 ### Slice Access Patterns

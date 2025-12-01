@@ -1,7 +1,8 @@
 import React from "react";
 import { Provider, useSelector } from "react-redux";
 import { setupStore } from "./store";
-import { ViewUI } from "./components/ui/ViewUI";
+// TODO: Change back after TopCameraController is made ready
+import { ViewUI } from "./components/ui/ViewUI.alignment-test";
 import { uiSlice } from "./store/uiSlice";
 
 const store = setupStore();
@@ -18,7 +19,7 @@ const AppContent: React.FC = () => {
   );
 };
 
-const App: React.FC = () => {
+const App = () => {
   return (
     <Provider store={store}>
       <AppContent />

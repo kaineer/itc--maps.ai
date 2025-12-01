@@ -20,71 +20,49 @@ const TEST_BUILDINGS = [
   {
     id: "building-1",
     address: "Test Building 1",
-    position: { x: -20, z: -20 },
+    nodes: [
+      { x: -25, z: -25 },
+      { x: -15, z: -25 },
+      { x: -15, z: -15 },
+      { x: -25, z: -15 },
+    ],
     height: 10,
-    area: 100,
+    position: { x: -20, z: -20 },
   },
   {
     id: "building-2",
     address: "Test Building 2",
-    position: { x: 20, z: -20 },
+    nodes: [
+      { x: 15, z: -25 },
+      { x: 25, z: -25 },
+      { x: 25, z: -15 },
+      { x: 15, z: -15 },
+    ],
     height: 15,
-    area: 150,
+    position: { x: 20, z: -20 },
   },
   {
     id: "building-3",
     address: "Test Building 3",
-    position: { x: 0, z: 20 },
+    nodes: [
+      { x: -5, z: 15 },
+      { x: 5, z: 15 },
+      { x: 5, z: 25 },
+      { x: -5, z: 25 },
+    ],
     height: 12,
-    area: 120,
+    position: { x: 0, z: 20 },
   },
 ];
 
-// Simple test model with box geometry
+// Simple test model - use null modelObject to trigger fallback in calculateModelBoundingBox
 const TEST_MODEL: ModelData = {
   id: "test-model",
-  modelObject: {
-    geometry: {
-      boundingBox: null,
-      computeBoundingBox: function () {
-        this.boundingBox = {
-          min: { x: -5, y: 0, z: -5 },
-          max: { x: 5, y: 10, z: 5 },
-          getSize: function (target) {
-            target.x = 10;
-            target.y = 10;
-            target.z = 10;
-            return target;
-          },
-          getCenter: function (target) {
-            target.x = 0;
-            target.y = 5;
-            target.z = 0;
-            return target;
-          },
-        };
-      },
-    },
-  },
+  modelObject: null,
   metadata: {
     fileFormat: "test",
     vertexCount: 8,
-    boundingBox: {
-      min: { x: -5, y: 0, z: -5 },
-      max: { x: 5, y: 10, z: 5 },
-      getSize: function (target) {
-        target.x = 10;
-        target.y = 10;
-        target.z = 10;
-        return target;
-      },
-      getCenter: function (target) {
-        target.x = 0;
-        target.y = 5;
-        target.z = 0;
-        return target;
-      },
-    },
+    boundingBox: undefined,
   },
 };
 
@@ -103,14 +81,14 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   useEffect(() => {
     // Instead of fetching from API, use test data
-    dispatch(buildingsSlice.actions.setBuildings(TEST_BUILDINGS));
+    dispatch(buildingsSlice.actions.setBuildings(TEST_BUILDINGS as any));
 
     // Set up alignment system with test data
     dispatch(selectModelForAlignment(TEST_MODEL));
 
     // Add all test buildings as polygons for alignment
     TEST_BUILDINGS.forEach((building) => {
-      dispatch(addPolygonForAlignment(building));
+      dispatch(addPolygonForAlignment(building as any));
     });
 
     // Start the alignment process
@@ -167,7 +145,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         </mesh>
 
         {/* Test building markers */}
-        {TEST_BUILDINGS.map((building, index) => (
+        {TEST_BUILDINGS.map((building) => (
           <mesh
             key={building.id}
             position={[building.position.x, 0.1, building.position.z]}
