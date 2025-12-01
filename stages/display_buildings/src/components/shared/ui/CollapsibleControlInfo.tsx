@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uiSlice, KnownMode } from "../../../store/uiSlice";
+import styles from "./CollapsibleControlInfo.module.css";
 
 interface Props {
   mode: KnownMode;
@@ -23,11 +24,6 @@ export const CollapsibleControlInfo = ({
   // Local state that can be temporarily overridden
   const [isKnownLocal, setIsKnownLocal] = useState(isKnownFromRedux);
 
-  // Update local state when Redux state changes
-  useEffect(() => {
-    setIsKnownLocal(isKnownFromRedux);
-  }, [isKnownFromRedux]);
-
   const handleClose = () => {
     dispatch(setKnown(mode));
     setIsKnownLocal(true);
@@ -42,116 +38,33 @@ export const CollapsibleControlInfo = ({
   if (isKnownLocal) {
     return (
       <div
-        className={`collapsible-control-info collapsed ${className}`}
-        style={{
-          position: "absolute",
-          top: "20px",
-          left: "20px",
-          zIndex: 1000,
-          cursor: "pointer",
-        }}
+        className={`${styles.container} ${styles.collapsed} ${className}`}
         onClick={handleExpand}
         title="Click to show controls info"
       >
-        <div
-          style={{
-            width: "40px",
-            height: "40px",
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            borderRadius: "8px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            color: "white",
-            fontSize: "20px",
-            fontWeight: "bold",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.3)",
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.9)";
-            e.currentTarget.style.transform = "scale(1.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-        >
-          ?
-        </div>
+        <button className={styles.collapsedButton}>?</button>
       </div>
     );
   }
 
   // Show full version
   return (
-    <div
-      className={`collapsible-control-info expanded ${className}`}
-      style={{
-        position: "absolute",
-        top: "20px",
-        left: "20px",
-        zIndex: 1000,
-        maxWidth: "500px",
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: "rgba(0, 0, 0, 0.8)",
-          color: "white",
-          padding: "20px",
-          borderRadius: "8px",
-          fontFamily: "monospace",
-          fontSize: "14px",
-          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.3)",
-          position: "relative",
-        }}
-      >
+    <div className={`${styles.container} ${styles.expanded} ${className}`}>
+      <div className={styles.panel}>
         {/* Close button */}
         <button
           onClick={handleClose}
-          style={{
-            position: "absolute",
-            top: "8px",
-            right: "8px",
-            background: "none",
-            border: "none",
-            color: "#fff",
-            fontSize: "20px",
-            cursor: "pointer",
-            width: "24px",
-            height: "24px",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "4px",
-            transition: "background-color 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "transparent";
-          }}
+          className={styles.closeButton}
           title="Hide controls (click ? to show again)"
         >
           ×
         </button>
 
         {/* Content */}
-        <div style={{ paddingRight: "20px" }}>{children}</div>
+        <div className={styles.content}>{children}</div>
 
         {/* Footer note */}
-        <div
-          style={{
-            marginTop: "16px",
-            paddingTop: "12px",
-            borderTop: "1px solid #444",
-            fontSize: "12px",
-            color: "#888",
-            textAlign: "center",
-          }}
-        >
+        <div className={styles.footer}>
           <div>Click × to hide. Click ? to show again.</div>
         </div>
       </div>

@@ -1,0 +1,92 @@
+/* CollapsibleControlInfo.module.css */
+
+/* Container for both collapsed and expanded states */
+.container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+/* Collapsed state - question mark button */
+.collapsed {
+  cursor: pointer;
+}
+
+.collapsedButton {
+  width: 40px;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  font-weight: bold;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.collapsedButton:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+/* Expanded state - full control info panel */
+.expanded {
+  max-width: 500px;
+}
+
+.panel {
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+/* Close button in expanded panel */
+.closeButton {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  padding: 0;
+}
+
+.closeButton:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Content area inside expanded panel */
+.content {
+  padding-right: 20px;
+}
+
+/* Footer note at the bottom of expanded panel */
+.footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #444;
+  font-size: 12px;
+  color: #888;
+  text-align: center;
+}

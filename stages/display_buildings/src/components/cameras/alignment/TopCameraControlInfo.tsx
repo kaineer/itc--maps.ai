@@ -1,5 +1,6 @@
 import React from "react";
 import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
+import styles from "./TopCameraControlInfo.module.css";
 
 interface Props {
   showDetailed?: boolean;
@@ -69,78 +70,30 @@ export const TopCameraControlInfo = ({
   ];
 
   const content = (
-    <>
-      <h3
-        style={{
-          marginTop: 0,
-          marginBottom: "20px",
-          color: "#4fc3f7",
-          borderBottom: "2px solid #4fc3f7",
-          paddingBottom: "8px",
-        }}
-      >
-        🎮 Top Camera Controls
-      </h3>
+    <div className={styles.container}>
+      <h3 className={styles.title}>🎮 Top Camera Controls</h3>
 
-      <div style={{ marginBottom: "20px" }}>
+      <div>
         {controls.map((section, sectionIndex) => (
-          <div key={sectionIndex} style={{ marginBottom: "16px" }}>
-            <h4
-              style={{
-                margin: "0 0 8px 0",
-                color: "#81c784",
-                fontSize: "14px",
-              }}
-            >
-              {section.category}
-            </h4>
+          <div key={sectionIndex} className={styles.section}>
+            <h4 className={styles.sectionTitle}>{section.category}</h4>
             {section.items.map((item, itemIndex) => (
-              <div
-                key={itemIndex}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "6px",
-                  paddingLeft: "8px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "flex",
-                    gap: "4px",
-                    marginRight: "12px",
-                    minWidth: "120px",
-                  }}
-                >
+              <div key={itemIndex} className={styles.controlItem}>
+                <div className={styles.keysContainer}>
                   {item.keys.map((key, keyIndex) => (
                     <React.Fragment key={keyIndex}>
                       {keyIndex > 0 && key !== "/" && (
-                        <span style={{ margin: "0 2px" }}>+</span>
+                        <span className={styles.keySeparator}>+</span>
                       )}
                       {key === "/" ? (
-                        <span style={{ margin: "0 4px", color: "#bbb" }}>
-                          /
-                        </span>
+                        <span className={styles.slashSeparator}>/</span>
                       ) : (
-                        <kbd
-                          style={{
-                            backgroundColor: "#333",
-                            padding: "2px 6px",
-                            borderRadius: "4px",
-                            border: "1px solid #555",
-                            fontSize: "12px",
-                            minWidth: "24px",
-                            textAlign: "center",
-                            display: "inline-block",
-                          }}
-                        >
-                          {key}
-                        </kbd>
+                        <kbd className={styles.key}>{key}</kbd>
                       )}
                     </React.Fragment>
                   ))}
                 </div>
-                <span style={{ color: "#e0e0e0" }}>{item.description}</span>
+                <span className={styles.description}>{item.description}</span>
               </div>
             ))}
           </div>
@@ -148,66 +101,36 @@ export const TopCameraControlInfo = ({
       </div>
 
       {showDetailed && (
-        <div
-          style={{
-            borderTop: "1px solid #444",
-            paddingTop: "16px",
-            marginTop: "16px",
-          }}
-        >
-          <h4
-            style={{
-              margin: "0 0 12px 0",
-              color: "#ffb74d",
-              fontSize: "14px",
-            }}
-          >
-            📊 Detailed Configuration
-          </h4>
+        <div className={styles.detailedSection}>
+          <h4 className={styles.detailedTitle}>📊 Detailed Configuration</h4>
           {detailedInfo.map((info, index) => (
-            <div
-              key={index}
-              style={{
-                marginBottom: "12px",
-                padding: "8px",
-                backgroundColor: "rgba(255, 255, 255, 0.05)",
-                borderRadius: "4px",
-              }}
-            >
-              <div
-                style={{
-                  fontWeight: "bold",
-                  color: "#ffb74d",
-                  marginBottom: "4px",
-                }}
-              >
-                {info.title}
-              </div>
-              <div style={{ color: "#ccc", marginBottom: "4px" }}>
+            <div key={index} className={styles.detailedItem}>
+              <div className={styles.detailedItemTitle}>{info.title}</div>
+              <div className={styles.detailedItemDescription}>
                 {info.description}
               </div>
               {info.range && (
-                <div style={{ fontSize: "12px", color: "#aaa" }}>
+                <div className={styles.detailedItemMeta}>
                   <strong>Range:</strong> {info.range}
                 </div>
               )}
               {info.factor && (
-                <div style={{ fontSize: "12px", color: "#aaa" }}>
+                <div className={styles.detailedItemMeta}>
                   <strong>Factor:</strong> {info.factor}
                 </div>
               )}
               {info.steps && (
-                <div style={{ fontSize: "12px", color: "#aaa" }}>
+                <div className={styles.detailedItemMeta}>
                   <strong>Steps:</strong> {info.steps}
                 </div>
               )}
               {info.values && (
-                <div style={{ fontSize: "12px", color: "#aaa" }}>
+                <div className={styles.detailedItemMeta}>
                   <strong>Values:</strong> {info.values}
                 </div>
               )}
               {info.toggle && (
-                <div style={{ fontSize: "12px", color: "#aaa" }}>
+                <div className={styles.detailedItemMeta}>
                   <strong>Toggle:</strong> {info.toggle}
                 </div>
               )}
@@ -216,20 +139,15 @@ export const TopCameraControlInfo = ({
         </div>
       )}
 
-      <div
-        style={{
-          marginTop: "16px",
-          paddingTop: "12px",
-          borderTop: "1px solid #444",
-          fontSize: "12px",
-          color: "#888",
-          textAlign: "center",
-        }}
-      >
-        <div>All changes are logged in console</div>
-        <div>Use AlignmentSliceLogger for detailed state monitoring</div>
+      <div className={styles.footer}>
+        <div className={styles.footerText}>
+          All changes are logged in console
+        </div>
+        <div className={styles.footerText}>
+          Use AlignmentSliceLogger for detailed state monitoring
+        </div>
       </div>
-    </>
+    </div>
   );
 
   return (
