@@ -13,8 +13,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const { getTopCameraState, getModelTransform, getPositionStep } =
-    alignmentSlice.selectors;
+  const { getTopCameraState } = alignmentSlice.selectors;
   const {
     moveTopCameraInDirection,
     moveModelInDirection,
@@ -22,8 +21,6 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     decreasePositionStep,
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
-  const modelTransform = useSelector(getModelTransform);
-  const positionStep = useSelector(getPositionStep);
 
   // Key to direction mapping
   const keyToDirection: { [key: string]: WorldDirection } = {
@@ -46,13 +43,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         // Check if Shift key is pressed
         if (event.shiftKey) {
           // Shift + WASD: Move model
-          console.log(
-            `Shift+${event.key.toUpperCase()}: Moving model ${direction}`,
-          );
           dispatch(moveModelInDirection(direction));
         } else {
           // WASD only: Move camera
-          console.log(`${event.key.toUpperCase()}: Moving camera ${direction}`);
           dispatch(moveTopCameraInDirection(direction));
         }
         return;
@@ -62,11 +55,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (event.shiftKey) {
         if (event.key === "ArrowUp" || event.key === "Up") {
           event.preventDefault();
-          console.log("Shift+↑: Increasing position step");
           dispatch(increasePositionStep());
         } else if (event.key === "ArrowDown" || event.key === "Down") {
           event.preventDefault();
-          console.log("Shift+↓: Decreasing position step");
           dispatch(decreasePositionStep());
         }
       }
@@ -81,17 +72,12 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     ],
   );
 
-  // Log position step changes
-  useEffect(() => {
-    if (!enabled) return;
-    console.log(`Current position step: ${positionStep.toFixed(2)} meters`);
-  }, [enabled, positionStep]);
+  // Position step changes are now logged by AlignmentSliceLogger
 
   useEffect(() => {
     if (!enabled) return;
 
-    // Debug logging (uncomment if needed)
-    // console.log("Camera update:", cameraState.position);
+    // Camera updates are now logged by AlignmentSliceLogger
 
     // Configure camera properties for top view
     camera.position.set(...cameraState.position);
@@ -117,8 +103,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     // Update camera projection matrix
     camera.updateProjectionMatrix();
 
-    // Debug logging (uncomment if needed)
-    // console.log("Camera positioned at:", camera.position);
+    // Camera positioning is now logged by AlignmentSliceLogger
 
     // Notify parent component about camera update
     if (onCameraUpdate) {
@@ -126,11 +111,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     }
   }, [enabled, camera, cameraState, onCameraUpdate]);
 
-  // Log model position changes
-  useEffect(() => {
-    if (!enabled) return;
-    console.log("Model position updated:", modelTransform.position);
-  }, [enabled, modelTransform.position]);
+  // Model position changes are now logged by AlignmentSliceLogger
 
   // Add keyboard event listeners
   useEffect(() => {

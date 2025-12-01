@@ -27,8 +27,7 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
 
     const { position, rotation, scale } = modelTransform;
 
-    // Debug logging (uncomment if needed)
-    // console.log("ModelVisualization - Updating mesh:", { position, rotation, scale });
+    // Debug logging is now handled by AlignmentSliceLogger
 
     // Update mesh position
     meshRef.current.position.set(...position);
@@ -41,20 +40,8 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
   });
 
   if (!enabled || !currentModel) {
-    console.log(
-      "ModelVisualization - Not rendering: enabled=",
-      enabled,
-      "currentModel=",
-      !!currentModel,
-    );
     return null;
   }
-
-  // Debug logging
-  console.log(
-    "ModelVisualization - Rendering model at position:",
-    modelTransform.position,
-  );
 
   // For now, render a simple placeholder cube
   // In the future, this should render the actual model from currentModel
