@@ -4,7 +4,7 @@ import { Canvas } from "@react-three/fiber";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { alignmentSlice } from "../../store/alignmentSlice";
 import { Text } from "@react-three/drei";
-import { ControlsInfo } from "../shared/ui/ControlsInfo";
+import { TopCameraControlInfo } from "../cameras/alignment/TopCameraControlInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
@@ -120,7 +120,16 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   return (
     <>
-      <ControlsInfo />
+      <div
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          zIndex: 1000,
+        }}
+      >
+        <TopCameraControlInfo />
+      </div>
 
       <Canvas
         camera={{
