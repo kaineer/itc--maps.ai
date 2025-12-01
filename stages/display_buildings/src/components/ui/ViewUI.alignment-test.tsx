@@ -9,7 +9,7 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { TopCameraController } from "../cameras/alignment/TopCameraController";
-import { ModelVisualization } from "../cameras/alignment/ModelVisualization";
+import { ModelVisualization } from "../testing/ui/ModelVisualization";
 import { ModelData } from "../../utils/modelTransform";
 
 interface Props {
