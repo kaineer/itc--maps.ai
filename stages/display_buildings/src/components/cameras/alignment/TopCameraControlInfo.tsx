@@ -71,7 +71,7 @@ export const TopCameraControlInfo = ({
   ];
 
   const content = (
-    <div className={classes.container}>
+    <>
       <h3 className={classes.title}>🎮 Top Camera Controls</h3>
 
       <div>
@@ -148,7 +148,7 @@ export const TopCameraControlInfo = ({
           Use AlignmentSliceLogger for detailed state monitoring
         </div>
       </div>
-    </div>
+    </>
   );
 
   return (
