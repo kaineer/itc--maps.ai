@@ -19,6 +19,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     moveModelInDirection,
     increasePositionStep,
     decreasePositionStep,
+    rotateModelAroundY,
+    increaseRotationStep,
+    decreaseRotationStep,
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
 
@@ -40,6 +43,15 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (direction) {
         event.preventDefault();
 
+        if (event.ctrlKey) {
+          if (direction === "east") {
+            dispatch(rotateModelAroundY("clockwise"));
+          } else if (direction === "west") {
+            dispatch(rotateModelAroundY("counterclockwise"));
+          }
+          return;
+        }
+
         // Check if Shift key is pressed
         if (event.shiftKey) {
           // Shift + WASD: Move model
@@ -54,6 +66,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
           );
           dispatch(moveTopCameraInDirection(direction));
         }
+
         return;
       }
 
@@ -69,6 +82,19 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
           dispatch(decreasePositionStep());
         }
       }
+
+      // Handle rotation step adjustment with Ctrl + Arrow keys
+      if (event.ctrlKey) {
+        if (event.key === "ArrowUp" || event.key === "Up") {
+          event.preventDefault();
+          console.log("🔄 Ctrl+↑: Increasing rotation step");
+          dispatch(increaseRotationStep());
+        } else if (event.key === "ArrowDown" || event.key === "Down") {
+          event.preventDefault();
+          console.log("🔄 Ctrl+↓: Decreasing rotation step");
+          dispatch(decreaseRotationStep());
+        }
+      }
     },
     [
       enabled,
@@ -77,6 +103,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       moveModelInDirection,
       increasePositionStep,
       decreasePositionStep,
+      rotateModelAroundY,
+      increaseRotationStep,
+      decreaseRotationStep,
     ],
   );
 
