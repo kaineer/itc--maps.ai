@@ -1,6 +1,6 @@
 import { useEffect, useCallback } from "react";
 import { useThree } from "@react-three/fiber";
-import { Vector3, PerspectiveCamera, OrthographicCamera, Euler } from "three";
+import { Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice, WorldDirection } from "../../../store/alignmentSlice";
 
@@ -13,9 +13,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const { getTopCameraState } = alignmentSlice.selectors;
-  const { moveTopCameraInDirection } = alignmentSlice.actions;
+  const { getTopCameraState, getModelTransform } = alignmentSlice.selectors;
+  const { moveTopCameraInDirection, moveModelInDirection } =
+    alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
+  const modelTransform = useSelector(getModelTransform);
 
   // Key to direction mapping
   const keyToDirection: { [key: string]: WorldDirection } = {
@@ -34,10 +36,22 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       if (direction) {
         event.preventDefault();
-        dispatch(moveTopCameraInDirection(direction));
+
+        // Check if Shift key is pressed
+        if (event.shiftKey) {
+          // Shift + WASD: Move model
+          console.log(
+            `Shift+${event.key.toUpperCase()}: Moving model ${direction}`,
+          );
+          dispatch(moveModelInDirection(direction));
+        } else {
+          // WASD only: Move camera
+          console.log(`${event.key.toUpperCase()}: Moving camera ${direction}`);
+          dispatch(moveTopCameraInDirection(direction));
+        }
       }
     },
-    [enabled, dispatch, moveTopCameraInDirection],
+    [enabled, dispatch, moveTopCameraInDirection, moveModelInDirection],
   );
 
   useEffect(() => {
@@ -78,6 +92,12 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       onCameraUpdate(camera);
     }
   }, [enabled, camera, cameraState, onCameraUpdate]);
+
+  // Log model position changes
+  useEffect(() => {
+    if (!enabled) return;
+    console.log("Model position updated:", modelTransform.position);
+  }, [enabled, modelTransform.position]);
 
   // Add keyboard event listeners
   useEffect(() => {
