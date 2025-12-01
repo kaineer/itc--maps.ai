@@ -9,6 +9,7 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { TopCameraController } from "../cameras/alignment/TopCameraController";
+import { ModelVisualization } from "../cameras/alignment/ModelVisualization";
 import { ModelData } from "../../utils/modelTransform";
 
 interface Props {
@@ -138,11 +139,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         {/* Buildings */}
         <ViewStage buildings={buildings} onBuildingClick={onBuildingSelect} />
 
-        {/* Test model visualization (placeholder cube) */}
-        <mesh position={[0, 5, 0]}>
-          <boxGeometry args={[10, 10, 10]} />
-          <meshStandardMaterial color="#00FF00" />
-        </mesh>
+        {/* Model visualization (syncs with Redux modelTransform) */}
+        <ModelVisualization enabled={true} />
 
         {/* Test building markers */}
         {TEST_BUILDINGS.map((building) => (
