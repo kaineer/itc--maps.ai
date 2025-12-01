@@ -91,7 +91,7 @@ const defaultPerspectiveCamera: CameraState = {
 
 const defaultTopCamera: CameraState = {
   position: [0, 20, 0],
-  target: [0, -10, 0], // Look slightly downward for better top-down orientation
+  target: [0, 0, 0],
   fov: 60,
 };
 

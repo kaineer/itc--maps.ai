@@ -34,7 +34,6 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       if (direction) {
         event.preventDefault();
-        console.log(`Key pressed: ${event.key} -> Direction: ${direction}`);
         dispatch(moveTopCameraInDirection(direction));
       }
     },
@@ -44,43 +43,32 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   useEffect(() => {
     if (!enabled) return;
 
-    console.log("=== CAMERA UPDATE ===");
-    console.log("Camera state from Redux:", cameraState);
-    console.log("Camera type:", camera.type);
-    console.log("Is PerspectiveCamera?", camera instanceof PerspectiveCamera);
-    console.log("Is OrthographicCamera?", camera instanceof OrthographicCamera);
+    // Debug logging (uncomment if needed)
+    // console.log("Camera update:", cameraState.position);
 
     // Configure camera properties for top view
     camera.position.set(...cameraState.position);
 
-    // For top-down view, camera should look down the negative Y axis
-    // Set up vector to positive Z to maintain consistent orientation
-    camera.up.set(0, 0, 1);
+    // Use standard Y-up coordinate system (Three.js default)
+    // For top-down view, camera looks down the negative Y axis
+    camera.up.set(0, 1, 0);
 
-    // Look at target with explicit up vector to prevent flipping
-    camera.lookAt(
-      new Vector3(...cameraState.target).x,
-      new Vector3(...cameraState.target).y,
-      new Vector3(...cameraState.target).z,
+    // For top-down view, always look downward (negative Y direction)
+    // Calculate lookAt point directly below camera position
+    const lookAtPoint = new Vector3(
+      cameraState.position[0], // Same X as camera
+      cameraState.position[1] - 10, // 10 units below camera
+      cameraState.position[2], // Same Z as camera
     );
+
+    // Look at point below camera to maintain consistent downward orientation
+    camera.lookAt(lookAtPoint);
 
     // Update camera projection matrix
     camera.updateProjectionMatrix();
 
-    // Log camera orientation for debugging
-    console.log("Camera position after set:", camera.position);
-    console.log("Camera rotation:", camera.rotation.toArray());
-    console.log("Camera up vector:", camera.up);
-    console.log("Camera projection matrix updated");
-
-    // Log final camera transform
-    const euler = new Euler().setFromRotationMatrix(camera.matrix);
-    console.log(
-      "Camera Euler angles (degrees):",
-      euler.x * (180 / Math.PI),
-      euler.y * (180 / Math.PI),
-      euler.z * (180 / Math.PI),
-    );
+    // Debug logging (uncomment if needed)
+    // console.log("Camera positioned at:", camera.position);
 
     // Notify parent component about camera update
     if (onCameraUpdate) {
