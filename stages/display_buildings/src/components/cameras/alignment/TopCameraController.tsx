@@ -13,11 +13,17 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const { getTopCameraState, getModelTransform } = alignmentSlice.selectors;
-  const { moveTopCameraInDirection, moveModelInDirection } =
-    alignmentSlice.actions;
+  const { getTopCameraState, getModelTransform, getPositionStep } =
+    alignmentSlice.selectors;
+  const {
+    moveTopCameraInDirection,
+    moveModelInDirection,
+    increasePositionStep,
+    decreasePositionStep,
+  } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
   const modelTransform = useSelector(getModelTransform);
+  const positionStep = useSelector(getPositionStep);
 
   // Key to direction mapping
   const keyToDirection: { [key: string]: WorldDirection } = {
@@ -49,10 +55,37 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
           console.log(`${event.key.toUpperCase()}: Moving camera ${direction}`);
           dispatch(moveTopCameraInDirection(direction));
         }
+        return;
+      }
+
+      // Handle position step adjustment with Shift + Arrow keys
+      if (event.shiftKey) {
+        if (event.key === "ArrowUp" || event.key === "Up") {
+          event.preventDefault();
+          console.log("Shift+↑: Increasing position step");
+          dispatch(increasePositionStep());
+        } else if (event.key === "ArrowDown" || event.key === "Down") {
+          event.preventDefault();
+          console.log("Shift+↓: Decreasing position step");
+          dispatch(decreasePositionStep());
+        }
       }
     },
-    [enabled, dispatch, moveTopCameraInDirection, moveModelInDirection],
+    [
+      enabled,
+      dispatch,
+      moveTopCameraInDirection,
+      moveModelInDirection,
+      increasePositionStep,
+      decreasePositionStep,
+    ],
   );
+
+  // Log position step changes
+  useEffect(() => {
+    if (!enabled) return;
+    console.log(`Current position step: ${positionStep.toFixed(2)} meters`);
+  }, [enabled, positionStep]);
 
   useEffect(() => {
     if (!enabled) return;

@@ -14,6 +14,11 @@ export type WorldDirection = "north" | "south" | "east" | "west";
 
 export type CameraView = "perspective" | "top";
 
+// Position step configuration
+export const positionStepMin = 0.5;
+export const positionStepMax = 20;
+export const positionStepFactor = 1.5;
+
 type ModelPosition = [number, number, number];
 
 export interface CameraState {
@@ -40,11 +45,6 @@ const movePosition: { [id in WorldDirection]: MovementFunction } = {
   south: (step, [x, y, z]) => [x, y, z + step],
   west: (step, [x, y, z]) => [x - step, y, z],
 };
-
-// Movement step configuration
-const positionStepMin = 0.5;
-const positionStepMax = 20;
-const positionStepFactor = 1.5;
 
 // Minimal size for bounding box
 const minExtent = 1.0;
@@ -352,6 +352,7 @@ export const alignmentSlice = createSlice({
     }),
 
     // Step configuration selectors
+    getPositionStep: (state) => state.positionStep,
     getRotationStep: (state): RotationStep =>
       rotationSteps[state.rotationStepIndex],
     getScaleStep: (state) => state.scaleStep,
