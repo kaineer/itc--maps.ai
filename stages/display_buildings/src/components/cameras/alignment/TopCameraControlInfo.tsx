@@ -1,6 +1,7 @@
 import React from "react";
 import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
-import styles from "./TopCameraControlInfo.module.css";
+import clsx from "clsx";
+import classes from "./TopCameraControlInfo.module.css";
 
 interface Props {
   showDetailed?: boolean;
@@ -70,30 +71,30 @@ export const TopCameraControlInfo = ({
   ];
 
   const content = (
-    <div className={styles.container}>
-      <h3 className={styles.title}>🎮 Top Camera Controls</h3>
+    <div className={classes.container}>
+      <h3 className={classes.title}>🎮 Top Camera Controls</h3>
 
       <div>
         {controls.map((section, sectionIndex) => (
-          <div key={sectionIndex} className={styles.section}>
-            <h4 className={styles.sectionTitle}>{section.category}</h4>
+          <div key={sectionIndex} className={classes.section}>
+            <h4 className={classes.sectionTitle}>{section.category}</h4>
             {section.items.map((item, itemIndex) => (
-              <div key={itemIndex} className={styles.controlItem}>
-                <div className={styles.keysContainer}>
+              <div key={itemIndex} className={classes.controlItem}>
+                <div className={classes.keysContainer}>
                   {item.keys.map((key, keyIndex) => (
                     <React.Fragment key={keyIndex}>
                       {keyIndex > 0 && key !== "/" && (
-                        <span className={styles.keySeparator}>+</span>
+                        <span className={classes.keySeparator}>+</span>
                       )}
                       {key === "/" ? (
-                        <span className={styles.slashSeparator}>/</span>
+                        <span className={classes.slashSeparator}>/</span>
                       ) : (
-                        <kbd className={styles.key}>{key}</kbd>
+                        <kbd className={classes.key}>{key}</kbd>
                       )}
                     </React.Fragment>
                   ))}
                 </div>
-                <span className={styles.description}>{item.description}</span>
+                <span className={classes.description}>{item.description}</span>
               </div>
             ))}
           </div>
@@ -101,36 +102,36 @@ export const TopCameraControlInfo = ({
       </div>
 
       {showDetailed && (
-        <div className={styles.detailedSection}>
-          <h4 className={styles.detailedTitle}>📊 Detailed Configuration</h4>
+        <div className={classes.detailedSection}>
+          <h4 className={classes.detailedTitle}>📊 Detailed Configuration</h4>
           {detailedInfo.map((info, index) => (
-            <div key={index} className={styles.detailedItem}>
-              <div className={styles.detailedItemTitle}>{info.title}</div>
-              <div className={styles.detailedItemDescription}>
+            <div key={index} className={classes.detailedItem}>
+              <div className={classes.detailedItemTitle}>{info.title}</div>
+              <div className={classes.detailedItemDescription}>
                 {info.description}
               </div>
               {info.range && (
-                <div className={styles.detailedItemMeta}>
+                <div className={classes.detailedItemMeta}>
                   <strong>Range:</strong> {info.range}
                 </div>
               )}
               {info.factor && (
-                <div className={styles.detailedItemMeta}>
+                <div className={classes.detailedItemMeta}>
                   <strong>Factor:</strong> {info.factor}
                 </div>
               )}
               {info.steps && (
-                <div className={styles.detailedItemMeta}>
+                <div className={classes.detailedItemMeta}>
                   <strong>Steps:</strong> {info.steps}
                 </div>
               )}
               {info.values && (
-                <div className={styles.detailedItemMeta}>
+                <div className={classes.detailedItemMeta}>
                   <strong>Values:</strong> {info.values}
                 </div>
               )}
               {info.toggle && (
-                <div className={styles.detailedItemMeta}>
+                <div className={classes.detailedItemMeta}>
                   <strong>Toggle:</strong> {info.toggle}
                 </div>
               )}
@@ -139,11 +140,11 @@ export const TopCameraControlInfo = ({
         </div>
       )}
 
-      <div className={styles.footer}>
-        <div className={styles.footerText}>
+      <div className={classes.footer}>
+        <div className={classes.footerText}>
           All changes are logged in console
         </div>
-        <div className={styles.footerText}>
+        <div className={classes.footerText}>
           Use AlignmentSliceLogger for detailed state monitoring
         </div>
       </div>

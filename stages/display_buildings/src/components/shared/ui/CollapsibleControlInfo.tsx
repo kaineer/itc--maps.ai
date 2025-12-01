@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import clsx from "clsx";
 import { uiSlice, KnownMode } from "../../../store/uiSlice";
-import styles from "./CollapsibleControlInfo.module.css";
+import classes from "./CollapsibleControlInfo.module.css";
 
 interface Props {
   mode: KnownMode;
@@ -38,33 +39,33 @@ export const CollapsibleControlInfo = ({
   if (isKnownLocal) {
     return (
       <div
-        className={`${styles.container} ${styles.collapsed} ${className}`}
+        className={clsx(classes.container, classes.collapsed, className)}
         onClick={handleExpand}
         title="Click to show controls info"
       >
-        <button className={styles.collapsedButton}>?</button>
+        <button className={classes.collapsedButton}>?</button>
       </div>
     );
   }
 
   // Show full version
   return (
-    <div className={`${styles.container} ${styles.expanded} ${className}`}>
-      <div className={styles.panel}>
+    <div className={clsx(classes.container, classes.expanded, className)}>
+      <div className={classes.panel}>
         {/* Close button */}
         <button
           onClick={handleClose}
-          className={styles.closeButton}
+          className={classes.closeButton}
           title="Hide controls (click ? to show again)"
         >
           ×
         </button>
 
         {/* Content */}
-        <div className={styles.content}>{children}</div>
+        <div className={classes.content}>{children}</div>
 
         {/* Footer note */}
-        <div className={styles.footer}>
+        <div className={classes.footer}>
           <div>Click × to hide. Click ? to show again.</div>
         </div>
       </div>
