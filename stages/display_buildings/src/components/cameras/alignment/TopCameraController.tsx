@@ -22,6 +22,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     rotateModelAroundY,
     increaseRotationStep,
     decreaseRotationStep,
+    increaseModelScale,
+    decreaseModelScale,
+    toggleScaleStep,
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
 
@@ -48,6 +51,14 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
             dispatch(rotateModelAroundY("clockwise"));
           } else if (direction === "west") {
             dispatch(rotateModelAroundY("counterclockwise"));
+          } else if (direction === "north") {
+            // Ctrl+W: Increase model scale
+            console.log("📈 Ctrl+W: Increasing model scale");
+            dispatch(increaseModelScale());
+          } else if (direction === "south") {
+            // Ctrl+S: Decrease model scale
+            console.log("📉 Ctrl+S: Decreasing model scale");
+            dispatch(decreaseModelScale());
           }
           return;
         }
@@ -95,6 +106,15 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
           dispatch(decreaseRotationStep());
         }
       }
+
+      // Handle scale step toggle with Ctrl + Shift + Arrow keys
+      if (event.ctrlKey && event.shiftKey) {
+        if (event.key === "ArrowUp" || event.key === "Up") {
+          event.preventDefault();
+          console.log("⚖️ Ctrl+Shift+↑: Toggling scale step");
+          dispatch(toggleScaleStep());
+        }
+      }
     },
     [
       enabled,
@@ -106,6 +126,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       rotateModelAroundY,
       increaseRotationStep,
       decreaseRotationStep,
+      increaseModelScale,
+      decreaseModelScale,
+      toggleScaleStep,
     ],
   );
 
