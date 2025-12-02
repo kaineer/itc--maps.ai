@@ -8,7 +8,7 @@ import { TopCameraControlInfo } from "../cameras/alignment/TopCameraControlInfo"
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
-import { TopCameraController } from "../cameras/alignment/TopCameraController";
+import { PerspectiveCameraController } from "../cameras/alignment/PerspectiveCameraController";
 import { ModelVisualization } from "../testing/ui/ModelVisualization";
 import { AlignmentSliceLogger } from "../testing/ui/AlignmentSliceLogger";
 import { ModelData } from "../../utils/modelTransform";
@@ -124,7 +124,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
       <Canvas
         camera={{
-          position: [0, 50, 0], // Top view starting position
+          position: [50, 30, 50], // Perspective view starting position
           fov: 60,
         }}
         shadows
@@ -155,7 +155,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         ))}
 
         {/* Camera Controller for alignment */}
-        <TopCameraController enabled={true} />
+        <PerspectiveCameraController enabled={true} />
 
         {/* Alignment state logger (debug only) */}
         <AlignmentSliceLogger
@@ -174,7 +174,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           anchorX="center"
           anchorY="middle"
         >
-          Alignment Test - Top View
+          Alignment Test - Perspective View
         </Text>
       </Canvas>
     </>
