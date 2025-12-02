@@ -13,14 +13,14 @@
 
 /* Meta title */
 .metaTitle {
-    color: #1a365d;
+    color: #bbb;
     font-weight: 700;
     white-space: nowrap;
 }
 
 /* Meta value */
 .metaValue {
-    color: #2d3748;
+    color: #ccc;
     font-weight: 500;
     flex: 1;
 }
