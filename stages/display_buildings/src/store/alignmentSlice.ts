@@ -267,6 +267,9 @@ export const alignmentSlice = createSlice({
         state.positionStep,
         state.modelTransform.position,
       );
+
+      // Update perspective camera target to follow model
+      state.cameraStates.perspective.target = state.modelTransform.position;
     },
 
     updateModelPosition: (
@@ -274,6 +277,35 @@ export const alignmentSlice = createSlice({
       action: PayloadAction<{ position: ModelPosition }>,
     ) => {
       state.modelTransform.position = action.payload.position;
+
+      // Update perspective camera target to follow model
+      state.cameraStates.perspective.target = state.modelTransform.position;
+    },
+
+    // Update camera target to follow model position and maintain camera position
+    updateCameraTarget: (
+      state,
+      action: PayloadAction<{ view: CameraView; target: ModelPosition }>,
+    ) => {
+      const { view, target } = action.payload;
+      const cameraState = state.cameraStates[view];
+
+      // Calculate the offset from old target to camera
+      const offset = subtractPosition(cameraState.position, cameraState.target);
+
+      // Update target
+      cameraState.target = target;
+
+      // Update camera position to maintain same offset from new target
+      cameraState.position = addPosition(target, offset);
+
+      // Recalculate camera distance for perspective camera
+      if (view === "perspective" && cameraState.cameraDistance) {
+        cameraState.cameraDistance = distanceBetween(
+          target,
+          cameraState.position,
+        );
+      }
     },
 
     moveTopCameraInDirection: (
