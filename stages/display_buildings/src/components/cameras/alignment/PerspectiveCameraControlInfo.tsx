@@ -2,7 +2,7 @@ import classes from "./PerspectiveCameraControlInfo.module.css";
 
 import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
-import { KeysDisplay } from "../../shared/ui/KeysDisplay";
+import { ControlInfoSection } from "../../shared/ui/ControlInfoSection";
 import { DetailedMetaInfo } from "../../shared/ui/DetailedMetaInfo";
 import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
@@ -67,15 +67,12 @@ export const PerspectiveCameraControlInfo = ({
 
       <div>
         {controls.map((section, sectionIndex) => (
-          <div key={sectionIndex} className={classes.section}>
-            <h4 className={classes.sectionTitle}>{section.category}</h4>
-            {section.items.map((item, itemIndex) => (
-              <div key={itemIndex} className={classes.controlItem}>
-                <KeysDisplay keys={item.keys} />
-                <span className={classes.description}>{item.description}</span>
-              </div>
-            ))}
-          </div>
+          <ControlInfoSection
+            key={sectionIndex}
+            category={section.category}
+            items={section.items}
+            className={classes.section}
+          />
         ))}
       </div>
 
