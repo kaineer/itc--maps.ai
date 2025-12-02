@@ -35,6 +35,13 @@ export const PerspectiveCameraController = ({
   useEffect(() => {
     if (!enabled) return;
 
+    // Debug logging
+    console.log("🎥 PerspectiveCameraController - Updating camera:", {
+      position: cameraState.position,
+      target: cameraState.target,
+      distance: cameraState.cameraDistance,
+    });
+
     // Configure camera properties for perspective view (update when cameraState changes)
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
@@ -91,6 +98,11 @@ export const PerspectiveCameraController = ({
             currentPosition: cameraState.position,
             currentTarget: cameraState.target,
             currentDistance: cameraState.cameraDistance,
+            horizontalOffset: [
+              cameraState.position[0] - cameraState.target[0],
+              cameraState.position[1] - cameraState.target[1],
+              cameraState.position[2] - cameraState.target[2],
+            ],
           });
           dispatch(
             rotateCameraAroundTarget({
@@ -105,6 +117,11 @@ export const PerspectiveCameraController = ({
             currentPosition: cameraState.position,
             currentTarget: cameraState.target,
             currentDistance: cameraState.cameraDistance,
+            horizontalOffset: [
+              cameraState.position[0] - cameraState.target[0],
+              cameraState.position[1] - cameraState.target[1],
+              cameraState.position[2] - cameraState.target[2],
+            ],
           });
           dispatch(
             rotateCameraAroundTarget({
