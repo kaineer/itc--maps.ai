@@ -1,3 +1,6 @@
+/**
+ * Help info about topCameraController
+ */
 import classes from "./TopCameraControlInfo.module.css";
 
 import { Fragment } from "react";

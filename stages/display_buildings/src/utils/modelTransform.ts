@@ -219,17 +219,20 @@ export function calculatePerspectiveCameraPosition(
   const maxHorizontalSize = Math.max(modelSize.x, modelSize.z);
   const distance = maxHorizontalSize * 1.5;
 
-  // Position camera north of model at eye level
+  // Position camera north of model, elevated to see entire model
+  // Use model height plus some extra clearance
+  const cameraHeight = Math.max(modelSize.y * 1.2, EYE_LEVEL_HEIGHT * 2);
   const position: [number, number, number] = [
     modelCenter.x,
-    EYE_LEVEL_HEIGHT, // Eye level height
+    cameraHeight,
     modelCenter.z - distance, // North of model
   ];
 
-  // Target is the center of the model
+  // Target is slightly above the base of the model for better viewing angle
+  const targetHeight = Math.max(modelSize.y * 0.3, EYE_LEVEL_HEIGHT);
   const target: [number, number, number] = [
     modelCenter.x,
-    EYE_LEVEL_HEIGHT,
+    targetHeight,
     modelCenter.z,
   ];
 
