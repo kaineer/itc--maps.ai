@@ -217,7 +217,8 @@ export function calculatePerspectiveCameraPosition(
 
   // Take maximum of width and length, multiply by 1.5
   const maxHorizontalSize = Math.max(modelSize.x, modelSize.z);
-  const distance = maxHorizontalSize * 1.5;
+  // const distance = maxHorizontalSize * 1.5;
+  const distance = maxHorizontalSize * 7;
 
   // Position camera north of model, elevated to see entire model
   // Use model height plus some extra clearance
@@ -236,11 +237,19 @@ export function calculatePerspectiveCameraPosition(
     modelCenter.z,
   ];
 
+  // Calculate distance from camera to target
+  const cameraDistance = Math.sqrt(
+    Math.pow(position[0] - target[0], 2) +
+      Math.pow(position[1] - target[1], 2) +
+      Math.pow(position[2] - target[2], 2),
+  );
+
   return {
     position,
     target,
     fov: 60,
     isOrthographic: false,
+    cameraDistance,
   };
 }
 

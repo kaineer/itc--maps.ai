@@ -25,6 +25,7 @@ export interface CameraState {
   position: ModelPosition;
   target: ModelPosition;
   fov: number;
+  cameraDistance?: number; // Distance from camera to target (for perspective camera)
 }
 
 type ModelRotation = number;
@@ -87,12 +88,14 @@ const defaultPerspectiveCamera: CameraState = {
   position: [10, 10, 10],
   target: [0, 0, 0],
   fov: 60,
+  cameraDistance: 14.142, // sqrt(10^2 + 10^2) approximate initial distance
 };
 
 const defaultTopCamera: CameraState = {
   position: [0, 50, 0],
   target: [0, 0, 0],
   fov: 60,
+  cameraDistance: 50, // Height is the distance in top view
 };
 
 const initialState: AlignmentState = {
@@ -343,6 +346,98 @@ export const alignmentSlice = createSlice({
         state.scaleStep = 1;
       }
     },
+
+    // Perspective camera distance actions
+    increaseCameraDistance: (state) => {
+      const cameraState = state.cameraStates.perspective;
+      if (cameraState.cameraDistance) {
+        // Increase distance by position step
+        cameraState.cameraDistance += state.positionStep;
+        // Update camera position based on new distance
+        updateCameraPositionFromDistance(cameraState);
+      }
+    },
+
+    decreaseCameraDistance: (state) => {
+      const cameraState = state.cameraStates.perspective;
+      if (cameraState.cameraDistance) {
+        // Decrease distance by position step, but don't go below minimum
+        const minDistance = 1.0; // Minimum distance to avoid camera inside model
+        cameraState.cameraDistance = Math.max(
+          minDistance,
+          cameraState.cameraDistance - state.positionStep,
+        );
+        // Update camera position based on new distance
+        updateCameraPositionFromDistance(cameraState);
+      }
+    },
+
+    // Update camera position based on current distance and target
+    updateCameraPositionFromDistance: (
+      state,
+      action: PayloadAction<{ view: CameraView }>,
+    ) => {
+      const view = action.payload.view;
+      const cameraState = state.cameraStates[view];
+
+      if (cameraState.cameraDistance && view === "perspective") {
+        // Calculate direction vector from target to current position
+        const dx = cameraState.position[0] - cameraState.target[0];
+        const dy = cameraState.position[1] - cameraState.target[1];
+        const dz = cameraState.position[2] - cameraState.target[2];
+
+        // Calculate current distance (should match cameraDistance)
+        const currentDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+        if (currentDistance > 0) {
+          // Normalize direction vector
+          const scale = cameraState.cameraDistance / currentDistance;
+          const newDx = dx * scale;
+          const newDy = dy * scale;
+          const newDz = dz * scale;
+
+          // Update camera position
+          cameraState.position[0] = cameraState.target[0] + newDx;
+          cameraState.position[1] = cameraState.target[1] + newDy;
+          cameraState.position[2] = cameraState.target[2] + newDz;
+        }
+      }
+    },
+
+    // Update camera orbit (rotate around target while maintaining distance)
+    rotateCameraAroundTarget: (
+      state,
+      action: PayloadAction<{
+        view: CameraView;
+        horizontalAngle: number;
+        verticalAngle: number;
+      }>,
+    ) => {
+      const { view, horizontalAngle, verticalAngle } = action.payload;
+      const cameraState = state.cameraStates[view];
+
+      if (cameraState.cameraDistance && view === "perspective") {
+        // Convert angles to radians
+        const horizontalRad = (horizontalAngle * Math.PI) / 180;
+        const verticalRad = (verticalAngle * Math.PI) / 180;
+
+        // Calculate spherical coordinates
+        const x =
+          cameraState.cameraDistance *
+          Math.sin(verticalRad) *
+          Math.cos(horizontalRad);
+        const y = cameraState.cameraDistance * Math.cos(verticalRad);
+        const z =
+          cameraState.cameraDistance *
+          Math.sin(verticalRad) *
+          Math.sin(horizontalRad);
+
+        // Update camera position relative to target
+        cameraState.position[0] = cameraState.target[0] + x;
+        cameraState.position[1] = cameraState.target[1] + y;
+        cameraState.position[2] = cameraState.target[2] + z;
+      }
+    },
   },
 
   selectors: {
@@ -371,6 +466,11 @@ export const alignmentSlice = createSlice({
       rotationSteps[state.rotationStepIndex],
     getScaleStep: (state) => state.scaleStep,
 
+    // Camera distance selector
+    getCameraDistance: (state) => (view: CameraView) => {
+      return state.cameraStates[view].cameraDistance;
+    },
+
     // Process state selectors
     getAlignmentProgress: (state) => ({
       isAligning: state.isAligning,
@@ -378,3 +478,24 @@ export const alignmentSlice = createSlice({
     }),
   },
 });
+
+// Helper function to update camera position based on distance
+function updateCameraPositionFromDistance(cameraState: CameraState) {
+  if (!cameraState.cameraDistance) return;
+
+  // Calculate direction vector from target to current position
+  const dx = cameraState.position[0] - cameraState.target[0];
+  const dy = cameraState.position[1] - cameraState.target[1];
+  const dz = cameraState.position[2] - cameraState.target[2];
+
+  // Calculate current distance
+  const currentDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+
+  if (currentDistance > 0) {
+    // Normalize direction vector and scale to new distance
+    const scale = cameraState.cameraDistance / currentDistance;
+    cameraState.position[0] = cameraState.target[0] + dx * scale;
+    cameraState.position[1] = cameraState.target[1] + dy * scale;
+    cameraState.position[2] = cameraState.target[2] + dz * scale;
+  }
+}
