@@ -46,19 +46,25 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (direction) {
         event.preventDefault();
 
+        if (event.altKey && !event.ctrlKey) {
+          if (direction === "north") {
+            // Alt+W: Increase model scale
+            console.log("📈 Alt+W: Increasing model scale");
+            dispatch(increaseModelScale());
+          } else if (direction === "south") {
+            // Alt+S: Decrease model scale
+            console.log("📉 Alt+S: Decreasing model scale");
+            dispatch(decreaseModelScale());
+          }
+
+          return;
+        }
+
         if (event.ctrlKey) {
           if (direction === "east") {
             dispatch(rotateModelAroundY("clockwise"));
           } else if (direction === "west") {
             dispatch(rotateModelAroundY("counterclockwise"));
-          } else if (direction === "north") {
-            // Ctrl+W: Increase model scale
-            console.log("📈 Ctrl+W: Increasing model scale");
-            dispatch(increaseModelScale());
-          } else if (direction === "south") {
-            // Ctrl+S: Decrease model scale
-            console.log("📉 Ctrl+S: Decreasing model scale");
-            dispatch(decreaseModelScale());
           }
           return;
         }
