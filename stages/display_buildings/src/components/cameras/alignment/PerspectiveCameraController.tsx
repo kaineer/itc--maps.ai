@@ -106,14 +106,10 @@ export const PerspectiveCameraController = ({
         }
       }
 
-      // Handle Q/E keys for vertical movement in Z-up coordinate system
+      // Handle Q/E keys for vertical movement in Y-up coordinate system
       if (event.code === "KeyQ") {
         event.preventDefault();
         console.log("⬆️ Q: Moving camera up (Y+ direction)");
-          currentPosition: cameraState.position,
-          positionStep,
-          newZ: cameraState.position[2] + positionStep,
-        });
         // Move camera up (positive Y direction in Y-up coordinate system)
         const newPosition: [number, number, number] = [
           cameraState.position[0],
@@ -149,6 +145,8 @@ export const PerspectiveCameraController = ({
       increaseCameraDistance,
       decreaseCameraDistance,
       rotateCameraAroundTarget,
+      updateCameraState,
+      cameraState,
       positionStep,
     ],
   );
