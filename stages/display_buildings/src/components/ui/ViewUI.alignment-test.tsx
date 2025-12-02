@@ -10,6 +10,7 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { ModelVisualization } from "../testing/ui/ModelVisualization";
+import { CameraTargetDebug } from "../testing/ui/CameraTargetDebug";
 
 import { ModelData } from "../../utils/modelTransform";
 
@@ -122,6 +123,9 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     <>
       {/* UI components outside Canvas (control info, etc.) */}
       <AlignmentUIGroup enabled={true} />
+
+      {/* Debug component to track camera target */}
+      <CameraTargetDebug enabled={true} />
 
       <Canvas
         camera={{
