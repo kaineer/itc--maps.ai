@@ -2,7 +2,11 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
-import { alignmentSlice, WorldDirection } from "../../../store/alignmentSlice";
+import { alignmentSlice } from "../../../store/alignmentSlice";
+import {
+  keyToDirection,
+  getCleanKeyName,
+} from "../../shared/ui/keyToDirection";
 
 interface Props {
   enabled: boolean;
@@ -41,12 +45,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const currentModel = useSelector(getSelectedModel);
 
   // Key to direction mapping using event.code for layout independence
-  const keyToDirection: { [key: string]: WorldDirection } = {
-    KeyW: "north",
-    KeyA: "west",
-    KeyS: "south",
-    KeyD: "east",
-  };
+  // Imported from shared module for consistency across controllers
 
   // Keyboard event handler
   const handleKeyDown = useCallback(
@@ -85,13 +84,13 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         if (event.shiftKey) {
           // Shift + WASD: Move model
           console.log(
-            `🔄 Shift+${event.code.replace("Key", "")}: Moving model ${direction}`,
+            `🔄 Shift+${getCleanKeyName(event.code)}: Moving model ${direction}`,
           );
           dispatch(moveModelInDirection(direction));
         } else {
           // WASD only: Move camera
           console.log(
-            `🎥 ${event.code.replace("Key", "")}: Moving camera ${direction}`,
+            `🎥 ${getCleanKeyName(event.code)}: Moving camera ${direction}`,
           );
           dispatch(moveTopCameraInDirection(direction));
         }
