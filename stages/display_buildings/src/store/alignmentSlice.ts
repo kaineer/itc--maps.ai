@@ -422,25 +422,26 @@ export const alignmentSlice = createSlice({
         const dy = cameraState.position[1] - cameraState.target[1];
         const dz = cameraState.position[2] - cameraState.target[2];
 
-        // Calculate current horizontal distance (projection on XZ plane)
-        const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+        // Calculate current horizontal distance (projection on XY plane for Z-up system)
+        const horizontalDistance = Math.sqrt(dx * dx + dy * dy);
 
         if (horizontalDistance > 0) {
-          // Calculate current horizontal angle
-          const currentAngle = Math.atan2(dz, dx);
+          // Calculate current horizontal angle in XY plane
+          const currentAngle = Math.atan2(dy, dx);
 
-          // Apply horizontal rotation
+          // Apply horizontal rotation (around Z axis)
           const newAngle = currentAngle + (horizontalAngle * Math.PI) / 180;
 
-          // Calculate new X and Z coordinates
+          // Calculate new X and Y coordinates (horizontal plane)
           const newX = horizontalDistance * Math.cos(newAngle);
-          const newZ = horizontalDistance * Math.sin(newAngle);
+          const newY = horizontalDistance * Math.sin(newAngle);
 
-          // Apply vertical rotation (if any)
-          const currentVerticalAngle = Math.atan2(dy, horizontalDistance);
+          // Apply vertical rotation (if any) - around horizontal axis
+          // In Z-up system, vertical angle is relative to XY plane
+          const currentVerticalAngle = Math.atan2(dz, horizontalDistance);
           const newVerticalAngle =
             currentVerticalAngle + (verticalAngle * Math.PI) / 180;
-          const newY = horizontalDistance * Math.tan(newVerticalAngle);
+          const newZ = horizontalDistance * Math.tan(newVerticalAngle);
 
           // Update camera position relative to target
           cameraState.position[0] = cameraState.target[0] + newX;
