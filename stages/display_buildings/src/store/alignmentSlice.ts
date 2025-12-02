@@ -8,6 +8,15 @@ import {
   calculatePerspectiveCameraPosition,
 } from "../utils/modelTransform";
 import { Building, Scale } from "../types/types";
+import {
+  addPosition,
+  subtractPosition,
+  multiplyPosition,
+  distanceBetween,
+  normalizePosition,
+  scaleToLength,
+  directionTo,
+} from "../components/shared/positionMath";
 import { Vector3 } from "three";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
@@ -232,12 +241,7 @@ export const alignmentSlice = createSlice({
       };
 
       // Calculate model center for camera positioning
-      const modelCenter = new Vector3(
-        ...initialTransform.position,
-        // initialTransform.position[0],
-        // initialTransform.position[1],
-        // initialTransform.position[2],
-      );
+      const modelCenter = new Vector3(...initialTransform.position);
 
       // Set up cameras
       state.cameraStates.top = calculateTopCameraPosition(
@@ -385,24 +389,26 @@ export const alignmentSlice = createSlice({
 
       if (cameraState.cameraDistance && view === "perspective") {
         // Calculate direction vector from target to current position
-        const dx = cameraState.position[0] - cameraState.target[0];
-        const dy = cameraState.position[1] - cameraState.target[1];
-        const dz = cameraState.position[2] - cameraState.target[2];
+        const direction = directionTo(cameraState.target, cameraState.position);
 
         // Calculate current distance (should match cameraDistance)
-        const currentDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+        const currentDistance = distanceBetween(
+          cameraState.target,
+          cameraState.position,
+        );
 
         if (currentDistance > 0) {
-          // Normalize direction vector
-          const scale = cameraState.cameraDistance / currentDistance;
-          const newDx = dx * scale;
-          const newDy = dy * scale;
-          const newDz = dz * scale;
+          // Scale direction vector to match desired distance
+          const scaledDirection = scaleToLength(
+            direction,
+            cameraState.cameraDistance,
+          );
 
           // Update camera position
-          cameraState.position[0] = cameraState.target[0] + newDx;
-          cameraState.position[1] = cameraState.target[1] + newDy;
-          cameraState.position[2] = cameraState.target[2] + newDz;
+          cameraState.position = addPosition(
+            cameraState.target,
+            scaledDirection,
+          );
         }
       }
     },
@@ -421,9 +427,8 @@ export const alignmentSlice = createSlice({
 
       if (cameraState.cameraDistance && view === "perspective") {
         // Calculate current direction vector from target to camera
-        const dx = cameraState.position[0] - cameraState.target[0];
-        const dy = cameraState.position[1] - cameraState.target[1];
-        const dz = cameraState.position[2] - cameraState.target[2];
+        const direction = directionTo(cameraState.target, cameraState.position);
+        const [dx, dy, dz] = direction;
 
         // Calculate current horizontal distance (projection on XZ plane for Y-up system)
         const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
@@ -447,16 +452,16 @@ export const alignmentSlice = createSlice({
           const newY = horizontalDistance * Math.tan(newVerticalAngle);
 
           // Update camera position relative to target
-          cameraState.position[0] = cameraState.target[0] + newX;
-          cameraState.position[1] = cameraState.target[1] + newY;
-          cameraState.position[2] = cameraState.target[2] + newZ;
+          cameraState.position = [
+            cameraState.target[0] + newX,
+            cameraState.target[1] + newY,
+            cameraState.target[2] + newZ,
+          ];
 
           // Recalculate actual distance after rotation
-          const newDx = cameraState.position[0] - cameraState.target[0];
-          const newDy = cameraState.position[1] - cameraState.target[1];
-          const newDz = cameraState.position[2] - cameraState.target[2];
-          cameraState.cameraDistance = Math.sqrt(
-            newDx * newDx + newDy * newDy + newDz * newDz,
+          cameraState.cameraDistance = distanceBetween(
+            cameraState.target,
+            cameraState.position,
           );
         }
       }
@@ -468,7 +473,7 @@ export const alignmentSlice = createSlice({
 
       // Define height values
       const EYE_LEVEL_HEIGHT = 1.8; // 1.8 meters - human eye level
-      const GROUND_LEVEL_HEIGHT = 0.5; // 0.5 meters - slightly above ground
+      const GROUND_LEVEL_HEIGHT = 0.05; // 0.5 meters - slightly above ground
 
       // Toggle between modes
       if (cameraState.cameraHeightMode === "groundLevel") {
@@ -476,9 +481,8 @@ export const alignmentSlice = createSlice({
         cameraState.cameraHeightMode = "eyeLevel";
 
         // Calculate direction vector from target to current position
-        const dx = cameraState.position[0] - cameraState.target[0];
-        const dy = cameraState.position[1] - cameraState.target[1];
-        const dz = cameraState.position[2] - cameraState.target[2];
+        const direction = directionTo(cameraState.target, cameraState.position);
+        const [dx, dy, dz] = direction;
 
         // Calculate current horizontal distance
         const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
@@ -492,18 +496,19 @@ export const alignmentSlice = createSlice({
           const newZ = horizontalDistance * Math.sin(currentAngle);
 
           // Update camera position (keep same horizontal position, change height)
-          cameraState.position[0] = cameraState.target[0] + newX;
-          cameraState.position[1] = cameraState.target[1] + EYE_LEVEL_HEIGHT;
-          cameraState.position[2] = cameraState.target[2] + newZ;
+          cameraState.position = [
+            cameraState.target[0] + newX,
+            cameraState.target[1] + EYE_LEVEL_HEIGHT,
+            cameraState.target[2] + newZ,
+          ];
         }
       } else {
         // Switch to ground level (default to eye level if undefined)
         cameraState.cameraHeightMode = "groundLevel";
 
         // Calculate direction vector from target to current position
-        const dx = cameraState.position[0] - cameraState.target[0];
-        const dy = cameraState.position[1] - cameraState.target[1];
-        const dz = cameraState.position[2] - cameraState.target[2];
+        const direction = directionTo(cameraState.target, cameraState.position);
+        const [dx, dy, dz] = direction;
 
         // Calculate current horizontal distance
         const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
@@ -517,18 +522,18 @@ export const alignmentSlice = createSlice({
           const newZ = horizontalDistance * Math.sin(currentAngle);
 
           // Update camera position (keep same horizontal position, change height)
-          cameraState.position[0] = cameraState.target[0] + newX;
-          cameraState.position[1] = cameraState.target[1] + GROUND_LEVEL_HEIGHT;
-          cameraState.position[2] = cameraState.target[2] + newZ;
+          cameraState.position = [
+            cameraState.target[0] + newX,
+            cameraState.target[1] + GROUND_LEVEL_HEIGHT,
+            cameraState.target[2] + newZ,
+          ];
         }
       }
 
       // Recalculate camera distance after height change
-      const newDx = cameraState.position[0] - cameraState.target[0];
-      const newDy = cameraState.position[1] - cameraState.target[1];
-      const newDz = cameraState.position[2] - cameraState.target[2];
-      cameraState.cameraDistance = Math.sqrt(
-        newDx * newDx + newDy * newDy + newDz * newDz,
+      cameraState.cameraDistance = distanceBetween(
+        cameraState.target,
+        cameraState.position,
       );
     },
   },
@@ -577,18 +582,22 @@ function updateCameraPositionFromDistance(cameraState: CameraState) {
   if (!cameraState.cameraDistance) return;
 
   // Calculate direction vector from target to current position
-  const dx = cameraState.position[0] - cameraState.target[0];
-  const dy = cameraState.position[1] - cameraState.target[1];
-  const dz = cameraState.position[2] - cameraState.target[2];
+  const direction = directionTo(cameraState.target, cameraState.position);
 
   // Calculate current distance
-  const currentDistance = Math.sqrt(dx * dx + dy * dy + dz * dz);
+  const currentDistance = distanceBetween(
+    cameraState.target,
+    cameraState.position,
+  );
 
   if (currentDistance > 0) {
-    // Normalize direction vector and scale to new distance
-    const scale = cameraState.cameraDistance / currentDistance;
-    cameraState.position[0] = cameraState.target[0] + dx * scale;
-    cameraState.position[1] = cameraState.target[1] + dy * scale;
-    cameraState.position[2] = cameraState.target[2] + dz * scale;
+    // Scale direction vector to match desired distance
+    const scaledDirection = scaleToLength(
+      direction,
+      cameraState.cameraDistance,
+    );
+
+    // Update camera position
+    cameraState.position = addPosition(cameraState.target, scaledDirection);
   }
 }
