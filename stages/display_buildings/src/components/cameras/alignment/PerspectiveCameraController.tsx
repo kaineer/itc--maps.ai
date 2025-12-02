@@ -35,13 +35,6 @@ export const PerspectiveCameraController = ({
   useEffect(() => {
     if (!enabled) return;
 
-    // Debug logging
-    console.log("🎥 PerspectiveCameraController - Updating camera:", {
-      position: cameraState.position,
-      target: cameraState.target,
-      distance: cameraState.cameraDistance,
-    });
-
     // Configure camera properties for perspective view (update when cameraState changes)
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
@@ -76,34 +69,15 @@ export const PerspectiveCameraController = ({
 
         if (direction === "north") {
           // W key: Move forward (decrease distance to model)
-          console.log("⬆️ W: Moving camera forward (decreasing distance)", {
-            currentPosition: cameraState.position,
-            currentTarget: cameraState.target,
-            currentDistance: cameraState.cameraDistance,
-            positionStep,
-          });
+          console.log("⬆️ W: Moving camera forward (decreasing distance)");
           dispatch(decreaseCameraDistance());
         } else if (direction === "south") {
           // S key: Move backward (increase distance from model)
-          console.log("⬇️ S: Moving camera backward (increasing distance)", {
-            currentPosition: cameraState.position,
-            currentTarget: cameraState.target,
-            currentDistance: cameraState.cameraDistance,
-            positionStep,
-          });
+          console.log("⬇️ S: Moving camera backward (increasing distance)");
           dispatch(increaseCameraDistance());
         } else if (direction === "east") {
           // D key: Rotate camera clockwise around model
-          console.log("🔄 D: Rotating camera clockwise", {
-            currentPosition: cameraState.position,
-            currentTarget: cameraState.target,
-            currentDistance: cameraState.cameraDistance,
-            horizontalOffset: [
-              cameraState.position[0] - cameraState.target[0],
-              cameraState.position[1] - cameraState.target[1],
-              cameraState.position[2] - cameraState.target[2],
-            ],
-          });
+          console.log("🔄 D: Rotating camera clockwise");
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
@@ -113,16 +87,7 @@ export const PerspectiveCameraController = ({
           );
         } else if (direction === "west") {
           // A key: Rotate camera counterclockwise around model
-          console.log("🔄 A: Rotating camera counterclockwise", {
-            currentPosition: cameraState.position,
-            currentTarget: cameraState.target,
-            currentDistance: cameraState.cameraDistance,
-            horizontalOffset: [
-              cameraState.position[0] - cameraState.target[0],
-              cameraState.position[1] - cameraState.target[1],
-              cameraState.position[2] - cameraState.target[2],
-            ],
-          });
+          console.log("🔄 A: Rotating camera counterclockwise");
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
