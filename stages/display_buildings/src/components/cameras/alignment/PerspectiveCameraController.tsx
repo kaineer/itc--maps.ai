@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { useThree, useFrame } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,11 +18,17 @@ export const PerspectiveCameraController = ({
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const { getSelectedModel, getPerspectiveCameraState } =
+  const { getSelectedModel, getPerspectiveCameraState, getPositionStep } =
     alignmentSlice.selectors;
-  const { updateCameraState } = alignmentSlice.actions;
+  const {
+    updateCameraState,
+    increaseCameraDistance,
+    decreaseCameraDistance,
+    rotateCameraAroundTarget,
+  } = alignmentSlice.actions;
   const currentModel = useSelector(getSelectedModel);
   const cameraState = useSelector(getPerspectiveCameraState);
+  const positionStep = useSelector(getPositionStep);
 
   useEffect(() => {
     if (!enabled) return;
@@ -41,6 +47,101 @@ export const PerspectiveCameraController = ({
     }
   }, [enabled, camera, onCameraUpdate]);
 
+  // Keyboard event handler for camera distance control
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (!enabled) return;
+
+      const direction = getDirectionFromKey(event);
+
+      if (direction) {
+        event.preventDefault();
+
+        if (direction === "north") {
+          // W key: Increase camera distance (move away from model)
+          console.log("📈 W: Increasing camera distance");
+          dispatch(increaseCameraDistance());
+        } else if (direction === "south") {
+          // S key: Decrease camera distance (move toward model)
+          console.log("📉 S: Decreasing camera distance");
+          dispatch(decreaseCameraDistance());
+        } else if (direction === "east") {
+          // D key: Rotate camera clockwise around model
+          console.log("🔄 D: Rotating camera clockwise");
+          dispatch(
+            rotateCameraAroundTarget({
+              view: "perspective",
+              horizontalAngle: -5, // Negative for clockwise rotation
+              verticalAngle: 0,
+            }),
+          );
+        } else if (direction === "west") {
+          // A key: Rotate camera counterclockwise around model
+          console.log("🔄 A: Rotating camera counterclockwise");
+          dispatch(
+            rotateCameraAroundTarget({
+              view: "perspective",
+              horizontalAngle: 5, // Positive for counterclockwise rotation
+              verticalAngle: 0,
+            }),
+          );
+        }
+      }
+
+      // Handle Q/E keys for vertical movement in Z-up coordinate system
+      if (event.code === "KeyQ") {
+        event.preventDefault();
+        console.log("⬆️ Q: Moving camera up");
+        // Move camera up (positive Z direction in Z-up coordinate system)
+        const newPosition: [number, number, number] = [
+          cameraState.position[0],
+          cameraState.position[1],
+          cameraState.position[2] + positionStep,
+        ];
+        dispatch(
+          updateCameraState({
+            view: "perspective",
+            cameraState: { position: newPosition },
+          }),
+        );
+      } else if (event.code === "KeyE") {
+        event.preventDefault();
+        console.log("⬇️ E: Moving camera down");
+        // Move camera down (negative Z direction in Z-up coordinate system)
+        const newPosition: [number, number, number] = [
+          cameraState.position[0],
+          cameraState.position[1],
+          cameraState.position[2] - positionStep,
+        ];
+        dispatch(
+          updateCameraState({
+            view: "perspective",
+            cameraState: { position: newPosition },
+          }),
+        );
+      }
+    },
+    [
+      enabled,
+      dispatch,
+      increaseCameraDistance,
+      decreaseCameraDistance,
+      rotateCameraAroundTarget,
+      positionStep,
+    ],
+  );
+
+  // Add keyboard event listeners
+  useEffect(() => {
+    if (!enabled) return;
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [enabled, handleKeyDown]);
+
   useFrame(() => {
     if (!enabled || !currentModel) return;
 
@@ -55,6 +156,9 @@ export const PerspectiveCameraController = ({
     // Calculate center of the model
     const center = new Vector3();
     boundingBox.getCenter(center);
+
+    // Update camera position from Redux state
+    camera.position.set(...cameraState.position);
 
     // Position camera based on current position (keep for manual movement)
     // Only update target to look at model center
