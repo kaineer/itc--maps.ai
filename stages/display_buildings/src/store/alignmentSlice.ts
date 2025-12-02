@@ -156,13 +156,28 @@ export const alignmentSlice = createSlice({
       const newView = action.payload;
       if (newView === "perspective") {
         console.log(
-          "🔄 Switching to perspective - target:",
+          "🔄 Switching to perspective - BEFORE:",
+          "target:",
+          state.cameraStates.perspective.target,
+          "model:",
+          state.modelTransform.position,
+          "target === model?",
+          JSON.stringify(state.cameraStates.perspective.target) ===
+            JSON.stringify(state.modelTransform.position),
+          "STACK TRACE:",
+          new Error().stack,
+        );
+      }
+      state.currentCameraView = newView;
+      if (newView === "perspective") {
+        console.log(
+          "🔄 Switching to perspective - AFTER:",
+          "target:",
           state.cameraStates.perspective.target,
           "model:",
           state.modelTransform.position,
         );
       }
-      state.currentCameraView = newView;
     },
 
     updateCameraState: (
@@ -295,6 +310,30 @@ export const alignmentSlice = createSlice({
         state.cameraStates.perspective.target[2] ===
           defaultPerspectiveCamera.target[2];
 
+      console.log("🎥 isPerspectiveCameraDefault calculation:", {
+        position: state.cameraStates.perspective.position,
+        defaultPosition: defaultPerspectiveCamera.position,
+        target: state.cameraStates.perspective.target,
+        defaultTarget: defaultPerspectiveCamera.target,
+        positionMatch: [
+          state.cameraStates.perspective.position[0] ===
+            defaultPerspectiveCamera.position[0],
+          state.cameraStates.perspective.position[1] ===
+            defaultPerspectiveCamera.position[1],
+          state.cameraStates.perspective.position[2] ===
+            defaultPerspectiveCamera.position[2],
+        ],
+        targetMatch: [
+          state.cameraStates.perspective.target[0] ===
+            defaultPerspectiveCamera.target[0],
+          state.cameraStates.perspective.target[1] ===
+            defaultPerspectiveCamera.target[1],
+          state.cameraStates.perspective.target[2] ===
+            defaultPerspectiveCamera.target[2],
+        ],
+        isPerspectiveCameraDefault,
+      });
+
       if (isTopCameraDefault) {
         state.cameraStates.top = calculateTopCameraPosition(
           modelCenter,
@@ -314,6 +353,10 @@ export const alignmentSlice = createSlice({
           newCamera.target,
           "modelCenter:",
           [modelCenter.x, modelCenter.y, modelCenter.z],
+          "isPerspectiveCameraDefault:",
+          isPerspectiveCameraDefault,
+          "STACK TRACE:",
+          new Error().stack,
         );
         state.cameraStates.perspective = newCamera;
         // Perspective camera initialized
@@ -323,6 +366,11 @@ export const alignmentSlice = createSlice({
           state.cameraStates.perspective.target,
           "model:",
           state.modelTransform.position,
+          "isPerspectiveCameraDefault:",
+          isPerspectiveCameraDefault,
+          "target === default?",
+          JSON.stringify(state.cameraStates.perspective.target) ===
+            JSON.stringify(defaultPerspectiveCamera.target),
         );
       }
 
@@ -355,6 +403,9 @@ export const alignmentSlice = createSlice({
         targetEqualsModel:
           JSON.stringify(cameraState.target) ===
           JSON.stringify(state.modelTransform.position),
+        targetEqualsDefault:
+          JSON.stringify(cameraState.target) ===
+          JSON.stringify(defaultPerspectiveCamera.target),
       });
 
       console.log("🏗️ moveModelInDirection - Camera updated:", {
@@ -396,6 +447,9 @@ export const alignmentSlice = createSlice({
         targetEqualsModel:
           JSON.stringify(cameraState.target) ===
           JSON.stringify(state.modelTransform.position),
+        targetEqualsDefault:
+          JSON.stringify(cameraState.target) ===
+          JSON.stringify(defaultPerspectiveCamera.target),
       });
 
       // Recalculate camera distance
