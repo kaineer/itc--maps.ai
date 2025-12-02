@@ -13,15 +13,15 @@
 
 /* Meta title */
 .metaTitle {
-    color: #333;
-    font-weight: 600;
+    color: #1a365d;
+    font-weight: 700;
     white-space: nowrap;
 }
 
 /* Meta value */
 .metaValue {
-    color: #666;
-    font-weight: 400;
+    color: #2d3748;
+    font-weight: 500;
     flex: 1;
 }
 
@@ -38,14 +38,16 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
     .metaTitle {
-        color: #e2e8f0;
+        color: #90cdf4;
+        font-weight: 700;
     }
 
     .metaValue {
-        color: #a0aec0;
+        color: #cbd5e0;
+        font-weight: 500;
     }
 
     .detailedItemMeta {
-        color: #cbd5e0;
+        color: #e2e8f0;
     }
 }

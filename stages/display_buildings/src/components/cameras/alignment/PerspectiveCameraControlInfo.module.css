@@ -66,7 +66,7 @@
 /* Detailed item title */
 .detailedItemTitle {
     margin: 0 0 6px 0;
-    color: #333;
+    color: #1a365d;
     font-size: 13px;
     font-weight: bold;
 }
@@ -74,7 +74,7 @@
 /* Detailed item description */
 .detailedItemDescription {
     margin: 0 0 8px 0;
-    color: #666;
+    color: #2d3748;
     font-size: 12px;
     line-height: 1.4;
 }
@@ -89,5 +89,21 @@
     .keysContainer {
         margin-bottom: 4px;
         margin-right: 0;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .detailedItemTitle {
+        color: #90cdf4;
+    }
+
+    .detailedItemDescription {
+        color: #cbd5e0;
+    }
+
+    .detailedItem {
+        background-color: rgba(255, 248, 225, 0.1);
+        border-left-color: #ffb74d;
     }
 }
