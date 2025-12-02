@@ -4,7 +4,7 @@ import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
 import { calculateModelBoundingBox } from "../../../utils/modelTransform";
-import { keyToDirection } from "../../shared/ui/keyToDirection";
+import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
 
 interface Props {
   enabled: boolean;

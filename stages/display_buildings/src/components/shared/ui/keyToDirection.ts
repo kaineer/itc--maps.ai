@@ -14,7 +14,7 @@ import { WorldDirection } from "../../../store/alignmentSlice";
  * - KeyS: Physical S key (produces 'ы' in Russian layout, 's' in English)
  * - KeyD: Physical D key (produces 'в' in Russian layout, 'd' in English)
  */
-export const keyToDirection: { [key: string]: WorldDirection } = {
+const keyToDirection: { [key: string]: WorldDirection } = {
   KeyW: "north",
   KeyA: "west",
   KeyS: "south",
@@ -26,7 +26,9 @@ export const keyToDirection: { [key: string]: WorldDirection } = {
  * @param event KeyboardEvent to get direction from
  * @returns WorldDirection or undefined if key is not mapped
  */
-export const getDirectionFromKey = (event: KeyboardEvent): WorldDirection | undefined => {
+export const getDirectionFromKey = (
+  event: KeyboardEvent,
+): WorldDirection | undefined => {
   return keyToDirection[event.code];
 };
 

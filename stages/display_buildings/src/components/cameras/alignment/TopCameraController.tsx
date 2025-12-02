@@ -4,7 +4,7 @@ import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
 import {
-  keyToDirection,
+  getDirectionFromKey,
   getCleanKeyName,
 } from "../../shared/ui/keyToDirection";
 
@@ -52,7 +52,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     (event: KeyboardEvent) => {
       if (!enabled) return;
 
-      const direction = keyToDirection[event.code];
+      const direction = getDirectionFromKey(event);
 
       if (direction) {
         event.preventDefault();
