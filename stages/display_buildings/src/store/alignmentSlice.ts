@@ -422,26 +422,26 @@ export const alignmentSlice = createSlice({
         const dy = cameraState.position[1] - cameraState.target[1];
         const dz = cameraState.position[2] - cameraState.target[2];
 
-        // Calculate current horizontal distance (projection on XY plane for Z-up system)
-        const horizontalDistance = Math.sqrt(dx * dx + dy * dy);
+        // Calculate current horizontal distance (projection on XZ plane for Y-up system)
+        const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
         if (horizontalDistance > 0) {
-          // Calculate current horizontal angle in XY plane
-          const currentAngle = Math.atan2(dy, dx);
+          // Calculate current horizontal angle in XZ plane
+          const currentAngle = Math.atan2(dz, dx);
 
-          // Apply horizontal rotation (around Z axis)
+          // Apply horizontal rotation (around Y axis)
           const newAngle = currentAngle + (horizontalAngle * Math.PI) / 180;
 
-          // Calculate new X and Y coordinates (horizontal plane)
+          // Calculate new X and Z coordinates (horizontal plane)
           const newX = horizontalDistance * Math.cos(newAngle);
-          const newY = horizontalDistance * Math.sin(newAngle);
+          const newZ = horizontalDistance * Math.sin(newAngle);
 
           // Apply vertical rotation (if any) - around horizontal axis
-          // In Z-up system, vertical angle is relative to XY plane
-          const currentVerticalAngle = Math.atan2(dz, horizontalDistance);
+          // In Y-up system, vertical angle is relative to XZ plane
+          const currentVerticalAngle = Math.atan2(dy, horizontalDistance);
           const newVerticalAngle =
             currentVerticalAngle + (verticalAngle * Math.PI) / 180;
-          const newZ = horizontalDistance * Math.tan(newVerticalAngle);
+          const newY = horizontalDistance * Math.tan(newVerticalAngle);
 
           // Update camera position relative to target
           cameraState.position[0] = cameraState.target[0] + newX;

@@ -36,7 +36,7 @@ export const PerspectiveCameraController = ({
     // Configure camera properties for perspective view (only on initialization)
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
-    camera.up.set(0, 0, 1); // Z-up coordinate system
+    camera.up.set(0, 1, 0); // Y-up coordinate system (Three.js default and consistent with TopCameraController)
 
     // Update camera projection matrix
     camera.updateProjectionMatrix();
@@ -58,16 +58,30 @@ export const PerspectiveCameraController = ({
         event.preventDefault();
 
         if (direction === "north") {
-          // W key: Increase camera distance (move away from model)
-          console.log("📈 W: Increasing camera distance");
-          dispatch(increaseCameraDistance());
-        } else if (direction === "south") {
-          // S key: Decrease camera distance (move toward model)
-          console.log("📉 S: Decreasing camera distance");
+          // W key: Move forward (decrease distance to model)
+          console.log("⬆️ W: Moving camera forward (decreasing distance)", {
+            currentPosition: cameraState.position,
+            currentTarget: cameraState.target,
+            currentDistance: cameraState.cameraDistance,
+            positionStep,
+          });
           dispatch(decreaseCameraDistance());
+        } else if (direction === "south") {
+          // S key: Move backward (increase distance from model)
+          console.log("⬇️ S: Moving camera backward (increasing distance)", {
+            currentPosition: cameraState.position,
+            currentTarget: cameraState.target,
+            currentDistance: cameraState.cameraDistance,
+            positionStep,
+          });
+          dispatch(increaseCameraDistance());
         } else if (direction === "east") {
           // D key: Rotate camera clockwise around model
-          console.log("🔄 D: Rotating camera clockwise");
+          console.log("🔄 D: Rotating camera clockwise", {
+            currentPosition: cameraState.position,
+            currentTarget: cameraState.target,
+            currentDistance: cameraState.cameraDistance,
+          });
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
@@ -77,7 +91,11 @@ export const PerspectiveCameraController = ({
           );
         } else if (direction === "west") {
           // A key: Rotate camera counterclockwise around model
-          console.log("🔄 A: Rotating camera counterclockwise");
+          console.log("🔄 A: Rotating camera counterclockwise", {
+            currentPosition: cameraState.position,
+            currentTarget: cameraState.target,
+            currentDistance: cameraState.cameraDistance,
+          });
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
@@ -91,12 +109,16 @@ export const PerspectiveCameraController = ({
       // Handle Q/E keys for vertical movement in Z-up coordinate system
       if (event.code === "KeyQ") {
         event.preventDefault();
-        console.log("⬆️ Q: Moving camera up");
-        // Move camera up (positive Z direction in Z-up coordinate system)
+        console.log("⬆️ Q: Moving camera up (Y+ direction)");
+          currentPosition: cameraState.position,
+          positionStep,
+          newZ: cameraState.position[2] + positionStep,
+        });
+        // Move camera up (positive Y direction in Y-up coordinate system)
         const newPosition: [number, number, number] = [
           cameraState.position[0],
-          cameraState.position[1],
-          cameraState.position[2] + positionStep,
+          cameraState.position[1] + positionStep,
+          cameraState.position[2],
         ];
         dispatch(
           updateCameraState({
@@ -106,12 +128,12 @@ export const PerspectiveCameraController = ({
         );
       } else if (event.code === "KeyE") {
         event.preventDefault();
-        console.log("⬇️ E: Moving camera down");
-        // Move camera down (negative Z direction in Z-up coordinate system)
+        console.log("⬇️ E: Moving camera down (Y- direction)");
+        // Move camera down (negative Y direction in Y-up coordinate system)
         const newPosition: [number, number, number] = [
           cameraState.position[0],
-          cameraState.position[1],
-          cameraState.position[2] - positionStep,
+          cameraState.position[1] - positionStep,
+          cameraState.position[2],
         ];
         dispatch(
           updateCameraState({
