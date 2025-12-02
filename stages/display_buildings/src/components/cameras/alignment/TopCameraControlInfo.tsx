@@ -3,9 +3,11 @@
  */
 import classes from "./TopCameraControlInfo.module.css";
 
-import { Fragment } from "react";
 import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
+import { KeysDisplay } from "../../shared/ui/KeysDisplay";
+import { DetailedMetaInfo } from "../../shared/ui/DetailedMetaInfo";
+import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
 const detailedInfo = [
   {
@@ -26,62 +28,6 @@ const detailedInfo = [
     toggle: "Ctrl+Shift+↑ toggles between values",
   },
 ];
-
-interface DetailedMetaProps {
-  data: Record<string, string | undefined>;
-  prop: string;
-  title: string;
-}
-
-const DetailedMetaInfo = ({ data, prop, title }: DetailedMetaProps) => {
-  const value = data[prop];
-
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <div className={classes.detailedItemMeta}>
-      <strong>{title}:</strong> {value}
-    </div>
-  );
-};
-
-const LoggingInfoFooter = () => {
-  return (
-    <div className={classes.footer}>
-      <div className={classes.footerText}>
-        All changes are logged in console
-      </div>
-      <div className={classes.footerText}>
-        Use AlignmentSliceLogger for detailed state monitoring
-      </div>
-    </div>
-  );
-};
-
-interface KeysDisplayProps {
-  keys: string[];
-}
-
-const KeysDisplay = ({ keys }: KeysDisplayProps) => {
-  return (
-    <div className={classes.keysContainer}>
-      {keys.map((key, keyIndex) => (
-        <Fragment key={keyIndex}>
-          {keyIndex > 0 && key !== "/" && keys[keyIndex - 1] !== "/" && (
-            <span className={classes.keySeparator}>+</span>
-          )}
-          {key === "/" ? (
-            <span className={classes.slashSeparator}>/</span>
-          ) : (
-            <kbd className={classes.key}>{key}</kbd>
-          )}
-        </Fragment>
-      ))}
-    </div>
-  );
-};
 
 interface Props {
   showDetailed?: boolean;

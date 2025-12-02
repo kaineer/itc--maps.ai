@@ -1,8 +1,10 @@
 import classes from "./PerspectiveCameraControlInfo.module.css";
 
-import { Fragment } from "react";
 import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
+import { KeysDisplay } from "../../shared/ui/KeysDisplay";
+import { DetailedMetaInfo } from "../../shared/ui/DetailedMetaInfo";
+import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
 const detailedInfo = [
   {
@@ -25,62 +27,6 @@ const detailedInfo = [
   },
 ];
 
-interface DetailedMetaProps {
-  data: Record<string, string | undefined>;
-  prop: string;
-  title: string;
-}
-
-const DetailedMetaInfo = ({ data, prop, title }: DetailedMetaProps) => {
-  const value = data[prop];
-
-  if (!value) {
-    return null;
-  }
-
-  return (
-    <div className={classes.detailedItemMeta}>
-      <strong>{title}:</strong> {value}
-    </div>
-  );
-};
-
-const LoggingInfoFooter = () => {
-  return (
-    <div className={classes.footer}>
-      <div className={classes.footerText}>
-        All changes are logged in console
-      </div>
-      <div className={classes.footerText}>
-        Use AlignmentSliceLogger for detailed state monitoring
-      </div>
-    </div>
-  );
-};
-
-interface KeysDisplayProps {
-  keys: string[];
-}
-
-const KeysDisplay = ({ keys }: KeysDisplayProps) => {
-  return (
-    <div className={classes.keysContainer}>
-      {keys.map((key, keyIndex) => (
-        <Fragment key={keyIndex}>
-          {keyIndex > 0 && key !== "/" && keys[keyIndex - 1] !== "/" && (
-            <span className={classes.keySeparator}>+</span>
-          )}
-          {key === "/" ? (
-            <span className={classes.slashSeparator}>/</span>
-          ) : (
-            <kbd className={classes.key}>{key}</kbd>
-          )}
-        </Fragment>
-      ))}
-    </div>
-  );
-};
-
 interface Props {
   showDetailed?: boolean;
   className?: string;
@@ -101,15 +47,16 @@ export const PerspectiveCameraControlInfo = ({
     },
     {
       category: "🔄 View Switching",
-      items: [
-        { keys: ["Ctrl", "Space"], description: "Switch to top view" },
-      ],
+      items: [{ keys: ["Ctrl", "Space"], description: "Switch to top view" }],
     },
     {
       category: "👁️ Perspective Modes",
       items: [
         { keys: ["Eye Level"], description: "1.8m height - human perspective" },
-        { keys: ["Ground Level"], description: "0.5m height - ground contact view" },
+        {
+          keys: ["Ground Level"],
+          description: "0.5m height - ground contact view",
+        },
       ],
     },
   ];
@@ -141,8 +88,16 @@ export const PerspectiveCameraControlInfo = ({
               <div className={classes.detailedItemDescription}>
                 {info.description}
               </div>
-              <DetailedMetaInfo data={info} prop="operation" title="Operation" />
-              <DetailedMetaInfo data={info} prop="sensitivity" title="Sensitivity" />
+              <DetailedMetaInfo
+                data={info}
+                prop="operation"
+                title="Operation"
+              />
+              <DetailedMetaInfo
+                data={info}
+                prop="sensitivity"
+                title="Sensitivity"
+              />
               <DetailedMetaInfo data={info} prop="range" title="Range" />
               <DetailedMetaInfo data={info} prop="values" title="Values" />
             </div>
@@ -157,7 +112,10 @@ export const PerspectiveCameraControlInfo = ({
   );
 
   return (
-    <CollapsibleControlInfo mode="perspectiveCameraControls" className={className}>
+    <CollapsibleControlInfo
+      mode="perspectiveCameraControls"
+      className={className}
+    >
       {content}
     </CollapsibleControlInfo>
   );

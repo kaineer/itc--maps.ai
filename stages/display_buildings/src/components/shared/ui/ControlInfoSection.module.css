@@ -1,0 +1,81 @@
+/* ControlInfoSection.module.css */
+
+/* Section container */
+.section {
+    margin-bottom: 16px;
+}
+
+/* Section title */
+.sectionTitle {
+    margin: 0 0 8px 0;
+    color: #81c784;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Control item row */
+.controlItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px 0;
+}
+
+/* Keys display wrapper */
+.keysDisplay {
+    margin-right: 12px;
+    min-width: 120px;
+}
+
+/* Description text */
+.description {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .controlItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .keysDisplay {
+        margin-bottom: 4px;
+        margin-right: 0;
+        min-width: auto;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .sectionTitle {
+        color: #68d391;
+    }
+
+    .description {
+        color: #e2e8f0;
+    }
+}
+
+/* Theme variations for different control info panels */
+.sectionTitleTop {
+    color: #81c784;
+}
+
+.sectionTitlePerspective {
+    color: #ffb74d;
+}
+
+/* For use with TopCameraControlInfo */
+.sectionTitleTop {
+    composes: sectionTitle;
+    color: #81c784;
+}
+
+/* For use with PerspectiveCameraControlInfo */
+.sectionTitlePerspective {
+    composes: sectionTitle;
+    color: #ffb74d;
+}
