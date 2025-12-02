@@ -35,7 +35,7 @@ export const PerspectiveCameraController = ({
   useEffect(() => {
     if (!enabled) return;
 
-    // Configure camera properties for perspective view (only on initialization)
+    // Configure camera properties for perspective view (update when cameraState changes)
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
     camera.up.set(0, 1, 0); // Y-up coordinate system (Three.js default and consistent with TopCameraController)
@@ -47,7 +47,7 @@ export const PerspectiveCameraController = ({
     if (onCameraUpdate) {
       onCameraUpdate(camera);
     }
-  }, [enabled, camera, onCameraUpdate]);
+  }, [enabled, camera, cameraState, onCameraUpdate]);
 
   // Keyboard event handler for camera distance control
   const handleKeyDown = useCallback(

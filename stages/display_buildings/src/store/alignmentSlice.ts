@@ -270,6 +270,19 @@ export const alignmentSlice = createSlice({
 
       // Update perspective camera target to follow model
       state.cameraStates.perspective.target = state.modelTransform.position;
+
+      // Also update camera position to maintain same relative position
+      const cameraState = state.cameraStates.perspective;
+      const offset = subtractPosition(cameraState.position, cameraState.target);
+      cameraState.position = addPosition(state.modelTransform.position, offset);
+
+      // Recalculate camera distance
+      if (cameraState.cameraDistance) {
+        cameraState.cameraDistance = distanceBetween(
+          state.modelTransform.position,
+          cameraState.position,
+        );
+      }
     },
 
     updateModelPosition: (
@@ -280,6 +293,19 @@ export const alignmentSlice = createSlice({
 
       // Update perspective camera target to follow model
       state.cameraStates.perspective.target = state.modelTransform.position;
+
+      // Also update camera position to maintain same relative position
+      const cameraState = state.cameraStates.perspective;
+      const offset = subtractPosition(cameraState.position, cameraState.target);
+      cameraState.position = addPosition(state.modelTransform.position, offset);
+
+      // Recalculate camera distance
+      if (cameraState.cameraDistance) {
+        cameraState.cameraDistance = distanceBetween(
+          state.modelTransform.position,
+          cameraState.position,
+        );
+      }
     },
 
     // Update camera target to follow model position and maintain camera position
