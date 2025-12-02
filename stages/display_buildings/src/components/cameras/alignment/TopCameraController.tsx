@@ -28,12 +28,12 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
 
-  // Key to direction mapping
+  // Key to direction mapping using event.code for layout independence
   const keyToDirection: { [key: string]: WorldDirection } = {
-    w: "north",
-    a: "west",
-    s: "south",
-    d: "east",
+    KeyW: "north",
+    KeyA: "west",
+    KeyS: "south",
+    KeyD: "east",
   };
 
   // Keyboard event handler
@@ -41,7 +41,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     (event: KeyboardEvent) => {
       if (!enabled) return;
 
-      const direction = keyToDirection[event.key.toLowerCase()];
+      const direction = keyToDirection[event.code];
 
       if (direction) {
         event.preventDefault();
@@ -73,13 +73,13 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         if (event.shiftKey) {
           // Shift + WASD: Move model
           console.log(
-            `🔄 Shift+${event.key.toUpperCase()}: Moving model ${direction}`,
+            `🔄 Shift+${event.code.replace("Key", "")}: Moving model ${direction}`,
           );
           dispatch(moveModelInDirection(direction));
         } else {
           // WASD only: Move camera
           console.log(
-            `🎥 ${event.key.toUpperCase()}: Moving camera ${direction}`,
+            `🎥 ${event.code.replace("Key", "")}: Moving camera ${direction}`,
           );
           dispatch(moveTopCameraInDirection(direction));
         }
@@ -89,11 +89,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       // Handle position step adjustment with Shift + Arrow keys
       if (event.shiftKey) {
-        if (event.key === "ArrowUp" || event.key === "Up") {
+        if (event.code === "ArrowUp") {
           event.preventDefault();
           console.log("📏 Shift+↑: Increasing position step");
           dispatch(increasePositionStep());
-        } else if (event.key === "ArrowDown" || event.key === "Down") {
+        } else if (event.code === "ArrowDown") {
           event.preventDefault();
           console.log("📏 Shift+↓: Decreasing position step");
           dispatch(decreasePositionStep());
@@ -102,11 +102,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       // Handle rotation step adjustment with Ctrl + Arrow keys
       if (event.ctrlKey) {
-        if (event.key === "ArrowUp" || event.key === "Up") {
+        if (event.code === "ArrowUp") {
           event.preventDefault();
           console.log("🔄 Ctrl+↑: Increasing rotation step");
           dispatch(increaseRotationStep());
-        } else if (event.key === "ArrowDown" || event.key === "Down") {
+        } else if (event.code === "ArrowDown") {
           event.preventDefault();
           console.log("🔄 Ctrl+↓: Decreasing rotation step");
           dispatch(decreaseRotationStep());
@@ -115,7 +115,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       // Handle scale step toggle with Ctrl + Shift + Arrow keys
       if (event.ctrlKey && event.shiftKey) {
-        if (event.key === "ArrowUp" || event.key === "Up") {
+        if (event.code === "ArrowUp") {
           event.preventDefault();
           console.log("⚖️ Ctrl+Shift+↑: Toggling scale step");
           dispatch(toggleScaleStep());
