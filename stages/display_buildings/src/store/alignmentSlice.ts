@@ -258,6 +258,13 @@ export const alignmentSlice = createSlice({
       );
     },
 
+    updateModelPosition: (
+      state,
+      action: PayloadAction<{ position: ModelPosition }>,
+    ) => {
+      state.modelTransform.position = action.payload.position;
+    },
+
     moveTopCameraInDirection: (
       state,
       action: PayloadAction<WorldDirection>,
@@ -267,6 +274,13 @@ export const alignmentSlice = createSlice({
         state.positionStep,
         state.cameraStates.top.position,
       );
+    },
+
+    updateTopCameraPosition: (
+      state,
+      action: PayloadAction<{ position: ModelPosition }>,
+    ) => {
+      state.cameraStates.top.position = action.payload.position;
     },
 
     increasePositionStep: (state) => {

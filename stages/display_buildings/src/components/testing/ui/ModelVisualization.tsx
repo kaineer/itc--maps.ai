@@ -50,6 +50,8 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
   return (
     <mesh
       ref={meshRef}
+      userData={{ isModel: true }}
+      name="alignment-model"
       onPointerOver={(event) => {
         event.stopPropagation();
         setIsHovered(true);

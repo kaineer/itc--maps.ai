@@ -1,4 +1,4 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,10 +10,18 @@ interface Props {
 }
 
 export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
-  const { camera } = useThree();
+  const { camera, scene, raycaster } = useThree();
   const dispatch = useDispatch();
 
-  const { getTopCameraState } = alignmentSlice.selectors;
+  // State for mouse dragging
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
+  const [isOverModel, setIsOverModel] = useState(false);
+  const dragStartCameraPos = useRef<[number, number, number]>([0, 0, 0]);
+  const dragStartModelPos = useRef<[number, number, number]>([0, 0, 0]);
+
+  const { getTopCameraState, getModelTransform, getSelectedModel } =
+    alignmentSlice.selectors;
   const {
     moveTopCameraInDirection,
     moveModelInDirection,
@@ -25,8 +33,12 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     increaseModelScale,
     decreaseModelScale,
     toggleScaleStep,
+    updateModelPosition,
+    updateTopCameraPosition,
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
+  const modelTransform = useSelector(getModelTransform);
+  const currentModel = useSelector(getSelectedModel);
 
   // Key to direction mapping using event.code for layout independence
   const keyToDirection: { [key: string]: WorldDirection } = {
@@ -135,6 +147,8 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       increaseModelScale,
       decreaseModelScale,
       toggleScaleStep,
+      updateModelPosition,
+      updateTopCameraPosition,
     ],
   );
 
@@ -179,16 +193,144 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
   // Model position changes are now logged by AlignmentSliceLogger
 
+  // Check if mouse is over model
+  const checkMouseOverModel = useCallback(
+    (mouseX: number, mouseY: number) => {
+      if (!currentModel) return false;
+
+      // Set up raycaster
+      raycaster.setFromCamera({ x: mouseX, y: mouseY }, camera);
+
+      // Check intersection with model (simplified - in real implementation would check actual model geometry)
+      // For now, we'll use a simple check based on model position
+      const intersects = raycaster.intersectObjects(scene.children, true);
+
+      // Check if any intersected object is the model
+      return intersects.some((intersect) => {
+        // This is a simplified check - in production would need proper model identification
+        return (
+          intersect.object.userData?.isModel === true ||
+          intersect.object.name.includes("model") ||
+          intersect.object.parent?.name.includes("model")
+        );
+      });
+    },
+    [camera, raycaster, scene, currentModel],
+  );
+
+  // Mouse event handlers
+  const handleMouseDown = useCallback(
+    (event: MouseEvent) => {
+      if (!enabled) return;
+
+      // Calculate normalized mouse coordinates
+      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+
+      // Check if mouse is over model
+      const overModel = checkMouseOverModel(mouseX, mouseY);
+      setIsOverModel(overModel);
+
+      // Start dragging
+      setIsDragging(true);
+      setDragStartPos({ x: event.clientX, y: event.clientY });
+      dragStartCameraPos.current = [...cameraState.position];
+      dragStartModelPos.current = [...modelTransform.position];
+
+      event.preventDefault();
+    },
+    [
+      enabled,
+      cameraState.position,
+      modelTransform.position,
+      checkMouseOverModel,
+    ],
+  );
+
+  const handleMouseMove = useCallback(
+    (event: MouseEvent) => {
+      if (!enabled || !isDragging) return;
+
+      const deltaX = event.clientX - dragStartPos.x;
+      const deltaY = event.clientY - dragStartPos.y;
+
+      // Convert pixel delta to world units based on camera height
+      const sensitivity = (0.01 * cameraState.position[1]) / 100;
+
+      if (isOverModel && currentModel) {
+        // Drag model in XZ plane
+        const newX = dragStartModelPos.current[0] - deltaX * sensitivity;
+        const newZ = dragStartModelPos.current[2] - deltaY * sensitivity;
+
+        dispatch(
+          updateModelPosition({
+            position: [newX, modelTransform.position[1], newZ],
+          }),
+        );
+
+        console.log(
+          `🏗️ Dragging model to: X=${newX.toFixed(2)}, Z=${newZ.toFixed(2)}`,
+        );
+      } else {
+        // Drag camera (move scene under camera)
+        const newX = dragStartCameraPos.current[0] + deltaX * sensitivity;
+        const newZ = dragStartCameraPos.current[2] + deltaY * sensitivity;
+
+        dispatch(
+          updateTopCameraPosition({
+            position: [newX, cameraState.position[1], newZ],
+          }),
+        );
+
+        console.log(
+          `🎥 Dragging camera to: X=${newX.toFixed(2)}, Z=${newZ.toFixed(2)}`,
+        );
+      }
+
+      event.preventDefault();
+    },
+    [
+      enabled,
+      isDragging,
+      isOverModel,
+      dragStartPos,
+      cameraState.position,
+      modelTransform.position,
+      currentModel,
+      dispatch,
+      updateModelPosition,
+      updateTopCameraPosition,
+    ],
+  );
+
+  const handleMouseUp = useCallback(
+    (event: MouseEvent) => {
+      if (!enabled) return;
+
+      setIsDragging(false);
+      setIsOverModel(false);
+
+      event.preventDefault();
+    },
+    [enabled],
+  );
+
   // Add keyboard event listeners
   useEffect(() => {
     if (!enabled) return;
 
     window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [enabled, handleKeyDown]);
+  }, [enabled, handleKeyDown, handleMouseDown, handleMouseMove, handleMouseUp]);
 
   return null;
 };
