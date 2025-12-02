@@ -7,7 +7,7 @@ import { ControlsInfo } from "../shared/ui/ControlsInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
-import { TopCameraController } from "../cameras/alignment/TopCameraController";
+import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
 
 interface Props {
   onBuildingSelect?: (buildingId: string) => void;
@@ -71,7 +71,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <ViewStage buildings={buildings} onBuildingClick={onBuildingSelect} />
 
         {/* Camera Controller for alignment */}
-        <TopCameraController enabled={true} />
+        <AlignmentCameraGroup enabled={true} />
       </Canvas>
     </>
   );

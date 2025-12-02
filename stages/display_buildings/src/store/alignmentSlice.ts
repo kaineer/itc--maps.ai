@@ -22,6 +22,7 @@ import { Vector3 } from "three";
 export type WorldDirection = "north" | "south" | "east" | "west";
 
 export type CameraView = "perspective" | "top";
+const defaultCameraView = "top";
 
 // Position step configuration
 export const positionStepMin = 0.5;
@@ -111,7 +112,7 @@ const defaultTopCamera: CameraState = {
 };
 
 const initialState: AlignmentState = {
-  currentCameraView: "perspective",
+  currentCameraView: defaultCameraView,
   cameraStates: {
     perspective: defaultPerspectiveCamera,
     top: defaultTopCamera,

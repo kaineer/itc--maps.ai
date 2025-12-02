@@ -1,0 +1,157 @@
+/* PerspectiveCameraControlInfo.module.css */
+
+/* Title */
+.title {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #ff9800;
+    border-bottom: 2px solid #ff9800;
+    padding-bottom: 8px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Section container */
+.section {
+    margin-bottom: 16px;
+}
+
+/* Section title */
+.sectionTitle {
+    margin: 0 0 8px 0;
+    color: #ffb74d;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Control item row */
+.controlItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 4px 0;
+}
+
+/* Keys container */
+.keysContainer {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+    min-width: 120px;
+}
+
+/* Individual key */
+.key {
+    display: inline-block;
+    padding: 2px 8px;
+    margin: 0 2px;
+    background-color: #ff9800;
+    color: white;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+    font-weight: bold;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Key separator (for + signs) */
+.keySeparator {
+    margin: 0 4px;
+    color: #666;
+    font-size: 12px;
+}
+
+/* Slash separator (for / between alternatives) */
+.slashSeparator {
+    margin: 0 8px;
+    color: #666;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Description text */
+.description {
+    color: #333;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+/* Detailed section */
+.detailedSection {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid #eee;
+}
+
+/* Detailed title */
+.detailedTitle {
+    margin: 0 0 12px 0;
+    color: #ff9800;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+/* Detailed item */
+.detailedItem {
+    margin-bottom: 16px;
+    padding: 12px;
+    background-color: #fff8e1;
+    border-radius: 6px;
+    border-left: 3px solid #ff9800;
+}
+
+/* Detailed item title */
+.detailedItemTitle {
+    margin: 0 0 6px 0;
+    color: #333;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+/* Detailed item description */
+.detailedItemDescription {
+    margin: 0 0 8px 0;
+    color: #666;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+/* Detailed item meta info */
+.detailedItemMeta {
+    margin: 4px 0;
+    color: #555;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.detailedItemMeta strong {
+    color: #333;
+}
+
+/* Footer */
+.footer {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px dashed #ccc;
+}
+
+/* Footer text */
+.footerText {
+    color: #666;
+    font-size: 11px;
+    line-height: 1.3;
+    margin: 4px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .controlItem {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .keysContainer {
+        margin-bottom: 4px;
+        margin-right: 0;
+    }
+}

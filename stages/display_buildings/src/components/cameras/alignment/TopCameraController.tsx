@@ -39,6 +39,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
     toggleScaleStep,
     updateModelPosition,
     updateTopCameraPosition,
+    setCameraView,
   } = alignmentSlice.actions;
   const cameraState = useSelector(getTopCameraState);
   const modelTransform = useSelector(getModelTransform);
@@ -51,6 +52,14 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (!enabled) return;
+
+      // Handle Ctrl+Space to switch to perspective view
+      if (event.ctrlKey && event.code === "Space") {
+        event.preventDefault();
+        console.log("🔄 Ctrl+Space: Switching to perspective view");
+        dispatch(setCameraView("perspective"));
+        return;
+      }
 
       const direction = getDirectionFromKey(event);
 
@@ -124,30 +133,27 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         }
       }
 
-      // Handle scale step toggle with Ctrl + Shift + Arrow keys
-      if (event.ctrlKey && event.shiftKey) {
-        if (event.code === "ArrowUp") {
-          event.preventDefault();
-          console.log("⚖️ Ctrl+Shift+↑: Toggling scale step");
-          dispatch(toggleScaleStep());
-        }
+      // Handle scale step toggle with Ctrl+Shift+ArrowUp
+      if (event.ctrlKey && event.shiftKey && event.code === "ArrowUp") {
+        event.preventDefault();
+        console.log("⚖️ Ctrl+Shift+↑: Toggling scale step");
+        dispatch(toggleScaleStep());
       }
     },
     [
       enabled,
       dispatch,
-      moveTopCameraInDirection,
       moveModelInDirection,
-      increasePositionStep,
-      decreasePositionStep,
-      rotateModelAroundY,
-      increaseRotationStep,
-      decreaseRotationStep,
+      moveTopCameraInDirection,
       increaseModelScale,
       decreaseModelScale,
+      rotateModelAroundY,
+      increasePositionStep,
+      decreasePositionStep,
+      increaseRotationStep,
+      decreaseRotationStep,
       toggleScaleStep,
-      updateModelPosition,
-      updateTopCameraPosition,
+      setCameraView,
     ],
   );
 

@@ -26,6 +26,7 @@ export const PerspectiveCameraController = ({
     decreaseCameraDistance,
     rotateCameraAroundTarget,
     toggleCameraHeight,
+    setCameraView,
   } = alignmentSlice.actions;
   const currentModel = useSelector(getSelectedModel);
   const cameraState = useSelector(getPerspectiveCameraState);
@@ -52,6 +53,14 @@ export const PerspectiveCameraController = ({
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (!enabled) return;
+
+      // Handle Ctrl+Space to switch to top view
+      if (event.ctrlKey && event.code === "Space") {
+        event.preventDefault();
+        console.log("🔄 Ctrl+Space: Switching to top view");
+        dispatch(setCameraView("top"));
+        return;
+      }
 
       const direction = getDirectionFromKey(event);
 
@@ -117,6 +126,7 @@ export const PerspectiveCameraController = ({
     [
       enabled,
       dispatch,
+      setCameraView,
       increaseCameraDistance,
       decreaseCameraDistance,
       rotateCameraAroundTarget,

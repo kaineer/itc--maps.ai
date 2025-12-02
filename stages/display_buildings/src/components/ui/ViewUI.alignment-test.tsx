@@ -4,13 +4,13 @@ import { Canvas } from "@react-three/fiber";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { alignmentSlice } from "../../store/alignmentSlice";
 import { Text } from "@react-three/drei";
-import { TopCameraControlInfo } from "../cameras/alignment/TopCameraControlInfo";
+import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
+import { AlignmentUIGroup } from "./alignment/AlignmentUIGroup";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
-import { PerspectiveCameraController } from "../cameras/alignment/PerspectiveCameraController";
 import { ModelVisualization } from "../testing/ui/ModelVisualization";
-import { AlignmentSliceLogger } from "../testing/ui/AlignmentSliceLogger";
+
 import { ModelData } from "../../utils/modelTransform";
 
 interface Props {
@@ -120,7 +120,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   return (
     <>
-      <TopCameraControlInfo />
+      {/* UI components outside Canvas (control info, etc.) */}
+      <AlignmentUIGroup enabled={true} />
 
       <Canvas
         camera={{
@@ -154,17 +155,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           </mesh>
         ))}
 
-        {/* Camera Controller for alignment */}
-        <PerspectiveCameraController enabled={true} />
-
-        {/* Alignment state logger (debug only) */}
-        <AlignmentSliceLogger
-          enabled={true}
-          logCameraState={true}
-          logModelTransform={true}
-          logStepConfig={true}
-          logProcessState={true}
-        />
+        {/* Camera Controller for alignment - uses AlignmentCameraGroup to switch between modes */}
+        <AlignmentCameraGroup enabled={true} />
 
         {/* Status text */}
         <Text

@@ -18,4 +18,4 @@ const shouldRender = Boolean(import.meta.env.DEV);
  */
 export const Development = shouldRender
   ? ({ children }: Props) => <>{children}</>
-  : (props: Props) => null;
+  : () => null;
