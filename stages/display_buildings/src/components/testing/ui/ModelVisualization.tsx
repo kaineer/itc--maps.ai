@@ -6,8 +6,8 @@
  */
 import { useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
-import { Mesh } from "three";
-import { useRef } from "react";
+import { Mesh, MeshStandardMaterial } from "three";
+import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 
 interface Props {
@@ -20,6 +20,8 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
   const currentModel = useSelector(getSelectedModel);
 
   const meshRef = useRef<Mesh>(null);
+  const materialRef = useRef<MeshStandardMaterial>(null);
+  const [isHovered, setIsHovered] = useState(false);
 
   // Sync Three.js mesh with Redux modelTransform
   useFrame(() => {
@@ -46,9 +48,22 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
   // For now, render a simple placeholder cube
   // In the future, this should render the actual model from currentModel
   return (
-    <mesh ref={meshRef}>
+    <mesh
+      ref={meshRef}
+      onPointerOver={(event) => {
+        event.stopPropagation();
+        setIsHovered(true);
+      }}
+      onPointerOut={(event) => {
+        event.stopPropagation();
+        setIsHovered(false);
+      }}
+    >
       <boxGeometry args={[10, 10, 10]} />
-      <meshStandardMaterial color="#00FF00" />
+      <meshStandardMaterial
+        ref={materialRef}
+        color={isHovered ? "#006600" : "#00FF00"}
+      />
     </mesh>
   );
 };
