@@ -404,7 +404,7 @@ export const alignmentSlice = createSlice({
       }
     },
 
-    // Update camera orbit (rotate around target while maintaining distance)
+    // Update camera orbit (rotate around target while maintaining distance and height)
     rotateCameraAroundTarget: (
       state,
       action: PayloadAction<{
@@ -417,25 +417,44 @@ export const alignmentSlice = createSlice({
       const cameraState = state.cameraStates[view];
 
       if (cameraState.cameraDistance && view === "perspective") {
-        // Convert angles to radians
-        const horizontalRad = (horizontalAngle * Math.PI) / 180;
-        const verticalRad = (verticalAngle * Math.PI) / 180;
+        // Calculate current direction vector from target to camera
+        const dx = cameraState.position[0] - cameraState.target[0];
+        const dy = cameraState.position[1] - cameraState.target[1];
+        const dz = cameraState.position[2] - cameraState.target[2];
 
-        // Calculate spherical coordinates
-        const x =
-          cameraState.cameraDistance *
-          Math.sin(verticalRad) *
-          Math.cos(horizontalRad);
-        const y = cameraState.cameraDistance * Math.cos(verticalRad);
-        const z =
-          cameraState.cameraDistance *
-          Math.sin(verticalRad) *
-          Math.sin(horizontalRad);
+        // Calculate current horizontal distance (projection on XZ plane)
+        const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
 
-        // Update camera position relative to target
-        cameraState.position[0] = cameraState.target[0] + x;
-        cameraState.position[1] = cameraState.target[1] + y;
-        cameraState.position[2] = cameraState.target[2] + z;
+        if (horizontalDistance > 0) {
+          // Calculate current horizontal angle
+          const currentAngle = Math.atan2(dz, dx);
+
+          // Apply horizontal rotation
+          const newAngle = currentAngle + (horizontalAngle * Math.PI) / 180;
+
+          // Calculate new X and Z coordinates
+          const newX = horizontalDistance * Math.cos(newAngle);
+          const newZ = horizontalDistance * Math.sin(newAngle);
+
+          // Apply vertical rotation (if any)
+          const currentVerticalAngle = Math.atan2(dy, horizontalDistance);
+          const newVerticalAngle =
+            currentVerticalAngle + (verticalAngle * Math.PI) / 180;
+          const newY = horizontalDistance * Math.tan(newVerticalAngle);
+
+          // Update camera position relative to target
+          cameraState.position[0] = cameraState.target[0] + newX;
+          cameraState.position[1] = cameraState.target[1] + newY;
+          cameraState.position[2] = cameraState.target[2] + newZ;
+
+          // Recalculate actual distance after rotation
+          const newDx = cameraState.position[0] - cameraState.target[0];
+          const newDy = cameraState.position[1] - cameraState.target[1];
+          const newDz = cameraState.position[2] - cameraState.target[2];
+          cameraState.cameraDistance = Math.sqrt(
+            newDx * newDx + newDy * newDy + newDz * newDz,
+          );
+        }
       }
     },
   },
