@@ -112,7 +112,7 @@ const defaultTopCamera: CameraState = {
 };
 
 const initialState: AlignmentState = {
-  currentCameraView: defaultCameraView,
+  currentCameraView: "perspective",
   cameraStates: {
     perspective: defaultPerspectiveCamera,
     top: defaultTopCamera,
@@ -153,7 +153,20 @@ export const alignmentSlice = createSlice({
   reducers: {
     // Camera management
     setCameraView: (state, action: PayloadAction<CameraView>) => {
-      state.currentCameraView = action.payload;
+      const newView = action.payload;
+      console.log("🔄 setCameraView - Switching to:", newView, {
+        previousView: state.currentCameraView,
+        perspectiveTarget: state.cameraStates.perspective.target,
+        perspectivePosition: state.cameraStates.perspective.position,
+        modelPosition: state.modelTransform.position,
+        targetEqualsModel:
+          JSON.stringify(state.cameraStates.perspective.target) ===
+          JSON.stringify(state.modelTransform.position),
+        targetIsDefault:
+          JSON.stringify(state.cameraStates.perspective.target) ===
+          JSON.stringify(defaultPerspectiveCamera.target),
+      });
+      state.currentCameraView = newView;
     },
 
     updateCameraState: (
@@ -172,6 +185,10 @@ export const alignmentSlice = createSlice({
 
     resetCamera: (state, action: PayloadAction<CameraView>) => {
       const view = action.payload;
+      console.log("🔄 resetCamera - Resetting camera for view:", view, {
+        previousTarget: state.cameraStates[view].target,
+        previousPosition: state.cameraStates[view].position,
+      });
       switch (view) {
         case "perspective":
           state.cameraStates[view] = defaultPerspectiveCamera;
@@ -180,6 +197,10 @@ export const alignmentSlice = createSlice({
           state.cameraStates[view] = defaultTopCamera;
           break;
       }
+      console.log("🔄 resetCamera - After reset:", {
+        newTarget: state.cameraStates[view].target,
+        newPosition: state.cameraStates[view].position,
+      });
     },
 
     resetAllCameras: (state) => {
@@ -235,25 +256,80 @@ export const alignmentSlice = createSlice({
         polygonBBox,
         modelBBox,
       );
-      state.modelTransform = {
-        position: initialTransform.position,
-        rotation: 0,
-        scale: initialTransform.scale[0], // Use uniform scale from first axis
-      };
+
+      // Only update model transform if it hasn't been set yet (preserve user changes)
+      if (
+        state.modelTransform.position[0] === 0 &&
+        state.modelTransform.position[1] === 0 &&
+        state.modelTransform.position[2] === 0
+      ) {
+        state.modelTransform = {
+          position: initialTransform.position,
+          rotation: 0,
+          scale: initialTransform.scale[0], // Use uniform scale from first axis
+        };
+      }
 
       // Calculate model center for camera positioning
-      const modelCenter = new Vector3(...initialTransform.position);
+      const modelCenter = new Vector3(...state.modelTransform.position);
 
-      // Set up cameras
-      state.cameraStates.top = calculateTopCameraPosition(
-        modelCenter,
-        modelBBox,
-        polygonBBox,
-      );
-      state.cameraStates.perspective = calculatePerspectiveCameraPosition(
-        modelCenter,
-        modelBBox,
-      );
+      // Only set up cameras if they haven't been initialized yet
+      // Check if cameras are at their default positions AND targets
+      const isTopCameraDefault =
+        state.cameraStates.top.position[0] === defaultTopCamera.position[0] &&
+        state.cameraStates.top.position[1] === defaultTopCamera.position[1] &&
+        state.cameraStates.top.position[2] === defaultTopCamera.position[2] &&
+        state.cameraStates.top.target[0] === defaultTopCamera.target[0] &&
+        state.cameraStates.top.target[1] === defaultTopCamera.target[1] &&
+        state.cameraStates.top.target[2] === defaultTopCamera.target[2];
+
+      const isPerspectiveCameraDefault =
+        state.cameraStates.perspective.position[0] ===
+          defaultPerspectiveCamera.position[0] &&
+        state.cameraStates.perspective.position[1] ===
+          defaultPerspectiveCamera.position[1] &&
+        state.cameraStates.perspective.position[2] ===
+          defaultPerspectiveCamera.position[2] &&
+        state.cameraStates.perspective.target[0] ===
+          defaultPerspectiveCamera.target[0] &&
+        state.cameraStates.perspective.target[1] ===
+          defaultPerspectiveCamera.target[1] &&
+        state.cameraStates.perspective.target[2] ===
+          defaultPerspectiveCamera.target[2];
+
+      if (isTopCameraDefault) {
+        state.cameraStates.top = calculateTopCameraPosition(
+          modelCenter,
+          modelBBox,
+          polygonBBox,
+        );
+        console.log("🎥 startAlignmentProcess - Initialized top camera");
+      } else {
+        console.log(
+          "🎥 startAlignmentProcess - Preserving existing top camera state",
+        );
+      }
+
+      if (isPerspectiveCameraDefault) {
+        state.cameraStates.perspective = calculatePerspectiveCameraPosition(
+          modelCenter,
+          modelBBox,
+        );
+        console.log(
+          "🎥 startAlignmentProcess - Initialized perspective camera",
+        );
+      } else {
+        console.log(
+          "🎥 startAlignmentProcess - Preserving existing perspective camera",
+          {
+            currentTarget: state.cameraStates.perspective.target,
+            modelPosition: state.modelTransform.position,
+            targetEqualsModel:
+              JSON.stringify(state.cameraStates.perspective.target) ===
+              JSON.stringify(state.modelTransform.position),
+          },
+        );
+      }
 
       // Start the alignment process
       state.isAligning = true;
@@ -279,6 +355,9 @@ export const alignmentSlice = createSlice({
         newTarget: cameraState.target,
         oldCameraPosition: cameraState.position,
         modelPosition: state.modelTransform.position,
+        targetEqualsModel:
+          JSON.stringify(cameraState.target) ===
+          JSON.stringify(state.modelTransform.position),
       });
 
       // Also update camera position to maintain same relative position
@@ -321,6 +400,9 @@ export const alignmentSlice = createSlice({
         newTarget: cameraState.target,
         oldCameraPosition: cameraState.position,
         modelPosition: state.modelTransform.position,
+        targetEqualsModel:
+          JSON.stringify(cameraState.target) ===
+          JSON.stringify(state.modelTransform.position),
       });
 
       // Also update camera position to maintain same relative position

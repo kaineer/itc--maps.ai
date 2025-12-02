@@ -72,11 +72,6 @@ const TEST_MODEL: ModelData = {
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
-  const {
-    selectModelForAlignment,
-    addPolygonForAlignment,
-    startAlignmentProcess,
-  } = alignmentSlice.actions;
 
   const buildings = useSelector(getBuildings);
   const loading = useSelector(getLoading);
@@ -87,21 +82,16 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     dispatch(buildingsSlice.actions.setBuildings(TEST_BUILDINGS as any));
 
     // Set up alignment system with test data
-    dispatch(selectModelForAlignment(TEST_MODEL));
+    dispatch(alignmentSlice.actions.selectModelForAlignment(TEST_MODEL));
 
     // Add all test buildings as polygons for alignment
     TEST_BUILDINGS.forEach((building) => {
-      dispatch(addPolygonForAlignment(building as any));
+      dispatch(alignmentSlice.actions.addPolygonForAlignment(building as any));
     });
 
     // Start the alignment process
-    dispatch(startAlignmentProcess());
-  }, [
-    dispatch,
-    selectModelForAlignment,
-    addPolygonForAlignment,
-    startAlignmentProcess,
-  ]);
+    dispatch(alignmentSlice.actions.startAlignmentProcess());
+  }, [dispatch]);
 
   if (loading) {
     return <div className="loading">Loading 3D buildings visualization...</div>;
