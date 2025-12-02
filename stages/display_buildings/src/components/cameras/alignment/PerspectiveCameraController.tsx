@@ -113,13 +113,6 @@ export const PerspectiveCameraController = ({
         console.log("🔄 Space: Toggling camera height");
         dispatch(toggleCameraHeight());
       }
-
-      // Handle Space key for toggling camera height
-      if (event.code === "Space") {
-        event.preventDefault();
-        console.log("🔄 Space: Toggling camera height");
-        dispatch(toggleCameraHeight());
-      }
     },
     [
       enabled,
