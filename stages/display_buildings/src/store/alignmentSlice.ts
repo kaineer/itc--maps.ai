@@ -26,6 +26,7 @@ export interface CameraState {
   target: ModelPosition;
   fov: number;
   cameraDistance?: number; // Distance from camera to target (for perspective camera)
+  cameraHeightMode?: "eyeLevel" | "groundLevel"; // Camera height mode for perspective view
 }
 
 type ModelRotation = number;
@@ -89,6 +90,7 @@ const defaultPerspectiveCamera: CameraState = {
   target: [0, 0, 0],
   fov: 60,
   cameraDistance: 14.142, // sqrt(10^2 + 10^2) approximate initial distance
+  cameraHeightMode: "eyeLevel",
 };
 
 const defaultTopCamera: CameraState = {
@@ -96,6 +98,7 @@ const defaultTopCamera: CameraState = {
   target: [0, 0, 0],
   fov: 60,
   cameraDistance: 50, // Height is the distance in top view
+  cameraHeightMode: "eyeLevel",
 };
 
 const initialState: AlignmentState = {
@@ -457,6 +460,76 @@ export const alignmentSlice = createSlice({
           );
         }
       }
+    },
+
+    // Toggle camera height between eye level and ground level
+    toggleCameraHeight: (state) => {
+      const cameraState = state.cameraStates.perspective;
+
+      // Define height values
+      const EYE_LEVEL_HEIGHT = 1.8; // 1.8 meters - human eye level
+      const GROUND_LEVEL_HEIGHT = 0.5; // 0.5 meters - slightly above ground
+
+      // Toggle between modes
+      if (cameraState.cameraHeightMode === "groundLevel") {
+        // Switch to eye level
+        cameraState.cameraHeightMode = "eyeLevel";
+
+        // Calculate direction vector from target to current position
+        const dx = cameraState.position[0] - cameraState.target[0];
+        const dy = cameraState.position[1] - cameraState.target[1];
+        const dz = cameraState.position[2] - cameraState.target[2];
+
+        // Calculate current horizontal distance
+        const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+
+        if (horizontalDistance > 0) {
+          // Calculate current horizontal angle
+          const currentAngle = Math.atan2(dz, dx);
+
+          // Calculate new position at eye level height
+          const newX = horizontalDistance * Math.cos(currentAngle);
+          const newZ = horizontalDistance * Math.sin(currentAngle);
+
+          // Update camera position (keep same horizontal position, change height)
+          cameraState.position[0] = cameraState.target[0] + newX;
+          cameraState.position[1] = cameraState.target[1] + EYE_LEVEL_HEIGHT;
+          cameraState.position[2] = cameraState.target[2] + newZ;
+        }
+      } else {
+        // Switch to ground level (default to eye level if undefined)
+        cameraState.cameraHeightMode = "groundLevel";
+
+        // Calculate direction vector from target to current position
+        const dx = cameraState.position[0] - cameraState.target[0];
+        const dy = cameraState.position[1] - cameraState.target[1];
+        const dz = cameraState.position[2] - cameraState.target[2];
+
+        // Calculate current horizontal distance
+        const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
+
+        if (horizontalDistance > 0) {
+          // Calculate current horizontal angle
+          const currentAngle = Math.atan2(dz, dx);
+
+          // Calculate new position at ground level height
+          const newX = horizontalDistance * Math.cos(currentAngle);
+          const newZ = horizontalDistance * Math.sin(currentAngle);
+
+          // Update camera position (keep same horizontal position, change height)
+          cameraState.position[0] = cameraState.target[0] + newX;
+          cameraState.position[1] = cameraState.target[1] + GROUND_LEVEL_HEIGHT;
+          cameraState.position[2] = cameraState.target[2] + newZ;
+        }
+      }
+
+      // Recalculate camera distance after height change
+      const newDx = cameraState.position[0] - cameraState.target[0];
+      const newDy = cameraState.position[1] - cameraState.target[1];
+      const newDz = cameraState.position[2] - cameraState.target[2];
+      cameraState.cameraDistance = Math.sqrt(
+        newDx * newDx + newDy * newDy + newDz * newDz,
+      );
     },
   },
 

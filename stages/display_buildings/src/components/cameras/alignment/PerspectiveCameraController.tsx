@@ -25,6 +25,7 @@ export const PerspectiveCameraController = ({
     increaseCameraDistance,
     decreaseCameraDistance,
     rotateCameraAroundTarget,
+    toggleCameraHeight,
   } = alignmentSlice.actions;
   const currentModel = useSelector(getSelectedModel);
   const cameraState = useSelector(getPerspectiveCameraState);
@@ -106,37 +107,18 @@ export const PerspectiveCameraController = ({
         }
       }
 
-      // Handle Q/E keys for vertical movement in Y-up coordinate system
-      if (event.code === "KeyQ") {
+      // Handle Space key for toggling camera height
+      if (event.code === "Space") {
         event.preventDefault();
-        console.log("⬆️ Q: Moving camera up (Y+ direction)");
-        // Move camera up (positive Y direction in Y-up coordinate system)
-        const newPosition: [number, number, number] = [
-          cameraState.position[0],
-          cameraState.position[1] + positionStep,
-          cameraState.position[2],
-        ];
-        dispatch(
-          updateCameraState({
-            view: "perspective",
-            cameraState: { position: newPosition },
-          }),
-        );
-      } else if (event.code === "KeyE") {
+        console.log("🔄 Space: Toggling camera height");
+        dispatch(toggleCameraHeight());
+      }
+
+      // Handle Space key for toggling camera height
+      if (event.code === "Space") {
         event.preventDefault();
-        console.log("⬇️ E: Moving camera down (Y- direction)");
-        // Move camera down (negative Y direction in Y-up coordinate system)
-        const newPosition: [number, number, number] = [
-          cameraState.position[0],
-          cameraState.position[1] - positionStep,
-          cameraState.position[2],
-        ];
-        dispatch(
-          updateCameraState({
-            view: "perspective",
-            cameraState: { position: newPosition },
-          }),
-        );
+        console.log("🔄 Space: Toggling camera height");
+        dispatch(toggleCameraHeight());
       }
     },
     [
@@ -145,9 +127,8 @@ export const PerspectiveCameraController = ({
       increaseCameraDistance,
       decreaseCameraDistance,
       rotateCameraAroundTarget,
-      updateCameraState,
+      toggleCameraHeight,
       cameraState,
-      positionStep,
     ],
   );
 
