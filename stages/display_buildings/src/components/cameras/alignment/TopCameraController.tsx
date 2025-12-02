@@ -231,11 +231,17 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       const overModel = checkMouseOverModel(mouseX, mouseY);
       setIsOverModel(overModel);
 
+      // Change cursor on hover (before drag starts)
+      document.body.style.cursor = overModel ? "grab" : "default";
+
       // Start dragging
       setIsDragging(true);
       setDragStartPos({ x: event.clientX, y: event.clientY });
       dragStartCameraPos.current = [...cameraState.position];
       dragStartModelPos.current = [...modelTransform.position];
+
+      // Change cursor style during drag
+      document.body.style.cursor = overModel ? "grabbing" : "move";
 
       event.preventDefault();
     },
@@ -255,12 +261,13 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       const deltaY = event.clientY - dragStartPos.y;
 
       // Convert pixel delta to world units based on camera height
-      const sensitivity = (0.01 * cameraState.position[1]) / 100;
+      // Higher camera = faster movement, lower camera = slower movement
+      const sensitivity = (0.05 * cameraState.position[1]) / 100;
 
       if (isOverModel && currentModel) {
         // Drag model in XZ plane
-        const newX = dragStartModelPos.current[0] - deltaX * sensitivity;
-        const newZ = dragStartModelPos.current[2] - deltaY * sensitivity;
+        const newX = dragStartModelPos.current[0] + deltaX * sensitivity;
+        const newZ = dragStartModelPos.current[2] + deltaY * sensitivity;
 
         dispatch(
           updateModelPosition({
@@ -273,8 +280,8 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         );
       } else {
         // Drag camera (move scene under camera)
-        const newX = dragStartCameraPos.current[0] + deltaX * sensitivity;
-        const newZ = dragStartCameraPos.current[2] + deltaY * sensitivity;
+        const newX = dragStartCameraPos.current[0] - deltaX * sensitivity;
+        const newZ = dragStartCameraPos.current[2] - deltaY * sensitivity;
 
         dispatch(
           updateTopCameraPosition({
@@ -309,6 +316,9 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
 
       setIsDragging(false);
       setIsOverModel(false);
+
+      // Restore default cursor
+      document.body.style.cursor = "default";
 
       event.preventDefault();
     },
