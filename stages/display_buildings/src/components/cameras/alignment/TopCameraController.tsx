@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
-import { Vector3 } from "three";
+import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice, WorldDirection } from "../../../store/alignmentSlice";
 
@@ -199,7 +199,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (!currentModel) return false;
 
       // Set up raycaster
-      raycaster.setFromCamera({ x: mouseX, y: mouseY }, camera);
+      raycaster.setFromCamera(new Vector2(mouseX, mouseY), camera);
 
       // Check intersection with model (simplified - in real implementation would check actual model geometry)
       // For now, we'll use a simple check based on model position
