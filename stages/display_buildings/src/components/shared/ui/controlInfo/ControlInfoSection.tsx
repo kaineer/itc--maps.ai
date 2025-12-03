@@ -7,7 +7,7 @@ interface ControlItem {
   description: string;
 }
 
-interface ControlInfoSectionProps {
+interface Props {
   category: string;
   items: ControlItem[];
   className?: string;
@@ -33,11 +33,11 @@ interface ControlInfoSectionProps {
  * />
  * ```
  */
-export const ControlInfoSection: React.FC<ControlInfoSectionProps> = ({
+export const ControlInfoSection = ({
   category,
   items,
   className = "",
-}) => {
+}: Props) => {
   return (
     <div className={`${classes.section} ${className}`}>
       <h4 className={classes.sectionTitle}>{category}</h4>
