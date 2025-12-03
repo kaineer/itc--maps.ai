@@ -35,6 +35,23 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   }
 
   /**
+   * Get building position from either position field or first node
+   * Returns { x, z } or null if no position data available
+   */
+  const getBuildingPosition = (
+    building: Building,
+  ): { x: number; z: number } | null => {
+    if (building.position) {
+      // Use explicit position if available
+      return { x: building.position.x, z: building.position.z };
+    } else if (building.nodes && building.nodes.length > 0) {
+      // Use first node from polygon vertices as position
+      return { x: building.nodes[0].x, z: building.nodes[0].z };
+    }
+    return null;
+  };
+
+  /**
    * Normalize address for comparison
    * - Convert to lowercase
    * - Remove extra spaces
@@ -89,12 +106,15 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
    * Camera positioned 10 meters north of the building
    */
   const moveCameraToBuilding = (building: Building) => {
-    if (!building.position) {
-      setSearchError("Building has no position data");
+    // Get building position using helper function
+    const position = getBuildingPosition(building);
+
+    if (!position) {
+      setSearchError("Building has no position or polygon data");
       return;
     }
 
-    const { x, z } = building.position;
+    const { x, z } = position;
 
     // Set camera target to building position (at ground level)
     const cameraTarget: [number, number, number] = [x, 0, z];
@@ -108,9 +128,11 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
     // Optional: Also update building selection in Redux
     // This could be useful for highlighting the building
-    dispatch(buildingsSlice.actions.setSelectedBuilding(
-      `${building.address}|${x},${z}`
-    ));
+    dispatch(
+      buildingsSlice.actions.setSelectedBuilding(
+        `${building.address}|${x},${z}`,
+      ),
+    );
   };
 
   /**
@@ -161,10 +183,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         </div>
 
         {searchQuery && (
-          <button
-            onClick={clearSearch}
-            className={styles.clearButton}
-          >
+          <button onClick={clearSearch} className={styles.clearButton}>
             Clear
           </button>
         )}
@@ -190,15 +209,22 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
               <span className={styles.infoValue}>{foundBuilding.address}</span>
             </div>
 
-            {foundBuilding.position && (
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>Position:</span>
-                <span className={styles.infoValue}>
-                  X: {foundBuilding.position.x.toFixed(2)},
-                  Z: {foundBuilding.position.z.toFixed(2)}
-                </span>
-              </div>
-            )}
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Position:</span>
+              <span className={styles.infoValue}>
+                {(() => {
+                  const position = getBuildingPosition(foundBuilding);
+                  if (position) {
+                    const source = foundBuilding.position
+                      ? "explicit"
+                      : "from polygon";
+                    return `X: ${position.x.toFixed(2)}, Z: ${position.z.toFixed(2)} (${source})`;
+                  } else {
+                    return "Not available";
+                  }
+                })()}
+              </span>
+            </div>
 
             {foundBuilding.height && (
               <div className={styles.infoRow}>
