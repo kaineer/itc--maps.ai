@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Building, BuildingNode } from "../types/types";
 import { putBackend, getBackend } from "../utils/backend";
+import { initializeViewCamera } from "./viewSlice";
 
 interface BuildingsResponse {
   buildings: Building[];
@@ -159,10 +160,13 @@ export const buildingsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchInitialBuildings.fulfilled, (state, action) => {
-        state.loading = false;
-        state.buildings = action.payload;
-      })
+      .addCase(
+        fetchInitialBuildings.fulfilled,
+        (state, action: PayloadAction<Building[]>) => {
+          state.loading = false;
+          state.buildings = action.payload;
+        },
+      )
       .addCase(fetchInitialBuildings.rejected, (state, action) => {
         state.loading = false;
         state.error =

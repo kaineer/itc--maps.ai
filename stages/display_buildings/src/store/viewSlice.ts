@@ -163,27 +163,28 @@ export const {
 } = viewSlice.selectors;
 
 // Async thunk to fetch initial position and update camera
-export const initializeViewCamera = createAsyncThunk(
-  "view/initializeViewCamera",
-  async (_, { dispatch }) => {
-    // Fetch starting position from backend
-    const data = await getBackend<{ x: number; z: number }>("/start");
-    const position = { x: data.x, z: data.z };
+export const initializeViewCamera = createAsyncThunk<{
+  position: { x: number; z: number };
+  cameraTarget: [number, number, number];
+  cameraPosition: [number, number, number];
+}>("view/initializeViewCamera", async (_, { dispatch }) => {
+  // Fetch starting position from backend
+  const data = await getBackend<{ x: number; z: number }>("/start");
+  const position = { x: data.x, z: data.z };
 
-    // Update camera state: set target to starting position, camera 10 meters north
-    // North is negative Z in Three.js coordinate system
-    const cameraTarget: [number, number, number] = [position.x, 0, position.z];
-    const cameraPosition: [number, number, number] = [
-      position.x,
-      1.8,
-      position.z - 10,
-    ]; // 10 meters north
+  // Update camera state: set target to starting position, camera 10 meters north
+  // North is negative Z in Three.js coordinate system
+  const cameraTarget: [number, number, number] = [position.x, 0, position.z];
+  const cameraPosition: [number, number, number] = [
+    position.x,
+    1.8,
+    position.z - 10,
+  ]; // 10 meters north
 
-    dispatch(updateCameraTarget(cameraTarget));
-    dispatch(updateCameraPosition(cameraPosition));
+  dispatch(updateCameraTarget(cameraTarget));
+  dispatch(updateCameraPosition(cameraPosition));
 
-    return { position, cameraTarget, cameraPosition };
-  },
-);
+  return { position, cameraTarget, cameraPosition };
+});
 
 export default viewSlice.reducer;
