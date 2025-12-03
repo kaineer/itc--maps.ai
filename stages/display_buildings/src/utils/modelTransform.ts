@@ -32,8 +32,8 @@ export interface CameraState {
 
 export interface ModelTransform {
   position: [number, number, number];
-  rotation: [number, number, number];
-  scale: [number, number, number];
+  rotation: number; // Rotation around Y axis in degrees
+  scale: number; // Uniform scale factor
   yOffset?: number; // Optional Y offset for ground level placement
 }
 
@@ -116,16 +116,10 @@ export function calculateInitialModelPosition(
     polygonCenter.z,
   ];
 
-  const scale: [number, number, number] = [
-    calculatedScale,
-    calculatedScale,
-    calculatedScale,
-  ];
-
   return {
     position,
-    rotation: [0, 0, 0], // Initial rotation
-    scale,
+    rotation: 0, // Initial rotation around Y axis
+    scale: calculatedScale,
     yOffset,
   };
 }

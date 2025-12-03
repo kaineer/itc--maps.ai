@@ -246,7 +246,7 @@ export const alignmentSlice = createSlice({
         state.modelTransform = {
           position: initialTransform.position,
           rotation: 0,
-          scale: initialTransform.scale[0], // Use uniform scale from first axis
+          scale: initialTransform.scale, // Use scale as number
         };
       }
 

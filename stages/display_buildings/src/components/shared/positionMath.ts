@@ -3,7 +3,7 @@
  * Provides common operations for 3D position vectors used throughout the application
  */
 
-import { ModelPosition } from "../../store/alignmentSlice";
+import { type ModelPosition } from "../../store/alignmentSlice";
 
 /**
  * Add two positions together (vector addition)
@@ -11,7 +11,10 @@ import { ModelPosition } from "../../store/alignmentSlice";
  * @param b Second position
  * @returns Result of a + b
  */
-export const addPosition = (a: ModelPosition, b: ModelPosition): ModelPosition => {
+export const addPosition = (
+  a: ModelPosition,
+  b: ModelPosition,
+): ModelPosition => {
   return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
 };
 
@@ -21,7 +24,10 @@ export const addPosition = (a: ModelPosition, b: ModelPosition): ModelPosition =
  * @param b Second position to subtract
  * @returns Result of a - b
  */
-export const subtractPosition = (a: ModelPosition, b: ModelPosition): ModelPosition => {
+export const subtractPosition = (
+  a: ModelPosition,
+  b: ModelPosition,
+): ModelPosition => {
   return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
 };
 
@@ -31,7 +37,10 @@ export const subtractPosition = (a: ModelPosition, b: ModelPosition): ModelPosit
  * @param scalar Scalar value to multiply by
  * @returns Result of position * scalar
  */
-export const multiplyPosition = (position: ModelPosition, scalar: number): ModelPosition => {
+export const multiplyPosition = (
+  position: ModelPosition,
+  scalar: number,
+): ModelPosition => {
   return [position[0] * scalar, position[1] * scalar, position[2] * scalar];
 };
 
@@ -55,7 +64,9 @@ export const distanceBetween = (a: ModelPosition, b: ModelPosition): number => {
  */
 export const normalizePosition = (position: ModelPosition): ModelPosition => {
   const length = Math.sqrt(
-    position[0] * position[0] + position[1] * position[1] + position[2] * position[2]
+    position[0] * position[0] +
+      position[1] * position[1] +
+      position[2] * position[2],
   );
 
   if (length === 0) {
@@ -71,7 +82,10 @@ export const normalizePosition = (position: ModelPosition): ModelPosition => {
  * @param targetLength Desired length
  * @returns Scaled position with specified length
  */
-export const scaleToLength = (position: ModelPosition, targetLength: number): ModelPosition => {
+export const scaleToLength = (
+  position: ModelPosition,
+  targetLength: number,
+): ModelPosition => {
   const normalized = normalizePosition(position);
   return multiplyPosition(normalized, targetLength);
 };
@@ -82,7 +96,10 @@ export const scaleToLength = (position: ModelPosition, targetLength: number): Mo
  * @param to Target position
  * @returns Direction vector from 'from' to 'to'
  */
-export const directionTo = (from: ModelPosition, to: ModelPosition): ModelPosition => {
+export const directionTo = (
+  from: ModelPosition,
+  to: ModelPosition,
+): ModelPosition => {
   return [to[0] - from[0], to[1] - from[1], to[2] - from[2]];
 };
 
@@ -106,7 +123,7 @@ export const midpoint = (a: ModelPosition, b: ModelPosition): ModelPosition => {
 export const positionsEqual = (
   a: ModelPosition,
   b: ModelPosition,
-  epsilon: number = 0.0001
+  epsilon: number = 0.0001,
 ): boolean => {
   return (
     Math.abs(a[0] - b[0]) < epsilon &&
@@ -149,10 +166,13 @@ export const dotProduct = (a: ModelPosition, b: ModelPosition): number => {
  * @param b Second position
  * @returns Cross product a × b
  */
-export const crossProduct = (a: ModelPosition, b: ModelPosition): ModelPosition => {
+export const crossProduct = (
+  a: ModelPosition,
+  b: ModelPosition,
+): ModelPosition => {
   return [
     a[1] * b[2] - a[2] * b[1],
     a[2] * b[0] - a[0] * b[2],
-    a[0] * b[1] - a[1] * b[0]
+    a[0] * b[1] - a[1] * b[0],
   ];
 };

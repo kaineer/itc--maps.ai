@@ -136,7 +136,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         {/* Model visualization (syncs with Redux modelTransform) */}
         <ModelVisualization enabled={true} />
 
-        {/* Test building markers */}
+        {/* Test building markers
         {TEST_BUILDINGS.map((building) => (
           <mesh
             key={building.id}
@@ -145,7 +145,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
             <boxGeometry args={[15, 0.2, 15]} />
             <meshBasicMaterial color="#3b82f6" opacity={0.3} transparent />
           </mesh>
-        ))}
+        ))} */}
 
         {/* Camera Controller for alignment - uses AlignmentCameraGroup to switch between modes */}
         <AlignmentCameraGroup enabled={true} />
