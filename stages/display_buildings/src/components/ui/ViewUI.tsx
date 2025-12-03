@@ -1,15 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
 import {
   buildingsSlice,
   fetchInitialBuildings,
 } from "../../store/buildingsSlice";
-import { ControlsInfo } from "../shared/ui/ControlsInfo";
+import { ViewControlsInfo } from "../cameras/view/ViewControlsInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
-import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
+import { ViewCameraController } from "../cameras/view/ViewCameraController";
 import { type AppDispatch } from "../../store";
 
 interface Props {
@@ -52,7 +53,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   return (
     <>
-      <ControlsInfo />
+      <ViewControlsInfo enabled={true} />
 
       <Canvas
         camera={{
@@ -72,8 +73,17 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         {/* Buildings */}
         <ViewStage buildings={buildings} onBuildingClick={onBuildingSelect} />
 
-        {/* Camera Controller for alignment */}
-        <AlignmentCameraGroup enabled={true} />
+        {/* Camera controls for view mode */}
+        <OrbitControls
+          makeDefault
+          enablePan={true}
+          enableZoom={true}
+          enableRotate={true}
+          maxPolarAngle={Math.PI / 2} // Prevent going below ground
+        />
+
+        {/* Camera movement controller (WASD controls) */}
+        <ViewCameraController />
       </Canvas>
     </>
   );

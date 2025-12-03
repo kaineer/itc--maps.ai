@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-export const CameraController = () => {
+export const ViewCameraController = () => {
   const moveState = useRef({
     forward: false,
     backward: false,

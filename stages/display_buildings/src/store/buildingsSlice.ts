@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { Building, BuildingNode } from "../types/types";
-import { putBackend } from "../utils/backend";
+import { putBackend, getBackend } from "../utils/backend";
 
 interface BuildingsResponse {
   buildings: Building[];
