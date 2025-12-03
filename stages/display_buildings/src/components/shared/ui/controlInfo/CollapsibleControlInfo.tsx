@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
-import { uiSlice, KnownMode } from "../../../store/uiSlice";
 import classes from "./CollapsibleControlInfo.module.css";
+import { KnownMode, uiSlice } from "../../../../store/uiSlice";
 
 interface Props {
   mode: KnownMode;

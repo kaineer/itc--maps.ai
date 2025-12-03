@@ -1,3 +1,9 @@
+/**
+ * TODO: Перенести в ViewControlsInfo
+ *
+ * Т.к. скорее всего эти сообщения будут относиться к ViewUI, т.е. к ViewCameraController
+ */
+
 interface Props {
   className?: string;
 }

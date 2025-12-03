@@ -1,9 +1,9 @@
 import classes from "./PerspectiveCameraControlInfo.module.css";
 
-import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "../../shared/ui/controlInfo/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
-import { ControlInfoSection } from "../../shared/ui/ControlInfoSection";
-import { DetailedMetaInfo } from "../../shared/ui/DetailedMetaInfo";
+import { ControlInfoSection } from "../../shared/ui/controlInfo/ControlInfoSection";
+import { DetailedMetaInfo } from "../../shared/ui/controlInfo/DetailedMetaInfo";
 import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
 const detailedInfo = [

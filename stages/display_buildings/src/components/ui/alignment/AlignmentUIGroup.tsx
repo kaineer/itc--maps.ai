@@ -2,6 +2,7 @@ import { useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
 import { TopCameraControlInfo } from "../../cameras/alignment/TopCameraControlInfo";
 import { PerspectiveCameraControlInfo } from "../../cameras/alignment/PerspectiveCameraControlInfo";
+import { Match } from "../../shared/Match";
 
 interface Props {
   enabled: boolean;
@@ -39,8 +40,11 @@ export const AlignmentUIGroup = ({ enabled, className = "" }: Props) => {
 
   return (
     <div className={className}>
-      {currentCameraView === "top" && <TopCameraControlInfo />}
-      {currentCameraView === "perspective" && <PerspectiveCameraControlInfo />}
+      <Match
+        value={currentCameraView}
+        top={() => <TopCameraControlInfo />}
+        perspective={() => <PerspectiveCameraControlInfo />}
+      />
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { useEffect, useCallback } from "react";
-import { useThree, useFrame } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
@@ -18,8 +18,12 @@ export const PerspectiveCameraController = ({
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const { getSelectedModel, getPerspectiveCameraState, getPositionStep } =
-    alignmentSlice.selectors;
+  const {
+    getSelectedModel,
+    getPerspectiveCameraState,
+    getPositionStep,
+    getModelTransform,
+  } = alignmentSlice.selectors;
   const {
     updateCameraState,
     increaseCameraDistance,
@@ -31,14 +35,49 @@ export const PerspectiveCameraController = ({
   const currentModel = useSelector(getSelectedModel);
   const cameraState = useSelector(getPerspectiveCameraState);
   const positionStep = useSelector(getPositionStep);
+  const modelTransform = useSelector(getModelTransform);
 
+  // Calculate model center for camera target
+  const calculateModelCenter = useCallback(() => {
+    if (!currentModel) return null;
+
+    // Get bounding box from model metadata (local coordinates)
+    const boundingBox =
+      currentModel.metadata.boundingBox ||
+      calculateModelBoundingBox(currentModel);
+    if (!boundingBox) {
+      return null;
+    }
+
+    // Calculate center of bounding box in local coordinates
+    const localCenter = new Vector3();
+    boundingBox.getCenter(localCenter);
+
+    // Convert to world coordinates by adding model position
+    // The bounding box center is relative to model's local origin
+    // Model position is the world position of the model's origin
+    const worldCenter = new Vector3(
+      modelTransform.position[0] + localCenter.x,
+      modelTransform.position[1] + localCenter.y,
+      modelTransform.position[2] + localCenter.z,
+    );
+
+    return worldCenter;
+  }, [currentModel, modelTransform.position]);
+
+  // Update camera when state changes
   useEffect(() => {
     if (!enabled) return;
 
-    // Configure camera properties for perspective view (update when cameraState changes)
+    // Configure camera properties for perspective view
     camera.position.set(...cameraState.position);
     camera.lookAt(...cameraState.target);
     camera.up.set(0, 1, 0); // Y-up coordinate system (Three.js default and consistent with TopCameraController)
+
+    // Update field of view for perspective camera
+    if (camera instanceof PerspectiveCamera && camera.fov !== cameraState.fov) {
+      camera.fov = cameraState.fov;
+    }
 
     // Update camera projection matrix
     camera.updateProjectionMatrix();
@@ -49,7 +88,44 @@ export const PerspectiveCameraController = ({
     }
   }, [enabled, camera, cameraState, onCameraUpdate]);
 
-  // Keyboard event handler for camera distance control
+  // Update camera target when model changes
+  useEffect(() => {
+    if (!enabled || !currentModel) return;
+
+    const center = calculateModelCenter();
+    if (!center) return;
+
+    // Check if current target matches model center
+    const currentTarget = cameraState.target;
+    const modelCenterArray = [center.x, center.y, center.z];
+
+    const targetsMatch =
+      Math.abs(currentTarget[0] - center.x) < 0.001 &&
+      Math.abs(currentTarget[1] - center.y) < 0.001 &&
+      Math.abs(currentTarget[2] - center.z) < 0.001;
+
+    if (!targetsMatch) {
+      // Update camera target in Redux to follow model center
+      dispatch(
+        updateCameraState({
+          view: "perspective",
+          cameraState: {
+            target: modelCenterArray,
+          },
+        }),
+      );
+    }
+  }, [
+    enabled,
+    currentModel,
+    cameraState.target,
+    dispatch,
+    updateCameraState,
+    calculateModelCenter,
+    modelTransform.position,
+  ]);
+
+  // Keyboard event handler for camera control
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {
       if (!enabled) return;
@@ -57,7 +133,7 @@ export const PerspectiveCameraController = ({
       // Handle Ctrl+Space to switch to top view
       if (event.ctrlKey && event.code === "Space") {
         event.preventDefault();
-        console.log("🔄 Ctrl+Space: Switching to top view");
+
         dispatch(setCameraView("top"));
         return;
       }
@@ -69,15 +145,15 @@ export const PerspectiveCameraController = ({
 
         if (direction === "north") {
           // W key: Move forward (decrease distance to model)
-          console.log("⬆️ W: Moving camera forward (decreasing distance)");
+
           dispatch(decreaseCameraDistance());
         } else if (direction === "south") {
           // S key: Move backward (increase distance from model)
-          console.log("⬇️ S: Moving camera backward (increasing distance)");
+
           dispatch(increaseCameraDistance());
         } else if (direction === "east") {
           // D key: Rotate camera clockwise around model
-          console.log("🔄 D: Rotating camera clockwise");
+
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
@@ -87,7 +163,7 @@ export const PerspectiveCameraController = ({
           );
         } else if (direction === "west") {
           // A key: Rotate camera counterclockwise around model
-          console.log("🔄 A: Rotating camera counterclockwise");
+
           dispatch(
             rotateCameraAroundTarget({
               view: "perspective",
@@ -101,7 +177,7 @@ export const PerspectiveCameraController = ({
       // Handle Space key for toggling camera height
       if (event.code === "Space") {
         event.preventDefault();
-        console.log("🔄 Space: Toggling camera height");
+
         dispatch(toggleCameraHeight());
       }
     },
@@ -113,7 +189,6 @@ export const PerspectiveCameraController = ({
       decreaseCameraDistance,
       rotateCameraAroundTarget,
       toggleCameraHeight,
-      cameraState,
     ],
   );
 
@@ -127,50 +202,6 @@ export const PerspectiveCameraController = ({
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [enabled, handleKeyDown]);
-
-  useFrame(() => {
-    if (!enabled || !currentModel) return;
-
-    // Calculate bounding box for the model
-    const boundingBox =
-      currentModel.metadata.boundingBox ||
-      calculateModelBoundingBox(currentModel);
-    if (!boundingBox) {
-      return;
-    }
-
-    // Calculate center of the model
-    const center = new Vector3();
-    boundingBox.getCenter(center);
-
-    // Update camera position from Redux state
-    camera.position.set(...cameraState.position);
-
-    // Position camera based on current position (keep for manual movement)
-    // Only update target to look at model center
-    camera.lookAt(center.x, center.y, center.z);
-
-    // Update field of view for perspective camera (only if needed)
-    if (camera instanceof PerspectiveCamera && camera.fov !== cameraState.fov) {
-      camera.fov = cameraState.fov;
-      camera.updateProjectionMatrix();
-    }
-
-    // Update camera state in Redux (only target and fov, position is managed by user)
-    dispatch(
-      updateCameraState({
-        view: "perspective",
-        cameraState: {
-          target: [center.x, center.y, center.z],
-        },
-      }),
-    );
-
-    // Notify parent component about camera update
-    if (onCameraUpdate) {
-      onCameraUpdate(camera);
-    }
-  });
 
   return null;
 };

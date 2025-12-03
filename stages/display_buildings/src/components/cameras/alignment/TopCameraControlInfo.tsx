@@ -3,10 +3,10 @@
  */
 import classes from "./TopCameraControlInfo.module.css";
 
-import { CollapsibleControlInfo } from "../../shared/ui/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "../../shared/ui/controlInfo/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
-import { ControlInfoSection } from "../../shared/ui/ControlInfoSection";
-import { DetailedMetaInfo } from "../../shared/ui/DetailedMetaInfo";
+import { ControlInfoSection } from "../../shared/ui/controlInfo/ControlInfoSection";
+import { DetailedMetaInfo } from "../../shared/ui/controlInfo/DetailedMetaInfo";
 import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
 const detailedInfo = [
@@ -54,6 +54,12 @@ export const TopCameraControlInfo = ({
           keys: ["Alt", "W", "/", "S"],
           description: "Scale model (increase/decrease)",
         },
+      ],
+    },
+    {
+      category: "🔄 View Switching",
+      items: [
+        { keys: ["Ctrl", "Space"], description: "Switch to perspective view" },
       ],
     },
     {

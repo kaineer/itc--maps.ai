@@ -1,8 +1,8 @@
 # Project Summary - Camera Alignment System Development
 
-## Session Status: Phase 3 - Perspective Camera & Vector Math COMPLETED
+## Session Status: Phase 4 - Camera Target Synchronization & Debugging IN PROGRESS
 
-## Current State (Branch: master) - Complete Camera Control System with Advanced Math Utilities
+## Current State (Branch: master) - Debugging Camera Target Reset Issue
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
 
@@ -174,24 +174,84 @@ maps.ai/
 - ✅ **Professional Polish**: Consistent behavior across all interaction modes
 - ✅ **Accessibility**: Layout-independent keyboard controls
 
-### 🔄 Next Development Phase
+### ✅ Phase 4: Camera Architecture Refactoring - COMPLETED
 
-#### 13. Planned Enhancements
-- **Mouse Orbit Controls**: Intuitive mouse-based camera rotation for perspective view
-- **Zoom with Mouse Wheel**: Smooth zoom functionality for both camera types
-- **Camera Control Information**: Help panels for perspective camera controls
-- **UI Polish**: Enhanced visual feedback and status indicators
-- **Performance Optimization**: Further optimization of useFrame loops
+#### 13. AlignmentCameraGroup & AlignmentUIGroup - COMPLETED
+- ✅ **Clean Architecture**: Separated 3D camera controllers from UI components
+- ✅ **AlignmentCameraGroup**: 3D camera controllers inside Canvas (TopCameraController/PerspectiveCameraController)
+- ✅ **AlignmentUIGroup**: UI components outside Canvas (TopCameraControlInfo/PerspectiveCameraControlInfo)
+- ✅ **Automatic Mode Switching**: Based on Redux `currentCameraView` state
+- ✅ **Ctrl+Space Shortcut**: Bidirectional switching between top and perspective views
+- ✅ **Integrated Debugging**: AlignmentSliceLogger included in camera group
 
-#### 14. Production Readiness
-- ✅ Core camera functionality complete and tested
-- ✅ Comprehensive vector math foundation established
-- ✅ Professional user interface with intuitive controls
-- ✅ Scalable architecture for future enhancements
+#### 14. Shared UI Components - COMPLETED
+- ✅ **KeysDisplay**: Consistent keyboard shortcut rendering with + and / separators
+- ✅ **DetailedMetaInfo**: Uniform metadata display for configuration details
+- ✅ **LoggingInfoFooter**: Standardized footer for development information
+- ✅ **ControlInfoSection**: Organized control sections with consistent styling
+- ✅ **CSS Consolidation**: Removed duplicate styles, added dark mode support
+
+#### 15. PerspectiveCameraControlInfo - COMPLETED
+- ✅ **Comprehensive Documentation**: Complete perspective camera control reference
+- ✅ **Ctrl+Space Documentation**: Clear indication of view switching shortcut
+- ✅ **Consistent Design**: Matches TopCameraControlInfo styling and structure
+- ✅ **Height Mode Information**: Eye level (1.8m) vs ground level (0.5m) details
+- ✅ **Orbital Rotation**: Documentation of A/D keys for camera rotation
+
+### 🔧 Current Debugging Issue: Camera Target Reset Problem
+
+#### 16. Problem Identified
+- **Issue**: When switching from top to perspective view, `perspectiveCamera.target` resets to `[0, 5, 0]`
+- **Expected**: Target should remain at model position after model movement
+- **Observed Behavior**:
+  1. Initial `perspectiveCamera.target = [0, 5, 0]` (from `calculatePerspectiveCameraPosition`)
+  2. When model moves in top view, target updates correctly to model position
+  3. After switching to perspective view, target resets back to `[0, 5, 0]`
+
+#### 17. Debugging Progress
+- ✅ **Fixed useEffect Dependencies**: Prevented repeated `startAlignmentProcess()` calls
+- ✅ **Camera Preservation Logic**: Added checks to preserve camera state unless at defaults
+- ✅ **Target Update Logic**: `moveModelInDirection` and `updateModelPosition` now update camera target
+- ✅ **Offset Calculation Fix**: Corrected offset calculation when target changes
+- ✅ **Debug Components**: Added `CameraTargetDebug` component for real-time monitoring
+- ✅ **Targeted Logging**: Added stack traces and detailed state tracking
+
+#### 18. Root Cause Investigation
+- **Suspected Issues**:
+  1. `startAlignmentProcess()` being called unexpectedly
+  2. Camera state comparison logic (`isPerspectiveCameraDefault`) incorrect
+  3. Race conditions during mode switching
+  4. Component re-mounting causing state reset
+
+#### 19. Key Findings
+- `[0, 5, 0]` target comes from `calculatePerspectiveCameraPosition` (targetHeight = 5)
+- Target updates correctly when model moves (`moveModelInDirection` works)
+- Reset happens specifically when switching to perspective view
+- `isPerspectiveCameraDefault` calculation being investigated with detailed logging
+
+### 🔄 Next Steps
+
+#### 20. Immediate Debugging Tasks
+- **Analyze Stack Traces**: Identify who calls camera reset functions
+- **Verify State Comparisons**: Check `isPerspectiveCameraDefault` logic
+- **Monitor Component Lifecycle**: Check for unexpected re-mounts
+- **Test Edge Cases**: Model at different positions, multiple switches
+
+#### 21. Planned Fixes
+- **Ensure Target Persistence**: Camera target should follow model position
+- **Fix Mode Switching**: Prevent target reset during view changes
+- **Clean Up Logging**: Remove debug logs after issue resolved
+- **Add Unit Tests**: Prevent regression of camera target synchronization
+
+#### 22. Production Readiness Status
+- ✅ Core camera functionality complete
+- ✅ User interface polished and consistent
+- ⚠️ Camera target synchronization bug being debugged
+- ✅ Architecture ready for production after bug fix
 - ✅ Performance optimized for smooth 3D interaction
 
 ---
-*Last Updated: Perspective Camera & Vector Math Complete*
+*Last Updated: Camera Target Debugging in Progress*
 *Branch: master*
-*Status: Ready for mouse interaction enhancements*
-*Commit: Latest includes positionMath module and perspective camera controls*
+*Status: Debugging perspective camera target reset issue*
+*Commit: Latest includes detailed logging and camera preservation logic*

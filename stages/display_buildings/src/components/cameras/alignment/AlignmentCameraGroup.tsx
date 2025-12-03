@@ -3,6 +3,8 @@ import { alignmentSlice } from "../../../store/alignmentSlice";
 import { TopCameraController } from "./TopCameraController";
 import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { AlignmentSliceLogger } from "../../testing/ui/AlignmentSliceLogger";
+import { Development } from "../../shared/Development";
+import { Match } from "../../shared/Match";
 
 interface Props {
   enabled: boolean;
@@ -28,25 +30,29 @@ export const AlignmentCameraGroup = ({ enabled, onCameraUpdate }: Props) => {
 
   return (
     <>
-      {currentCameraView === "top" ? (
-        // Top camera mode: Show top camera controller
-        <TopCameraController enabled={true} onCameraUpdate={onCameraUpdate} />
-      ) : (
-        // Perspective camera mode: Show perspective controller
-        <PerspectiveCameraController
-          enabled={true}
-          onCameraUpdate={onCameraUpdate}
-        />
-      )}
+      <Match
+        value={currentCameraView}
+        top={() => (
+          <TopCameraController enabled={true} onCameraUpdate={onCameraUpdate} />
+        )}
+        perspective={() => (
+          <PerspectiveCameraController
+            enabled={true}
+            onCameraUpdate={onCameraUpdate}
+          />
+        )}
+      />
 
       {/* Alignment state logger for debugging */}
-      <AlignmentSliceLogger
-        enabled={true}
-        logCameraState={true}
-        logModelTransform={true}
-        logStepConfig={true}
-        logProcessState={true}
-      />
+      <Development>
+        <AlignmentSliceLogger
+          enabled={true}
+          logCameraState={true}
+          logModelTransform={true}
+          logStepConfig={true}
+          logProcessState={true}
+        />
+      </Development>
     </>
   );
 };

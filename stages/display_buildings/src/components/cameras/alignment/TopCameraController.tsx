@@ -56,7 +56,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       // Handle Ctrl+Space to switch to perspective view
       if (event.ctrlKey && event.code === "Space") {
         event.preventDefault();
-        console.log("🔄 Ctrl+Space: Switching to perspective view");
+
         dispatch(setCameraView("perspective"));
         return;
       }
@@ -69,11 +69,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         if (event.altKey && !event.ctrlKey) {
           if (direction === "north") {
             // Alt+W: Increase model scale
-            console.log("📈 Alt+W: Increasing model scale");
+
             dispatch(increaseModelScale());
           } else if (direction === "south") {
             // Alt+S: Decrease model scale
-            console.log("📉 Alt+S: Decreasing model scale");
+
             dispatch(decreaseModelScale());
           }
 
@@ -92,15 +92,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
         // Check if Shift key is pressed
         if (event.shiftKey) {
           // Shift + WASD: Move model
-          console.log(
-            `🔄 Shift+${getCleanKeyName(event.code)}: Moving model ${direction}`,
-          );
+
           dispatch(moveModelInDirection(direction));
         } else {
           // WASD only: Move camera
-          console.log(
-            `🎥 ${getCleanKeyName(event.code)}: Moving camera ${direction}`,
-          );
+
           dispatch(moveTopCameraInDirection(direction));
         }
 
@@ -111,11 +107,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (event.shiftKey) {
         if (event.code === "ArrowUp") {
           event.preventDefault();
-          console.log("📏 Shift+↑: Increasing position step");
+
           dispatch(increasePositionStep());
         } else if (event.code === "ArrowDown") {
           event.preventDefault();
-          console.log("📏 Shift+↓: Decreasing position step");
+
           dispatch(decreasePositionStep());
         }
       }
@@ -124,11 +120,11 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       if (event.ctrlKey) {
         if (event.code === "ArrowUp") {
           event.preventDefault();
-          console.log("🔄 Ctrl+↑: Increasing rotation step");
+
           dispatch(increaseRotationStep());
         } else if (event.code === "ArrowDown") {
           event.preventDefault();
-          console.log("🔄 Ctrl+↓: Decreasing rotation step");
+
           dispatch(decreaseRotationStep());
         }
       }
@@ -136,7 +132,7 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       // Handle scale step toggle with Ctrl+Shift+ArrowUp
       if (event.ctrlKey && event.shiftKey && event.code === "ArrowUp") {
         event.preventDefault();
-        console.log("⚖️ Ctrl+Shift+↑: Toggling scale step");
+
         dispatch(toggleScaleStep());
       }
     },
@@ -279,10 +275,6 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
             position: [newX, modelTransform.position[1], newZ],
           }),
         );
-
-        console.log(
-          `🏗️ Dragging model to: X=${newX.toFixed(2)}, Z=${newZ.toFixed(2)}`,
-        );
       } else {
         // Drag camera (move scene under camera)
         const newX = dragStartCameraPos.current[0] - deltaX * sensitivity;
@@ -292,10 +284,6 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
           updateTopCameraPosition({
             position: [newX, cameraState.position[1], newZ],
           }),
-        );
-
-        console.log(
-          `🎥 Dragging camera to: X=${newX.toFixed(2)}, Z=${newZ.toFixed(2)}`,
         );
       }
 
