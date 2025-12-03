@@ -1,14 +1,11 @@
 .canvas {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 .canvasBackground {
-  background-color: #f0f0f0;
+    background-color: #f0f0f0;
 }
-```
-
-Теперь обновлю `AlignmentUI.tsx` чтобы использовать этот CSS модуль:
