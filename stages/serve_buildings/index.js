@@ -8,11 +8,11 @@ let buildingsData = [];
 let itcData = {};
 
 const modelsData = [
-  {
-    modelId: "1",
-    modelUrl: "/itc.fbx",
-    buildingIds: ["59831701", "59831708", "59831705"],
-  },
+  // {
+  //   modelId: "1",
+  //   modelUrl: "/itc.fbx",
+  //   buildingIds: ["59831701", "59831708", "59831705"],
+  // },
 ];
 
 const modelsCache = modelsData.reduce((acc, item) => {

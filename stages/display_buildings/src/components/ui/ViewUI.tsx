@@ -8,6 +8,7 @@ import {
 } from "../../store/buildingsSlice";
 import { viewSlice } from "../../store/viewSlice";
 import { ViewControlsInfo } from "../cameras/view/ViewControlsInfo";
+import { BuildingSearch } from "./BuildingSearch";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
@@ -57,6 +58,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   return (
     <>
       <ViewControlsInfo enabled={true} />
+      <BuildingSearch enabled={true} />
 
       <Canvas
         camera={{
@@ -67,10 +69,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       >
         <color attach="background" args={["#87CEEB"]} />
 
-        {/* Lighting */}
+        {/* Lighting for the scene */}
         <Lighting />
 
-        {/* Ground */}
+        {/* Ground plane for reference */}
         <Ground />
 
         {/* Buildings */}
