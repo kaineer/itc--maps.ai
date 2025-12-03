@@ -1,35 +1,37 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
-import { buildingsSlice } from "../../store/buildingsSlice";
-import { alignmentSlice } from "../../store/alignmentSlice";
+import {
+  buildingsSlice,
+  fetchInitialBuildings,
+} from "../../store/buildingsSlice";
 import { ControlsInfo } from "../shared/ui/ControlsInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
+import { type AppDispatch } from "../../store";
 
 interface Props {
   onBuildingSelect?: (buildingId: string) => void;
 }
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
-  const {
-    selectModelForAlignment,
-    addPolygonForAlignment,
-    startAlignmentProcess,
-  } = alignmentSlice.actions;
+  // const {
+  //   selectModelForAlignment,
+  //   addPolygonForAlignment,
+  //   startAlignmentProcess,
+  // } = alignmentSlice.actions;
 
   const buildings = useSelector(getBuildings);
   const loading = useSelector(getLoading);
   const error = useSelector(getError);
 
   useEffect(() => {
-    // TODO: Implement actual API call to fetch buildings
-    // For now, this is a placeholder for production data fetching
-    console.log("ViewUI: Would fetch buildings from API in production");
+    // Fetch initial position and buildings when component mounts
+    dispatch(fetchInitialBuildings());
   }, [dispatch]);
 
   if (loading) {

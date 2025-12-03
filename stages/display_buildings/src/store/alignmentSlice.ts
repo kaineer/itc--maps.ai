@@ -14,6 +14,7 @@ import {
   distanceBetween,
   scaleToLength,
   directionTo,
+  positionsEqual,
 } from "../components/shared/positionMath";
 import { Vector3 } from "three";
 
@@ -236,11 +237,7 @@ export const alignmentSlice = createSlice({
       );
 
       // Only update model transform if it hasn't been set yet (preserve user changes)
-      if (
-        state.modelTransform.position[0] === 0 &&
-        state.modelTransform.position[1] === 0 &&
-        state.modelTransform.position[2] === 0
-      ) {
+      if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
         state.modelTransform = {
           position: initialTransform.position,
           rotation: 0,
@@ -254,26 +251,21 @@ export const alignmentSlice = createSlice({
       // Only set up cameras if they haven't been initialized yet
       // Check if cameras are at their default positions AND targets
       const isTopCameraDefault =
-        state.cameraStates.top.position[0] === defaultTopCamera.position[0] &&
-        state.cameraStates.top.position[1] === defaultTopCamera.position[1] &&
-        state.cameraStates.top.position[2] === defaultTopCamera.position[2] &&
-        state.cameraStates.top.target[0] === defaultTopCamera.target[0] &&
-        state.cameraStates.top.target[1] === defaultTopCamera.target[1] &&
-        state.cameraStates.top.target[2] === defaultTopCamera.target[2];
+        positionsEqual(
+          state.cameraStates.top.position,
+          defaultTopCamera.position,
+        ) &&
+        positionsEqual(state.cameraStates.top.target, defaultTopCamera.target);
 
       const isPerspectiveCameraDefault =
-        state.cameraStates.perspective.position[0] ===
-          defaultPerspectiveCamera.position[0] &&
-        state.cameraStates.perspective.position[1] ===
-          defaultPerspectiveCamera.position[1] &&
-        state.cameraStates.perspective.position[2] ===
-          defaultPerspectiveCamera.position[2] &&
-        state.cameraStates.perspective.target[0] ===
-          defaultPerspectiveCamera.target[0] &&
-        state.cameraStates.perspective.target[1] ===
-          defaultPerspectiveCamera.target[1] &&
-        state.cameraStates.perspective.target[2] ===
-          defaultPerspectiveCamera.target[2];
+        positionsEqual(
+          state.cameraStates.perspective.position,
+          defaultPerspectiveCamera.position,
+        ) &&
+        positionsEqual(
+          state.cameraStates.perspective.target,
+          defaultPerspectiveCamera.target,
+        );
 
       if (isTopCameraDefault) {
         state.cameraStates.top = calculateTopCameraPosition(
@@ -555,11 +547,11 @@ export const alignmentSlice = createSlice({
           const newY = horizontalDistance * Math.tan(newVerticalAngle);
 
           // Update camera position relative to target
-          cameraState.position = [
-            cameraState.target[0] + newX,
-            cameraState.target[1] + newY,
-            cameraState.target[2] + newZ,
-          ];
+          cameraState.position = addPosition(cameraState.target, [
+            newX,
+            newY,
+            newZ,
+          ]);
 
           // Recalculate actual distance after rotation
           cameraState.cameraDistance = distanceBetween(

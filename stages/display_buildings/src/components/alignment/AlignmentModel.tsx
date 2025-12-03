@@ -1,9 +1,9 @@
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/alignmentSlice";
 import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
-import { Mesh, MeshBasicMaterial, Box3, Vector3 } from "three";
+import { Mesh, MeshBasicMaterial, Box3 } from "three";
 import { EnabledProps } from "../shared/types";
+import { alignmentSlice } from "../../store/alignmentSlice";
 
 interface Props extends EnabledProps {}
 
@@ -73,7 +73,6 @@ export const AlignmentModel = ({ enabled = true }: Props) => {
     // Calculate bottom face center offset
     // We need to get the bounding box to calculate Y offset for bottom face positioning
     const bbox = new Box3().setFromObject(model);
-    const modelSize = bbox.getSize(new Vector3());
     const minY = bbox.min.y;
 
     // The modelTransform.position is for the bottom face center

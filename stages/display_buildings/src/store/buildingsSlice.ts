@@ -35,6 +35,16 @@ const initialState: BuildingsState = {
   },
 };
 
+// Async thunk for fetching initial position from backend API
+// Gets the starting position for the application
+export const fetchInitialPosition = createAsyncThunk(
+  "buildings/fetchInitialPosition",
+  async () => {
+    const data = await getBackend<{ x: number; z: number }>("/start");
+    return { x: data.x, z: data.z };
+  },
+);
+
 // Async thunk for fetching buildings from backend API
 // Fetches buildings within specified distance from given position
 export const fetchBuildings = createAsyncThunk(
@@ -51,6 +61,30 @@ export const fetchBuildings = createAsyncThunk(
       distance,
     });
     return data.buildings || [];
+  },
+);
+
+// Async thunk for fetching initial position and then buildings
+// First gets starting position, then fetches buildings within 300 meters
+export const fetchInitialBuildings = createAsyncThunk(
+  "buildings/fetchInitialBuildings",
+  async (_, { dispatch }) => {
+    // First, fetch the initial position
+    const positionResult = await dispatch(fetchInitialPosition());
+
+    if (fetchInitialPosition.fulfilled.match(positionResult)) {
+      const position = positionResult.payload;
+      const distance = 300; // 300 meters as specified
+
+      // Then, fetch buildings around that position
+      const buildingsResult = await dispatch(
+        fetchBuildings({ position, distance }),
+      );
+
+      return buildingsResult.payload;
+    }
+
+    throw new Error("Failed to fetch initial position");
   },
 );
 
@@ -91,6 +125,20 @@ export const buildingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Handle initial position fetch
+      .addCase(fetchInitialPosition.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchInitialPosition.fulfilled, (state) => {
+        // Position fetched successfully, but buildings not loaded yet
+        // Keep loading state true for the subsequent buildings fetch
+      })
+      .addCase(fetchInitialPosition.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Failed to fetch initial position";
+      })
       // Handle building fetch request start
       .addCase(fetchBuildings.pending, (state) => {
         state.loading = true;
@@ -105,6 +153,20 @@ export const buildingsSlice = createSlice({
       .addCase(fetchBuildings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "Failed to fetch buildings";
+      })
+      // Handle combined initial buildings fetch
+      .addCase(fetchInitialBuildings.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchInitialBuildings.fulfilled, (state, action) => {
+        state.loading = false;
+        state.buildings = action.payload;
+      })
+      .addCase(fetchInitialBuildings.rejected, (state, action) => {
+        state.loading = false;
+        state.error =
+          action.error.message || "Failed to fetch initial buildings";
       });
   },
   selectors: {
