@@ -1,4 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { getBackend } from "../utils/backend";
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -97,6 +98,20 @@ export const viewSlice = createSlice({
       state.fixedHeight = initialState.fixedHeight;
     },
   },
+  extraReducers: (builder) => {
+    builder
+      // Handle initializeViewCamera thunk
+      .addCase(initializeViewCamera.pending, (state) => {
+        // Camera initialization in progress
+      })
+      .addCase(initializeViewCamera.fulfilled, (state, action) => {
+        // Camera already updated by the thunk actions
+        // No additional state changes needed here
+      })
+      .addCase(initializeViewCamera.rejected, (state, action) => {
+        // Error handled by the thunk caller
+      });
+  },
   selectors: {
     // Get entire camera state
     getCameraState: (state) => state.camera,
@@ -146,5 +161,29 @@ export const {
   getFixedHeight,
   getViewState,
 } = viewSlice.selectors;
+
+// Async thunk to fetch initial position and update camera
+export const initializeViewCamera = createAsyncThunk(
+  "view/initializeViewCamera",
+  async (_, { dispatch }) => {
+    // Fetch starting position from backend
+    const data = await getBackend<{ x: number; z: number }>("/start");
+    const position = { x: data.x, z: data.z };
+
+    // Update camera state: set target to starting position, camera 10 meters north
+    // North is negative Z in Three.js coordinate system
+    const cameraTarget: [number, number, number] = [position.x, 0, position.z];
+    const cameraPosition: [number, number, number] = [
+      position.x,
+      1.8,
+      position.z - 10,
+    ]; // 10 meters north
+
+    dispatch(updateCameraTarget(cameraTarget));
+    dispatch(updateCameraPosition(cameraPosition));
+
+    return { position, cameraTarget, cameraPosition };
+  },
+);
 
 export default viewSlice.reducer;

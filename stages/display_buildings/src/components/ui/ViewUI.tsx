@@ -6,6 +6,7 @@ import {
   buildingsSlice,
   fetchInitialBuildings,
 } from "../../store/buildingsSlice";
+import { viewSlice } from "../../store/viewSlice";
 import { ViewControlsInfo } from "../cameras/view/ViewControlsInfo";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
@@ -20,6 +21,7 @@ interface Props {
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
+  const { getCameraState } = viewSlice.selectors;
   // const {
   //   selectModelForAlignment,
   //   addPolygonForAlignment,
@@ -29,6 +31,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const buildings = useSelector(getBuildings);
   const loading = useSelector(getLoading);
   const error = useSelector(getError);
+  const cameraState = useSelector(getCameraState);
 
   useEffect(() => {
     // Fetch initial position and buildings when component mounts
@@ -57,8 +60,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
       <Canvas
         camera={{
-          position: [0, 50, 0], // Top view starting position
-          fov: 60,
+          position: cameraState.position,
+          fov: cameraState.fov,
         }}
         shadows
       >
@@ -80,6 +83,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           enableZoom={true}
           enableRotate={true}
           maxPolarAngle={Math.PI / 2} // Prevent going below ground
+          target={cameraState.target}
         />
 
         {/* Camera movement controller (WASD controls) */}

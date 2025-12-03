@@ -66,14 +66,14 @@ export const fetchBuildings = createAsyncThunk(
 
 // Async thunk for fetching initial position and then buildings
 // First gets starting position, then fetches buildings within 300 meters
-export const fetchInitialBuildings = createAsyncThunk(
+export const fetchInitialBuildings = createAsyncThunk<Building[]>(
   "buildings/fetchInitialBuildings",
   async (_, { dispatch }) => {
-    // First, fetch the initial position
-    const positionResult = await dispatch(fetchInitialPosition());
+    // First, initialize camera with starting position
+    const cameraResult = await dispatch(initializeViewCamera());
 
-    if (fetchInitialPosition.fulfilled.match(positionResult)) {
-      const position = positionResult.payload;
+    if (initializeViewCamera.fulfilled.match(cameraResult)) {
+      const { position } = cameraResult.payload;
       const distance = 300; // 300 meters as specified
 
       // Then, fetch buildings around that position
@@ -81,10 +81,10 @@ export const fetchInitialBuildings = createAsyncThunk(
         fetchBuildings({ position, distance }),
       );
 
-      return buildingsResult.payload;
+      return buildingsResult.payload as Building[];
     }
 
-    throw new Error("Failed to fetch initial position");
+    throw new Error("Failed to initialize camera with starting position");
   },
 );
 
