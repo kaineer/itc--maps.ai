@@ -31,8 +31,29 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
 
     // Debug logging is now handled by AlignmentSliceLogger
 
-    // Update mesh position
-    meshRef.current.position.set(...position);
+    // Calculate bottom face center offset for the cube
+    // Cube has size 10x10x10, so bottom face center is at y = -5 in local coordinates
+    // When scale is applied, the cube size becomes 10*scale, so bottom face is at y = -5*scale
+    const cubeSize = 10;
+    const bottomFaceYOffset = -cubeSize / 2; // -5 for 10x10x10 cube
+
+    // Apply position with bottom face center adjustment
+    // The position from modelTransform is for the model center (or bottom face center for real models),
+    // For this test cube, we want the bottom face center at modelTransform.position
+    // Formula: adjustedY = positionY - (bottomFaceYOffset * scale)
+    // Since bottomFaceYOffset = -5, this becomes: positionY - (-5 * scale) = positionY + 5 * scale
+    const adjustedPosition = [
+      position[0],
+      position[1] - bottomFaceYOffset * scale, // Adjust for scaled cube: adds 5 * scale to Y
+      position[2],
+    ];
+
+    // Update mesh position (bottom face center at modelTransform.position)
+    meshRef.current.position.set(
+      adjustedPosition[0],
+      adjustedPosition[1],
+      adjustedPosition[2],
+    );
 
     // Update mesh rotation (around Y axis)
     meshRef.current.rotation.y = rotation * (Math.PI / 180); // Convert degrees to radians
@@ -47,6 +68,8 @@ export const ModelVisualization = ({ enabled = true }: Props) => {
 
   // For now, render a simple placeholder cube
   // In the future, this should render the actual model from currentModel
+  // Note: The cube is positioned so its bottom face center is at modelTransform.position
+  // This matches how real models should be positioned (bottom face on ground at position)
   return (
     <mesh
       ref={meshRef}
