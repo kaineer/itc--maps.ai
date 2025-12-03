@@ -5,11 +5,9 @@ import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { AlignmentSliceLogger } from "../../testing/ui/AlignmentSliceLogger";
 import { Development } from "../../shared/Development";
 import { Match } from "../../shared/Match";
+import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 
-interface Props {
-  enabled: boolean;
-  onCameraUpdate?: (camera: any) => void;
-}
+interface Props extends EnabledProps, CameraUpdateProps {}
 
 /**
  * AlignmentCameraGroup component that switches between camera modes based on Redux state.

@@ -5,11 +5,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
 import { calculateModelBoundingBox } from "../../../utils/modelTransform";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
+import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 
-interface Props {
-  enabled: boolean;
-  onCameraUpdate?: (camera: any) => void;
-}
+interface Props extends EnabledProps, CameraUpdateProps {}
 
 export const PerspectiveCameraController = ({
   enabled,

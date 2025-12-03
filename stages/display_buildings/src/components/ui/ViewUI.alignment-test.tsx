@@ -10,7 +10,6 @@ import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { ModelVisualization } from "../testing/ui/ModelVisualization";
-import { Development } from "../shared/Development";
 
 import { ModelData } from "../../utils/modelTransform";
 

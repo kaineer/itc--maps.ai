@@ -3,15 +3,10 @@ import { useThree } from "@react-three/fiber";
 import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/alignmentSlice";
-import {
-  getDirectionFromKey,
-  getCleanKeyName,
-} from "../../shared/ui/keyToDirection";
+import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
+import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 
-interface Props {
-  enabled: boolean;
-  onCameraUpdate?: (camera: any) => void;
-}
+interface Props extends EnabledProps, CameraUpdateProps {}
 
 export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const { camera, scene, raycaster } = useThree();
