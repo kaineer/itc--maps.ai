@@ -2,6 +2,7 @@ import { Provider, useSelector } from "react-redux";
 import { setupStore } from "./store";
 // TODO: Change back after TopCameraController is made ready
 import { ViewUI } from "./components/ui/ViewUI.alignment-test";
+import { AlignmentUI } from "./components/ui/AlignmentUI";
 import { uiSlice } from "./store/uiSlice";
 import { Match } from "./components/shared/Match";
 
@@ -16,7 +17,7 @@ const AppContent = () => {
       <Match
         value={currentMode}
         view={() => <ViewUI />}
-        alignment={() => null}
+        alignment={() => <AlignmentUI />}
         modelSetup={() => null}
       />
     </>

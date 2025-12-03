@@ -1,70 +1,68 @@
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
 import { useSelector } from "react-redux";
+import { alignmentSlice } from "../../store/alignmentSlice";
 import { Ground } from "../static/Ground";
 import { Lighting } from "../static/Lighting";
-import { AlignmentStage } from "../stage/ui/AlignmentStage";
-import { CameraControls } from "./CameraControls";
-import { RootState } from "../../store";
+import { AlignmentStageContainer } from "../stage/ui/AlignmentStageContainer";
+import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
+import { AlignmentUIGroup } from "./alignment/AlignmentUIGroup";
+import { uiSlice } from "../../store/uiSlice";
+import styles from "./AlignmentUI.module.css";
 
-import { Building } from "../../types/types";
+/**
+ * AlignmentUI component for the alignment mode.
+ *
+ * This component renders the complete alignment interface:
+ * 1. UI controls outside Canvas (AlignmentUIGroup)
+ * 2. 3D scene inside Canvas with:
+ *    - Lighting
+ *    - Ground
+ *    - Alignment stage (polygons + alignment model)
+ *    - Alignment camera controllers
+ *
+ * The component reads camera state from Redux to initialize the Canvas camera.
+ * All alignment state (selected polygons, model, transform) is managed by Redux.
+ */
+export const AlignmentUI = () => {
+  const { getCurrentCamera } = alignmentSlice.selectors;
+  const { getUIMode } = uiSlice.selectors;
 
-interface Props {
-  buildings: Building[];
-  onModeChange?: () => void;
-}
+  const currentCamera = useSelector(getCurrentCamera);
+  const currentMode = useSelector(getUIMode);
 
-export const AlignmentUI = ({ buildings, onModeChange }: Props) => {
-  const currentCamera = useSelector((state: RootState) =>
-    getCurrentCamera(state),
-  );
+  // Only render if we're in alignment mode
+  if (currentMode !== "alignment") {
+    return null;
+  }
 
   return (
     <>
-      <div style={{ position: "absolute", top: 10, right: 10, zIndex: 1000 }}>
-        <button
-          onClick={onModeChange}
-          style={{
-            padding: "8px 16px",
-            backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "4px",
-            cursor: "pointer",
-          }}
-        >
-          Switch to View Mode
-        </button>
-      </div>
+      {/* UI controls outside Canvas (camera info, controls, etc.) */}
+      <AlignmentUIGroup enabled={true} />
 
-      <CameraControls />
-
+      {/* 3D Canvas for alignment visualization */}
       <Canvas
         camera={{
           position: currentCamera.position,
           fov: currentCamera.fov,
+          up: [0, 1, 0], // Y-up coordinate system
         }}
         shadows
+        className={styles.canvas}
       >
-        <color attach="background" args={["#87CEEB"]} />
+        <color attach="background" args={["#f0f0f0"]} />
 
-        {/* Lighting */}
+        {/* Lighting for the scene */}
         <Lighting />
 
-        {/* Ground */}
+        {/* Ground plane for reference */}
         <Ground />
 
-        {/* Alignment Stage - shows transparent polygons and models */}
-        <AlignmentStage buildings={buildings} />
+        {/* Alignment stage: renders selected polygons and alignment model */}
+        <AlignmentStageContainer enabled={true} />
 
-        {/* Controls - simplified for alignment mode */}
-        <OrbitControls
-          makeDefault
-          enablePan={true}
-          enableZoom={true}
-          enableRotate={true}
-          target={currentCamera.target}
-        />
+        {/* Alignment camera controllers (switch between top/perspective) */}
+        <AlignmentCameraGroup enabled={true} />
       </Canvas>
     </>
   );

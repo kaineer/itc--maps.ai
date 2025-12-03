@@ -11,9 +11,7 @@ import { Building, Scale } from "../types/types";
 import {
   addPosition,
   subtractPosition,
-  multiplyPosition,
   distanceBetween,
-  normalizePosition,
   scaleToLength,
   directionTo,
 } from "../components/shared/positionMath";
@@ -112,7 +110,7 @@ const defaultTopCamera: CameraState = {
 };
 
 const initialState: AlignmentState = {
-  currentCameraView: "perspective",
+  currentCameraView: defaultCameraView,
   cameraStates: {
     perspective: defaultPerspectiveCamera,
     top: defaultTopCamera,
