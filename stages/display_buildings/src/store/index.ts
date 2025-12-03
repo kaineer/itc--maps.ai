@@ -2,6 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { uiSlice } from "./uiSlice";
 import { buildingsSlice } from "./buildingsSlice";
 import { alignmentSlice } from "./alignmentSlice";
+import { viewSlice } from "./viewSlice";
 
 export function setupStore() {
   const store = configureStore({
@@ -9,6 +10,7 @@ export function setupStore() {
       [uiSlice.reducerPath]: uiSlice.reducer,
       [buildingsSlice.reducerPath]: buildingsSlice.reducer,
       [alignmentSlice.reducerPath]: alignmentSlice.reducer,
+      [viewSlice.reducerPath]: viewSlice.reducer,
       // Add other reducers here as they are created
     },
     middleware: (getDefaultMiddleware) =>
