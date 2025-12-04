@@ -66,11 +66,11 @@ export const ViewControlsInfo = ({
       category: "🎮 Управление движением",
       items: [
         {
-          keys: ["W", "A", "S", "D"],
+          keys: ["WASD"],
           description: "Движение вперед/назад/влево/вправо",
         },
         {
-          keys: ["LeftShift", "+", "WASD"],
+          keys: ["LeftShift", "WASD"],
           description: "Быстрое движение (в 10 раз быстрее)",
         },
       ],
