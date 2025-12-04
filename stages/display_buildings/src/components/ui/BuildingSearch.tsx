@@ -40,6 +40,10 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
   const handleClose = () => {
     setIsExpanded(false);
+    // Remove focus from input when closing the form
+    if (searchInputRef.current) {
+      searchInputRef.current.blur();
+    }
   };
 
   const handleExpand = () => {
@@ -182,6 +186,11 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
     if (building) {
       setFoundBuilding(building);
       moveCameraToBuilding(building);
+      // Remove focus from input after successful search
+      // This prevents keyboard navigation keys (WASD) from being typed into the input
+      if (searchInputRef.current) {
+        searchInputRef.current.blur();
+      }
     } else {
       // Try to provide more helpful error message
       // First, try to find by street name only
@@ -252,6 +261,8 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const handleKeyPress = (event: KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       searchBuilding();
+      // Remove focus from input to prevent keyboard navigation interference
+      event.currentTarget.blur();
     }
   };
 
@@ -262,6 +273,10 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
     setSearchQuery("");
     setSearchError(null);
     setFoundBuilding(null);
+    // Remove focus from input when clearing search
+    if (searchInputRef.current) {
+      searchInputRef.current.blur();
+    }
   };
 
   // If collapsed, show magnifying glass button
@@ -390,7 +405,13 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
                 Камера перемещена на 10 метров к северу от здания
               </p>
               <button
-                onClick={() => moveCameraToBuilding(foundBuilding)}
+                onClick={() => {
+                  moveCameraToBuilding(foundBuilding);
+                  // Remove focus from input when moving camera again
+                  if (searchInputRef.current) {
+                    searchInputRef.current.blur();
+                  }
+                }}
                 className={styles.moveAgainButton}
               >
                 Переместить камеру снова
