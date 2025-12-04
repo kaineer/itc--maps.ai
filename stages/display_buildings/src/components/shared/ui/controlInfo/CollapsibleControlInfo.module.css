@@ -39,6 +39,7 @@
 /* Expanded state - full control info panel */
 .expanded {
     max-width: 500px;
+    max-height: 80vh; /* Limit height to 80% of viewport height */
 }
 
 .panel {
@@ -50,6 +51,10 @@
     font-size: 14px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     position: relative;
+    max-height: 100%; /* Limit panel height to container */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Prevent content from overflowing panel */
 }
 
 /* Close button in expanded panel */
@@ -78,7 +83,33 @@
 
 /* Content area inside expanded panel */
 .content {
-    padding-right: 20px;
+    padding-right: 10px; /* Reduced for scrollbar */
+    overflow-y: auto; /* Add vertical scroll if content is too tall */
+    flex: 1; /* Take available space */
+    max-height: calc(100% - 60px); /* Reserve space for footer and padding */
+
+    /* Custom scrollbar styling */
+    scrollbar-width: thin; /* Firefox */
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1); /* Firefox */
+}
+
+/* Webkit scrollbar styling */
+.content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
 }
 
 /* Footer note at the bottom of expanded panel */
@@ -89,4 +120,5 @@
     font-size: 12px;
     color: #888;
     text-align: center;
+    flex-shrink: 0; /* Prevent footer from shrinking */
 }
