@@ -1,212 +1,200 @@
-# Project Summary - Maps.ai Alignment System
+# Project Summary - Maps.ai UI Localization & Component Improvements
 
-## Session Status: Phase 5 - Complete AlignmentUI Architecture & Building Search - COMPLETED
+## Session Status: Phase 6 - Complete UI Localization & Component Refinement - COMPLETED
 
-## Current State (Branch: master) - Full System Operational
+## Current State (Branch: master) - Enhanced User Interface with Russian Localization
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
-
-#### 1. Model Alignment System - COMPLETED
-- **Utility Functions** (`modelTransform.ts`): Complete transformation utilities
-- **Simplified ModelTransform**: `rotation` as `number` (Y-axis only), `scale` as `number` (uniform scaling)
-- **Bounding Box Calculations**: Three.js Box3 integration for polygons and models
-- **Automatic Positioning**: Model positioning over selected polygons
-- **Camera Positioning**: Intelligent top and perspective camera setup
-
-#### 2. Redux Architecture - COMPLETED
-- **alignmentSlice**: Complete alignment state management
-- **buildingsSlice**: Building data management with filtering and search
-- **viewSlice**: View mode camera state management
-- **uiSlice**: UI mode switching (view/alignment/modelSetup)
-
 ### ✅ Phase 2: Camera Controller Architecture - COMPLETED
-
-#### 3. Camera Architecture Refactoring
-- **AlignmentCameraGroup**: 3D camera controllers inside Canvas
-- **AlignmentUIGroup**: UI components outside Canvas
-- **ViewCameraController**: WASD movement for View mode with OrbitControls
-- **ViewControlsInfo**: View mode controls documentation with CSS module
-
-#### 4. Camera Mode Separation
-- **View Mode**: Free navigation with WASD + mouse controls
-- **Alignment Mode**: Precision alignment with top/perspective camera switching
-- **Mode Switching**: Using `Match` component for declarative rendering
-
 ### ✅ Phase 3: Complete AlignmentUI Implementation - COMPLETED
-
-#### 5. Alignment Stage Components
-- **AlignmentStage**: Renders selected polygons and alignment model
-- **AlignmentStageContainer**: Redux-connected container for AlignmentStage
-- **AlignmentModel**: Renders alignment model with wireframe material from Redux state
-- **TransparentPolygonBuilding**: Visual reference for selected buildings
-
-#### 6. AlignmentUI Integration
-- **Full 3D Scene**: Lighting, Ground, AlignmentStage, AlignmentCameraGroup
-- **UI Controls**: AlignmentUIGroup for camera information
-- **CSS Modules**: Clean separation of styles with `AlignmentUI.module.css`
-- **Mode-Based Rendering**: Only renders when in "alignment" mode
-
 ### ✅ Phase 4: Data Loading Pipeline - COMPLETED
-
-#### 7. Building Data Fetching
-- **fetchInitialBuildings**: Combined thunk for position + buildings
-- **initializeViewCamera**: Fetches starting position and sets camera
-- **Camera Positioning**: Target at starting position, camera 10 meters north
-- **Distance**: 300 meters radius for building loading
-
-#### 8. Camera State Management
-- **viewSlice**: Stores View mode camera position, target, and FOV
-- **State Synchronization**: Three.js camera ↔ Redux state
-- **Initial Positioning**: Based on `/start` endpoint response
-
 ### ✅ Phase 5: Building Search & Navigation - COMPLETED
+### ✅ Phase 6: UI Localization & Component Refinement - COMPLETED
 
-#### 9. BuildingSearch Component
-- **Address Search**: "Street, House Number" format
-- **Position Extraction**: From `position` field or first `nodes` vertex
-- **Camera Movement**: Positions camera 10 meters north of found building
-- **UI Features**: Search input, results display, error handling, clear functionality
-- **CSS Module**: Modern styling with proper positioning
+## Recent Accomplishments (Latest Session)
 
-#### 10. Enhanced User Navigation
-- **Quick Building Access**: Search any loaded building by address
-- **Automatic Camera Positioning**: Consistent 10m north offset
-- **Building Information Display**: Address, position, height, model availability
-- **Redux Integration**: Updates camera state and building selection
+### 1. **BuildingSearch Component Localization & Enhancement**
+- **Russian Translation**: Complete interface translation to Russian
+- **Collapsible Interface**: Added collapse/expand functionality with magnifying glass icon (🔍)
+- **Simplified Logic**: Removed Redux integration for collapse state, using local React state only
+- **Default State**: Always starts collapsed, expands on click, collapses with × button
+- **No State Persistence**: Simple toggle without localStorage saving
 
-### 🏗️ Current Architecture Overview
+### 2. **Language Guidelines Established**
+- **Commit Messages**: English only (technical documentation standard)
+- **User Communication**: Russian for natural interaction
+- **Code Comments**: English for developer reference
+- **UI Text**: Russian for user interface localization
+- **Documentation**: Updated in `AI_ASSISTANT_NOTES.md`
 
-#### 11. Component Structure
+### 3. **CollapsibleControlInfo Scroll Functionality**
+- **Height Limitation**: Added `max-height: 80vh` for expanded container
+- **Scroll Implementation**: Content area (`div.content`) now scrollable with `overflow-y: auto`
+- **Visual Improvements**: Custom scrollbar styling for Webkit and Firefox
+- **Flexbox Layout**: Proper space distribution with footer fixed at bottom
+- **User Experience**: Long content now scrollable instead of overflowing
+
+### 4. **ViewControlsInfo Russian Localization**
+- **Complete Translation**: All control descriptions translated to Russian
+- **Formatting Improvements**:
+  - Mouse buttons: 'ЛКМ' (Left Click Mouse) and 'ПКМ' (Right Click Mouse)
+  - Shift key: 'LeftShift' instead of 'Shift + Left'
+  - WASD consolidated: Single line 'W, A, S, D' for all movement
+  - Mouse wheel: 'Колесико мыши' for clarity
+- **Section Categories**: Translated with appropriate emojis
+- **Technical Terms**: Preserved (WASD, OrbitControls) with Russian explanations
+
+### 5. **FeatureInfoSection Component Creation**
+- **New Component**: Created for feature descriptions without keyboard styling
+- **Problem Solved**: Fixed inappropriate `kbd` element styling for feature titles
+- **Visual Hierarchy**: Feature titles as bold text, descriptions as normal text
+- **Usage**: Replaced `ControlInfoSection` for:
+  - '📍 Свойства камеры' section
+  - '🔍 Функции навигации' section
+- **Code Clarity**: Clear separation between keyboard controls and feature descriptions
+
+## 🏗️ Current Architecture Overview
+
+### Component Structure (Enhanced)
 ```
 components/
-├── alignment/                    # Alignment-specific components
-│   └── AlignmentModel.tsx       # Renders alignment model from Redux
 ├── cameras/
-│   ├── alignment/               # Alignment camera controllers
-│   │   ├── AlignmentCameraGroup.tsx
-│   │   ├── TopCameraController.tsx
-│   │   ├── PerspectiveCameraController.tsx
-│   │   ├── TopCameraControlInfo.tsx
-│   │   └── PerspectiveCameraControlInfo.tsx
-│   └── view/                    # View mode camera controllers
-│       ├── ViewCameraController.tsx
-│       ├── ViewControlsInfo.tsx
-│       └── ViewControlsInfo.module.css
-├── stage/
-│   └── ui/
-│       ├── AlignmentStage.tsx           # Renders polygons + alignment model
-│       ├── AlignmentStageContainer.tsx  # Redux-connected container
-│       └── ViewStage.tsx                # View mode building rendering
+│   ├── view/
+│   │   ├── ViewCameraController.tsx
+│   │   └── ViewControlsInfo.tsx          # Russian localized
+│   └── alignment/
+│       ├── TopCameraControlInfo.tsx
+│       └── PerspectiveCameraControlInfo.tsx
 ├── shared/
-│   ├── Match.tsx                # Declarative conditional rendering
-│   ├── types.ts                 # Common prop interfaces
-│   └── positionMath.ts          # 3D vector operations
+│   └── ui/controlInfo/
+│       ├── CollapsibleControlInfo.tsx    # With scroll functionality
+│       ├── ControlInfoSection.tsx        # Keyboard controls
+│       ├── FeatureInfoSection.tsx        # NEW: Feature descriptions
+│       ├── KeysDisplay.tsx
+│       └── DetailedMetaInfo.tsx
 └── ui/
-    ├── ViewUI.tsx               # Main View mode interface
-    ├── AlignmentUI.tsx          # Main Alignment mode interface
-    ├── BuildingSearch.tsx       # Address search component
-    ├── BuildingSearch.module.css
-    └── AlignmentUI.module.css
+    ├── ViewUI.tsx
+    ├── AlignmentUI.tsx
+    └── BuildingSearch.tsx                # Russian localized + collapsible
 ```
 
-#### 12. Redux Store Structure
-```
-store/
-├── alignmentSlice.ts    # Alignment process state
-├── buildingsSlice.ts    # Building data management
-├── viewSlice.ts        # View mode camera state
-├── uiSlice.ts          # UI mode management
-└── index.ts            # Store configuration
-```
+### UI State Management
+- **BuildingSearch**: Simple local state for collapse/expand (no Redux persistence)
+- **CollapsibleControlInfo**: Redux + localStorage persistence for known modes
+- **ViewControlsInfo**: Uses FeatureInfoSection for better visual hierarchy
+- **Language Consistency**: Russian UI text, English code comments
 
-### 🎯 Key Features Implemented
+## 🎯 Key Features Implemented
 
-#### 13. View Mode Features
-- **WASD Movement**: Free navigation in 3D space
-- **Mouse Controls**: OrbitControls for rotation, pan, zoom
-- **Building Search**: Find and navigate to any building by address
-- **Initial Positioning**: Camera starts 10m north of starting position
-- **Fixed Height**: 1.8m eye-level perspective
+### BuildingSearch (Enhanced)
+- **Russian Interface**: Full localization for Russian-speaking users
+- **Collapsible Design**: 🔍 icon for collapsed state, × button to close
+- **Search Functionality**: Address-based building search with flexible matching
+- **Camera Navigation**: Automatically moves camera 10m north of found buildings
+- **Simple State**: Always starts collapsed, no persistence between sessions
 
-#### 14. Alignment Mode Features
-- **Dual Camera System**: Switch between top and perspective views
-- **Model Alignment**: Position, rotate, scale selected model
-- **Polygon Reference**: Transparent building polygons for alignment
-- **Precision Controls**: Configurable step sizes for transformations
-- **Camera Synchronization**: Camera follows model movements
+### CollapsibleControlInfo (Enhanced)
+- **Scroll Support**: Automatic vertical scrolling for long content
+- **Height Limitation**: Maximum 80% of viewport height
+- **Custom Scrollbar**: Styled to match dark theme
+- **Flexbox Layout**: Proper content distribution with fixed footer
 
-#### 15. Data Management
-- **Automatic Loading**: Buildings load on ViewUI mount
-- **Search Functionality**: Real-time address search across loaded buildings
-- **State Persistence**: Camera positions preserved in Redux
-- **Error Handling**: Comprehensive error states for failed loads
+### ViewControlsInfo (Localized)
+- **Complete Russian Translation**: All user-facing text localized
+- **Improved Formatting**: ЛКМ/ПКМ abbreviations, consolidated WASD
+- **FeatureInfoSection**: Better display for feature descriptions
+- **Clear Categories**: Visual separation between controls and features
 
-### 🔄 Data Flow
+## 🔄 Development Workflow Established
 
-#### 16. View Mode Initialization
-1. **ViewUI mounts** → `fetchInitialBuildings()`
-2. **initializeViewCamera()** → GET `/start` for position
-3. **Set camera** → Target at position, camera 10m north
-4. **fetchBuildings()** → Load buildings within 300m radius
-5. **Render scene** → With camera from `viewSlice`
+### Git Practices
+- **Commit Language**: English for technical documentation
+- **Pager Avoidance**: Always use `--no-pager` flag for git commands
+- **AI Assistant Commands**: `git-commit` and `git-push` as workflow instructions
+- **Named Exports**: Consistent export patterns across codebase
 
-#### 17. Building Search Flow
-1. **User enters address** → "Main Street, 123"
-2. **Search triggered** → Enter key or button click
-3. **Address normalization** → Case-insensitive, punctuation removal
-4. **Building lookup** → Search across loaded buildings
-5. **Position extraction** → From `position` or `nodes[0]`
-6. **Camera movement** → Target at building, camera 10m north
-7. **Results display** → Building information and camera status
+### Component Testing Methodology
+- **Dual-Component Approach**: Test versions with `.test-version` suffix
+- **Isolated Testing**: Separate test data from production code
+- **TODO Comments**: Clear markers for switching between versions
+- **Suffix Patterns**: `.alignment-test`, `.api-test`, `.state-test`, etc.
 
-#### 18. Mode Switching
-1. **App.tsx** → Uses `Match` component based on `UIMode`
-2. **View Mode** → `ViewUI` with search and free navigation
-3. **Alignment Mode** → `AlignmentUI` with precision alignment tools
-4. **State Preservation** → Camera positions saved between switches
+## 📊 Technical Achievements
 
-### 📊 Technical Achievements
+### CSS Improvements
+- **Scroll Implementation**: Proper height calculations with flexbox
+- **Custom Scrollbars**: Cross-browser styling for better UX
+- **Box Model**: Consistent `box-sizing: border-box` usage
+- **Responsive Design**: Viewport-based height limitations
 
-#### 19. Architecture Patterns
-- **Container/Presenter**: Clean separation (AlignmentStage/AlignmentStageContainer)
-- **Declarative Rendering**: `Match` component for mode-based UI
-- **CSS Modules**: Scoped styling for each component
+### TypeScript Best Practices
+- **Interface Naming**: Simple `Props` for single-component files
+- **No React.FC**: TypeScript inference for JSX return types
+- **Redux Access**: Proper slice selector/action usage
 - **Type Safety**: Comprehensive TypeScript coverage
-- **Async Patterns**: Redux thunks for data loading
 
-#### 20. User Experience
-- **Intuitive Navigation**: Consistent camera controls across modes
-- **Quick Access**: Building search for immediate navigation
-- **Clear Feedback**: Search results, errors, and loading states
-- **Professional Polish**: Modern UI with proper styling
+### Internationalization Readiness
+- **Text Separation**: UI text separated from code logic
+- **Consistent Terminology**: Russian translations with technical accuracy
+- **Developer Comments**: English comments preserved for maintainability
+- **Future Expansion**: Ready for additional language support
 
-### 🚀 Ready for Production
+## 🚀 Ready for Production
 
-#### 21. Complete Feature Set
+### Complete Feature Set
 - ✅ **3D Visualization**: Full Three.js integration with React Three Fiber
 - ✅ **Dual Mode Interface**: View mode + Alignment mode
 - ✅ **Data Loading**: Automatic building data from backend
-- ✅ **Building Search**: Address-based navigation
+- ✅ **Building Search**: Address-based navigation (Russian localized)
 - ✅ **Camera Management**: Stateful camera positioning
-- ✅ **Responsive UI**: Modern, accessible interface
+- ✅ **Responsive UI**: Modern, accessible interface with Russian support
+- ✅ **Component Refinement**: Improved visual hierarchy and usability
+- ✅ **Scroll Support**: Proper handling of long content in info panels
 
-#### 22. Next Development Steps
-1. **Model Selection UI**: Interface for selecting models for alignment
-2. **Polygon Selection**: UI for selecting building polygons
-3. **Alignment Process UI**: Step-by-step alignment guidance
-4. **Export Functionality**: Save alignment results
-5. **Performance Optimization**: Large dataset handling
+### User Experience Improvements
+- **Russian Interface**: Full localization for target audience
+- **Clean Interface**: Collapsible components reduce screen clutter
+- **Clear Instructions**: Well-organized control information
+- **Intuitive Navigation**: Consistent patterns across all components
+- **Accessible Design**: Proper scrolling and visual hierarchy
 
-### 📈 Project Status
+## 📈 Next Development Steps
 
-**Current Phase**: Complete system architecture with working View and Alignment modes
-**Stability**: Production-ready core with comprehensive error handling
-**Testing**: Manual testing complete for all major features
-**Documentation**: Comprehensive code comments and architecture documentation
-**Deployment**: Ready for integration with backend services
+### Immediate Opportunities
+1. **Complete Alignment Mode Localization**: Translate TopCameraControlInfo and PerspectiveCameraControlInfo
+2. **Responsive Design Testing**: Verify component positioning on different screen sizes
+3. **Performance Optimization**: Bundle size analysis and optimization
+4. **Accessibility Features**: ARIA labels and keyboard navigation improvements
+
+### Future Enhancements
+1. **Multi-language Support**: System for switching between languages
+2. **Theme Support**: Light/dark mode with localStorage persistence
+3. **Advanced Search Features**: Filtering, favorites, search history
+4. **User Preferences**: Customizable UI settings and layouts
+5. **Export Functionality**: Save alignment results and camera positions
+
+### Technical Debt to Address
+1. **TypeScript Strictness**: Enable stricter TypeScript configuration
+2. **Test Coverage**: Add unit tests for new components
+3. **Error Boundaries**: Implement React error boundaries for production
+4. **Performance Monitoring**: Add performance tracking and optimization
+
+## 📝 Documentation Status
+
+### Updated Documentation
+- **`AI_ASSISTANT_NOTES.md`**: Language guidelines and workflow instructions
+- **`docs/guides/author_preferences.md`**: Development preferences and standards
+- **`docs/tmp/summary.md`**: Current project status (this file)
+
+### Documentation Needed
+1. **Russian User Guide**: Documentation for Russian-speaking users
+2. **Keyboard Shortcuts Reference**: Visual cheat sheet for all controls
+3. **Component Architecture Guide**: Detailed documentation of component relationships
+4. **LocalStorage Management**: Guide for UI state persistence
 
 ---
-*Last Updated: Complete AlignmentUI & Building Search Implementation*
+
+*Last Updated: Complete UI Localization & Component Refinement Phase*
 *Branch: master*
-*Status: Production-ready core system*
-*Features: View mode, Alignment mode, Building search, Camera management*
+*Status: Production-ready with enhanced Russian interface*
+*Features: View mode, Alignment mode, Building search, Camera management, Russian localization, Component improvements*

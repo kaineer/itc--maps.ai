@@ -49,6 +49,3 @@ export const FeatureInfoSection = ({
     </div>
   );
 };
-```
-
-Теперь создам CSS модуль для этого компонента:

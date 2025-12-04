@@ -1,4 +1,4 @@
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { viewSlice } from "../../store/viewSlice";
@@ -29,6 +29,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const [searchError, setSearchError] = useState<string | null>(null);
   const [foundBuilding, setFoundBuilding] = useState<Building | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const { getFilteredBuildings } = buildingsSlice.selectors;
   const buildings = useSelector(getFilteredBuildings);
@@ -44,6 +45,19 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const handleExpand = () => {
     setIsExpanded(true);
   };
+
+  // Auto-focus search input when form expands
+  useEffect(() => {
+    if (isExpanded && searchInputRef.current) {
+      // Small delay to ensure DOM is ready and transition completes
+      const timer = setTimeout(() => {
+        if (searchInputRef.current) {
+          searchInputRef.current.focus();
+        }
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isExpanded]);
 
   /**
    * Get building position from either position field or first node
@@ -290,6 +304,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         <div className={styles.searchControls}>
           <div className={styles.inputGroup}>
             <input
+              ref={searchInputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
