@@ -1,215 +1,217 @@
 .buildingSearch {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  max-width: 320px;
-  z-index: 1000;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    max-width: 320px;
+    z-index: 1000;
+    font-family:
+        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+        sans-serif;
 }
 
 .searchHeader {
-  margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .title {
-  margin: 0 0 4px 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: #333;
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
 }
 
 .subtitle {
-  margin: 0;
-  font-size: 12px;
-  color: #666;
-  line-height: 1.4;
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
 }
 
 .searchControls {
-  margin-bottom: 16px;
+    margin-bottom: 16px;
 }
 
 .inputGroup {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .searchInput {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 14px;
-  color: #333;
-  background-color: white;
-  transition: border-color 0.2s;
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+    background-color: white;
+    transition: border-color 0.2s;
 }
 
 .searchInput:focus {
-  outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
 }
 
 .searchInput:disabled {
-  background-color: #f8f9fa;
-  color: #6c757d;
-  cursor: not-allowed;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    cursor: not-allowed;
 }
 
 .searchButton {
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 14px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  white-space: nowrap;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    white-space: nowrap;
 }
 
 .searchButton:hover:not(:disabled) {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 .searchButton:disabled {
-  background-color: #6c757d;
-  cursor: not-allowed;
-  opacity: 0.65;
+    background-color: #6c757d;
+    cursor: not-allowed;
+    opacity: 0.65;
 }
 
 .clearButton {
-  width: 100%;
-  padding: 6px 12px;
-  background-color: transparent;
-  color: #6c757d;
-  border: 1px solid #dee2e6;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
+    width: 100%;
+    padding: 6px 12px;
+    background-color: transparent;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
 .clearButton:hover {
-  background-color: #f8f9fa;
-  color: #495057;
+    background-color: #f8f9fa;
+    color: #495057;
 }
 
 .errorMessage {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  font-size: 13px;
-  color: #721c24;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    color: #721c24;
 }
 
 .errorIcon {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .searchResults {
-  border: 1px solid #e9ecef;
-  border-radius: 6px;
-  padding: 12px;
-  background-color: #f8f9fa;
-  margin-bottom: 16px;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: #f8f9fa;
+    margin-bottom: 16px;
 }
 
 .resultHeader {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
 }
 
 .successIcon {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .resultTitle {
-  font-size: 14px;
-  font-weight: 600;
-  color: #155724;
+    font-size: 14px;
+    font-weight: 600;
+    color: #155724;
 }
 
 .buildingInfo {
-  margin-bottom: 12px;
+    margin-bottom: 12px;
 }
 
 .infoRow {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 13px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+    font-size: 13px;
 }
 
 .infoLabel {
-  color: #495057;
-  font-weight: 500;
+    color: #495057;
+    font-weight: 500;
 }
 
 .infoValue {
-  color: #212529;
-  text-align: right;
-  max-width: 180px;
-  word-break: break-word;
+    color: #212529;
+    text-align: right;
+    max-width: 180px;
+    word-break: break-word;
 }
 
 .cameraInfo {
-  border-top: 1px solid #e9ecef;
-  padding-top: 12px;
+    border-top: 1px solid #e9ecef;
+    padding-top: 12px;
 }
 
 .cameraNote {
-  margin: 0 0 8px 0;
-  font-size: 12px;
-  color: #6c757d;
-  line-height: 1.4;
+    margin: 0 0 8px 0;
+    font-size: 12px;
+    color: #6c757d;
+    line-height: 1.4;
 }
 
 .moveAgainButton {
-  width: 100%;
-  padding: 6px 12px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 13px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+    width: 100%;
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s;
 }
 
 .moveAgainButton:hover {
-  background-color: #218838;
+    background-color: #218838;
 }
 
 .hint {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background-color: #e7f3ff;
-  border-radius: 4px;
-  font-size: 12px;
-  color: #004085;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: #e7f3ff;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #004085;
 }
 
 .hintIcon {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 .hintText {
-  line-height: 1.4;
+    line-height: 1.4;
 }
