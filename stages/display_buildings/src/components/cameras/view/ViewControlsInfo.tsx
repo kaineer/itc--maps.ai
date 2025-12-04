@@ -15,6 +15,7 @@ import classes from "./ViewControlsInfo.module.css";
 import { CollapsibleControlInfo } from "../../shared/ui/controlInfo/CollapsibleControlInfo";
 import { Development } from "../../shared/Development";
 import { ControlInfoSection } from "../../shared/ui/controlInfo/ControlInfoSection";
+import { FeatureInfoSection } from "../../shared/ui/controlInfo/FeatureInfoSection";
 import { DetailedMetaInfo } from "../../shared/ui/controlInfo/DetailedMetaInfo";
 import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "../../../utils/constants";
@@ -78,11 +79,11 @@ export const ViewControlsInfo = ({
       category: "🖱️ Управление мышью",
       items: [
         {
-          keys: ["ЛКМ", "+", "Перетаскивание"],
+          keys: ["ЛКМ", "Перетаскивание"],
           description: "Вращение камеры вокруг цели",
         },
         {
-          keys: ["ПКМ", "+", "Перетаскивание"],
+          keys: ["ПКМ", "Перетаскивание"],
           description:
             "Панорамирование камеры (движение вверх/вниз/влево/вправо)",
         },
@@ -110,16 +111,16 @@ export const ViewControlsInfo = ({
       </div>
 
       {effectiveShowCameraProperties && (
-        <ControlInfoSection
+        <FeatureInfoSection
           key="camera-properties"
           category="📍 Свойства камеры"
           items={[
             {
-              keys: ["Фиксированная высота"],
+              title: "Фиксированная высота",
               description: `Камера зафиксирована на высоте ${CAMERA_HEIGHTS.EYE_LEVEL}м (уровень глаз)`,
             },
             {
-              keys: ["Независимость от раскладки"],
+              title: "Независимость от раскладки",
               description:
                 "Использует физические коды клавиш (работает с любой раскладкой клавиатуры)",
             },
@@ -129,16 +130,16 @@ export const ViewControlsInfo = ({
       )}
 
       {effectiveShowNavigationFeatures && (
-        <ControlInfoSection
+        <FeatureInfoSection
           key="navigation-features"
           category="🔍 Функции навигации"
           items={[
             {
-              keys: ["Поиск зданий"],
+              title: "Поиск зданий",
               description: "Поиск зданий по адресу и перемещение камеры к ним",
             },
             {
-              keys: ["Автоматическое позиционирование"],
+              title: "Автоматическое позиционирование",
               description:
                 "Камера автоматически позиционируется в 10 метрах к северу от найденных зданий",
             },
