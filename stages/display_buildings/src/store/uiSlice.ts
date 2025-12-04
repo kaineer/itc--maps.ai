@@ -29,7 +29,7 @@ const defaultInitialState: UIState = {
     perspectiveCameraControls: false,
     modelSetupControls: false,
     viewControls: false,
-    buildingSearch: true,
+    buildingSearch: false,
   },
 };
 

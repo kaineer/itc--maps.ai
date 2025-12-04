@@ -2,7 +2,6 @@ import { useState, KeyboardEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { viewSlice } from "../../store/viewSlice";
-import { uiSlice } from "../../store/uiSlice";
 import { Building } from "../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "../../utils/constants";
 import styles from "./BuildingSearch.module.css";
@@ -21,7 +20,7 @@ interface Props {
  * - Moves camera to 10 meters from found building
  * - Displays search results and errors
  * - Integrates with Redux for building data and camera control
- * - Collapsible interface with localStorage persistence
+ * - Collapsible interface (always starts collapsed)
  */
 export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const dispatch = useDispatch();
@@ -29,30 +28,21 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [foundBuilding, setFoundBuilding] = useState<Building | null>(null);
-  const [isExpandedLocal, setIsExpandedLocal] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { getFilteredBuildings } = buildingsSlice.selectors;
-  const { getKnown } = uiSlice.selectors;
-  const { setKnown, clearKnown } = uiSlice.actions;
-
   const buildings = useSelector(getFilteredBuildings);
-  const known = useSelector(getKnown);
-  const isKnownFromRedux = known.buildingSearch;
-
-  // Local state that can be temporarily overridden
-  const isCollapsed = isKnownFromRedux && !isExpandedLocal;
 
   if (!enabled) {
     return null;
   }
 
   const handleClose = () => {
-    dispatch(setKnown("buildingSearch"));
-    setIsExpandedLocal(false);
+    setIsExpanded(false);
   };
 
   const handleExpand = () => {
-    setIsExpandedLocal(true);
+    setIsExpanded(true);
   };
 
   /**
@@ -261,7 +251,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   };
 
   // If collapsed, show magnifying glass button
-  if (isCollapsed) {
+  if (!isExpanded) {
     return (
       <div
         className={`${styles.container} ${styles.collapsed} ${className}`}
@@ -281,7 +271,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         <button
           onClick={handleClose}
           className={styles.closeButton}
-          title="Скрыть поиск (нажмите 🔍 чтобы показать снова)"
+          title="Скрыть поиск"
         >
           ×
         </button>
@@ -405,7 +395,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
         {/* Footer note */}
         <div className={styles.footer}>
-          <div>Нажмите × чтобы скрыть. Нажмите 🔍 чтобы показать снова.</div>
+          <div>Нажмите × чтобы скрыть</div>
         </div>
       </div>
     </div>
