@@ -57,7 +57,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   return (
     <>
-      <ViewControlsInfo enabled={true} />
+      <ViewControlsInfo showDetailed={true} />
       <BuildingSearch enabled={true} />
 
       <Canvas

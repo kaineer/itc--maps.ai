@@ -7,7 +7,8 @@ export type UIMode = "view" | "alignment" | "modelSetup";
 export type KnownMode =
   | "topCameraControls"
   | "perspectiveCameraControls"
-  | "modelSetupControls";
+  | "modelSetupControls"
+  | "viewControls";
 
 interface UIState {
   currentMode: UIMode;
@@ -20,6 +21,7 @@ const initialState: UIState = {
     topCameraControls: false,
     perspectiveCameraControls: false,
     modelSetupControls: false,
+    viewControls: false,
   },
 };
 
@@ -50,6 +52,7 @@ export const uiSlice = createSlice({
         topCameraControls: false,
         perspectiveCameraControls: false,
         modelSetupControls: false,
+        viewControls: false,
       };
     },
   },
