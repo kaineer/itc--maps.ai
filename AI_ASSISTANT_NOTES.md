@@ -66,6 +66,8 @@ python3 scripts/commands/run-stage.py all       # Full pipeline
 #### Git Preferences
 - **Pager avoidance**: Always use `--no-pager` flag or limit output
 - **Example**: `git --no-pager status`, `git --no-pager log --oneline -10`
+- **Commit language**: Commit messages must be in English (technical documentation standard)
+- **Communication**: User-AI communication is in Russian, but commits remain in English
 
 #### Package Manager
 - **Preferred**: `pnpm` (faster, more efficient)
@@ -122,6 +124,12 @@ const currentModel = useAppSelector(state => state.alignment.currentModel);
 - Solution: Ensure some logs are outside groups
 - Git pager: Always use `--no-pager` flag to avoid waiting for user input
 
+### Language Guidelines
+- **Commit Messages**: Always in English for technical documentation consistency
+- **User Communication**: In Russian for natural interaction
+- **Code Comments**: English for developer reference (international standard)
+- **UI Text**: Russian for user interface localization
+
 ---
 
-*Last Updated: Session focused on adding rotation controls to TopCameraController*
+*Last Updated: Added language guidelines for commits and communication*
