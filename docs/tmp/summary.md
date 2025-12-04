@@ -17,6 +17,7 @@
 - **Russian Translation**: Complete interface translation to Russian
 - **Collapsible Interface**: Added collapse/expand functionality with magnifying glass icon (🔍)
 - **Auto-Focus**: Input field automatically receives focus when form expands
+- **Focus Management**: Input loses focus after search actions to prevent keyboard navigation interference
 - **Simplified Logic**: Removed Redux integration for collapse state, using local React state only
 - **Default State**: Always starts collapsed, expands on click, collapses with × button
 - **No State Persistence**: Simple toggle without localStorage saving
@@ -91,6 +92,7 @@ components/
 - **Russian Interface**: Full localization for Russian-speaking users
 - **Collapsible Design**: 🔍 icon for collapsed state, × button to close
 - **Auto-Focus**: Input field automatically focused when form expands
+- **Smart Focus Management**: Input loses focus after search, Enter key, clear, camera move, and form close
 - **Search Functionality**: Address-based building search with flexible matching
 - **Camera Navigation**: Automatically moves camera 10m north of found buildings
 - **Simple State**: Always starts collapsed, no persistence between sessions
@@ -157,6 +159,7 @@ components/
 - **Russian Interface**: Full localization for target audience
 - **Clean Interface**: Collapsible components reduce screen clutter
 - **Auto-Focus**: Immediate cursor placement in search fields
+- **Keyboard Navigation**: Prevents WASD keys from appearing in search input after actions
 - **Clear Instructions**: Well-organized control information
 - **Intuitive Navigation**: Consistent patterns across all components
 - **Accessible Design**: Proper scrolling and visual hierarchy
