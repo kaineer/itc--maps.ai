@@ -40,6 +40,9 @@
 .expanded {
     max-width: 500px;
     max-height: 80vh; /* Limit height to 80% of viewport height */
+    height: auto;
+    /* Debug border - remove after testing */
+    /* border: 1px solid red; */
 }
 
 .panel {
@@ -55,6 +58,9 @@
     display: flex;
     flex-direction: column;
     overflow: hidden; /* Prevent content from overflowing panel */
+    height: 100%;
+    /* Debug border - remove after testing */
+    /* border: 1px solid green; */
 }
 
 /* Close button in expanded panel */
@@ -85,12 +91,15 @@
 .content {
     padding-right: 10px; /* Reduced for scrollbar */
     overflow-y: auto; /* Add vertical scroll if content is too tall */
-    flex: 1; /* Take available space */
-    max-height: calc(100% - 60px); /* Reserve space for footer and padding */
+    flex: 1 1 auto; /* Take available space and allow shrinking */
+    min-height: 0; /* Allow content to shrink below its intrinsic height */
+    max-height: 100%; /* Ensure content respects container height */
 
     /* Custom scrollbar styling */
     scrollbar-width: thin; /* Firefox */
     scrollbar-color: rgba(255, 255, 255, 0.3) rgba(0, 0, 0, 0.1); /* Firefox */
+    /* Debug border - remove after testing */
+    /* border: 1px solid blue; */
 }
 
 /* Webkit scrollbar styling */
@@ -121,4 +130,6 @@
     color: #888;
     text-align: center;
     flex-shrink: 0; /* Prevent footer from shrinking */
+    /* Debug border - remove after testing */
+    /* border: 1px solid yellow; */
 }

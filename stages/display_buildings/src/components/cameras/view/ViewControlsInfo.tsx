@@ -40,6 +40,34 @@ const detailedInfo = [
     pan: "Right click + drag",
     zoom: "Mouse wheel",
   },
+  // Test content for scroll testing
+  {
+    title: "Additional Test Section 1",
+    description:
+      "This is test content to make the panel longer for scroll testing",
+    note: "Scroll should appear when content exceeds available height",
+  },
+  {
+    title: "Additional Test Section 2",
+    description:
+      "More test content to ensure scroll functionality works properly",
+    note: "Each section adds more height to the content area",
+  },
+  {
+    title: "Additional Test Section 3",
+    description: "Even more test content for comprehensive scroll testing",
+    note: "The scrollbar should appear when this content is too tall",
+  },
+  {
+    title: "Additional Test Section 4",
+    description: "Test content to verify vertical scrolling implementation",
+    note: "User should be able to scroll through all content",
+  },
+  {
+    title: "Additional Test Section 5",
+    description: "Final test section for scroll functionality validation",
+    note: "If scroll doesn't work, check CSS height calculations",
+  },
 ];
 
 interface Props {
@@ -185,6 +213,62 @@ export const ViewControlsInfo = ({
   return (
     <CollapsibleControlInfo mode="viewControls" className={className}>
       {content}
+      {/* Additional test content for scroll testing */}
+      <div
+        style={{
+          marginTop: "20px",
+          padding: "10px",
+          backgroundColor: "rgba(255,255,255,0.05)",
+          borderRadius: "4px",
+        }}
+      >
+        <h4 style={{ margin: "0 0 10px 0", color: "#ffa726" }}>
+          📋 Scroll Test Content
+        </h4>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          This additional content is added to test scroll functionality.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          If scroll is working correctly, you should be able to scroll through
+          all this content.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          The panel should have a maximum height of 80% of the viewport.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          When content exceeds this height, a scrollbar should appear.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 1 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 2 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 3 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 4 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 5 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 6 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 7 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 8 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 9 for scroll functionality verification.
+        </p>
+        <p style={{ margin: "0 0 8px 0", fontSize: "13px", color: "#eee" }}>
+          Test line 10 for scroll functionality verification.
+        </p>
+      </div>
     </CollapsibleControlInfo>
   );
 };
