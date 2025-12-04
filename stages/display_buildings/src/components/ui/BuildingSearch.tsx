@@ -97,7 +97,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
    */
   const searchBuilding = () => {
     if (!searchQuery.trim()) {
-      setSearchError("Please enter an address");
+      setSearchError("Введите адрес для поиска");
       return;
     }
 
@@ -174,10 +174,10 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
       if (suggestions.length > 0) {
         setSearchError(
-          `Building not found: "${searchQuery}". Similar addresses on ${streetName}: ${suggestions.join(", ")}`,
+          `Здание не найдено: "${searchQuery}". Похожие адреса на ${streetName}: ${suggestions.join(", ")}`,
         );
       } else {
-        setSearchError(`Building not found: "${searchQuery}"`);
+        setSearchError(`Здание не найдено: "${searchQuery}"`);
       }
     }
 
@@ -193,7 +193,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
     const position = getBuildingPosition(building);
 
     if (!position) {
-      setSearchError("Building has no position or polygon data");
+      setSearchError("У здания нет данных для определения положения");
       return;
     }
 
@@ -243,13 +243,13 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   return (
     <div className={`${styles.buildingSearch} ${className}`}>
       <div className={styles.searchHeader}>
-        <h3 className={styles.title}>Building Search</h3>
+        <h3 className={styles.title}>Поиск зданий</h3>
         <p className={styles.subtitle}>
-          Enter address in format: "Street, House Number"
+          Введите адрес в формате: "Улица, Номер дома"
           <br />
-          Supports: 12А, 12-А, 12/1, 12 корп 1, etc.
+          Поддерживаются: 12А, 12-А, 12/1, 12 корп 1 и т.д.
           <br />
-          Examples: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
+          Примеры: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
         </p>
       </div>
 
@@ -260,7 +260,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="e.g., Main Street, 123"
+            placeholder="например, Чкалова, 3"
             className={styles.searchInput}
             disabled={isSearching}
           />
@@ -269,13 +269,13 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
             disabled={isSearching || !searchQuery.trim()}
             className={styles.searchButton}
           >
-            {isSearching ? "Searching..." : "Search"}
+            {isSearching ? "Идет поиск..." : "Найти"}
           </button>
         </div>
 
         {searchQuery && (
           <button onClick={clearSearch} className={styles.clearButton}>
-            Clear
+            Очистить
           </button>
         )}
       </div>
@@ -291,27 +291,27 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         <div className={styles.searchResults}>
           <div className={styles.resultHeader}>
             <span className={styles.successIcon}>✅</span>
-            <span className={styles.resultTitle}>Building Found</span>
+            <span className={styles.resultTitle}>Здание найдено</span>
           </div>
 
           <div className={styles.buildingInfo}>
             <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Address:</span>
+              <span className={styles.infoLabel}>Адрес:</span>
               <span className={styles.infoValue}>{foundBuilding.address}</span>
             </div>
 
             <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Position:</span>
+              <span className={styles.infoLabel}>Позиция:</span>
               <span className={styles.infoValue}>
                 {(() => {
                   const position = getBuildingPosition(foundBuilding);
                   if (position) {
                     const source = foundBuilding.position
-                      ? "explicit"
-                      : "from polygon";
+                      ? "явная"
+                      : "из полигона";
                     return `X: ${position.x.toFixed(2)}, Z: ${position.z.toFixed(2)} (${source})`;
                   } else {
-                    return "Not available";
+                    return "Недоступно";
                   }
                 })()}
               </span>
@@ -319,30 +319,30 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
             {foundBuilding.height && (
               <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>Height:</span>
+                <span className={styles.infoLabel}>Высота:</span>
                 <span className={styles.infoValue}>
-                  {foundBuilding.height.toFixed(2)}m
+                  {foundBuilding.height.toFixed(2)}м
                 </span>
               </div>
             )}
 
             {foundBuilding.modelUrl && (
               <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>3D Model:</span>
-                <span className={styles.infoValue}>Available</span>
+                <span className={styles.infoLabel}>3D Модель:</span>
+                <span className={styles.infoValue}>Доступна</span>
               </div>
             )}
           </div>
 
           <div className={styles.cameraInfo}>
             <p className={styles.cameraNote}>
-              Camera moved to 10 meters north of the building
+              Камера перемещена на 10 метров к северу от здания
             </p>
             <button
               onClick={() => moveCameraToBuilding(foundBuilding)}
               className={styles.moveAgainButton}
             >
-              Move Camera Again
+              Переместить камеру снова
             </button>
           </div>
         </div>
@@ -352,7 +352,7 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         <div className={styles.hint}>
           <span className={styles.hintIcon}>💡</span>
           <span className={styles.hintText}>
-            {buildings.length} buildings loaded. Try searching by address.
+            Загружено {buildings.length} зданий. Попробуйте поиск по адресу.
           </span>
         </div>
       )}
