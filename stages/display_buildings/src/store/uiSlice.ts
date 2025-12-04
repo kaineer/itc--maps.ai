@@ -13,7 +13,8 @@ export type KnownMode =
   | "topCameraControls"
   | "perspectiveCameraControls"
   | "modelSetupControls"
-  | "viewControls";
+  | "viewControls"
+  | "buildingSearch";
 
 interface UIState {
   currentMode: UIMode;
@@ -28,6 +29,7 @@ const defaultInitialState: UIState = {
     perspectiveCameraControls: false,
     modelSetupControls: false,
     viewControls: false,
+    buildingSearch: true,
   },
 };
 
@@ -62,6 +64,7 @@ export const uiSlice = createSlice({
         perspectiveCameraControls: false,
         modelSetupControls: false,
         viewControls: false,
+        buildingSearch: false,
       };
       // Сохраняем сброшенное состояние
       saveUIState(state);

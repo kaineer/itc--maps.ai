@@ -2,6 +2,7 @@ import { useState, KeyboardEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { viewSlice } from "../../store/viewSlice";
+import { uiSlice } from "../../store/uiSlice";
 import { Building } from "../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "../../utils/constants";
 import styles from "./BuildingSearch.module.css";
@@ -20,6 +21,7 @@ interface Props {
  * - Moves camera to 10 meters from found building
  * - Displays search results and errors
  * - Integrates with Redux for building data and camera control
+ * - Collapsible interface with localStorage persistence
  */
 export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const dispatch = useDispatch();
@@ -27,13 +29,31 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [foundBuilding, setFoundBuilding] = useState<Building | null>(null);
+  const [isExpandedLocal, setIsExpandedLocal] = useState(false);
 
   const { getFilteredBuildings } = buildingsSlice.selectors;
+  const { getKnown } = uiSlice.selectors;
+  const { setKnown, clearKnown } = uiSlice.actions;
+
   const buildings = useSelector(getFilteredBuildings);
+  const known = useSelector(getKnown);
+  const isKnownFromRedux = known.buildingSearch;
+
+  // Local state that can be temporarily overridden
+  const isCollapsed = isKnownFromRedux && !isExpandedLocal;
 
   if (!enabled) {
     return null;
   }
+
+  const handleClose = () => {
+    dispatch(setKnown("buildingSearch"));
+    setIsExpandedLocal(false);
+  };
+
+  const handleExpand = () => {
+    setIsExpandedLocal(true);
+  };
 
   /**
    * Get building position from either position field or first node
@@ -240,122 +260,154 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
     setFoundBuilding(null);
   };
 
+  // If collapsed, show magnifying glass button
+  if (isCollapsed) {
+    return (
+      <div
+        className={`${styles.container} ${styles.collapsed} ${className}`}
+        onClick={handleExpand}
+        title="Нажмите для поиска зданий"
+      >
+        <button className={styles.collapsedButton}>🔍</button>
+      </div>
+    );
+  }
+
+  // Show expanded version
   return (
-    <div className={`${styles.buildingSearch} ${className}`}>
-      <div className={styles.searchHeader}>
-        <h3 className={styles.title}>Поиск зданий</h3>
-        <p className={styles.subtitle}>
-          Введите адрес в формате: "Улица, Номер дома"
-          <br />
-          Поддерживаются: 12А, 12-А, 12/1, 12 корп 1 и т.д.
-          <br />
-          Примеры: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
-        </p>
-      </div>
+    <div className={`${styles.container} ${styles.expanded} ${className}`}>
+      <div className={styles.panel}>
+        {/* Close button */}
+        <button
+          onClick={handleClose}
+          className={styles.closeButton}
+          title="Скрыть поиск (нажмите 🔍 чтобы показать снова)"
+        >
+          ×
+        </button>
 
-      <div className={styles.searchControls}>
-        <div className={styles.inputGroup}>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="например, Чкалова, 3"
-            className={styles.searchInput}
-            disabled={isSearching}
-          />
-          <button
-            onClick={searchBuilding}
-            disabled={isSearching || !searchQuery.trim()}
-            className={styles.searchButton}
-          >
-            {isSearching ? "Идет поиск..." : "Найти"}
-          </button>
+        <div className={styles.searchHeader}>
+          <h3 className={styles.title}>Поиск зданий</h3>
+          <p className={styles.subtitle}>
+            Введите адрес в формате: "Улица, Номер дома"
+            <br />
+            Поддерживаются: 12А, 12-А, 12/1, 12 корп 1 и т.д.
+            <br />
+            Примеры: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
+          </p>
         </div>
 
-        {searchQuery && (
-          <button onClick={clearSearch} className={styles.clearButton}>
-            Очистить
-          </button>
-        )}
-      </div>
-
-      {searchError && (
-        <div className={styles.errorMessage}>
-          <span className={styles.errorIcon}>⚠️</span>
-          {searchError}
-        </div>
-      )}
-
-      {foundBuilding && (
-        <div className={styles.searchResults}>
-          <div className={styles.resultHeader}>
-            <span className={styles.successIcon}>✅</span>
-            <span className={styles.resultTitle}>Здание найдено</span>
-          </div>
-
-          <div className={styles.buildingInfo}>
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Адрес:</span>
-              <span className={styles.infoValue}>{foundBuilding.address}</span>
-            </div>
-
-            <div className={styles.infoRow}>
-              <span className={styles.infoLabel}>Позиция:</span>
-              <span className={styles.infoValue}>
-                {(() => {
-                  const position = getBuildingPosition(foundBuilding);
-                  if (position) {
-                    const source = foundBuilding.position
-                      ? "явная"
-                      : "из полигона";
-                    return `X: ${position.x.toFixed(2)}, Z: ${position.z.toFixed(2)} (${source})`;
-                  } else {
-                    return "Недоступно";
-                  }
-                })()}
-              </span>
-            </div>
-
-            {foundBuilding.height && (
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>Высота:</span>
-                <span className={styles.infoValue}>
-                  {foundBuilding.height.toFixed(2)}м
-                </span>
-              </div>
-            )}
-
-            {foundBuilding.modelUrl && (
-              <div className={styles.infoRow}>
-                <span className={styles.infoLabel}>3D Модель:</span>
-                <span className={styles.infoValue}>Доступна</span>
-              </div>
-            )}
-          </div>
-
-          <div className={styles.cameraInfo}>
-            <p className={styles.cameraNote}>
-              Камера перемещена на 10 метров к северу от здания
-            </p>
+        <div className={styles.searchControls}>
+          <div className={styles.inputGroup}>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="например, Чкалова, 3"
+              className={styles.searchInput}
+              disabled={isSearching}
+            />
             <button
-              onClick={() => moveCameraToBuilding(foundBuilding)}
-              className={styles.moveAgainButton}
+              onClick={searchBuilding}
+              disabled={isSearching || !searchQuery.trim()}
+              className={styles.searchButton}
             >
-              Переместить камеру снова
+              {isSearching ? "Идет поиск..." : "Найти"}
             </button>
           </div>
-        </div>
-      )}
 
-      {buildings.length > 0 && !foundBuilding && !searchError && (
-        <div className={styles.hint}>
-          <span className={styles.hintIcon}>💡</span>
-          <span className={styles.hintText}>
-            Загружено {buildings.length} зданий. Попробуйте поиск по адресу.
-          </span>
+          {searchQuery && (
+            <button onClick={clearSearch} className={styles.clearButton}>
+              Очистить
+            </button>
+          )}
         </div>
-      )}
+
+        {searchError && (
+          <div className={styles.errorMessage}>
+            <span className={styles.errorIcon}>⚠️</span>
+            {searchError}
+          </div>
+        )}
+
+        {foundBuilding && (
+          <div className={styles.searchResults}>
+            <div className={styles.resultHeader}>
+              <span className={styles.successIcon}>✅</span>
+              <span className={styles.resultTitle}>Здание найдено</span>
+            </div>
+
+            <div className={styles.buildingInfo}>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Адрес:</span>
+                <span className={styles.infoValue}>
+                  {foundBuilding.address}
+                </span>
+              </div>
+
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Позиция:</span>
+                <span className={styles.infoValue}>
+                  {(() => {
+                    const position = getBuildingPosition(foundBuilding);
+                    if (position) {
+                      const source = foundBuilding.position
+                        ? "явная"
+                        : "из границ";
+                      return `X: ${position.x.toFixed(2)}, Z: ${position.z.toFixed(2)} (${source})`;
+                    } else {
+                      return "Недоступно";
+                    }
+                  })()}
+                </span>
+              </div>
+
+              {foundBuilding.height && (
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>Высота:</span>
+                  <span className={styles.infoValue}>
+                    {foundBuilding.height.toFixed(2)}м
+                  </span>
+                </div>
+              )}
+
+              {foundBuilding.modelUrl && (
+                <div className={styles.infoRow}>
+                  <span className={styles.infoLabel}>3D Модель:</span>
+                  <span className={styles.infoValue}>Доступна</span>
+                </div>
+              )}
+            </div>
+
+            <div className={styles.cameraInfo}>
+              <p className={styles.cameraNote}>
+                Камера перемещена на 10 метров к северу от здания
+              </p>
+              <button
+                onClick={() => moveCameraToBuilding(foundBuilding)}
+                className={styles.moveAgainButton}
+              >
+                Переместить камеру снова
+              </button>
+            </div>
+          </div>
+        )}
+
+        {buildings.length > 0 && !foundBuilding && !searchError && (
+          <div className={styles.hint}>
+            <span className={styles.hintIcon}>💡</span>
+            <span className={styles.hintText}>
+              Загружено {buildings.length} зданий. Попробуйте поиск по адресу.
+            </span>
+          </div>
+        )}
+
+        {/* Footer note */}
+        <div className={styles.footer}>
+          <div>Нажмите × чтобы скрыть. Нажмите 🔍 чтобы показать снова.</div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -6,9 +6,9 @@
 /**
  * Ключ для хранения состояния UI в localStorage
  */
-export const UI_STORAGE_KEY = 'ekb3d/ui';
+export const UI_STORAGE_KEY = "ekb3d/ui";
 
-/**
+/**, чтобы можно было использовать подсказку и в то же время, чтобы ее можно было убирать. И для того, чтобы стили были примерно одинаковыми.
  * Сохраняет данные в localStorage с обработкой ошибок
  * @param key Ключ для сохранения
  * @param data Данные для сохранения (будут сериализованы в JSON)
@@ -65,12 +65,12 @@ export function removeFromLocalStorage(key: string): boolean {
  */
 export function isLocalStorageAvailable(): boolean {
   try {
-    const testKey = '__test__';
+    const testKey = "__test__";
     localStorage.setItem(testKey, testKey);
     localStorage.removeItem(testKey);
     return true;
   } catch (error) {
-    console.warn('localStorage не поддерживается в этом окружении:', error);
+    console.warn("localStorage не поддерживается в этом окружении:", error);
     return false;
   }
 }
@@ -131,7 +131,7 @@ export interface StorageMigration<T> {
 export function loadWithMigration<T>(
   key: string,
   defaultValue: T,
-  migrations: StorageMigration<T>[] = []
+  migrations: StorageMigration<T>[] = [],
 ): T {
   try {
     const serializedData = localStorage.getItem(key);

@@ -1,5 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { getBackend } from "../utils/backend";
+import {
+  CAMERA_HEIGHTS,
+  DISTANCES,
+  CAMERA_FOV,
+  DEFAULT_CAMERA_POSITIONS,
+} from "../utils/constants";
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -21,9 +27,11 @@ export interface ViewState {
 }
 
 // Default camera position for View mode
-const defaultCameraPosition: [number, number, number] = [0, 50, 0];
-const defaultCameraTarget: [number, number, number] = [0, 0, 0];
-const defaultFov = 60;
+const defaultCameraPosition: [number, number, number] =
+  DEFAULT_CAMERA_POSITIONS.VIEW;
+const defaultCameraTarget: [number, number, number] =
+  DEFAULT_CAMERA_POSITIONS.VIEW_TARGET;
+const defaultFov = CAMERA_FOV.DEFAULT;
 
 const initialState: ViewState = {
   camera: {
@@ -33,7 +41,7 @@ const initialState: ViewState = {
   },
   cameraEnabled: true,
   movementSpeed: 5.0,
-  fixedHeight: 1.8, // Eye level in meters
+  fixedHeight: CAMERA_HEIGHTS.EYE_LEVEL, // Eye level in meters
 };
 
 export const viewSlice = createSlice({
@@ -177,8 +185,8 @@ export const initializeViewCamera = createAsyncThunk<{
   const cameraTarget: [number, number, number] = [position.x, 0, position.z];
   const cameraPosition: [number, number, number] = [
     position.x,
-    1.8,
-    position.z - 10,
+    CAMERA_HEIGHTS.EYE_LEVEL,
+    position.z - DISTANCES.FROM_BUILDING,
   ]; // 10 meters north
 
   dispatch(updateCameraTarget(cameraTarget));
