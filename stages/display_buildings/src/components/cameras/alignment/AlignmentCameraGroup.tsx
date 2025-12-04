@@ -3,6 +3,7 @@ import { alignmentSlice } from "../../../store/alignmentSlice";
 import { TopCameraController } from "./TopCameraController";
 import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { AlignmentSliceLogger } from "../../testing/ui/AlignmentSliceLogger";
+import { UILocalStorageDebug } from "../../testing/ui/UILocalStorageDebug";
 import { Development } from "../../shared/Development";
 import { Match } from "../../shared/Match";
 import { CameraUpdateProps, EnabledProps } from "../../shared/types";
@@ -50,6 +51,11 @@ export const AlignmentCameraGroup = ({ enabled, onCameraUpdate }: Props) => {
           logStepConfig={true}
           logProcessState={true}
         />
+      </Development>
+
+      {/* UI LocalStorage debug component */}
+      <Development>
+        <UILocalStorageDebug enabled={true} />
       </Development>
     </>
   );

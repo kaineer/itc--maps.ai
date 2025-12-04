@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { uiSlice } from "./uiSlice";
+import { uiSlice, uiLocalStorageMiddleware } from "./uiSlice";
 import { buildingsSlice } from "./buildingsSlice";
 import { alignmentSlice } from "./alignmentSlice";
 import { viewSlice } from "./viewSlice";
@@ -18,7 +18,7 @@ export function setupStore() {
         serializableCheck: {
           ignoredActions: ["persist/PERSIST"],
         },
-      }),
+      }).concat(uiLocalStorageMiddleware),
     devTools: process.env.NODE_ENV !== "production",
   });
 

@@ -1,4 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  loadUIState,
+  saveUIState,
+  UI_STORAGE_KEY,
+} from "../utils/localStorage";
 
 const defaultUIMode = "view";
 
@@ -15,7 +20,8 @@ interface UIState {
   known: Record<KnownMode, boolean>;
 }
 
-const initialState: UIState = {
+// Начальное состояние по умолчанию
+const defaultInitialState: UIState = {
   currentMode: defaultUIMode,
   known: {
     topCameraControls: false,
@@ -24,6 +30,9 @@ const initialState: UIState = {
     viewControls: false,
   },
 };
+
+// Загружаем начальное состояние из localStorage или используем состояние по умолчанию
+const initialState: UIState = loadUIState(defaultInitialState);
 
 export const uiSlice = createSlice({
   name: "ui",
@@ -54,6 +63,8 @@ export const uiSlice = createSlice({
         modelSetupControls: false,
         viewControls: false,
       };
+      // Сохраняем сброшенное состояние
+      saveUIState(state);
     },
   },
   selectors: {
@@ -62,3 +73,21 @@ export const uiSlice = createSlice({
     isKnown: (state, mode: KnownMode) => state.known[mode],
   },
 });
+
+// Middleware для автоматического сохранения состояния в localStorage при изменениях
+export const uiLocalStorageMiddleware =
+  (store: any) => (next: any) => (action: any) => {
+    const result = next(action);
+
+    // Сохраняем состояние только если действие относится к uiSlice
+    if (action.type.startsWith("ui/")) {
+      const state = store.getState();
+      if (state.ui) {
+        saveUIState(state.ui);
+      }
+    }
+
+    return result;
+  };
+
+export default uiSlice.reducer;
