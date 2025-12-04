@@ -21,24 +21,25 @@ import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "../../../utils/constants";
 
 const detailedInfo = [
   {
-    title: "Camera Movement Speed",
-    description: "Controls how fast the camera moves with WASD keys",
-    normalSpeed: `${MOVEMENT_SPEEDS.BASE}m/s`,
-    fastSpeed: `${MOVEMENT_SPEEDS.FAST}m/s (with Shift)`,
-    modifier: "Hold Left Shift for 10× faster movement",
+    title: "Скорость движения камеры",
+    description: "Управляет скоростью движения камеры с помощью клавиш WASD",
+    normalSpeed: `${MOVEMENT_SPEEDS.BASE}м/с`,
+    fastSpeed: `${MOVEMENT_SPEEDS.FAST}м/с (с Shift)`,
+    modifier: "Удерживайте Left Shift для движения в 10 раз быстрее",
   },
   {
-    title: "Camera Height",
-    description: "Fixed camera height for consistent viewing perspective",
-    eyeLevel: `${CAMERA_HEIGHTS.EYE_LEVEL}m (human eye level)`,
-    note: "Height is fixed and cannot be changed in View mode",
+    title: "Высота камеры",
+    description:
+      "Фиксированная высота камеры для постоянной перспективы обзора",
+    eyeLevel: `${CAMERA_HEIGHTS.EYE_LEVEL}м (уровень глаз человека)`,
+    note: "Высота фиксирована и не может быть изменена в режиме просмотра",
   },
   {
-    title: "Mouse Controls",
-    description: "OrbitControls integration for intuitive camera manipulation",
-    rotation: "Left click + drag",
-    pan: "Right click + drag",
-    zoom: "Mouse wheel",
+    title: "Управление мышью",
+    description: "Интеграция OrbitControls для интуитивного управления камерой",
+    rotation: "Левая кнопка мыши + перетаскивание",
+    pan: "Правая кнопка мыши + перетаскивание",
+    zoom: "Колесико мыши",
   },
 ];
 
@@ -61,32 +62,33 @@ export const ViewControlsInfo = ({
     showNavigationFeatures || showDetailed;
   const controls = [
     {
-      category: "🎮 Movement Controls",
+      category: "🎮 Управление движением",
       items: [
-        { keys: ["W"], description: "Move forward" },
-        { keys: ["S"], description: "Move backward" },
-        { keys: ["A"], description: "Move left (strafe)" },
-        { keys: ["D"], description: "Move right (strafe)" },
         {
-          keys: ["Shift", "Left", "+", "WASD"],
-          description: "Fast movement (10× speed)",
+          keys: ["W", "A", "S", "D"],
+          description: "Движение вперед/назад/влево/вправо",
+        },
+        {
+          keys: ["LeftShift", "+", "WASD"],
+          description: "Быстрое движение (в 10 раз быстрее)",
         },
       ],
     },
     {
-      category: "🖱️ Mouse Controls",
+      category: "🖱️ Управление мышью",
       items: [
         {
-          keys: ["Mouse", "Left", "Click", "+", "Drag"],
-          description: "Rotate camera around target",
+          keys: ["ЛКМ", "+", "Перетаскивание"],
+          description: "Вращение камеры вокруг цели",
         },
         {
-          keys: ["Mouse", "Right", "Click", "+", "Drag"],
-          description: "Pan camera (move up/down/left/right)",
+          keys: ["ПКМ", "+", "Перетаскивание"],
+          description:
+            "Панорамирование камеры (движение вверх/вниз/влево/вправо)",
         },
         {
-          keys: ["Mouse", "Wheel"],
-          description: "Zoom in/out",
+          keys: ["Колесико", "мыши"],
+          description: "Приближение/отдаление",
         },
       ],
     },
@@ -94,7 +96,7 @@ export const ViewControlsInfo = ({
 
   const content = (
     <>
-      <h3 className={classes.title}>👁️ View Mode Controls</h3>
+      <h3 className={classes.title}>👁️ Управление в режиме просмотра</h3>
 
       <div>
         {controls.map((section, sectionIndex) => (
@@ -110,16 +112,16 @@ export const ViewControlsInfo = ({
       {effectiveShowCameraProperties && (
         <ControlInfoSection
           key="camera-properties"
-          category="📍 Camera Properties"
+          category="📍 Свойства камеры"
           items={[
             {
-              keys: ["Fixed Height"],
-              description: `Camera locked at ${CAMERA_HEIGHTS.EYE_LEVEL}m (eye level)`,
+              keys: ["Фиксированная высота"],
+              description: `Камера зафиксирована на высоте ${CAMERA_HEIGHTS.EYE_LEVEL}м (уровень глаз)`,
             },
             {
-              keys: ["Layout Independent"],
+              keys: ["Независимость от раскладки"],
               description:
-                "Uses physical key codes (works with any keyboard layout)",
+                "Использует физические коды клавиш (работает с любой раскладкой клавиатуры)",
             },
           ]}
           className={classes.section}
@@ -129,17 +131,16 @@ export const ViewControlsInfo = ({
       {effectiveShowNavigationFeatures && (
         <ControlInfoSection
           key="navigation-features"
-          category="🔍 Navigation Features"
+          category="🔍 Функции навигации"
           items={[
             {
-              keys: ["Building Search"],
-              description:
-                "Search for buildings by address and move camera to them",
+              keys: ["Поиск зданий"],
+              description: "Поиск зданий по адресу и перемещение камеры к ним",
             },
             {
-              keys: ["Auto Positioning"],
+              keys: ["Автоматическое позиционирование"],
               description:
-                "Camera automatically positions 10m north of found buildings",
+                "Камера автоматически позиционируется в 10 метрах к северу от найденных зданий",
             },
           ]}
           className={classes.section}
@@ -148,7 +149,7 @@ export const ViewControlsInfo = ({
 
       {showDetailed && (
         <div className={classes.detailedSection}>
-          <h4 className={classes.detailedTitle}>📊 Detailed Information</h4>
+          <h4 className={classes.detailedTitle}>📊 Подробная информация</h4>
           {detailedInfo.map((info, index) => (
             <div key={index} className={classes.detailedItem}>
               <div className={classes.detailedItemTitle}>{info.title}</div>
@@ -158,19 +159,35 @@ export const ViewControlsInfo = ({
               <DetailedMetaInfo
                 data={info}
                 prop="normalSpeed"
-                title="Normal Speed"
+                title="Обычная скорость"
               />
               <DetailedMetaInfo
                 data={info}
                 prop="fastSpeed"
-                title="Fast Speed"
+                title="Быстрая скорость"
               />
-              <DetailedMetaInfo data={info} prop="modifier" title="Modifier" />
-              <DetailedMetaInfo data={info} prop="eyeLevel" title="Eye Level" />
-              <DetailedMetaInfo data={info} prop="note" title="Note" />
-              <DetailedMetaInfo data={info} prop="rotation" title="Rotation" />
-              <DetailedMetaInfo data={info} prop="pan" title="Pan" />
-              <DetailedMetaInfo data={info} prop="zoom" title="Zoom" />
+              <DetailedMetaInfo
+                data={info}
+                prop="modifier"
+                title="Модификатор"
+              />
+              <DetailedMetaInfo
+                data={info}
+                prop="eyeLevel"
+                title="Уровень глаз"
+              />
+              <DetailedMetaInfo data={info} prop="note" title="Примечание" />
+              <DetailedMetaInfo data={info} prop="rotation" title="Вращение" />
+              <DetailedMetaInfo
+                data={info}
+                prop="pan"
+                title="Панорамирование"
+              />
+              <DetailedMetaInfo
+                data={info}
+                prop="zoom"
+                title="Масштабирование"
+              />
             </div>
           ))}
         </div>
