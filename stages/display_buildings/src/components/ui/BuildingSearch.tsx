@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "../../store/buildingsSlice";
 import { viewSlice } from "../../store/viewSlice";
 import { Building } from "../../types/types";
+import { CAMERA_HEIGHTS, DISTANCES } from "../../utils/constants";
 import styles from "./BuildingSearch.module.css";
 
 interface Props {
@@ -55,22 +56,44 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
    * Normalize address for comparison
    * - Convert to lowercase
    * - Remove extra spaces
-   * - Normalize punctuation
+   * - Normalize common abbreviations and punctuation
+   * - Remove special characters except spaces and common address separators
    */
   const normalizeAddress = (address: string): string => {
-    return address
+    let normalized = address
       .toLowerCase()
       .trim()
       .replace(/\s+/g, " ") // Replace multiple spaces with single space
       .replace(/[,.]/g, ""); // Remove commas and periods
+
+    // Normalize common address abbreviations to standard forms
+    // Don't remove them, just standardize
+    normalized = normalized
+      .replace(/\bкорпус\b/g, "корп")
+      .replace(/\bстроение\b/g, "стр")
+      .replace(/\bдом\b/g, "д")
+      .replace(/\bулица\b/g, "ул")
+      .replace(/\bпроспект\b/g, "пр")
+      .replace(/\bпр-т\b/g, "пр")
+      .replace(/\bбульвар\b/g, "б-р")
+      .replace(/\bпереулок\b/g, "пер");
+
+    // Remove all non-alphanumeric characters except spaces, dash, and slash
+    normalized = normalized.replace(/[^\w\sа-яё\-\/]/gi, "");
+
+    // Remove extra spaces again after replacements
+    normalized = normalized.replace(/\s+/g, " ").trim();
+
+    return normalized;
   };
 
   /**
    * Search for building by address
    * Supports formats:
-   * - "Улица, Номер дома"
+   * - "Улица, Номер дома" (с любыми символами в номере: 12А, 12-А, 12/1, 12 корп 1)
    * - "Street, House Number"
    * - Partial matches
+   * - Поиск должен учитывать и улицу и номер дома
    */
   const searchBuilding = () => {
     if (!searchQuery.trim()) {
@@ -84,18 +107,78 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
     const normalizedQuery = normalizeAddress(searchQuery);
 
-    // Find building by address
+    // Find building by address with flexible matching
     const building = buildings.find((b) => {
       if (!b.address) return false;
+
       const normalizedBuildingAddress = normalizeAddress(b.address);
-      return normalizedBuildingAddress.includes(normalizedQuery);
+
+      // 1. Exact match or contains match (most common case)
+      if (normalizedBuildingAddress.includes(normalizedQuery)) {
+        return true;
+      }
+
+      // 2. Try matching when query has both street and number
+      // Extract house number if present
+      const houseNumberMatch = normalizedQuery.match(/(\d+[а-яёa-z\d\/\-]*)/);
+      if (houseNumberMatch) {
+        const houseNumber = houseNumberMatch[0];
+        const streetPart = normalizedQuery.replace(houseNumber, "").trim();
+
+        // If we have both street and number, check if address contains both
+        if (streetPart.length > 0) {
+          // Check if building address contains both the street part AND house number
+          // They don't need to be in the same order
+          if (
+            normalizedBuildingAddress.includes(streetPart) &&
+            normalizedBuildingAddress.includes(houseNumber)
+          ) {
+            return true;
+          }
+        }
+      }
+
+      // 3. Try splitting query into parts for more flexible matching
+      const queryParts = normalizedQuery
+        .split(/\s+/)
+        .filter((part) => part.length > 0);
+      if (queryParts.length > 1) {
+        // Check if all parts are present in the address (in any order)
+        const allPartsMatch = queryParts.every((part) =>
+          normalizedBuildingAddress.includes(part),
+        );
+        if (allPartsMatch) {
+          return true;
+        }
+      }
+
+      return false;
     });
 
     if (building) {
       setFoundBuilding(building);
       moveCameraToBuilding(building);
     } else {
-      setSearchError(`Building not found: "${searchQuery}"`);
+      // Try to provide more helpful error message
+      // First, try to find by street name only
+      const streetName = searchQuery
+        .toLowerCase()
+        .split(/\s*,\s*/)[0]
+        .trim();
+      const suggestions = buildings
+        .filter(
+          (b) => b.address && b.address.toLowerCase().includes(streetName),
+        )
+        .slice(0, 5)
+        .map((b) => b.address);
+
+      if (suggestions.length > 0) {
+        setSearchError(
+          `Building not found: "${searchQuery}". Similar addresses on ${streetName}: ${suggestions.join(", ")}`,
+        );
+      } else {
+        setSearchError(`Building not found: "${searchQuery}"`);
+      }
     }
 
     setIsSearching(false);
@@ -121,7 +204,11 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
 
     // Position camera 10 meters north of the building
     // North is negative Z in Three.js coordinate system
-    const cameraPosition: [number, number, number] = [x, 1.8, z - 10];
+    const cameraPosition: [number, number, number] = [
+      x,
+      CAMERA_HEIGHTS.EYE_LEVEL,
+      z - DISTANCES.FROM_BUILDING,
+    ];
 
     dispatch(viewSlice.actions.updateCameraTarget(cameraTarget));
     dispatch(viewSlice.actions.updateCameraPosition(cameraPosition));
@@ -159,6 +246,10 @@ export const BuildingSearch = ({ enabled = true, className = "" }: Props) => {
         <h3 className={styles.title}>Building Search</h3>
         <p className={styles.subtitle}>
           Enter address in format: "Street, House Number"
+          <br />
+          Supports: 12А, 12-А, 12/1, 12 корп 1, etc.
+          <br />
+          Examples: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
         </p>
       </div>
 

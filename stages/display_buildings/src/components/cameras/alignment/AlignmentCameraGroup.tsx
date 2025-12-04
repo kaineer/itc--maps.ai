@@ -44,7 +44,7 @@ export const AlignmentCameraGroup = ({ enabled, onCameraUpdate }: Props) => {
       {/* Alignment state logger for debugging */}
       <Development>
         <AlignmentSliceLogger
-          enabled={true}
+          enabled={false}
           logCameraState={true}
           logModelTransform={true}
           logStepConfig={true}

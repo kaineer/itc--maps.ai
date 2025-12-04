@@ -17,6 +17,7 @@ import {
   positionsEqual,
 } from "../components/shared/positionMath";
 import { Vector3 } from "three";
+import { CAMERA_HEIGHTS } from "../utils/constants";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -566,9 +567,9 @@ export const alignmentSlice = createSlice({
     toggleCameraHeight: (state) => {
       const cameraState = state.cameraStates.perspective;
 
-      // Define height values
-      const EYE_LEVEL_HEIGHT = 1.8; // 1.8 meters - human eye level
-      const GROUND_LEVEL_HEIGHT = 0.05; // 0.5 meters - slightly above ground
+      // Use constants from shared file
+      const EYE_LEVEL_HEIGHT = CAMERA_HEIGHTS.EYE_LEVEL; // 1.8 meters - human eye level
+      const GROUND_LEVEL_HEIGHT = CAMERA_HEIGHTS.GROUND_LEVEL; // 0.05 meters - slightly above ground
 
       // Toggle between modes
       if (cameraState.cameraHeightMode === "groundLevel") {

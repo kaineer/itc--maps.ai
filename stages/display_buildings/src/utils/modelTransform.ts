@@ -3,7 +3,7 @@
 import { Box3, Vector3 } from "three";
 
 // Constants
-const EYE_LEVEL_HEIGHT = 1.8; // Human eye level in meters
+import { CAMERA_HEIGHTS, MODEL_CONSTANTS } from "./constants";
 
 import { Building } from "../types/types";
 
@@ -216,7 +216,10 @@ export function calculatePerspectiveCameraPosition(
 
   // Position camera north of model, elevated to see entire model
   // Use model height plus some extra clearance
-  const cameraHeight = Math.max(modelSize.y * 1.2, EYE_LEVEL_HEIGHT * 2);
+  const cameraHeight = Math.max(
+    modelSize.y * 1.2,
+    CAMERA_HEIGHTS.EYE_LEVEL * 2,
+  );
   const position: [number, number, number] = [
     modelCenter.x,
     cameraHeight,
@@ -224,7 +227,7 @@ export function calculatePerspectiveCameraPosition(
   ];
 
   // Target is slightly above the base of the model for better viewing angle
-  const targetHeight = Math.max(modelSize.y * 0.3, EYE_LEVEL_HEIGHT);
+  const targetHeight = Math.max(modelSize.y * 0.3, CAMERA_HEIGHTS.EYE_LEVEL);
   const target: [number, number, number] = [
     modelCenter.x,
     targetHeight,
@@ -270,7 +273,7 @@ export function calculateOrbitalCameraPosition(
   modelCenter: Vector3,
   angleRadians: number,
   distance: number,
-  height: number = EYE_LEVEL_HEIGHT,
+  height: number = CAMERA_HEIGHTS.EYE_LEVEL,
 ): [number, number, number] {
   return [
     modelCenter.x + Math.sin(angleRadians) * distance,
