@@ -44,13 +44,21 @@ const detailedInfo = [
 
 interface Props {
   showDetailed?: boolean;
+  showCameraProperties?: boolean;
+  showNavigationFeatures?: boolean;
   className?: string;
 }
 
 export const ViewControlsInfo = ({
   showDetailed = true,
+  showCameraProperties = false,
+  showNavigationFeatures = false,
   className = "",
 }: Props) => {
+  // Автоматически показывать дополнительные разделы при детализированном режиме
+  const effectiveShowCameraProperties = showCameraProperties || showDetailed;
+  const effectiveShowNavigationFeatures =
+    showNavigationFeatures || showDetailed;
   const controls = [
     {
       category: "🎮 Movement Controls",
@@ -82,35 +90,6 @@ export const ViewControlsInfo = ({
         },
       ],
     },
-    {
-      category: "📍 Camera Properties",
-      items: [
-        {
-          keys: ["Fixed Height"],
-          description: `Camera locked at ${CAMERA_HEIGHTS.EYE_LEVEL}m (eye level)`,
-        },
-        {
-          keys: ["Layout Independent"],
-          description:
-            "Uses physical key codes (works with any keyboard layout)",
-        },
-      ],
-    },
-    {
-      category: "🔍 Navigation Features",
-      items: [
-        {
-          keys: ["Building Search"],
-          description:
-            "Search for buildings by address and move camera to them",
-        },
-        {
-          keys: ["Auto Positioning"],
-          description:
-            "Camera automatically positions 10m north of found buildings",
-        },
-      ],
-    },
   ];
 
   const content = (
@@ -127,6 +106,45 @@ export const ViewControlsInfo = ({
           />
         ))}
       </div>
+
+      {effectiveShowCameraProperties && (
+        <ControlInfoSection
+          key="camera-properties"
+          category="📍 Camera Properties"
+          items={[
+            {
+              keys: ["Fixed Height"],
+              description: `Camera locked at ${CAMERA_HEIGHTS.EYE_LEVEL}m (eye level)`,
+            },
+            {
+              keys: ["Layout Independent"],
+              description:
+                "Uses physical key codes (works with any keyboard layout)",
+            },
+          ]}
+          className={classes.section}
+        />
+      )}
+
+      {effectiveShowNavigationFeatures && (
+        <ControlInfoSection
+          key="navigation-features"
+          category="🔍 Navigation Features"
+          items={[
+            {
+              keys: ["Building Search"],
+              description:
+                "Search for buildings by address and move camera to them",
+            },
+            {
+              keys: ["Auto Positioning"],
+              description:
+                "Camera automatically positions 10m north of found buildings",
+            },
+          ]}
+          className={classes.section}
+        />
+      )}
 
       {showDetailed && (
         <div className={classes.detailedSection}>
