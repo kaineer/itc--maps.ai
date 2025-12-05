@@ -1,14 +1,15 @@
 /* Container for both collapsed and expanded states */
 .container {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    z-index: 1000;
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
 }
 
 /* Collapsed state - magnifying glass button */
 .collapsed {
-    cursor: pointer;
+  cursor: pointer;
+  z-index: 500;
 }
 
 .collapsedButton {

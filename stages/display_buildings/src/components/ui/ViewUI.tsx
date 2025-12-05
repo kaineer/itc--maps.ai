@@ -14,25 +14,34 @@ import { Lighting } from "../static/Lighting";
 import { ViewStage } from "../stage/ui/ViewStage";
 import { ViewCameraController } from "../cameras/view/ViewCameraController";
 import { type AppDispatch } from "../../store";
+import { type Building } from "../../types/types";
+import { alignmentSlice } from "../../store/alignmentSlice";
+import { BuildingFormsGroup } from "./BuildingFormsGroup";
 
 interface Props {
-  onBuildingSelect?: (buildingId: string) => void;
+  // onBuildingSelect?: (buildingId: string) => void;
+  onBuildingSelect?: (building: Building) => void;
 }
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
   const { getCameraState } = viewSlice.selectors;
-  // const {
-  //   selectModelForAlignment,
-  //   addPolygonForAlignment,
-  //   startAlignmentProcess,
-  // } = alignmentSlice.actions;
+  const {
+  //  selectModelForAlignment,
+    addPolygonForAlignment,
+  //  startAlignmentProcess,
+  } = alignmentSlice.actions;
 
   const buildings = useSelector(getBuildings);
   const loading = useSelector(getLoading);
   const error = useSelector(getError);
   const cameraState = useSelector(getCameraState);
+
+  const handleBuildingClick = (building: Building) => {
+    dispatch(addPolygonForAlignment(building));
+    onBuildingSelect && onBuildingSelect(building);
+  }
 
   useEffect(() => {
     // Fetch initial position and buildings when component mounts
@@ -58,7 +67,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   return (
     <>
       <ViewControlsInfo showDetailed={true} />
-      <BuildingSearch enabled={true} />
+      <BuildingFormsGroup />
 
       <Canvas
         camera={{
@@ -76,7 +85,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Ground />
 
         {/* Buildings */}
-        <ViewStage buildings={buildings} onBuildingClick={onBuildingSelect} />
+        <ViewStage buildings={buildings} onBuildingClick={handleBuildingClick} />
 
         {/* Camera controls for view mode */}
         <OrbitControls

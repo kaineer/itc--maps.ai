@@ -92,6 +92,7 @@ fastify.put(
               items: {
                 type: "object",
                 properties: {
+                  id: { type: ["string"] },
                   address: { type: ["string", "null"] },
                   height: { type: "number" },
                   modelUrl: { type: ["string", "null"] },
@@ -126,9 +127,6 @@ fastify.put(
       const usedModelCache = {};
 
       const filterPolygon = (polygon) => {
-        if (polygon.id.startsWith("598")) {
-          console.log("Checking polygon: " + polygon.id);
-        }
         const modelId = modelsCache[polygon.id];
         if (modelId) {
           console.log("Found model: " + modelId);
@@ -174,7 +172,8 @@ fastify.put(
 
     // Format response according to specification
     const responseBuildings = filteredBuildings.map(
-      ({ address, height, nodes, modelUrl, position }) => ({
+      ({ id, address, height, nodes, modelUrl, position }) => ({
+        id,
         address,
         height,
         nodes,

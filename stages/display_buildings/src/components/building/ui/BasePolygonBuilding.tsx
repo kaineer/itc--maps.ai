@@ -1,17 +1,32 @@
 import { useRef } from "react";
 import * as THREE from "three";
 import { Building } from "../../../types/types";
+import { ThreeEvent } from "@react-three/fiber";
+
+type OnClickFunction = (building: Building) => void;
 
 interface Props {
   building: Building;
   opacity?: number;
-  onClick?: (buildingId: string) => void;
+  //  onClick?: (buildingId: string) => void;
+  onClick?: OnClickFunction;
+}
+
+const handleClick = (
+  onClick: OnClickFunction,
+  building: Building
+) => (event: ThreeEvent<MouseEvent>) => {
+  event.stopPropagation();
+  onClick(building);
+
+  const { id, address, position, height, nodes } = building;
+  console.log({ id, address, position, height, nodes });
 }
 
 export const BasePolygonBuilding = ({
   building,
   opacity = 1.0,
-  onClick,
+  onClick = () => null,
 }: Props) => {
   const meshRef = useRef<THREE.Group>(null);
 
@@ -58,19 +73,7 @@ export const BasePolygonBuilding = ({
           rotation={[0, -rotation, 0]}
           castShadow
           receiveShadow
-          onClick={(event) => {
-            event.stopPropagation();
-            if (onClick) {
-              const buildingId = `${building.address}|${building.position?.x},${building.position?.z}`;
-              onClick(buildingId);
-            }
-            console.log("Building clicked:", {
-              address: building.address,
-              position: building.position,
-              height: building.height,
-              nodes: building.nodes,
-            });
-          }}
+          onClick={handleClick(onClick, building)}
         >
           <boxGeometry args={[length, height, 0.1]} />
           <meshStandardMaterial

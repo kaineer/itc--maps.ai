@@ -5,24 +5,24 @@ import { SolidPolygonBuilding } from "./SolidPolygonBuilding";
 
 interface Props {
   building: Building;
-  onBuildingClick?: (buildingId: string) => void;
+  onBuildingClick?: (building: Building) => void;
 }
 
 export const RenderBuilding = ({ building, onBuildingClick }: Props) => {
-  const { modelUrl, address, position } = building;
+  const { modelUrl } = building;
 
   const handleBuildingClick = () => {
     if (onBuildingClick) {
-      // Create a unique building ID using address and position
-      const buildingId = `${address}|${position?.x},${position?.z}`;
-      onBuildingClick(buildingId);
+      onBuildingClick(building);
     }
   };
   if (typeof modelUrl === "string") {
     if (modelUrl.startsWith("/")) {
       return <DebugModelBuilding building={building} />;
     }
-    return <ModelBuilding building={building} />;
+    return <ModelBuilding building={building} onClick={handleBuildingClick} />;
   }
-  return <SolidPolygonBuilding building={building} />;
+  return (
+    <SolidPolygonBuilding building={building} onClick={handleBuildingClick} />
+  );
 };

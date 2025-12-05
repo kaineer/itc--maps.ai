@@ -4,12 +4,17 @@ import { useFBX } from "@react-three/drei";
 
 interface Props {
   building: Building;
+  onClick?: (building: Building) => void;
 }
 
-export const ModelBuilding = ({ building }: Props) => {
+export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
   const { modelUrl, position = { x: 0, z: 0 } } = building;
   const fbx = useFBX("http://localhost:5000" + modelUrl!);
   const fbxPosition = [position.x, 0, position.z];
+
+  const handleClick = () => {
+    onClick(building);
+  }
 
   if (fbx) {
     const box = new Box3().setFromObject(fbx);
@@ -20,7 +25,7 @@ export const ModelBuilding = ({ building }: Props) => {
 
   // return <primitive object={fbx} position={fbxPosition} />;
   return (
-    <mesh position={new Vector3(position.x, 0, position.z)}>
+    <mesh position={new Vector3(position.x, 0, position.z)} onClick={handleClick}>
       <boxGeometry args={[1, 1, 1]} />
       <meshBasicMaterial color="red" wireframe />
       <primitive object={fbx} position={fbxPosition} />

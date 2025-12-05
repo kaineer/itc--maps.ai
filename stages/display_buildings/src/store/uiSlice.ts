@@ -16,14 +16,21 @@ export type KnownMode =
   | "viewControls"
   | "buildingSearch";
 
+export type BuildingFormMode =
+  | "none"
+  | "search"
+  | "select";
+
 interface UIState {
   currentMode: UIMode;
+  buildingFormMode: BuildingFormMode;
   known: Record<KnownMode, boolean>;
 }
 
 // Начальное состояние по умолчанию
 const defaultInitialState: UIState = {
   currentMode: defaultUIMode,
+  buildingFormMode: "none",
   known: {
     topCameraControls: false,
     perspectiveCameraControls: false,
@@ -69,11 +76,18 @@ export const uiSlice = createSlice({
       // Сохраняем сброшенное состояние
       saveUIState(state);
     },
+    setBuildingFormMode: (state, action: PayloadAction<BuildingFormMode>) => {
+      state.buildingFormMode = action.payload;
+    },
+    cleanupBuildingFormMode: (state) => {
+      state.buildingFormMode = "none";
+    },
   },
   selectors: {
     getUIMode: (state) => state.currentMode,
     getKnown: (state) => state.known,
     isKnown: (state, mode: KnownMode) => state.known[mode],
+    getBuildingFormMode: (state) => state.buildingFormMode,
   },
 });
 

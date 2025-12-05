@@ -20,6 +20,7 @@ export interface BuildingNode {
 }
 
 export interface Building {
+  id: string;
   address: string | null;
   nodes: BuildingNode[];
   height: number;

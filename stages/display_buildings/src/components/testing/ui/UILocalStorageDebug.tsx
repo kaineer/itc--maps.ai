@@ -42,7 +42,7 @@ export const UILocalStorageDebug = ({
 
     if (available) {
       try {
-        const data = localStorage.getItem(UI_STORAGE_KEY);
+        const data = loadUIState("null");
         setLocalStorageData(data ? JSON.parse(data) : null);
       } catch (error) {
         console.error("Ошибка загрузки данных из localStorage:", error);
@@ -176,7 +176,9 @@ export const UILocalStorageDebug = ({
           paddingBottom: "8px",
         }}
       >
-        <h3 style={{ margin: 0, color: "#4fc3f7" }}>🔧 UI LocalStorage Debug</h3>
+        <h3 style={{ margin: 0, color: "#4fc3f7" }}>
+          🔧 UI LocalStorage Debug
+        </h3>
         <span
           style={{
             padding: "2px 8px",
@@ -195,7 +197,8 @@ export const UILocalStorageDebug = ({
           <strong>Ключ:</strong> {UI_STORAGE_KEY}
         </div>
         <div style={{ marginBottom: "8px" }}>
-          <strong>Текущий режим UI:</strong> {uiState?.currentMode || "Нет данных"}
+          <strong>Текущий режим UI:</strong>{" "}
+          {uiState?.currentMode || "Нет данных"}
         </div>
         <div style={{ marginBottom: "8px" }}>
           <strong>Известные режимы:</strong> {formatKnownModes(uiState?.known)}
