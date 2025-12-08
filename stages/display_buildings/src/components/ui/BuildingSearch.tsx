@@ -37,10 +37,6 @@ export const BuildingSearch = ({ enabled = true, className = "", onToggled }: Pr
   const { getFilteredBuildings } = buildingsSlice.selectors;
   const buildings = useSelector(getFilteredBuildings);
 
-  if (!enabled) {
-    return null;
-  }
-
   const handleClose = () => {
     setIsExpanded(false);
     // Remove focus from input when closing the form
@@ -282,22 +278,10 @@ export const BuildingSearch = ({ enabled = true, className = "", onToggled }: Pr
     }
   };
 
-  // If collapsed, show magnifying glass button
-  // if (!isExpanded) {
-  //   return (
-  //     <div
-  //       className={`${classes.container} ${classes.collapsed} ${className}`}
-  //       onClick={handleExpand}
-  //       title="Нажмите для поиска зданий"
-  //     >
-  //       <button className={classes.collapsedButton}>🔍</button>
-  //     </div>
-  //   );
-  // }
-
   // Show expanded version
   return (
     <CollapsibleForm
+      enabled={enabled}
       className={clsx(classes.container, className)}
       collapsedClassName={classes.collapsed}
       expandedClassName={classes.expanded}

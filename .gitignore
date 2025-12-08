@@ -3,6 +3,8 @@ stages/import/map_data.xml
 stages/import/buildings.json
 stages/import/itc.json
 
+public/
+
 # Build outputs
 stages/*/dist/
 stages/*/build/

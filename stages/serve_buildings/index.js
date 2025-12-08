@@ -1,7 +1,9 @@
 const fastify = require("fastify")({ logger: true });
 const cors = require("@fastify/cors");
+const multipart = require("@fastify/multipart");
 const fs = require("fs").promises;
 const path = require("path");
+const { pipeline } = require("stream/promises");
 
 // Load building data
 let buildingsData = [];
@@ -14,6 +16,7 @@ const modelsData = [
   //   buildingIds: ["59831701", "59831708", "59831705"],
   // },
 ];
+
 
 const modelsCache = modelsData.reduce((acc, item) => {
   const { modelId, buildingIds } = item;
@@ -213,6 +216,16 @@ fastify.get(
   },
 );
 
+fastify.post('/upload', async (request, reply) => {
+  const data = await request.file();
+  const fileStream = data.file;
+
+  const savePath = path.join(__dirname, "public", data.filename);
+  await pipeline(fileStream, createWriteStream(savePath));
+
+  return { message: "ok", path: savePath };
+});
+
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {
   return {
@@ -234,6 +247,14 @@ const start = async () => {
       methods: ["GET", "PUT", "POST", "DELETE"],
       allowedHeaders: ["Content-Type", "Authorization"],
     });
+
+    await fastify.register(multipart, {
+      limits: {
+        fileSize: 10 * 1024 * 1024, // 10mb
+        files: 5,
+      }
+    });
+
 
     // Serve static files from public directory
     await fastify.register(require("@fastify/static"), {

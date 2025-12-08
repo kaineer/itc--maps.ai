@@ -1,21 +1,30 @@
 import classes from './BuildingSelection.module.css'
 import clsx from 'clsx';
 import { useState, MouseEvent } from 'react';
+import { EnabledProps } from '../shared/types';
+import { CollapsibleForm } from './CollapsibleForm';
+import { FileUploadButton } from '../shared/ui/FileUploadButton';
 
-export const BuildingSelection = () => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+interface Props extends EnabledProps {
+  className?: string;
+  onToggled: (value: boolean) => void;
+}
 
-  const handleExpand = (event: MouseEvent<HTMLDivElement>) => {
-    event.preventDefault();
-    setIsExpanded(true);
-  }
-
+export const BuildingSelection = ({ enabled, onToggled }: Props) => {
   return (
-    <div
-      className={clsx(classes.container, {[classes.collapsed]: !isExpanded})}
-      onClick={handleExpand}
-    >
-      <button className={classes.collapsedButton}>🪧</button>
-    </div>
+    <CollapsibleForm
+      enabled={enabled}
+      className={classes.container}
+      collapsedClassName={classes.collapse}
+      expandedClassName={classes.expanded}
+      collapsed={{buttonText: "🪧", title: "Нажмите для просмотра списка"}}
+      closeTitle="Скрыть список"
+      onToggled={onToggled}
+      >
+      <div className={classes.selectHeader}>
+        <h3 className={classes.title}>Настройка модели</h3>
+      </div>
+      <FileUploadButton />
+    </CollapsibleForm>
   );
 }

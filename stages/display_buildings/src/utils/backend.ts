@@ -1,5 +1,12 @@
 import { backendUrl, normalizeEndpoint, serveFromPublic } from "./network";
 
+const urlForBackend = (endpoint: string): string => {
+  return (
+    backendUrl +
+      normalizeEndpoint(endpoint)
+  );
+}
+
 /**
  * Utility function for making backend API calls
  * Automatically prepends the backend base URL to the endpoint
@@ -13,7 +20,7 @@ export async function fetchBackend(
   options: RequestInit = {},
 ): Promise<Response> {
   const suffix = serveFromPublic ? ".json" : "";
-  const url = `${backendUrl}${normalizeEndpoint(endpoint)}${suffix}`;
+  const url = urlForBackend(endpoint) + suffix;
 
   return fetch(url, {
     ...options,
@@ -104,4 +111,20 @@ export async function deleteBackend<T = any>(
   }
 
   return response.json();
+}
+
+export async function uploadToBackend(
+  endpoint: string,
+  formData: FormData
+) {
+  const url = urlForBackend(endpoint);
+  return await fetch(url, {
+    method: "POST",
+    body: formData,
+    // headers: {}
+      //   // Заголовки при необходимости
+      //   headers: {
+      //     'Authorization': 'Bearer your-token-here', // если нужно
+      //   },
+  });
 }

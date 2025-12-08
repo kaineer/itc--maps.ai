@@ -18,6 +18,8 @@ export const BuildingFormsGroup = () => {
   const handleFormToggle = (mode: BuildingFormMode) => (expanded: boolean) => {
     if (expanded) {
       dispatch(setBuildingFormMode(mode));
+    } else {
+      dispatch(setBuildingFormMode("none"));
     }
   }
 
@@ -27,7 +29,10 @@ export const BuildingFormsGroup = () => {
         enabled={isModeEnabled("search")}
         onToggled={handleFormToggle("search")}
       />
-      <BuildingSelection />
+      <BuildingSelection
+        enabled={isModeEnabled("select")}
+        onToggled={handleFormToggle("select")}
+      />
     </>
   );
 }
