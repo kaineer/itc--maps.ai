@@ -1,6 +1,7 @@
 import { Vector3, Box3 } from "three";
 import { Building } from "../../../types/types";
 import { useFBX } from "@react-three/drei";
+import { minioUrl, normalizeEndpoint } from "../../../utils/network";
 
 interface Props {
   building: Building;
@@ -9,7 +10,7 @@ interface Props {
 
 export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
   const { modelUrl, position = { x: 0, z: 0 } } = building;
-  const fbx = useFBX("http://localhost:5000" + modelUrl!);
+  const fbx = useFBX(minioUrl + normalizeEndpoint(modelUrl!));
   const fbxPosition = [position.x, 0, position.z];
 
   const handleClick = () => {
