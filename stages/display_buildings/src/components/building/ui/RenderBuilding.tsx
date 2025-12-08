@@ -17,9 +17,9 @@ export const RenderBuilding = ({ building, onBuildingClick }: Props) => {
     }
   };
   if (typeof modelUrl === "string") {
-    if (modelUrl.startsWith("/")) {
-      return <DebugModelBuilding building={building} />;
-    }
+    // if (modelUrl.startsWith("/")) {
+    //   return <DebugModelBuilding building={building} />;
+    // }
     return <ModelBuilding building={building} onClick={handleBuildingClick} />;
   }
   return (

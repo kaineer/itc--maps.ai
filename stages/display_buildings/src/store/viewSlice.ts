@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getBackend } from "../utils/backend";
+import { getPublic } from "../utils/public";
+
 import {
   CAMERA_HEIGHTS,
   DISTANCES,
@@ -13,6 +14,8 @@ export interface ViewCameraState {
   target: [number, number, number];
   fov: number;
 }
+
+const getBackend = getPublic;
 
 // View mode state
 export interface ViewState {

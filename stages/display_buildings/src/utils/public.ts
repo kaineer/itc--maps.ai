@@ -1,4 +1,4 @@
-const publicBaseUrl = "http://localhost";
+const publicBaseUrl = "http://10.1.0.71";
 
 export async function fetchPublic(
   endpoint: string,
@@ -10,7 +10,7 @@ export async function fetchPublic(
     : `/${endpoint}`;
   const url = `${publicBaseUrl}${normalizedEndpoint}`;
 
-  return fetch(url, {
+  return fetch(url + ".json", {
     ...options,
     headers: {
       "Content-Type": "application/json",

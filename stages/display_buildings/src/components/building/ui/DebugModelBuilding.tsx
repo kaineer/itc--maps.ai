@@ -12,7 +12,7 @@ export function DebugModelBuilding({ building }: Props) {
   const debug = true;
   const targetSize = 20;
 
-  const model = useFBX("http://localhost:5000" + modelUrl!);
+  const model = useFBX("http://10.1.0.71" + modelUrl!);
 
   const [scale, setScale] = useState(1);
   const [yOffset, setYOffset] = useState(0);

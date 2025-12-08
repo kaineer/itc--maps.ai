@@ -25,6 +25,8 @@ export interface Building {
   nodes: BuildingNode[];
   height: number;
   position?: BuildingNode;
+  rotation?: number;
+  scale?: number;
   modelUrl?: string;
 }
 
