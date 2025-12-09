@@ -1,8 +1,8 @@
-# Project Summary - Maps.ai UI Localization & Component Improvements
+# Project Summary - Maps.ai UI Localization & Store Reorganization
 
-## Session Status: Phase 6 - Complete UI Localization & Component Refinement - COMPLETED
+## Session Status: Phase 7 - Redux Store Structure Reorganization - COMPLETED
 
-## Current State (Branch: master) - Enhanced User Interface with Russian Localization
+## Current State (Branch: master) - Enhanced Architecture with Organized Store Structure
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
 ### ✅ Phase 2: Camera Controller Architecture - COMPLETED
@@ -10,52 +10,53 @@
 ### ✅ Phase 4: Data Loading Pipeline - COMPLETED
 ### ✅ Phase 5: Building Search & Navigation - COMPLETED
 ### ✅ Phase 6: UI Localization & Component Refinement - COMPLETED
+### ✅ Phase 7: Redux Store Structure Reorganization - COMPLETED
 
 ## Recent Accomplishments (Latest Session)
 
-### 1. **BuildingSearch Component Localization & Enhancement**
-- **Russian Translation**: Complete interface translation to Russian
-- **Collapsible Interface**: Added collapse/expand functionality with magnifying glass icon (🔍)
-- **Auto-Focus**: Input field automatically receives focus when form expands
-- **Focus Management**: Input loses focus after search actions to prevent keyboard navigation interference
-- **Simplified Logic**: Removed Redux integration for collapse state, using local React state only
-- **Default State**: Always starts collapsed, expands on click, collapses with × button
-- **No State Persistence**: Simple toggle without localStorage saving
+### 1. **Redux Store Reorganization**
+- **Структуризация каталогов**: Перемещены все слайсы из `src/store/` в `src/store/slices/`
+- **Обновленные импорты**: Исправлены пути импортов во всем проекте
+- **Экспорт типов**: Исправлен экспорт типа `ModelPosition` в `alignmentSlice.ts`
+- **Чистая архитектура**: Создана более организованная структура для лучшей поддержки кода
 
-### 2. **Language Guidelines Established**
-- **Commit Messages**: English only (technical documentation standard)
-- **User Communication**: Russian for natural interaction
-- **Code Comments**: English for developer reference
-- **UI Text**: Russian for user interface localization
-- **Documentation**: Updated in `AI_ASSISTANT_NOTES.md`
+### 2. **Перемещенные файлы слайсов**
+```
+src/store/slices/
+├── alignmentSlice.ts    # Управление выравниванием и камерами
+├── buildingsSlice.ts    # Управление зданиями и данными
+├── modelUploadSlice.ts  # Загрузка 3D моделей
+├── uiSlice.ts          # UI состояние и локальное хранилище
+└── viewSlice.ts        # Управление видом камеры
+```
 
-### 3. **CollapsibleControlInfo Scroll Functionality**
-- **Height Limitation**: Added `max-height: 80vh` for expanded container
-- **Scroll Implementation**: Content area (`div.content`) now scrollable with `overflow-y: auto`
-- **Visual Improvements**: Custom scrollbar styling for Webkit and Firefox
-- **Flexbox Layout**: Proper space distribution with footer fixed at bottom
-- **User Experience**: Long content now scrollable instead of overflowing
+### 3. **Обновленные компоненты**
+- **Все импорты обновлены** для использования новых путей `./slices/`
+- **Файл `src/store/index.ts`** обновлен с правильными импортами
+- **Компоненты камер** (ViewCameraController, AlignmentCameraGroup и др.)
+- **UI компоненты** (AlignmentUI, ViewUI, BuildingSearch и др.)
+- **Утилиты** (positionMath.ts, keyToDirection.ts)
 
-### 4. **ViewControlsInfo Russian Localization**
-- **Complete Translation**: All control descriptions translated to Russian
-- **Formatting Improvements**:
-  - Mouse buttons: 'ЛКМ' (Left Click Mouse) and 'ПКМ' (Right Click Mouse)
-  - Shift key: 'LeftShift' instead of 'Shift + Left'
-  - WASD consolidated: Single line 'W, A, S, D' for all movement
-  - Mouse wheel: 'Колесико мыши' for clarity
-- **Section Categories**: Translated with appropriate emojis
-- **Technical Terms**: Preserved (WASD, OrbitControls) with Russian explanations
-
-### 5. **FeatureInfoSection Component Creation**
-- **New Component**: Created for feature descriptions without keyboard styling
-- **Problem Solved**: Fixed inappropriate `kbd` element styling for feature titles
-- **Visual Hierarchy**: Feature titles as bold text, descriptions as normal text
-- **Usage**: Replaced `ControlInfoSection` for:
-  - '📍 Свойства камеры' section
-  - '🔍 Функции навигации' section
-- **Code Clarity**: Clear separation between keyboard controls and feature descriptions
+### 4. **Технические улучшения**
+- **Экспорт типа ModelPosition**: Добавлен `export` к типу `ModelPosition` в alignmentSlice.ts
+- **Согласованность импортов**: Все импорты используют относительные пути `./slices/`
+- **Удалены старые файлы**: Оригинальные файлы слайсов удалены из корня `src/store/`
 
 ## 🏗️ Current Architecture Overview
+
+### Store Structure (Reorganized)
+```
+src/store/
+├── index.ts                    # Основная конфигурация store
+├── slices/                     # НОВЫЙ: Все слайсы Redux
+│   ├── alignmentSlice.ts      # Состояние выравнивания
+│   ├── buildingsSlice.ts      # Данные зданий
+│   ├── modelUploadSlice.ts    # Загрузка моделей
+│   ├── uiSlice.ts            # UI состояние
+│   └── viewSlice.ts          # Состояние камеры вида
+└── thunks/                    # Асинхронные операции
+    └── modelThunks.ts        # Загрузка 3D моделей
+```
 
 ### Component Structure (Enhanced)
 ```
@@ -71,7 +72,7 @@ components/
 │   └── ui/controlInfo/
 │       ├── CollapsibleControlInfo.tsx    # With scroll functionality
 │       ├── ControlInfoSection.tsx        # Keyboard controls
-│       ├── FeatureInfoSection.tsx        # NEW: Feature descriptions
+│       ├── FeatureInfoSection.tsx        # Feature descriptions
 │       ├── KeysDisplay.tsx
 │       └── DetailedMetaInfo.tsx
 └── ui/
@@ -88,26 +89,24 @@ components/
 
 ## 🎯 Key Features Implemented
 
+### Store Organization (New)
+- **Логическая группировка**: Все слайсы в одном каталоге `slices/`
+- **Масштабируемость**: Легко добавлять новые слайсы
+- **Читаемость**: Понятная структура для новых разработчиков
+- **Импортная чистота**: Все импорты используют одинаковый паттерн
+
 ### BuildingSearch (Enhanced)
 - **Russian Interface**: Full localization for Russian-speaking users
 - **Collapsible Design**: 🔍 icon for collapsed state, × button to close
 - **Auto-Focus**: Input field automatically focused when form expands
-- **Smart Focus Management**: Input loses focus after search, Enter key, clear, camera move, and form close
+- **Smart Focus Management**: Input loses focus after search actions
 - **Search Functionality**: Address-based building search with flexible matching
-- **Camera Navigation**: Automatically moves camera 10m north of found buildings
-- **Simple State**: Always starts collapsed, no persistence between sessions
 
 ### CollapsibleControlInfo (Enhanced)
 - **Scroll Support**: Automatic vertical scrolling for long content
 - **Height Limitation**: Maximum 80% of viewport height
 - **Custom Scrollbar**: Styled to match dark theme
 - **Flexbox Layout**: Proper content distribution with fixed footer
-
-### ViewControlsInfo (Localized)
-- **Complete Russian Translation**: All user-facing text localized
-- **Improved Formatting**: ЛКМ/ПКМ abbreviations, consolidated WASD
-- **FeatureInfoSection**: Better display for feature descriptions
-- **Clear Categories**: Visual separation between controls and features
 
 ## 🔄 Development Workflow Established
 
@@ -117,13 +116,19 @@ components/
 - **AI Assistant Commands**: `git-commit` and `git-push` as workflow instructions
 - **Named Exports**: Consistent export patterns across codebase
 
-### Component Testing Methodology
-- **Dual-Component Approach**: Test versions with `.test-version` suffix
-- **Isolated Testing**: Separate test data from production code
-- **TODO Comments**: Clear markers for switching between versions
-- **Suffix Patterns**: `.alignment-test`, `.api-test`, `.state-test`, etc.
+### Store Management Best Practices
+- **Структурированные слайсы**: Все в `slices/` каталоге
+- **Чистые импорты**: Относительные пути `./slices/`
+- **Экспорт типов**: Все публичные типы экспортируются
+- **Селекторы**: Использование `slice.selectors` для доступа к состоянию
 
 ## 📊 Technical Achievements
+
+### Store Architecture Improvements
+- **Организованная структура**: Четкое разделение между слайсами и thunks
+- **Масштабируемость**: Легко добавлять новые модули состояния
+- **Поддержка TypeScript**: Полная типизация всех слайсов
+- **Импортная консистентность**: Единый стиль импортов во всем проекте
 
 ### CSS Improvements
 - **Scroll Implementation**: Proper height calculations with flexbox
@@ -137,12 +142,6 @@ components/
 - **Redux Access**: Proper slice selector/action usage
 - **Type Safety**: Comprehensive TypeScript coverage
 
-### Internationalization Readiness
-- **Text Separation**: UI text separated from code logic
-- **Consistent Terminology**: Russian translations with technical accuracy
-- **Developer Comments**: English comments preserved for maintainability
-- **Future Expansion**: Ready for additional language support
-
 ## 🚀 Ready for Production
 
 ### Complete Feature Set
@@ -153,7 +152,7 @@ components/
 - ✅ **Camera Management**: Stateful camera positioning
 - ✅ **Responsive UI**: Modern, accessible interface with Russian support
 - ✅ **Component Refinement**: Improved visual hierarchy and usability
-- ✅ **Scroll Support**: Proper handling of long content in info panels
+- ✅ **Store Organization**: Clean, scalable Redux store structure
 
 ### User Experience Improvements
 - **Russian Interface**: Full localization for target audience
@@ -162,7 +161,6 @@ components/
 - **Keyboard Navigation**: Prevents WASD keys from appearing in search input after actions
 - **Clear Instructions**: Well-organized control information
 - **Intuitive Navigation**: Consistent patterns across all components
-- **Accessible Design**: Proper scrolling and visual hierarchy
 
 ## 📈 Next Development Steps
 
@@ -172,18 +170,17 @@ components/
 3. **Performance Optimization**: Bundle size analysis and optimization
 4. **Accessibility Features**: ARIA labels and keyboard navigation improvements
 
+### Store Enhancement Opportunities
+1. **Middleware Expansion**: Добавить дополнительные middleware для логирования
+2. **DevTools Integration**: Улучшить интеграцию с Redux DevTools
+3. **Persisted State**: Расширить механизм сохранения состояния
+4. **Selectors Optimization**: Оптимизировать селекторы для производительности
+
 ### Future Enhancements
 1. **Multi-language Support**: System for switching between languages
 2. **Theme Support**: Light/dark mode with localStorage persistence
 3. **Advanced Search Features**: Filtering, favorites, search history
 4. **User Preferences**: Customizable UI settings and layouts
-5. **Export Functionality**: Save alignment results and camera positions
-
-### Technical Debt to Address
-1. **TypeScript Strictness**: Enable stricter TypeScript configuration
-2. **Test Coverage**: Add unit tests for new components
-3. **Error Boundaries**: Implement React error boundaries for production
-4. **Performance Monitoring**: Add performance tracking and optimization
 
 ## 📝 Documentation Status
 
@@ -192,15 +189,15 @@ components/
 - **`docs/guides/author_preferences.md`**: Development preferences and standards
 - **`docs/tmp/summary.md`**: Current project status (this file)
 
-### Documentation Needed
-1. **Russian User Guide**: Documentation for Russian-speaking users
-2. **Keyboard Shortcuts Reference**: Visual cheat sheet for all controls
-3. **Component Architecture Guide**: Detailed documentation of component relationships
-4. **LocalStorage Management**: Guide for UI state persistence
+### Store Documentation Added
+1. **Структура store**: Документирована новая организация каталогов
+2. **Импортные пути**: Обновлены все примеры импортов
+3. **Типы TypeScript**: Документированы экспортируемые типы
 
 ---
 
-*Last Updated: Complete UI Localization & Component Refinement Phase*
+*Last Updated: Redux Store Structure Reorganization Phase*
 *Branch: master*
-*Status: Production-ready with enhanced Russian interface*
-*Features: View mode, Alignment mode, Building search, Camera management, Russian localization, Component improvements*
+*Status: Production-ready with organized store architecture*
+*Features: View mode, Alignment mode, Building search, Camera management, Russian localization, Organized Redux store*
+*Commit: 71e0151 - Реорганизация структуры Redux store: перемещение слайсов в каталог slices*
