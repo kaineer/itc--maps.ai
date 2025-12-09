@@ -2,7 +2,7 @@ import { Provider, useSelector } from "react-redux";
 import { setupStore } from "./store";
 import { ViewUI } from "./components/ui/ViewUI";
 import { AlignmentUI } from "./components/ui/AlignmentUI";
-import { uiSlice } from "./store/uiSlice";
+import { uiSlice } from "./store/slices/uiSlice";
 import { Match } from "./components/shared/Match";
 
 const store = setupStore();

@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Building, BuildingNode } from "../types/types";
-import { putBackend, getBackend } from "../utils/backend";
-import { initializeViewCamera } from "./viewSlice";
+import { Building, BuildingNode } from "../../types/types";
+import { putBackend, getBackend } from "../../utils/backend";
+import { initializeViewCamera, viewSlice } from "./viewSlice";
 
 interface BuildingsResponse {
   buildings: Building[];

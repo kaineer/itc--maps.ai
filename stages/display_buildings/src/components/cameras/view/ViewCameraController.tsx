@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
-import { viewSlice } from "../../../store/viewSlice";
+import { viewSlice } from "../../../store/slices/viewSlice";
 import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "../../../utils/constants";
 
 export const ViewCameraController = () => {

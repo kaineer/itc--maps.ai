@@ -5,8 +5,8 @@ import { OrbitControls } from "@react-three/drei";
 import {
   buildingsSlice,
   fetchInitialBuildings,
-} from "../../store/buildingsSlice";
-import { viewSlice } from "../../store/viewSlice";
+} from "../../store/slices/buildingsSlice";
+import { viewSlice } from "../../store/slices/viewSlice";
 import { ViewControlsInfo } from "../cameras/view/ViewControlsInfo";
 import { BuildingSearch } from "./BuildingSearch";
 import { Ground } from "../static/Ground";
@@ -15,7 +15,7 @@ import { ViewStage } from "../stage/ui/ViewStage";
 import { ViewCameraController } from "../cameras/view/ViewCameraController";
 import { type AppDispatch } from "../../store";
 import { type Building } from "../../types/types";
-import { alignmentSlice } from "../../store/alignmentSlice";
+import { alignmentSlice } from "../../store/slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 
 interface Props {
@@ -28,9 +28,9 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
   const { getCameraState } = viewSlice.selectors;
   const {
-  //  selectModelForAlignment,
+    //  selectModelForAlignment,
     addPolygonForAlignment,
-  //  startAlignmentProcess,
+    //  startAlignmentProcess,
   } = alignmentSlice.actions;
 
   const buildings = useSelector(getBuildings);
@@ -41,7 +41,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const handleBuildingClick = (building: Building) => {
     dispatch(addPolygonForAlignment(building));
     onBuildingSelect && onBuildingSelect(building);
-  }
+  };
 
   useEffect(() => {
     // Fetch initial position and buildings when component mounts
@@ -85,7 +85,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Ground />
 
         {/* Buildings */}
-        <ViewStage buildings={buildings} onBuildingClick={handleBuildingClick} />
+        <ViewStage
+          buildings={buildings}
+          onBuildingClick={handleBuildingClick}
+        />
 
         {/* Camera controls for view mode */}
         <OrbitControls

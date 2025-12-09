@@ -1,7 +1,7 @@
 import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { buildingsSlice } from "../../store/buildingsSlice";
-import { viewSlice } from "../../store/viewSlice";
+import { buildingsSlice } from "../../store/slices/buildingsSlice";
+import { viewSlice } from "../../store/slices/viewSlice";
 import { Building } from "../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "../../utils/constants";
 import classes from "./BuildingSearch.module.css";
@@ -25,7 +25,11 @@ interface Props {
  * - Integrates with Redux for building data and camera control
  * - Collapsible interface (always starts collapsed)
  */
-export const BuildingSearch = ({ enabled = true, className = "", onToggled }: Props) => {
+export const BuildingSearch = ({
+  enabled = true,
+  className = "",
+  onToggled,
+}: Props) => {
   const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -285,7 +289,7 @@ export const BuildingSearch = ({ enabled = true, className = "", onToggled }: Pr
       className={clsx(classes.container, className)}
       collapsedClassName={classes.collapsed}
       expandedClassName={classes.expanded}
-      collapsed={{buttonText: "🔍", title: "Нажмите для поиска зданий"}}
+      collapsed={{ buttonText: "🔍", title: "Нажмите для поиска зданий" }}
       closeTitle="Скрыть поиск"
       onToggled={onToggled}
     >
@@ -345,9 +349,7 @@ export const BuildingSearch = ({ enabled = true, className = "", onToggled }: Pr
           <div className={classes.buildingInfo}>
             <div className={classes.infoRow}>
               <span className={classes.infoLabel}>Адрес:</span>
-              <span className={classes.infoValue}>
-                {foundBuilding.address}
-              </span>
+              <span className={classes.infoValue}>{foundBuilding.address}</span>
             </div>
 
             <div className={classes.infoRow}>

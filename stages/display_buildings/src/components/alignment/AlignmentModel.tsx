@@ -3,7 +3,7 @@ import { useRef, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, MeshBasicMaterial, Box3 } from "three";
 import { EnabledProps } from "../shared/types";
-import { alignmentSlice } from "../../store/alignmentSlice";
+import { alignmentSlice } from "../../store/slices/alignmentSlice";
 
 interface Props extends EnabledProps {}
 

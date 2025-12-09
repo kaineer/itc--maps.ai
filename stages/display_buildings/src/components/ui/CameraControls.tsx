@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { alignmentSlice } from "../../store/alignmentSlice";
+import { alignmentSlice } from "../../store/slices/alignmentSlice";
 
 const {
   selectors: { getCurrentCamera, getCurrentCameraView },

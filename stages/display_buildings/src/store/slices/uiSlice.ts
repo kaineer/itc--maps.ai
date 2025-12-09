@@ -3,7 +3,7 @@ import {
   loadUIState,
   saveUIState,
   UI_STORAGE_KEY,
-} from "../utils/localStorage";
+} from "../../utils/localStorage";
 
 const defaultUIMode = "view";
 
@@ -16,10 +16,7 @@ export type KnownMode =
   | "viewControls"
   | "buildingSearch";
 
-export type BuildingFormMode =
-  | "none"
-  | "search"
-  | "select";
+export type BuildingFormMode = "none" | "search" | "select";
 
 interface UIState {
   currentMode: UIMode;

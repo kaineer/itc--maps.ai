@@ -6,8 +6,8 @@ import {
   calculateInitialModelPosition,
   calculateTopCameraPosition,
   calculatePerspectiveCameraPosition,
-} from "../utils/modelTransform";
-import { Building, Scale } from "../types/types";
+} from "../../utils/modelTransform";
+import { Building, Scale } from "../../types/types";
 import {
   addPosition,
   subtractPosition,
@@ -15,9 +15,9 @@ import {
   scaleToLength,
   directionTo,
   positionsEqual,
-} from "../components/shared/positionMath";
+} from "../../components/shared/positionMath";
 import { Vector3 } from "three";
-import { CAMERA_HEIGHTS } from "../utils/constants";
+import { CAMERA_HEIGHTS } from "../../utils/constants";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -29,7 +29,7 @@ export const positionStepMin = 0.5;
 export const positionStepMax = 20;
 export const positionStepFactor = 1.5;
 
-type ModelPosition = [number, number, number];
+export type ModelPosition = [number, number, number];
 
 export interface CameraState {
   position: ModelPosition;
@@ -199,7 +199,20 @@ export const alignmentSlice = createSlice({
     },
 
     addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
-      state.selectedPolygons.push(action.payload);
+      const building = action.payload;
+      const alreadyAdded = state.selectedPolygons.some(
+        (p) => p.id === building.id,
+      );
+      if (!alreadyAdded) {
+        state.selectedPolygons.push(action.payload);
+      }
+    },
+
+    removePolygonFromAlignment: (state, action: PayloadAction<Building>) => {
+      const building = action.payload;
+      state.selectedPolygons = state.selectedPolygons.filter(
+        (p) => p.id !== building.id,
+      );
     },
 
     resetAlignmentPolygons: (state) => {

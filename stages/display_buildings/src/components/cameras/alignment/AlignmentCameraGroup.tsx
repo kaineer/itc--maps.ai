@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/alignmentSlice";
+import { alignmentSlice } from "../../../store/slices/alignmentSlice";
 import { TopCameraController } from "./TopCameraController";
 import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { AlignmentSliceLogger } from "../../testing/ui/AlignmentSliceLogger";

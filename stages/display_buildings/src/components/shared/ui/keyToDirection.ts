@@ -1,4 +1,4 @@
-import { WorldDirection } from "../../../store/alignmentSlice";
+import { WorldDirection } from "../../../store/slices/alignmentSlice";
 
 /**
  * Key to direction mapping using event.code for layout independence

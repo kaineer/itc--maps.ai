@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
-import { buildingsSlice } from "../../store/buildingsSlice";
+import { buildingsSlice } from "../../store/slices/buildingsSlice";
 import { alignmentSlice } from "../../store/alignmentSlice";
 import { Text } from "@react-three/drei";
 import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";

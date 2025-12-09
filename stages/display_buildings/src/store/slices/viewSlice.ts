@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getBackend } from "../utils/backend";
+import { getBackend } from "../../utils/backend";
 import {
   CAMERA_HEIGHTS,
   DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
-} from "../utils/constants";
+} from "../../utils/constants";
+import { BuildingNode } from "../../types/types";
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -24,6 +25,8 @@ export interface ViewState {
   movementSpeed: number;
   // Fixed camera height (eye level)
   fixedHeight: number;
+  //
+  groundCenter: BuildingNode;
 }
 
 // Default camera position for View mode
@@ -42,6 +45,7 @@ const initialState: ViewState = {
   cameraEnabled: true,
   movementSpeed: 5.0,
   fixedHeight: CAMERA_HEIGHTS.EYE_LEVEL, // Eye level in meters
+  groundCenter: { x: 0, z: 0 },
 };
 
 export const viewSlice = createSlice({
@@ -105,6 +109,11 @@ export const viewSlice = createSlice({
       state.movementSpeed = initialState.movementSpeed;
       state.fixedHeight = initialState.fixedHeight;
     },
+
+    // Set ground center
+    setGroundCenter: (state, action: PayloadAction<BuildingNode>) => {
+      state.groundCenter = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -144,31 +153,11 @@ export const viewSlice = createSlice({
 
     // Get entire view state
     getViewState: (state) => state,
+
+    // Get ground center
+    getGroundCenter: (state) => state.groundCenter,
   },
 });
-
-export const {
-  updateCameraPosition,
-  updateCameraTarget,
-  updateCameraFov,
-  updateCameraState,
-  resetCamera,
-  setCameraEnabled,
-  setMovementSpeed,
-  setFixedHeight,
-  resetViewState,
-} = viewSlice.actions;
-
-export const {
-  getCameraState,
-  getCameraPosition,
-  getCameraTarget,
-  getCameraFov,
-  getCameraEnabled,
-  getMovementSpeed,
-  getFixedHeight,
-  getViewState,
-} = viewSlice.selectors;
 
 // Async thunk to fetch initial position and update camera
 export const initializeViewCamera = createAsyncThunk<{
@@ -189,10 +178,12 @@ export const initializeViewCamera = createAsyncThunk<{
     position.z - DISTANCES.FROM_BUILDING,
   ]; // 10 meters north
 
+  const { setGroundCenter, updateCameraTarget, updateCameraPosition } =
+    viewSlice.actions;
+
+  dispatch(setGroundCenter(position));
   dispatch(updateCameraTarget(cameraTarget));
   dispatch(updateCameraPosition(cameraPosition));
 
   return { position, cameraTarget, cameraPosition };
 });
-
-export default viewSlice.reducer;
