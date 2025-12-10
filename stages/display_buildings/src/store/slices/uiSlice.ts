@@ -47,7 +47,7 @@ export const uiSlice = createSlice({
     selectViewMode: (state) => {
       state.currentMode = "view";
     },
-    selectAligmentMode: (state) => {
+    selectAlignmentMode: (state) => {
       state.currentMode = "alignment";
     },
     selectModelSetupMode: (state) => {
@@ -103,5 +103,3 @@ export const uiLocalStorageMiddleware =
 
     return result;
   };
-
-export default uiSlice.reducer;

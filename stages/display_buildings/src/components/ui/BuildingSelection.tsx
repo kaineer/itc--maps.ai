@@ -5,6 +5,7 @@ import { CollapsibleForm } from "./CollapsibleForm";
 import { FileUploadButton } from "../shared/ui/FileUploadButton";
 import { StartAlignmentButton } from "../shared/ui/StartAlignmentButton";
 import { alignmentSlice } from "../../store/slices/alignmentSlice";
+import { uiSlice } from "../../store/slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Building } from "../../types/types";
 import {
@@ -94,6 +95,7 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
   const selectedPolygons = useSelector(getSelectedPolygons);
   const dispatch = useDispatch<AppDispatch>();
   const { getLoading } = modelUploadSlice.selectors;
+  const { selectAlignmentMode } = uiSlice.actions;
 
   const loadedModel = useSelector(getModelUUID);
   const fileIsLoading = useSelector(getLoading);
@@ -103,6 +105,10 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
 
   const handleUploadSuccess = ({ fileId }: { fileId: string }) => {
     dispatch(selectModelForAlignment(fileId));
+  };
+
+  const handleStartClick = () => {
+    dispatch(selectAlignmentMode());
   };
 
   return (
@@ -128,7 +134,7 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
           onSuccess={handleUploadSuccess}
         />
       )}
-      {canStartAlignment && <StartAlignmentButton />}
+      {canStartAlignment && <StartAlignmentButton onClick={handleStartClick} />}
     </CollapsibleForm>
   );
 };
