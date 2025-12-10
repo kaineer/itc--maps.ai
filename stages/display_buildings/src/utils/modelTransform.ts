@@ -19,6 +19,8 @@ export interface ModelData {
   };
 }
 
+type SerializableModelData = Omit<ModelData, "modelObject" | "metadata">;
+
 // Use Three.js Box3 for bounding box calculations
 // Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize()
 

@@ -1,0 +1,29 @@
+import classes from "./StartAlignmentButton.module.css";
+
+interface Props {
+  className?: string;
+  onClick?: () => void;
+}
+
+export const StartAlignmentButton = ({
+  className = "",
+  onClick = () => null,
+}: Props) => {
+  const handleButtonClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    onClick();
+  };
+
+  return (
+    <div className={`${classes.container} ${className}`}>
+      {/* Основная кнопка */}
+      <button
+        type="button"
+        onClick={handleButtonClick}
+        className={classes.startButton}
+      >
+        Начать выравнивание
+      </button>
+    </div>
+  );
+};

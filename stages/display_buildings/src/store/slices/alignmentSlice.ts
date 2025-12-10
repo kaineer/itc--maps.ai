@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-  ModelData,
+  SerializableModelData,
   calculatePolygonBoundingBox,
   calculateModelBoundingBox,
   calculateInitialModelPosition,
@@ -70,7 +70,7 @@ export interface AlignmentState {
 
   // Alignment process state
   selectedPolygons: Building[];
-  currentModel: ModelData | null;
+  modelUUID: SerializableModelData;
   modelTransform: {
     position: ModelPosition;
     rotation: ModelRotation;
@@ -194,8 +194,8 @@ export const alignmentSlice = createSlice({
     resetAlignment: () => initialState,
 
     // Model selection and polygon management
-    selectModelForAlignment: (state, action: PayloadAction<ModelData>) => {
-      state.currentModel = action.payload;
+    selectModelForAlignment: (state, action: PayloadAction<string>) => {
+      state.modelUUID = action.payload;
     },
 
     addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
@@ -656,7 +656,7 @@ export const alignmentSlice = createSlice({
     getPerspectiveCameraState: (state) => state.cameraStates.perspective,
 
     // Model and polygon selectors
-    getSelectedModel: (state) => state.currentModel,
+    getModelUUID: (state) => state.modelUUID,
     getSelectedPolygons: (state) => state.selectedPolygons,
     getModelTransform: (state) => state.modelTransform,
 
@@ -683,6 +683,11 @@ export const alignmentSlice = createSlice({
       isAligning: state.isAligning,
       progress: state.alignmentProgress,
     }),
+
+    getCanStartAlignment: (state) =>
+      Boolean(state.modelUUID) &&
+      state.selectedPolygons &&
+      state.selectedPolygons.length > 0,
   },
 });
 
@@ -710,3 +715,44 @@ function updateCameraPositionFromDistance(cameraState: CameraState) {
     cameraState.position = addPosition(cameraState.target, scaledDirection);
   }
 }
+
+interface ThunkParams {
+  modelUUID: string;
+  polygons: Building[];
+}
+
+// TODO: передать modelUUID и полигоны через параметры thunk из компонента
+export const prepareInitialTransform = createAsyncThunk(
+  "alignment/prepareInitialTransform",
+  async ({ modelUUID, polygons }: ThunkParams, { rejectWithValue }) => {
+    if (polygons.length === 0) {
+      return rejectWithValue("Cannot start alignment: no polygons selected");
+    }
+
+    if (!modelUUID) {
+      return rejectWithValue("Cannot start alignment: no model selected");
+    }
+
+    const modelData = modelCache.getModel(modelUUID);
+    if (!modelData) {
+      return rejectWithValue("Model not found");
+    }
+
+    const polygonBBox = calculatePolygonBoundingBox(polygons);
+    const modelBBox = calculateModelBoundingBox(modelData);
+
+    const modelSize = modelBBox.getSize(new Vector3());
+    if (modelSize.x < minExtent && modelSize.z < minExtent) {
+      return rejectWithValue("Cannot start alignment: model is too small");
+    }
+
+    const initialTransform = calculateInitialModelPosition(
+      polygonBBox,
+      modelBBox,
+    );
+
+    return {
+      initialTransform,
+    };
+  },
+);

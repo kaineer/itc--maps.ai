@@ -1,11 +1,8 @@
 import { backendUrl, normalizeEndpoint, serveFromPublic } from "./network";
 
 const urlForBackend = (endpoint: string): string => {
-  return (
-    backendUrl +
-      normalizeEndpoint(endpoint)
-  );
-}
+  return backendUrl + normalizeEndpoint(endpoint);
+};
 
 /**
  * Utility function for making backend API calls
@@ -113,18 +110,28 @@ export async function deleteBackend<T = any>(
   return response.json();
 }
 
-export async function uploadToBackend(
-  endpoint: string,
-  formData: FormData
-) {
+export async function uploadToBackend(endpoint: string, formData: FormData) {
   const url = urlForBackend(endpoint);
   return await fetch(url, {
     method: "POST",
     body: formData,
     // headers: {}
-      //   // Заголовки при необходимости
-      //   headers: {
-      //     'Authorization': 'Bearer your-token-here', // если нужно
-      //   },
+    //   // Заголовки при необходимости
+    //   headers: {
+    //     'Authorization': 'Bearer your-token-here', // если нужно
+    //   },
+  });
+}
+
+export const urlForModel = (uuid: string): string => {
+  return "/model/" + uuid;
+};
+
+export async function downloadBinaryFromBackend(
+  endpoint: string,
+): Promise<Response> {
+  const url = urlForBackend(endpoint);
+  return await fetch(url, {
+    method: "GET",
   });
 }

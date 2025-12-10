@@ -3,10 +3,15 @@ import { MouseEvent } from "react";
 import { EnabledProps } from "../shared/types";
 import { CollapsibleForm } from "./CollapsibleForm";
 import { FileUploadButton } from "../shared/ui/FileUploadButton";
+import { StartAlignmentButton } from "../shared/ui/StartAlignmentButton";
 import { alignmentSlice } from "../../store/slices/alignmentSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Building } from "../../types/types";
-import { modelUploadSlice } from "../../store/slices/modelUploadSlice";
+import {
+  modelUploadSlice,
+  setFileIdAndLoad,
+} from "../../store/slices/modelUploadSlice";
+import { AppDispatch } from "../../store";
 
 interface Props extends EnabledProps {
   className?: string;
@@ -83,17 +88,21 @@ const SelectedBuildings = ({ buildings }: SelectedBuildingsProps) => {
 };
 
 export const BuildingSelection = ({ enabled, onToggled }: Props) => {
-  const { getSelectedPolygons } = alignmentSlice.selectors;
+  const { getSelectedPolygons, getModelUUID, getCanStartAlignment } =
+    alignmentSlice.selectors;
+  const { selectModelForAlignment } = alignmentSlice.actions;
   const selectedPolygons = useSelector(getSelectedPolygons);
-  const dispatch = useDispatch();
-  const { setFileId } = modelUploadSlice.actions;
-  const { getFileId } = modelUploadSlice.selectors;
+  const dispatch = useDispatch<AppDispatch>();
+  const { getLoading } = modelUploadSlice.selectors;
 
-  const loadedFileId = useSelector(getFileId);
+  const loadedModel = useSelector(getModelUUID);
+  const fileIsLoading = useSelector(getLoading);
+  const canStartAlignment = useSelector(getCanStartAlignment);
 
-  const handleUploadSuccess = ({ fileId }) => {
-    console.log(`Файл сохранен с ID: ${fileId}`);
-    dispatch(setFileId(fileId));
+  const buttonText = fileIsLoading ? "Загружаю..." : "Выберите модель";
+
+  const handleUploadSuccess = ({ fileId }: { fileId: string }) => {
+    dispatch(selectModelForAlignment(fileId));
   };
 
   return (
@@ -110,11 +119,16 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
         <h3 className={classes.title}>Настройка модели</h3>
       </div>
       <SelectedBuildings buildings={selectedPolygons} />
-      {loadedFileId ? (
+      {loadedModel ? (
         <span>Файл модели загружен</span>
       ) : (
-        <FileUploadButton allowedTypes={[""]} onSuccess={handleUploadSuccess} />
+        <FileUploadButton
+          buttonText={buttonText}
+          allowedTypes={[""]}
+          onSuccess={handleUploadSuccess}
+        />
       )}
+      {canStartAlignment && <StartAlignmentButton />}
     </CollapsibleForm>
   );
 };

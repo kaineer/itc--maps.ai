@@ -4,7 +4,7 @@ const multipart = require("@fastify/multipart");
 const fs = require("fs").promises;
 const path = require("path");
 const { pipeline } = require("stream/promises");
-const { createWriteStream } = require("fs");
+const { createWriteStream, createReadStream } = require("fs");
 const { v4: uuid } = require("uuid");
 
 // Load building data
@@ -229,39 +229,42 @@ fastify.post("/upload", async (request, reply) => {
   return { message: "ok", fileId };
 });
 
-fastify.get('/model/:modelId', async (request, reply) => {
-  const { modelId } = request.params;
+const registerModelsRoute = (fastify) => {
+  fastify.get("/model/:modelId", async (request, reply) => {
+    const { modelId } = request.params;
 
-  // Валидация modelId для предотвращения path traversal атак
-  if (!modelId || modelId.includes('..') || modelId.includes('/')) {
-    throw fastify.httpErrors.badRequest('Некорректный ID модели');
-  }
-
-  // Формируем путь к файлу в директории public
-  // Предполагаем, что public находится в корне проекта
-  const modelPath = path.join(process.cwd(), 'public', `${modelId}.fbx`);
-
-  try {
-    // Проверяем существование файла
-    await fs.access(modelPath);
-
-    // Определяем MIME-тип для FBX файлов
-    // FBX обычно имеет MIME-тип application/octet-stream или text/plain
-    const mimeType = 'application/octet-stream';
-
-    // Отправляем файл
-    return reply
-      .header('Content-Type', mimeType)
-      .header('Content-Disposition', `inline; filename="${modelId}.fbx"`)
-      .send(fs.createReadStream(modelPath));
-
-  } catch (error) {
-    if (error.code === 'ENOENT') {
-      throw fastify.httpErrors.notFound(`Модель с ID "${modelId}" не найдена`);
+    // Валидация modelId для предотвращения path traversal атак
+    if (!modelId || modelId.includes("..") || modelId.includes("/")) {
+      throw fastify.httpErrors.badRequest("Некорректный ID модели");
     }
-    throw error;
-  }
-});
+
+    // Формируем путь к файлу в директории public
+    // Предполагаем, что public находится в корне проекта
+    const modelPath = path.join(process.cwd(), "public", `${modelId}.fbx`);
+
+    try {
+      // Проверяем существование файла
+      await fs.access(modelPath);
+
+      // Определяем MIME-тип для FBX файлов
+      // FBX обычно имеет MIME-тип application/octet-stream или text/plain
+      const mimeType = "application/octet-stream";
+
+      // Отправляем файл
+      return reply
+        .header("Content-Type", mimeType)
+        .header("Content-Disposition", `inline; filename="${modelId}.fbx"`)
+        .send(createReadStream(modelPath));
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        throw fastify.httpErrors.notFound(
+          `Модель с ID "${modelId}" не найдена`,
+        );
+      }
+      throw error;
+    }
+  });
+};
 
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {
@@ -291,6 +294,9 @@ const start = async () => {
         files: 5,
       },
     });
+
+    // NOTE: should be run **before** static registering
+    registerModelsRoute(fastify);
 
     // Serve static files from public directory
     await fastify.register(require("@fastify/static"), {
