@@ -1,8 +1,8 @@
-# Project Summary - Maps.ai UI Localization & Store Reorganization
+# Project Summary - Maps.ai Model Alignment System Development
 
-## Session Status: Phase 7 - Redux Store Structure Reorganization - COMPLETED
+## Session Status: Phase 8 - Model Alignment System Refactoring - IN PROGRESS
 
-## Current State (Branch: master) - Enhanced Architecture with Organized Store Structure
+## Current State (Branch: master) - Enhanced Architecture with Model Cache and Alignment System
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
 ### ✅ Phase 2: Camera Controller Architecture - COMPLETED
@@ -11,36 +11,116 @@
 ### ✅ Phase 5: Building Search & Navigation - COMPLETED
 ### ✅ Phase 6: UI Localization & Component Refinement - COMPLETED
 ### ✅ Phase 7: Redux Store Structure Reorganization - COMPLETED
+### 🚧 Phase 8: Model Alignment System Refactoring - IN PROGRESS
 
-## Recent Accomplishments (Latest Session)
+## Recent Accomplishments (Latest Session) - Model Cache Implementation
 
-### 1. **Redux Store Reorganization**
-- **Структуризация каталогов**: Перемещены все слайсы из `src/store/` в `src/store/slices/`
-- **Обновленные импорты**: Исправлены пути импортов во всем проекте
-- **Экспорт типов**: Исправлен экспорт типа `ModelPosition` в `alignmentSlice.ts`
-- **Чистая архитектура**: Создана более организованная структура для лучшей поддержки кода
+### 1. **Model Cache System Implementation**
+- **Кэш моделей**: Создан `modelsCache.ts` для оптимизации загрузки FBX файлов
+- **Асинхронная загрузка**: Реализована система кэширования с промисами
+- **Управление памятью**: Добавлена функция `disposeModel` для очистки ресурсов
 
-### 2. **Перемещенные файлы слайсов**
+### 2. **Start Alignment Button Component**
+- **Новый компонент**: Создан `StartAlignmentButton.tsx` с CSS стилями
+- **Интеграция**: Кнопка добавлена в `BuildingSelection` компонент
+- **UI/UX**: Стилизованная кнопка с состояниями hover, active, disabled
+
+### 3. **Alignment Slice Refactoring**
+- **Асинхронный thunk**: Добавлен `prepareInitialTransform` для подготовки трансформаций
+- **Структура данных**: Изменено хранение модели на `modelUUID` вместо `currentModel`
+- **Селекторы**: Добавлен `getCanStartAlignment` для проверки готовности к выравниванию
+
+### 4. **Model Upload Slice Enhancement**
+- **Асинхронная загрузка**: Реализован `fetchModelById` thunk для загрузки моделей по ID
+- **FBX парсинг**: Интеграция с `FBXLoader` из Three.js для загрузки и парсинга моделей
+- **Состояния**: Добавлены состояния загрузки, ошибок и метаданных моделей
+
+### 5. **Backend Utilities Update**
+- **Binary download**: Добавлена `downloadBinaryFromBackend` для загрузки бинарных данных
+- **URL generation**: Создан `urlForModel` для генерации URL моделей
+- **Server fixes**: Обновлен `serve_buildings` для корректной отдачи FBX файлов
+
+### 6. **Building Selection Component Integration**
+- **Model cache integration**: Компонент теперь использует кэш моделей
+- **Alignment button**: Добавлена кнопка начала выравнивания
+- **Loading states**: Улучшен UI состояний загрузки моделей
+
+## 🎯 Next Development Tasks (Phase 8)
+
+### Immediate Tasks for Model Alignment System
+1. **Переделать AlignmentUI и нижележащие компоненты** на предмет получения модели из `modelCache`
+   - Интеграция кэша моделей в компоненты выравнивания
+   - Оптимизация загрузки и отображения 3D моделей
+   - Устранение дублирования кода загрузки моделей
+
+2. **Добавить переход в режим выравнивания** при нажатии кнопки "Начать выравнивание"
+   - Реализация переключения между режимами просмотра и выравнивания
+   - Настройка камер и UI для режима выравнивания
+   - Инициализация трансформаций модели при старте выравнивания
+
+3. **Поправить интерфейс добавления модели/полигонов в выравнивание**
+   - Улучшение UI выбора моделей и полигонов
+   - Визуальная обратная связь при выборе
+   - Упрощение процесса добавления элементов в выравнивание
+
+4. **ОБЯЗАТЕЛЬНО добавить API и вызовы API для создания объекта модели в таблице моделей**
+   - Создание API endpoints для управления моделями
+   - Реализация CRUD операций для таблицы моделей
+   - Интеграция с UI для просмотра непривязанных моделей
+   - Система управления метаданными моделей
+
+### Technical Implementation Details
+- **API Design**: RESTful endpoints для управления моделями
+- **Database Schema**: Структура таблицы моделей с метаданными
+- **Frontend Integration**: Компоненты для работы с таблицей моделей
+- **State Management**: Обновление Redux store для поддержки моделирования
+
+### Success Criteria
+- ✅ Модели загружаются через единый кэш
+- ✅ Режим выравнивания активируется по кнопке
+- ✅ Улучшенный UI выбора моделей и полигонов
+- ✅ Полноценная система управления моделями через API
+- ✅ Возможность просмотра и управления непривязанными моделями
+
+## 🏗️ Current Architecture Overview (Updated)
+
+### Store Structure (Enhanced with Model Cache)
 ```
-src/store/slices/
-├── alignmentSlice.ts    # Управление выравниванием и камерами
-├── buildingsSlice.ts    # Управление зданиями и данными
-├── modelUploadSlice.ts  # Загрузка 3D моделей
-├── uiSlice.ts          # UI состояние и локальное хранилище
-└── viewSlice.ts        # Управление видом камеры
+src/store/
+├── index.ts                    # Основная конфигурация store
+├── slices/                     # Все слайсы Redux
+│   ├── alignmentSlice.ts      # Состояние выравнивания (обновлен)
+│   ├── buildingsSlice.ts      # Данные зданий
+│   ├── modelUploadSlice.ts    # Загрузка моделей (обновлен)
+│   ├── uiSlice.ts            # UI состояние
+│   └── viewSlice.ts          # Состояние камеры вида
+└── thunks/                    # Асинхронные операции
+    └── modelThunks.ts        # Загрузка 3D моделей
 ```
 
-### 3. **Обновленные компоненты**
-- **Все импорты обновлены** для использования новых путей `./slices/`
-- **Файл `src/store/index.ts`** обновлен с правильными импортами
-- **Компоненты камер** (ViewCameraController, AlignmentCameraGroup и др.)
-- **UI компоненты** (AlignmentUI, ViewUI, BuildingSearch и др.)
-- **Утилиты** (positionMath.ts, keyToDirection.ts)
+### New Utilities Structure
+```
+src/utils/
+├── backend.ts                # Обновлен с binary download
+├── modelTransform.ts         # Трансформации моделей
+├── modelsCache.ts           # НОВЫЙ: Кэш моделей для FBX
+└── network.ts               # Сетевые утилиты
+```
 
-### 4. **Технические улучшения**
-- **Экспорт типа ModelPosition**: Добавлен `export` к типу `ModelPosition` в alignmentSlice.ts
-- **Согласованность импортов**: Все импорты используют относительные пути `./slices/`
-- **Удалены старые файлы**: Оригинальные файлы слайсов удалены из корня `src/store/`
+### Component Structure (Updated)
+```
+components/
+├── shared/
+│   └── ui/
+│       ├── FileUploadButton.tsx
+│       ├── StartAlignmentButton.tsx    # НОВЫЙ: Кнопка начала выравнивания
+│       └── StartAlignmentButton.module.css
+└── ui/
+    ├── ViewUI.tsx
+    ├── AlignmentUI.tsx                 # Требует обновления для modelCache
+    ├── BuildingSelection.tsx           # Обновлен с кнопкой выравнивания
+    └── BuildingSearch.tsx
+```
 
 ## 🏗️ Current Architecture Overview
 
@@ -89,7 +169,25 @@ components/
 
 ## 🎯 Key Features Implemented
 
-### Store Organization (New)
+### Model Cache System (New)
+- **Оптимизация загрузки**: Кэширование FBX моделей для повторного использования
+- **Асинхронное управление**: Промисы для предотвращения дублирования загрузок
+- **Очистка памяти**: Функция `disposeModel` для освобождения ресурсов Three.js
+- **Интеграция с Redux**: Связь с `modelUploadSlice` для согласованного состояния
+
+### Alignment System Enhancements
+- **Start Alignment Button**: Новая кнопка для инициации процесса выравнивания
+- **Conditional UI**: Кнопка отображается только при готовности (модель + полигоны)
+- **Async Transformations**: Асинхронный thunk для подготовки начальных трансформаций
+- **Improved State Management**: Улучшенная структура данных для хранения моделей
+
+### Backend Integration
+- **Binary Download Support**: Новая функция для загрузки бинарных данных моделей
+- **FBX Server Support**: Обновленный сервер для корректной отдачи FBX файлов
+- **URL Generation**: Утилита для генерации URL моделей с валидацией
+- **Error Handling**: Улучшенная обработка ошибок загрузки моделей
+
+### Store Organization (Enhanced)
 - **Логическая группировка**: Все слайсы в одном каталоге `slices/`
 - **Масштабируемость**: Легко добавлять новые слайсы
 - **Читаемость**: Понятная структура для новых разработчиков
@@ -142,7 +240,7 @@ components/
 - **Redux Access**: Proper slice selector/action usage
 - **Type Safety**: Comprehensive TypeScript coverage
 
-## 🚀 Ready for Production
+## 🚀 Ready for Production (Phase 8 in Progress)
 
 ### Complete Feature Set
 - ✅ **3D Visualization**: Full Three.js integration with React Three Fiber
@@ -153,6 +251,20 @@ components/
 - ✅ **Responsive UI**: Modern, accessible interface with Russian support
 - ✅ **Component Refinement**: Improved visual hierarchy and usability
 - ✅ **Store Organization**: Clean, scalable Redux store structure
+- ✅ **Model Cache System**: Optimized FBX model loading and caching
+- ✅ **Start Alignment Button**: UI for initiating alignment process
+- 🚧 **Full Alignment Integration**: Integration with model cache required
+- 🚧 **Model Management API**: API for model table operations needed
+
+### User Experience Improvements
+- **Russian Interface**: Full localization for target audience
+- **Clean Interface**: Collapsible components reduce screen clutter
+- **Auto-Focus**: Immediate cursor placement in search fields
+- **Keyboard Navigation**: Prevents WASD keys from appearing in search input after actions
+- **Clear Instructions**: Well-organized control information
+- **Intuitive Navigation**: Consistent patterns across all components
+- **Model Loading Feedback**: Visual indicators for model upload and loading states
+- **Alignment Readiness**: Clear UI signals when alignment can be started
 
 ### User Experience Improvements
 - **Russian Interface**: Full localization for target audience
@@ -162,13 +274,29 @@ components/
 - **Clear Instructions**: Well-organized control information
 - **Intuitive Navigation**: Consistent patterns across all components
 
-## 📈 Next Development Steps
+## 📈 Next Development Steps (Phase 8 Priorities)
 
-### Immediate Opportunities
-1. **Complete Alignment Mode Localization**: Translate TopCameraControlInfo and PerspectiveCameraControlInfo
-2. **Responsive Design Testing**: Verify component positioning on different screen sizes
-3. **Performance Optimization**: Bundle size analysis and optimization
-4. **Accessibility Features**: ARIA labels and keyboard navigation improvements
+### Immediate Tasks (Phase 8)
+1. **Переделать AlignmentUI и нижележащие компоненты** на предмет получения модели из `modelCache`
+   - Интеграция кэша моделей в компоненты выравнивания
+   - Оптимизация загрузки и отображения 3D моделей
+   - Устранение дублирования кода загрузки моделей
+
+2. **Добавить переход в режим выравнивания** при нажатии кнопки "Начать выравнивание"
+   - Реализация переключения между режимами просмотра и выравнивания
+   - Настройка камер и UI для режима выравнивания
+   - Инициализация трансформаций модели при старте выравнивания
+
+3. **Поправить интерфейс добавления модели/полигонов в выравнивание**
+   - Улучшение UI выбора моделей и полигонов
+   - Визуальная обратная связь при выборе
+   - Упрощение процесса добавления элементов в выравнивание
+
+4. **ОБЯЗАТЕЛЬНО добавить API и вызовы API для создания объекта модели в таблице моделей**
+   - Создание API endpoints для управления моделями
+   - Реализация CRUD операций для таблицы моделей
+   - Интеграция с UI для просмотра непривязанных моделей
+   - Система управления метаданными моделей
 
 ### Store Enhancement Opportunities
 1. **Middleware Expansion**: Добавить дополнительные middleware для логирования
@@ -181,6 +309,9 @@ components/
 2. **Theme Support**: Light/dark mode with localStorage persistence
 3. **Advanced Search Features**: Filtering, favorites, search history
 4. **User Preferences**: Customizable UI settings and layouts
+5. **Batch Alignment**: Одновременное выравнивание нескольких моделей
+6. **Auto-alignment Suggestions**: Автоматические предложения по выравниванию
+7. **Model Library**: Библиотека моделей с категориями и тегами
 
 ## 📝 Documentation Status
 
@@ -196,8 +327,8 @@ components/
 
 ---
 
-*Last Updated: Redux Store Structure Reorganization Phase*
+*Last Updated: Model Alignment System Refactoring Phase*
 *Branch: master*
-*Status: Production-ready with organized store architecture*
-*Features: View mode, Alignment mode, Building search, Camera management, Russian localization, Organized Redux store*
-*Commit: 71e0151 - Реорганизация структуры Redux store: перемещение слайсов в каталог slices*
+*Status: Development in progress - Model cache implemented, alignment system enhancements needed*
+*Features: View mode, Alignment mode, Building search, Camera management, Russian localization, Organized Redux store, Model cache system, Start alignment button*
+*Commit: 2aef4bb - Рефакторинг системы выравнивания моделей и загрузки FBX*

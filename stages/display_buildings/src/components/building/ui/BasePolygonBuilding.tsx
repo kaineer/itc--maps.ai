@@ -8,23 +8,24 @@ type OnClickFunction = (building: Building) => void;
 interface Props {
   building: Building;
   opacity?: number;
+  highlighted?: boolean;
   //  onClick?: (buildingId: string) => void;
   onClick?: OnClickFunction;
 }
 
-const handleClick = (
-  onClick: OnClickFunction,
-  building: Building
-) => (event: ThreeEvent<MouseEvent>) => {
-  event.stopPropagation();
-  onClick(building);
+const handleClick =
+  (onClick: OnClickFunction, building: Building) =>
+  (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation();
+    onClick(building);
 
-  const { id, address, position, height, nodes } = building;
-  console.log({ id, address, position, height, nodes });
-}
+    const { id, address, position, height, nodes } = building;
+    console.log({ id, address, position, height, nodes });
+  };
 
 export const BasePolygonBuilding = ({
   building,
+  highlighted = false,
   opacity = 1.0,
   onClick = () => null,
 }: Props) => {
@@ -65,6 +66,12 @@ export const BasePolygonBuilding = ({
     const length = Math.sqrt(dx * dx + dz * dz);
     const rotation = Math.atan2(dz, dx);
 
+    const color = highlighted
+      ? "#ff0000"
+      : building.address
+        ? "#8B4513"
+        : "#A9A9A9";
+
     if (length > 0) {
       meshes.push(
         <mesh
@@ -77,7 +84,7 @@ export const BasePolygonBuilding = ({
         >
           <boxGeometry args={[length, height, 0.1]} />
           <meshStandardMaterial
-            color={building.address ? "#8B4513" : "#A9A9A9"}
+            color={color}
             roughness={0.8}
             metalness={0.2}
             transparent={opacity < 1.0}
