@@ -70,7 +70,7 @@ export interface AlignmentState {
 
   // Alignment process state
   selectedPolygons: Building[];
-  modelUUID: SerializableModelData;
+  modelUUID: string;
   modelTransform: {
     position: ModelPosition;
     rotation: ModelRotation;
@@ -591,7 +591,7 @@ export const alignmentSlice = createSlice({
 
         // Calculate direction vector from target to current position
         const direction = directionTo(cameraState.target, cameraState.position);
-        const [dx, dy, dz] = direction;
+        const [dx, _, dz] = direction;
 
         // Calculate current horizontal distance
         const horizontalDistance = Math.sqrt(dx * dx + dz * dz);

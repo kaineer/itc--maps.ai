@@ -5,7 +5,9 @@ const fs = require("fs").promises;
 const path = require("path");
 const { pipeline } = require("stream/promises");
 const { createWriteStream, createReadStream } = require("fs");
-const { v4: uuid } = require("uuid");
+
+const { uploadRoutes } = require("./src/routes/upload.routes");
+const { modelsRoutes } = require("./src/routes/models.routes");
 
 // Load building data
 let buildingsData = [];
@@ -217,18 +219,6 @@ fastify.get(
   },
 );
 
-fastify.post("/upload", async (request, reply) => {
-  const data = await request.file();
-  const fileStream = data.file;
-  const fileId = uuid();
-  const filename = fileId + ".fbx";
-
-  const savePath = path.join(__dirname, "public", filename);
-  await pipeline(fileStream, createWriteStream(savePath));
-
-  return { message: "ok", fileId };
-});
-
 const registerModelsRoute = (fastify) => {
   fastify.get("/model/:modelId", async (request, reply) => {
     const { modelId } = request.params;
@@ -294,6 +284,9 @@ const start = async () => {
         files: 5,
       },
     });
+
+    await uploadRoutes(fastify);
+    await modelsRoutes(fastify);
 
     // NOTE: should be run **before** static registering
     registerModelsRoute(fastify);
