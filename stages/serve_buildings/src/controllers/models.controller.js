@@ -32,8 +32,8 @@ const createModelsController = (modelsService) => {
     try {
       const models = await modelsService.getAllModels();
       return reply.send(models);
-    } catch {
-      return handleError(reply);
+    } catch (error) {
+      return handleError(error, reply);
     }
   };
 
@@ -43,7 +43,17 @@ const createModelsController = (modelsService) => {
       const model = await modelsService.getModel(modelId);
       return reply.send(model);
     } catch (error) {
-      return handleError(reply);
+      return handleError(error, reply);
+    }
+  };
+
+  const findModelByAddress = async (request, reply) => {
+    try {
+      const { address } = request.body;
+      const model = await modelsService.findModelByAddress(address);
+      return reply.send(model);
+    } catch (error) {
+      return handleError(error, reply);
     }
   };
 
@@ -52,6 +62,7 @@ const createModelsController = (modelsService) => {
     getAllModels,
     createMetadata,
     updateMetadata,
+    findModelByAddress,
   };
 };
 

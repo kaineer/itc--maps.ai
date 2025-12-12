@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-  SerializableModelData,
   calculatePolygonBoundingBox,
   calculateModelBoundingBox,
   calculateInitialModelPosition,
   calculateTopCameraPosition,
   calculatePerspectiveCameraPosition,
+  ModelTransform,
 } from "../../utils/modelTransform";
 import { Building, Scale } from "../../types/types";
 import {
@@ -16,8 +16,11 @@ import {
   directionTo,
   positionsEqual,
 } from "../../components/shared/positionMath";
-import { Vector3 } from "three";
+import { Vector3, Box3 } from "three";
 import { CAMERA_HEIGHTS } from "../../utils/constants";
+import { modelsCache } from "../../utils/modelsCache";
+import { putBackend } from "../../utils/backend";
+import { uiSlice } from "./uiSlice";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -70,7 +73,7 @@ export interface AlignmentState {
 
   // Alignment process state
   selectedPolygons: Building[];
-  modelUUID: string;
+  modelUUID: string | null;
   modelTransform: {
     position: ModelPosition;
     rotation: ModelRotation;
@@ -120,7 +123,7 @@ const initialState: AlignmentState = {
 
   // Alignment process state
   selectedPolygons: [],
-  currentModel: null,
+  modelUUID: null,
   modelTransform: {
     position: [0, 0, 0],
     rotation: 0,
@@ -220,35 +223,15 @@ export const alignmentSlice = createSlice({
     },
 
     // Alignment process control
-    startAlignmentProcess: (state) => {
-      // Check that polygons are added and model is selected with non-zero bounding box
-      if (state.selectedPolygons.length === 0) {
-        throw new Error("Cannot start alignment: no polygons selected");
-      }
-
-      if (!state.currentModel) {
-        throw new Error("Cannot start alignment: no model selected");
-      }
-
-      // Calculate bounding boxes
-      const polygonBBox = calculatePolygonBoundingBox(state.selectedPolygons);
-      const modelBBox = calculateModelBoundingBox(state.currentModel);
-
-      // Check if model has non-zero bounding box
-      const modelSize = modelBBox.getSize(new Vector3());
-      if (
-        modelSize.x < minExtent &&
-        modelSize.y < minExtent &&
-        modelSize.z < minExtent
-      ) {
-        throw new Error("Cannot start alignment: model is too small");
-      }
-
-      // Calculate initial model position and scale
-      const initialTransform = calculateInitialModelPosition(
-        polygonBBox,
-        modelBBox,
-      );
+    startAlignmentProcess: (
+      state,
+      action: PayloadAction<{
+        initialTransform: ModelTransform;
+        modelBBox: Box3;
+        polygonBBox: Box3;
+      }>,
+    ) => {
+      const { initialTransform, modelBBox, polygonBBox } = action.payload;
 
       // Only update model transform if it hasn't been set yet (preserve user changes)
       if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
@@ -301,8 +284,8 @@ export const alignmentSlice = createSlice({
       }
 
       // Start the alignment process
-      state.isAligning = true;
-      state.alignmentProgress = 0;
+      // state.isAligning = true;
+      // state.alignmentProgress = 0;
     },
 
     // Model transformation actions
@@ -647,6 +630,13 @@ export const alignmentSlice = createSlice({
     },
   },
 
+  extraReducers: (builder) => {
+    builder.addCase(addPolygonWithModelRequest.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.modelUUID = action.payload.modelId;
+      }
+    });
+  },
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
@@ -724,7 +714,10 @@ interface ThunkParams {
 // TODO: передать modelUUID и полигоны через параметры thunk из компонента
 export const prepareInitialTransform = createAsyncThunk(
   "alignment/prepareInitialTransform",
-  async ({ modelUUID, polygons }: ThunkParams, { rejectWithValue }) => {
+  async (
+    { modelUUID, polygons }: ThunkParams,
+    { dispatch, rejectWithValue },
+  ) => {
     if (polygons.length === 0) {
       return rejectWithValue("Cannot start alignment: no polygons selected");
     }
@@ -733,7 +726,7 @@ export const prepareInitialTransform = createAsyncThunk(
       return rejectWithValue("Cannot start alignment: no model selected");
     }
 
-    const modelData = modelCache.getModel(modelUUID);
+    const modelData = await modelsCache.getModel(modelUUID);
     if (!modelData) {
       return rejectWithValue("Model not found");
     }
@@ -751,8 +744,31 @@ export const prepareInitialTransform = createAsyncThunk(
       modelBBox,
     );
 
-    return {
-      initialTransform,
-    };
+    dispatch(
+      alignmentSlice.actions.startAlignmentProcess({
+        initialTransform,
+        modelBBox,
+        polygonBBox,
+      }),
+    );
+
+    dispatch(uiSlice.actions.selectAlignmentMode());
+  },
+);
+
+export const addPolygonWithModelRequest = createAsyncThunk(
+  "alignment/addPolygonWithModelRequest",
+  async (polygonData: Building, { dispatch }) => {
+    const { addPolygonForAlignment } = alignmentSlice.actions;
+    dispatch(addPolygonForAlignment(polygonData));
+
+    if (polygonData.address) {
+      const response = await putBackend("/models/address", {
+        address: polygonData.address,
+      });
+      return response.data;
+    }
+
+    return null;
   },
 );

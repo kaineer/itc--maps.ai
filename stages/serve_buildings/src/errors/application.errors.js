@@ -49,6 +49,7 @@ const handleError = (error, reply) => {
     error: {
       code: "INTERNAL_SERVER_ERROR",
       message: "An unexpected error occured",
+      details: String(error),
       timestamp: new Date().toISOString(),
       requestId: reply.request.id,
     },

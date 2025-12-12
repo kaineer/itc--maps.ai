@@ -108,6 +108,8 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
   };
 
   const handleStartClick = () => {
+    // TODO: save model metadata
+    // TODO: dispatch selectAlignmentMode
     dispatch(selectAlignmentMode());
   };
 

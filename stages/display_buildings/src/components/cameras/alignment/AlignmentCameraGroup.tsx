@@ -55,7 +55,7 @@ export const AlignmentCameraGroup = ({ enabled, onCameraUpdate }: Props) => {
 
       {/* UI LocalStorage debug component */}
       <Development>
-        <UILocalStorageDebug enabled={true} />
+        <UILocalStorageDebug enabled={false} />
       </Development>
     </>
   );

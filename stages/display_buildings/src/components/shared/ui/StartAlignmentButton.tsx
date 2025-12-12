@@ -1,4 +1,5 @@
 import classes from "./StartAlignmentButton.module.css";
+import { MouseEvent } from "react";
 
 interface Props {
   className?: string;

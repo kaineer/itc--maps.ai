@@ -4,8 +4,9 @@ const { validate: validateUuid } = require("uuid");
 const {
   ValidationError,
   NotFoundError,
-  ConfictError,
+  ConflictError,
 } = require("../errors/application.errors");
+const { createModelCache } = require("./modelCache");
 
 const j2 = (obj) => JSON.stringify(obj, null, 2);
 
@@ -24,6 +25,32 @@ const createModelsService = () => {
     }
   };
 
+  const getAllModels0 = async () => {
+    try {
+      const files = await fs.readdir(uploadDir);
+      const models = [];
+
+      for (const file of files) {
+        if (file.endsWith(".fbx")) {
+          const modelId = file.replace(".fbx", "");
+
+          if (validateUuid(modelId)) {
+            models.push(await getModel0(modelId));
+          }
+        }
+      }
+
+      return models;
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        return [];
+      }
+      throw error;
+    }
+  };
+
+  const cache = createModelCache(getAllModels0);
+
   const createMetadata0 = async (modelId) => {
     const metadataPath = getMetadataPath(modelId);
 
@@ -34,6 +61,7 @@ const createModelsService = () => {
     };
 
     await fs.writeFile(metadataPath, j2(initialMetadata));
+    cache.invalidateCache();
 
     return { modelId };
   };
@@ -95,6 +123,7 @@ const createModelsService = () => {
     });
 
     await fs.writeFile(metadataPath, j2(metadata));
+    cache.invalidateCache();
 
     return formatResponse(metadata);
   };
@@ -122,27 +151,18 @@ const createModelsService = () => {
 
     return getModel0(modelId);
   };
-
   const getAllModels = async () => {
-    try {
-      const files = await fs.readdir(uploadDir);
-      const models = [];
+    return await cache.cacheValues();
+  };
 
-      for (const file of files) {
-        if (file.endsWith(".fbx")) {
-          const modelId = file.replace(".fbx", "");
-
-          if (validateUuid(modelId)) {
-            models.push(await getModel0(modelId));
-          }
-        }
-      }
-    } catch (error) {
-      if (error.code === "ENOENT") {
-        return [];
-      }
-      throw error;
+  const findModelByAddress = async (address) => {
+    console.log("findModeByAddress");
+    const models = await getAllModels();
+    const model = models.find((m) => m.address === address);
+    if (!model) {
+      throw new NotFoundError("Model with address not found");
     }
+    return model;
   };
 
   return {
@@ -150,6 +170,7 @@ const createModelsService = () => {
     updateMetadata,
     getModel,
     getAllModels,
+    findModelByAddress,
   };
 };
 

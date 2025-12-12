@@ -110,6 +110,22 @@ export async function deleteBackend<T = any>(
   return response.json();
 }
 
+export async function patchBackend<T = any>(
+  endpoint: string,
+  options: Omit<RequestInit, "method"> = {},
+): Promise<T> {
+  const response = await fetchBackend(endpoint, {
+    method: "PATCH",
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
 export async function uploadToBackend(endpoint: string, formData: FormData) {
   const url = urlForBackend(endpoint);
   return await fetch(url, {
@@ -124,7 +140,7 @@ export async function uploadToBackend(endpoint: string, formData: FormData) {
 }
 
 export const urlForModel = (uuid: string): string => {
-  return "/model/" + uuid;
+  return urlForBackend("/model/" + uuid);
 };
 
 export async function downloadBinaryFromBackend(

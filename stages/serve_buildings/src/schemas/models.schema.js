@@ -82,9 +82,23 @@ const getAllModelsSchema = {
   },
 };
 
+const findByAddressSchema = {
+  body: {
+    type: "object",
+    required: ["address"],
+    properties: {
+      address: typeString,
+    },
+  },
+  response: {
+    200: metadata,
+  },
+};
+
 module.exports = {
   createMetadataSchema,
   updateMetadataSchema,
   getModelSchema,
   getAllModelsSchema,
+  findByAddressSchema,
 };

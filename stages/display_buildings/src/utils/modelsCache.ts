@@ -1,9 +1,11 @@
 import * as THREE from "three";
+import { FBXLoader } from "three/examples/jsm/Addons.js";
+import { urlForModel } from "./backend";
 
 type GroupPromise = Promise<THREE.Group>;
 
 export const createModelsCache = () => {
-  const cache = new Map<string, GroupPromise>();
+  const cache = new Map<string, THREE.Group>();
   const loadingPromises = new Map<string, GroupPromise>();
 
   // private
@@ -14,12 +16,14 @@ export const createModelsCache = () => {
     });
   };
 
-  //?
+  // public
   const disposeModel = (modelId: string) => {
     const model = cache.get(modelId);
     if (model) {
       model.traverse((child) => {
-        if (child.dispose) child.dispose();
+        if (typeof child.dispose === "function") {
+          child.dispose();
+        }
       });
       cache.delete(modelId);
     }

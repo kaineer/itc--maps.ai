@@ -5,11 +5,11 @@ const {
   updateMetadataSchema,
   getModelSchema,
   getAllModelsSchema,
+  findByAddressSchema,
 } = require("../schemas/models.schema");
 
 const modelsRoutes = async (fastify /* , options*/) => {
   const modelsController = createModelsController(createModelsService());
-
   fastify.post(
     "/models",
     {
@@ -36,6 +36,12 @@ const modelsRoutes = async (fastify /* , options*/) => {
     "/models",
     { schema: getAllModelsSchema },
     modelsController.getAllModels,
+  );
+
+  fastify.put(
+    "/models/address",
+    { schema: findByAddressSchema },
+    modelsController.findModelByAddress,
   );
 };
 

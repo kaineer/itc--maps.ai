@@ -11,7 +11,7 @@ import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
 
 const detailedInfo = [
   {
-    title: "НастройPosition Step Adjustment",
+    title: "Position Step Adjustment",
     description: "Controls how far the camera/model moves with each key press",
     range: "0.5m to 20m",
     factor: "×1.5 multiplier",
