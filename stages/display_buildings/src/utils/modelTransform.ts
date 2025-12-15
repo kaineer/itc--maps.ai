@@ -8,6 +8,8 @@ import { CAMERA_HEIGHTS, MODEL_CONSTANTS } from "./constants";
 import { Building, BuildingNode } from "../types/types";
 import { Box } from "@react-three/drei";
 
+const defaultPolygonSize = 10;
+
 // Model data loaded via useFBX() from @react-three/drei
 export interface ModelData {
   id: string;
@@ -40,12 +42,43 @@ export interface ModelTransform {
   yOffset?: number; // Optional Y offset for ground level placement
 }
 
+const calculatePositionedPolygonBBox = (polygon: Building): Box3 => {
+  const center = polygon.position || { x: 0, y: 0 };
+
+  const size = defaultPolygonSize;
+
+  const polygonBBox = new Box3(
+    new Vector3(center.x - size / 2, 0, center.z - size / 2),
+    new Vector3(center.x + size / 2, 10, center.z + size / 2),
+  );
+
+  return polygonBBox;
+};
+
+const calculateFreePolygonBBox = (polygon: Building): Box3 => {
+  const polygonBBox = new Box3();
+
+  polygon.nodes.forEach((node: BuildingNode) => {
+    const point = new Vector3(node.x, 0, node.z);
+    polygonBBox.expandByPoint(point);
+  });
+
+  const polygonHeight = polygon.height || 10;
+
+  const min = polygonBBox.min.clone();
+  const max = polygonBBox.max.clone();
+  max.y = polygonHeight;
+  polygonBBox.set(min, max);
+
+  return polygonBBox;
+};
+
 /**
  * Calculate bounding box for multiple building polygons
  * @param polygons Array of building polygons
  * @returns Combined bounding box
  */
-export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
+export function calculatePolygonsBoundingBox(polygons: Building[]): Box3 {
   const bbox = new Box3();
 
   if (!polygons.length) {
@@ -54,40 +87,12 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
 
   // Calculate individual bounding boxes for each polygon and union them
   polygons.forEach((polygon) => {
-    // TODO: Extract actual vertices from polygon geometry
-    // For now, use position as center point
-    if (polygon.position) {
-      const center = polygon.position || { x: 0, z: 0 };
-      // Create a simple bounding box around the center
-      const size = 10; // Default building size
+    const polygonBBox = polygon.position
+      ? calculatePositionedPolygonBBox(polygon)
+      : calculateFreePolygonBBox(polygon);
 
-      const polygonBBox = new Box3(
-        new Vector3(center.x - size / 2, 0, center.z - size / 2),
-        new Vector3(center.x + size / 2, 10, center.z + size / 2),
-      );
-
-      // Union this polygon's bounding box with the combined bounding box
-      bbox.union(polygonBBox);
-    } else if (polygon.nodes && polygon.nodes.length > 1) {
-      const polygonBBox = new Box3();
-
-      polygon.nodes.forEach((node: BuildingNode) => {
-        const point = new Vector3(node.x, 0, node.z);
-        polygonBBox.expandByPoint(point);
-      });
-
-      if (polygon.height) {
-        const min = polygonBBox.min.clone();
-        const max = polygonBBox.max.clone();
-        max.y = polygon.height;
-        polygonBBox.set(min, max);
-      } else {
-        const min = polygonBBox.min.clone();
-        const max = polygonBBox.max.clone();
-        max.y = 10;
-        polygonBBox.set(min, max);
-      }
-    }
+    // Union this polygon's bounding box with the combined bounding box
+    bbox.union(polygonBBox);
   });
 
   return bbox;

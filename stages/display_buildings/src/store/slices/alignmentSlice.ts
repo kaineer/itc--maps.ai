@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-  calculatePolygonBoundingBox,
+  calculatePolygonsBoundingBox,
   calculateModelBoundingBox,
   calculateInitialModelPosition,
   calculateTopCameraPosition,
@@ -731,7 +731,7 @@ export const prepareInitialTransform = createAsyncThunk(
       return rejectWithValue("Model not found");
     }
 
-    const polygonBBox = calculatePolygonBoundingBox(polygons);
+    const polygonBBox = calculatePolygonsBoundingBox(polygons);
     const modelBBox = calculateModelBoundingBox(modelData);
 
     const modelSize = modelBBox.getSize(new Vector3());
