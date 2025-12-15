@@ -5,9 +5,9 @@ import {
   UI_STORAGE_KEY,
 } from "../utils/localStorage";
 
-const defaultUIMode = "view";
+const defaultUIMode = "intro";
 
-export type UIMode = "view" | "alignment" | "modelSetup";
+export type UIMode = "view" | "alignment" | "modelSetup" | "intro";
 
 export type KnownMode =
   | "topCameraControls"
@@ -16,10 +16,7 @@ export type KnownMode =
   | "viewControls"
   | "buildingSearch";
 
-export type BuildingFormMode =
-  | "none"
-  | "search"
-  | "select";
+export type BuildingFormMode = "none" | "search" | "select";
 
 interface UIState {
   currentMode: UIMode;
@@ -55,6 +52,9 @@ export const uiSlice = createSlice({
     },
     selectModelSetupMode: (state) => {
       state.currentMode = "modelSetup";
+    },
+    selectIntroMode: (state) => {
+      state.currentMode = "intro";
     },
     resetUI: (state) => {
       state.currentMode = defaultUIMode;
@@ -106,5 +106,3 @@ export const uiLocalStorageMiddleware =
 
     return result;
   };
-
-export default uiSlice.reducer;

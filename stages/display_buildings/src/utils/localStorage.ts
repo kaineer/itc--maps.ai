@@ -81,9 +81,9 @@ export function isLocalStorageAvailable(): boolean {
  * @returns Состояние UI или начальное состояние
  */
 export function loadUIState<T>(initialState: T): T {
-  if (!isLocalStorageAvailable()) {
-    return initialState;
-  }
+  // if (!isLocalStorageAvailable()) {
+  return initialState;
+  // }
 
   return loadFromLocalStorage(UI_STORAGE_KEY, initialState);
 }

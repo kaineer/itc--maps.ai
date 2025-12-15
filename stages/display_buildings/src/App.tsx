@@ -2,6 +2,7 @@ import { Provider, useSelector } from "react-redux";
 import { setupStore } from "./store";
 import { ViewUI } from "./components/ui/ViewUI";
 import { AlignmentUI } from "./components/ui/AlignmentUI";
+import { IntroUI } from "./components/ui/IntroUI";
 import { uiSlice } from "./store/uiSlice";
 import { Match } from "./components/shared/Match";
 
@@ -15,6 +16,7 @@ const AppContent = () => {
     <>
       <Match
         value={currentMode}
+        intro={() => <IntroUI />}
         view={() => <ViewUI />}
         alignment={() => <AlignmentUI />}
         modelSetup={() => null}
