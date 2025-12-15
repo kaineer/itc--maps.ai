@@ -4,7 +4,10 @@ import { EnabledProps } from "../shared/types";
 import { CollapsibleForm } from "./CollapsibleForm";
 import { FileUploadButton } from "../shared/ui/FileUploadButton";
 import { StartAlignmentButton } from "../shared/ui/StartAlignmentButton";
-import { alignmentSlice } from "../../store/slices/alignmentSlice";
+import {
+  alignmentSlice,
+  prepareInitialTransform,
+} from "../../store/slices/alignmentSlice";
 import { uiSlice } from "../../store/slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { Building } from "../../types/types";
@@ -110,7 +113,15 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
   const handleStartClick = () => {
     // TODO: save model metadata
     // TODO: dispatch selectAlignmentMode
-    dispatch(selectAlignmentMode());
+    if (loadedModel) {
+      dispatch(
+        prepareInitialTransform({
+          modelUUID: loadedModel,
+          polygons: selectedPolygons,
+        }),
+      );
+      dispatch(selectAlignmentMode());
+    }
   };
 
   return (

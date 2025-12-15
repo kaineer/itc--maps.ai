@@ -33,7 +33,6 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraState = useSelector(getCameraState);
 
   const handleBuildingClick = (building: Building) => {
-    // dispatch(addPolygonForAlignment(building));
     dispatch(addPolygonWithModelRequest(building));
     onBuildingSelect && onBuildingSelect(building);
   };

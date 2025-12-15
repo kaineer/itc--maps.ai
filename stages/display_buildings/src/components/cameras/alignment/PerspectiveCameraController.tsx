@@ -1,11 +1,15 @@
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "../../../store/slices/alignmentSlice";
-import { calculateModelBoundingBox } from "../../../utils/modelTransform";
+import {
+  calculateModelBoundingBox,
+  ModelData,
+} from "../../../utils/modelTransform";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
 import { CameraUpdateProps, EnabledProps } from "../../shared/types";
+import { modelsCache } from "../../../utils/modelsCache";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 
@@ -16,12 +20,8 @@ export const PerspectiveCameraController = ({
   const { camera } = useThree();
   const dispatch = useDispatch();
 
-  const {
-    getSelectedModel,
-    getPerspectiveCameraState,
-    getPositionStep,
-    getModelTransform,
-  } = alignmentSlice.selectors;
+  const { getModelUUID, getPerspectiveCameraState, getModelTransform } =
+    alignmentSlice.selectors;
   const {
     updateCameraState,
     increaseCameraDistance,
@@ -30,9 +30,9 @@ export const PerspectiveCameraController = ({
     toggleCameraHeight,
     setCameraView,
   } = alignmentSlice.actions;
-  const currentModel = useSelector(getSelectedModel);
+  const modelUUID = useSelector(getModelUUID);
+  const [currentModel, setCurrentModel] = useState<ModelData | null>(null);
   const cameraState = useSelector(getPerspectiveCameraState);
-  const positionStep = useSelector(getPositionStep);
   const modelTransform = useSelector(getModelTransform);
 
   // Calculate model center for camera target
@@ -62,6 +62,20 @@ export const PerspectiveCameraController = ({
 
     return worldCenter;
   }, [currentModel, modelTransform.position]);
+
+  useEffect(() => {
+    const fetchCurrentModel = async () => {
+      if (modelUUID) {
+        const modelData: ModelData | null =
+          await modelsCache.getModel(modelUUID);
+        if (modelData) {
+          setCurrentModel(modelData);
+        }
+      }
+    };
+
+    fetchCurrentModel();
+  }, [modelUUID]);
 
   // Update camera when state changes
   useEffect(() => {

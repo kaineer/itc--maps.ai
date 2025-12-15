@@ -1,11 +1,12 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { urlForModel } from "./backend";
+import { ModelData } from "./modelTransform";
 
 type GroupPromise = Promise<THREE.Group>;
 
 export const createModelsCache = () => {
-  const cache = new Map<string, THREE.Group>();
+  const cache = new Map<string, ModelData>();
   const loadingPromises = new Map<string, GroupPromise>();
 
   // private
@@ -20,7 +21,9 @@ export const createModelsCache = () => {
   const disposeModel = (modelId: string) => {
     const model = cache.get(modelId);
     if (model) {
-      model.traverse((child) => {
+      const { modelObject } = model;
+
+      modelObject.traverse((child: any) => {
         if (typeof child.dispose === "function") {
           child.dispose();
         }
@@ -29,14 +32,43 @@ export const createModelsCache = () => {
     }
   };
 
+  const getModelData = (modelId: string, model: THREE.Group) => {
+    const boundingBox = new THREE.Box3().setFromObject(model);
+    let vertexCount = 0;
+
+    model.traverse((child) => {
+      if (child instanceof THREE.Mesh) {
+        const { geometry } = child;
+        if (geometry) {
+          vertexCount += geometry.attributes.position?.count || 0;
+        }
+      }
+    });
+
+    return {
+      id: modelId,
+      modelObject: model,
+      metadata: {
+        fileFormat: "fbx",
+        vertexCount,
+        boundingBox,
+      },
+    };
+  };
+
   // public
-  const getModel = async (modelId: string) => {
+  const getModel = async (modelId: string): Promise<ModelData | null> => {
     if (cache.has(modelId)) {
-      return cache.get(modelId);
+      return cache.get(modelId) || null;
     }
 
     if (loadingPromises.has(modelId)) {
-      return loadingPromises.get(modelId);
+      const modelObject = await loadingPromises.get(modelId);
+      if (modelObject) {
+        const modelData: ModelData | null = getModelData(modelId, modelObject);
+        return modelData;
+      }
+      return null;
     }
 
     const loadPromise = loadModel(modelId); // backend GET "/model/:modelId"
@@ -44,8 +76,9 @@ export const createModelsCache = () => {
 
     try {
       const model = await loadPromise;
-      cache.set(modelId, model);
-      return model;
+      const modelData = getModelData(modelId, model);
+      cache.set(modelId, modelData);
+      return modelData;
     } finally {
       loadingPromises.delete(modelId);
     }

@@ -5,7 +5,8 @@ import { Box3, Vector3 } from "three";
 // Constants
 import { CAMERA_HEIGHTS, MODEL_CONSTANTS } from "./constants";
 
-import { Building } from "../types/types";
+import { Building, BuildingNode } from "../types/types";
+import { Box } from "@react-three/drei";
 
 // Model data loaded via useFBX() from @react-three/drei
 export interface ModelData {
@@ -55,17 +56,38 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
   polygons.forEach((polygon) => {
     // TODO: Extract actual vertices from polygon geometry
     // For now, use position as center point
-    const center = polygon.position || { x: 0, z: 0 };
-    // Create a simple bounding box around the center
-    const size = 10; // Default building size
+    if (polygon.position) {
+      const center = polygon.position || { x: 0, z: 0 };
+      // Create a simple bounding box around the center
+      const size = 10; // Default building size
 
-    const polygonBBox = new Box3(
-      new Vector3(center.x - size / 2, 0, center.z - size / 2),
-      new Vector3(center.x + size / 2, 10, center.z + size / 2),
-    );
+      const polygonBBox = new Box3(
+        new Vector3(center.x - size / 2, 0, center.z - size / 2),
+        new Vector3(center.x + size / 2, 10, center.z + size / 2),
+      );
 
-    // Union this polygon's bounding box with the combined bounding box
-    bbox.union(polygonBBox);
+      // Union this polygon's bounding box with the combined bounding box
+      bbox.union(polygonBBox);
+    } else if (polygon.nodes && polygon.nodes.length > 1) {
+      const polygonBBox = new Box3();
+
+      polygon.nodes.forEach((node: BuildingNode) => {
+        const point = new Vector3(node.x, 0, node.z);
+        polygonBBox.expandByPoint(point);
+      });
+
+      if (polygon.height) {
+        const min = polygonBBox.min.clone();
+        const max = polygonBBox.max.clone();
+        max.y = polygon.height;
+        polygonBBox.set(min, max);
+      } else {
+        const min = polygonBBox.min.clone();
+        const max = polygonBBox.max.clone();
+        max.y = 10;
+        polygonBBox.set(min, max);
+      }
+    }
   });
 
   return bbox;

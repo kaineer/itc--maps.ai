@@ -234,13 +234,13 @@ export const alignmentSlice = createSlice({
       const { initialTransform, modelBBox, polygonBBox } = action.payload;
 
       // Only update model transform if it hasn't been set yet (preserve user changes)
-      if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
-        state.modelTransform = {
-          position: initialTransform.position,
-          rotation: 0,
-          scale: initialTransform.scale, // Use scale as number
-        };
-      }
+      // if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
+      state.modelTransform = {
+        position: initialTransform.position,
+        rotation: 0,
+        scale: initialTransform.scale, // Use scale as number
+      };
+      // }
 
       // Calculate model center for camera positioning
       const modelCenter = new Vector3(...state.modelTransform.position);
@@ -264,24 +264,24 @@ export const alignmentSlice = createSlice({
           defaultPerspectiveCamera.target,
         );
 
-      if (isTopCameraDefault) {
-        state.cameraStates.top = calculateTopCameraPosition(
-          modelCenter,
-          modelBBox,
-          polygonBBox,
-        );
-        // Top camera initialized
-      }
+      // if (isTopCameraDefault) {
+      state.cameraStates.top = calculateTopCameraPosition(
+        modelCenter,
+        modelBBox,
+        polygonBBox,
+      );
+      // Top camera initialized
+      // }
 
-      if (isPerspectiveCameraDefault) {
-        const newCamera = calculatePerspectiveCameraPosition(
-          modelCenter,
-          modelBBox,
-        );
+      // if (isPerspectiveCameraDefault) {
+      const newCamera = calculatePerspectiveCameraPosition(
+        modelCenter,
+        modelBBox,
+      );
 
-        state.cameraStates.perspective = newCamera;
-        // Perspective camera initialized
-      }
+      state.cameraStates.perspective = newCamera;
+      // Perspective camera initialized
+      //}
 
       // Start the alignment process
       // state.isAligning = true;
