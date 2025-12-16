@@ -6,6 +6,7 @@ import {
   calculateTopCameraPosition,
   calculatePerspectiveCameraPosition,
   ModelTransform,
+  calculateWorldBBox,
 } from "../../utils/modelTransform";
 import { Building, Scale } from "../../types/types";
 import {
@@ -14,12 +15,11 @@ import {
   distanceBetween,
   scaleToLength,
   directionTo,
-  positionsEqual,
 } from "../../components/shared/positionMath";
 import { Vector3, Box3 } from "three";
 import { CAMERA_HEIGHTS } from "../../utils/constants";
 import { modelsCache } from "../../utils/modelsCache";
-import { putBackend } from "../../utils/backend";
+import { patchBackend, putBackend } from "../../utils/backend";
 import { uiSlice } from "./uiSlice";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
@@ -241,51 +241,27 @@ export const alignmentSlice = createSlice({
         scale: initialTransform.scale, // Use scale as number
       };
       // }
+      //
+      const worldModelBBox = calculateWorldBBox(
+        modelBBox,
+        initialTransform.scale,
+        initialTransform.position,
+      );
 
       // Calculate model center for camera positioning
-      const modelCenter = new Vector3(...state.modelTransform.position);
+      const modelCenter = new Vector3();
+      worldModelBBox.getCenter(modelCenter);
 
-      // Only set up cameras if they haven't been initialized yet
-      // Check if cameras are at their default positions AND targets
-      const isTopCameraDefault =
-        positionsEqual(
-          state.cameraStates.top.position,
-          defaultTopCamera.position,
-        ) &&
-        positionsEqual(state.cameraStates.top.target, defaultTopCamera.target);
-
-      const isPerspectiveCameraDefault =
-        positionsEqual(
-          state.cameraStates.perspective.position,
-          defaultPerspectiveCamera.position,
-        ) &&
-        positionsEqual(
-          state.cameraStates.perspective.target,
-          defaultPerspectiveCamera.target,
-        );
-
-      // if (isTopCameraDefault) {
       state.cameraStates.top = calculateTopCameraPosition(
         modelCenter,
-        modelBBox,
+        worldModelBBox,
         polygonBBox,
       );
-      // Top camera initialized
-      // }
 
-      // if (isPerspectiveCameraDefault) {
-      const newCamera = calculatePerspectiveCameraPosition(
+      state.cameraStates.perspective = calculatePerspectiveCameraPosition(
         modelCenter,
-        modelBBox,
+        worldModelBBox,
       );
-
-      state.cameraStates.perspective = newCamera;
-      // Perspective camera initialized
-      //}
-
-      // Start the alignment process
-      // state.isAligning = true;
-      // state.alignmentProgress = 0;
     },
 
     // Model transformation actions
@@ -770,5 +746,59 @@ export const addPolygonWithModelRequest = createAsyncThunk(
     }
 
     return null;
+  },
+);
+
+/**
+ * Save alignment data to backend via PATCH /models/:modelId
+ * After successful save, switches to view mode
+ */
+export const saveAlignment = createAsyncThunk(
+  "alignment/saveAlignment",
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as { alignment: AlignmentState };
+    const { modelUUID, modelTransform, selectedPolygons } = state.alignment;
+    const { selectViewMode } = uiSlice.actions;
+
+    if (!modelUUID) {
+      return rejectWithValue("Cannot save alignment: no model selected");
+    }
+
+    if (selectedPolygons.length === 0) {
+      return rejectWithValue("Cannot save alignment: no polygons selected");
+    }
+
+    const pa = selectedPolygons.find((p) => p.address);
+    let address: string | null = null;
+    if (pa) {
+      address = pa.address;
+    }
+
+    try {
+      // Prepare transform data for API
+      const transformData = {
+        position: modelTransform.position,
+        rotation: modelTransform.rotation,
+        scale: modelTransform.scale,
+        polygons: selectedPolygons.map((p) => p.id),
+        address,
+      };
+
+      // Send PATCH request to save alignment
+      const response = await patchBackend(
+        `/models/${modelUUID}`,
+        transformData,
+      );
+
+      // Switch to view mode after successful save
+      dispatch(selectViewMode());
+
+      return response.data;
+    } catch (error) {
+      console.error("Failed to save alignment:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to save alignment",
+      );
+    }
   },
 );

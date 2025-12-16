@@ -5,6 +5,8 @@
  * to ensure consistency in measurements and configurations.
  */
 
+import { ModelPosition } from "../store/slices/alignmentSlice";
+
 /**
  * Camera height constants for different viewing modes
  */
@@ -142,22 +144,22 @@ export const COORDINATES = {
  */
 export const DEFAULT_CAMERA_POSITIONS = {
   /** Default view mode camera position */
-  VIEW: [0, 50, 0] as [number, number, number],
+  VIEW: [0, 50, 0] as ModelPosition,
 
   /** Default view mode camera target */
-  VIEW_TARGET: [0, 0, 0] as [number, number, number],
+  VIEW_TARGET: [0, 0, 0] as ModelPosition,
 
   /** Default perspective camera position for alignment mode */
-  PERSPECTIVE: [0, 20, 20] as [number, number, number],
+  PERSPECTIVE: [0, 20, 20] as ModelPosition,
 
   /** Default perspective camera target for alignment mode */
-  PERSPECTIVE_TARGET: [0, 0, 0] as [number, number, number],
+  PERSPECTIVE_TARGET: [0, 0, 0] as ModelPosition,
 
   /** Default top camera position for alignment mode */
-  TOP: [0, 100, 0] as [number, number, number],
+  TOP: [0, 100, 0] as ModelPosition,
 
   /** Default top camera target for alignment mode */
-  TOP_TARGET: [0, 0, 0] as [number, number, number],
+  TOP_TARGET: [0, 0, 0] as ModelPosition,
 } as const;
 
 /**

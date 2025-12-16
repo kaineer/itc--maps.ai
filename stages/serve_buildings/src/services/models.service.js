@@ -119,7 +119,7 @@ const createModelsService = () => {
     }
 
     Object.assign(metadata, updates, {
-      updatedAt: new Date.toISOString(),
+      updatedAt: new Date().toISOString(),
     });
 
     await fs.writeFile(metadataPath, j2(metadata));

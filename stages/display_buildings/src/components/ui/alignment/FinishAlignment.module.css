@@ -1,0 +1,134 @@
+.container {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+}
+
+.collapsed {
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.collapsed:hover {
+    transform: scale(1.1);
+}
+
+.expanded {
+    min-width: 300px;
+    max-width: 400px;
+    background-color: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e0e0e0;
+}
+
+.header {
+    padding: 20px 20px 10px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.title {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.subtitle {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.4;
+}
+
+.buttonsContainer {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.saveButton {
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.saveButton:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.saveButton:active {
+    background-color: #3d8b40;
+    transform: translateY(0);
+}
+
+.returnButton {
+    padding: 14px 20px;
+    font-size: 16px;
+    font-weight: 500;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.returnButton:hover {
+    background-color: #e8e8e8;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.returnButton:active {
+    background-color: #dbdbdb;
+    transform: translateY(0);
+}
+
+.infoSection {
+    padding: 15px 20px 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid #f0f0f0;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
+}
+
+.infoItem {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+}
+
+.infoItem:last-child {
+    margin-bottom: 0;
+}
+
+.infoIcon {
+    margin-right: 10px;
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.infoText {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.4;
+}
+
+.infoText strong {
+    color: #333;
+    font-weight: 600;
+}

@@ -1,21 +1,18 @@
 import classes from "./BuildingSelection.module.css";
 import { MouseEvent } from "react";
-import { EnabledProps } from "../shared/types";
-import { CollapsibleForm } from "./CollapsibleForm";
-import { FileUploadButton } from "../shared/ui/FileUploadButton";
-import { StartAlignmentButton } from "../shared/ui/StartAlignmentButton";
+import { EnabledProps } from "../../shared/types";
+import { CollapsibleForm } from "../CollapsibleForm";
+import { FileUploadButton } from "../../shared/ui/FileUploadButton";
+import { StartAlignmentButton } from "../../shared/ui/StartAlignmentButton";
 import {
   alignmentSlice,
   prepareInitialTransform,
-} from "../../store/slices/alignmentSlice";
-import { uiSlice } from "../../store/slices/uiSlice";
+} from "../../../store/slices/alignmentSlice";
+import { uiSlice } from "../../../store/slices/uiSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { Building } from "../../types/types";
-import {
-  modelUploadSlice,
-  setFileIdAndLoad,
-} from "../../store/slices/modelUploadSlice";
-import { AppDispatch } from "../../store";
+import { Building } from "../../../types/types";
+import { modelUploadSlice } from "../../../store/slices/modelUploadSlice";
+import { AppDispatch } from "../../../store";
 
 interface Props extends EnabledProps {
   className?: string;

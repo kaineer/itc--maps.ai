@@ -2,7 +2,10 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import {
+  alignmentSlice,
+  ModelPosition,
+} from "../../../store/slices/alignmentSlice";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
 import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { ModelData } from "../../../utils/modelTransform";
@@ -18,8 +21,8 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartPos, setDragStartPos] = useState({ x: 0, y: 0 });
   const [isOverModel, setIsOverModel] = useState(false);
-  const dragStartCameraPos = useRef<[number, number, number]>([0, 0, 0]);
-  const dragStartModelPos = useRef<[number, number, number]>([0, 0, 0]);
+  const dragStartCameraPos = useRef<ModelPosition>([0, 0, 0]);
+  const dragStartModelPos = useRef<ModelPosition>([0, 0, 0]);
 
   const { getTopCameraState, getModelTransform, getModelUUID } =
     alignmentSlice.selectors;

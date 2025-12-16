@@ -112,10 +112,12 @@ export async function deleteBackend<T = any>(
 
 export async function patchBackend<T = any>(
   endpoint: string,
+  body: any,
   options: Omit<RequestInit, "method"> = {},
 ): Promise<T> {
   const response = await fetchBackend(endpoint, {
     method: "PATCH",
+    body: JSON.stringify(body),
     ...options,
   });
 
