@@ -10,7 +10,9 @@ const { createModelCache } = require("./modelCache");
 
 const j2 = (obj) => JSON.stringify(obj, null, 2);
 
-const createModelsService = () => {
+let instance = null;
+
+const createModelsService0 = () => {
   const uploadDir = join(__dirname, "../../public");
   const getModelPath = (modelId) => join(uploadDir, modelId + ".fbx");
   const getMetadataPath = (modelId) =>
@@ -172,6 +174,13 @@ const createModelsService = () => {
     getAllModels,
     findModelByAddress,
   };
+};
+
+const createModelsService = () => {
+  if (!instance) {
+    instance = createModelsService0();
+  }
+  return instance;
 };
 
 module.exports = { createModelsService };

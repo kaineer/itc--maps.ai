@@ -742,7 +742,7 @@ export const addPolygonWithModelRequest = createAsyncThunk(
       const response = await putBackend("/models/address", {
         address: polygonData.address,
       });
-      return response.data;
+      return response;
     }
 
     return null;
