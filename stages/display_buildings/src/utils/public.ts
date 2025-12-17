@@ -1,4 +1,5 @@
-const publicBaseUrl = "http://10.1.0.71";
+// const publicBaseUrl = "http://10.1.0.71";
+const publicBaseUrl = "";
 
 export async function fetchPublic(
   endpoint: string,
