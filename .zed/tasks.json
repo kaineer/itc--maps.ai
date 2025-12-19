@@ -38,4 +38,9 @@
     "show_summary": false,
     "show_command": false,
   },
+  {
+    "label": "Deploy frontend",
+    "command": "cd $ZED_WORKTREE_ROOT/stages/display_buildings && npx vite build && cd dist && scp -r * ekbmaps:~/thunk/",
+    "hide": "on_success",
+  },
 ]

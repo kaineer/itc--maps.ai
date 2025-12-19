@@ -5,9 +5,9 @@ import {
   UI_STORAGE_KEY,
 } from "../../utils/localStorage";
 
-const defaultUIMode = "view";
+const defaultUIMode = "intro";
 
-export type UIMode = "view" | "alignment" | "modelSetup";
+export type UIMode = "intro" | "view" | "alignment" | "modelSetup";
 
 export type KnownMode =
   | "topCameraControls"

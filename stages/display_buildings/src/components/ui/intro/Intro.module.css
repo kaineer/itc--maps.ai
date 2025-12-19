@@ -1,0 +1,37 @@
+.intro {
+    --color-primary: #bc00ff;
+    --color-primary-light: #d966ff;
+    --color-primary-glow: rgba(188, 0, 255, 0.3);
+    --color-light-1: #ffffff;
+    --color-light-2: #f8f8fb;
+    --color-text-primary: #1a1a2e;
+    --color-text-secondary: #4a4a68;
+    --color-text-muted: #7a7a95;
+    --color-text-light: #ffffff;
+    --color-border: #d0d0e0;
+    --font-heading: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 3rem;
+    --spacing-xl: 4rem;
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+
+    font-family: var(--font-body);
+    color: var(--color-text-primary);
+    background-color: var(--color-light-1);
+    line-height: 1.6;
+    overflow-x: hidden;
+
+    height: 100vh;
+    overflow-y: scroll;
+}
+
+@media (max-width: 768px) {
+    .intro {
+        --spacing-lg: 2rem;
+        --spacing-xl: 3rem;
+    }
+}
