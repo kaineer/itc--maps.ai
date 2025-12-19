@@ -1,9 +1,6 @@
 import { PayloadAction } from "@reduxjs/toolkit";
 import { createSlice } from "@reduxjs/toolkit";
-import {
-  createStoreMiddleware,
-  loadSliceState,
-} from "../../utils/localStorage";
+import { createStoreMiddleware, loadSliceState } from "@utils/localStorage";
 
 export type KnownMode =
   | "topCameraControls"

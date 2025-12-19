@@ -1,8 +1,8 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ModelData } from "../../utils/modelTransform";
+import { ModelData } from "@utils/modelTransform";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { Box3 } from "three";
-import { downloadBinaryFromBackend } from "../../utils/backend";
+import { downloadBinaryFromBackend } from "@utils/backend";
 
 interface SliceState {
   fileId: string | null;

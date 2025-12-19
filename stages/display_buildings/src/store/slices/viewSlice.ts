@@ -5,9 +5,8 @@ import {
   DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
-} from "../../utils/constants";
-import { BuildingNode } from "../../types/types";
-import { ModelPosition } from "./alignmentSlice";
+} from "@utils/constants";
+import { BuildingNode, ModelPosition } from "../../types/types";
 
 // Camera state for View mode
 export interface ViewCameraState {

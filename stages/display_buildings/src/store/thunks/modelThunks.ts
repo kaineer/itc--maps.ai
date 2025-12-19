@@ -1,9 +1,9 @@
 // thunks/modelThunks.ts
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { Box3 } from "three";
-import { ModelData } from "../../utils/modelTransform";
+import { ModelData } from "@utils/modelTransform";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
-import { getBackend } from "../../utils/backend";
+import { getBackend } from "@utils/backend";
 
 // Async thunk для загрузки модели с сервера
 export const fetchModelById = createAsyncThunk(

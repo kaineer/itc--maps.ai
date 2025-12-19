@@ -5,8 +5,8 @@ import { Box3, Vector3 } from "three";
 // Constants
 import { CAMERA_HEIGHTS /* , MODEL_CONSTANTS*/ } from "./constants";
 
-import { Building, BuildingNode } from "../types/types";
-import { CameraState, ModelPosition } from "@slices/alignmentSlice";
+import { Building, BuildingNode, ModelPosition } from "../types/types";
+import { CameraState } from "@slices/alignmentSlice";
 
 const defaultPolygonSize = 10;
 

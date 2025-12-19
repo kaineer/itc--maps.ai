@@ -4,8 +4,8 @@ import { useFrame } from "@react-three/fiber";
 import { Mesh, MeshBasicMaterial, Box3 } from "three";
 import { EnabledProps } from "../shared/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import { modelsCache } from "../../utils/modelsCache";
-import { ModelData } from "../../utils/modelTransform";
+import { modelsCache } from "@utils/modelsCache";
+import { ModelData } from "@utils/modelTransform";
 
 interface Props extends EnabledProps {}
 

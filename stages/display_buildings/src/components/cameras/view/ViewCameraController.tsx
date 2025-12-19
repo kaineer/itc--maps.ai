@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
-import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "../../../utils/constants";
+import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "@utils/constants";
 
 export const ViewCameraController = () => {
   const dispatch = useDispatch();

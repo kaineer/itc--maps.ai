@@ -34,3 +34,5 @@ export interface ModelAlignment {
   scale: number;
   rotation?: Rotation;
 }
+
+export type ModelPosition = [number, number, number];

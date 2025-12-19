@@ -19,6 +19,7 @@
     "paths": {
       "@slices/*": ["src/store/slices/*"],
       "@store/*": ["src/store/*"],
+      "@utils/*": ["src/utils/*"],
     },
 
     /* Linting */

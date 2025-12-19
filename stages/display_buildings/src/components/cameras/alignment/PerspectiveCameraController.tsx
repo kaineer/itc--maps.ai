@@ -3,13 +3,10 @@ import { useThree } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import {
-  calculateModelBoundingBox,
-  ModelData,
-} from "../../../utils/modelTransform";
+import { calculateModelBoundingBox, ModelData } from "@utils/modelTransform";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
 import { CameraUpdateProps, EnabledProps } from "../../shared/types";
-import { modelsCache } from "../../../utils/modelsCache";
+import { modelsCache } from "@utils/modelsCache";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 

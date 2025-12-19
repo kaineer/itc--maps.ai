@@ -18,7 +18,7 @@ import { ControlInfoSection } from "../../shared/ui/controlInfo/ControlInfoSecti
 import { FeatureInfoSection } from "../../shared/ui/controlInfo/FeatureInfoSection";
 import { DetailedMetaInfo } from "../../shared/ui/controlInfo/DetailedMetaInfo";
 import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
-import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "../../../utils/constants";
+import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "@utils/constants";
 
 const detailedInfo = [
   {

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "@slices/buildingsSlice";
 import { viewSlice } from "@slices/viewSlice";
 import { Building } from "../../../types/types";
-import { CAMERA_HEIGHTS, DISTANCES } from "../../../utils/constants";
+import { CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import classes from "./BuildingSearch.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "../CollapsibleForm";

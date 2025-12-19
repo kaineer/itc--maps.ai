@@ -7,8 +7,8 @@ import {
   calculatePerspectiveCameraPosition,
   ModelTransform,
   calculateWorldBBox,
-} from "../../utils/modelTransform";
-import { Building, Scale } from "../../types/types";
+} from "@utils/modelTransform";
+import { Building, ModelPosition, Scale } from "../../types/types";
 import {
   addPosition,
   subtractPosition,
@@ -17,9 +17,9 @@ import {
   directionTo,
 } from "../../components/shared/positionMath";
 import { Vector3, Box3 } from "three";
-import { CAMERA_HEIGHTS } from "../../utils/constants";
-import { modelsCache } from "../../utils/modelsCache";
-import { patchBackend, putBackend } from "../../utils/backend";
+import { CAMERA_HEIGHTS } from "@utils/constants";
+import { modelsCache } from "@utils/modelsCache";
+import { patchBackend, putBackend } from "@utils/backend";
 import { uiSlice } from "./uiSlice";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
@@ -31,8 +31,6 @@ const defaultCameraView = "top";
 export const positionStepMin = 0.5;
 export const positionStepMax = 20;
 export const positionStepFactor = 1.5;
-
-export type ModelPosition = [number, number, number];
 
 export interface CameraState {
   position: ModelPosition;

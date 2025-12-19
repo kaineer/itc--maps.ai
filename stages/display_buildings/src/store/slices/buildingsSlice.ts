@@ -1,7 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { putBackend, getBackend } from "@utils/backend";
+import { initializeViewCamera } from "./viewSlice";
+// import { getPublic } from "../../utils/public";
 import { Building, BuildingNode } from "../../types/types";
-import { putBackend, getBackend } from "../../utils/backend";
-import { initializeViewCamera, viewSlice } from "./viewSlice";
+
+/**
+ * TODO: тут мы по-быстрому прикручиваем получение данных из /public
+ */
+// const getBackend = getPublic;
+// const putBackend = getPublic;
 
 interface BuildingsResponse {
   buildings: Building[];
@@ -57,6 +64,7 @@ export const fetchBuildings = createAsyncThunk(
     position: BuildingNode;
     distance: number;
   }) => {
+    // const data: BuildingsResponse = await getPublic("/buildings");
     const data: BuildingsResponse = await putBackend("/buildings", {
       position,
       distance,
