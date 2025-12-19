@@ -7,7 +7,7 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 
 interface Props {
   enabled?: boolean;

@@ -2,8 +2,8 @@ import styles from "./AlignmentUI.module.css";
 
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
-import { uiSlice } from "../../../store/slices/uiSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
+import { uiSlice } from "@slices/uiSlice";
 
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";

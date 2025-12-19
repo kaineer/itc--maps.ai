@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { EnabledProps } from "../../shared/types";
 
 const { getCurrentCameraView, getPerspectiveCameraState, getModelTransform } =

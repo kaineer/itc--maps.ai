@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { viewSlice } from "../../store/slices/viewSlice";
+import { viewSlice } from "@slices/viewSlice";
 
 export const Ground = () => {
   const { getGroundCenter } = viewSlice.selectors;

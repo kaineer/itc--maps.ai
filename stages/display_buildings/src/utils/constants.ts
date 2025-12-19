@@ -5,7 +5,7 @@
  * to ensure consistency in measurements and configurations.
  */
 
-import { ModelPosition } from "../store/slices/alignmentSlice";
+import { ModelPosition } from "@slices/alignmentSlice";
 
 /**
  * Camera height constants for different viewing modes

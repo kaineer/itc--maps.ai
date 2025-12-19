@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { AlignmentStage } from "./AlignmentStage";
 import { EnabledProps } from "../../shared/types";
 

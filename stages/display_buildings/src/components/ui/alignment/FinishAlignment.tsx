@@ -2,9 +2,9 @@ import { useDispatch } from "react-redux";
 import classes from "./FinishAlignment.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "../CollapsibleForm";
-import { uiSlice } from "../../../store/slices/uiSlice";
-import { saveAlignment } from "../../../store/slices/alignmentSlice";
-import { type AppDispatch } from "../../../store";
+import { uiSlice } from "@slices/uiSlice";
+import { saveAlignment } from "@slices/alignmentSlice";
+import { type AppDispatch } from "@store";
 
 interface Props {
   enabled?: boolean;

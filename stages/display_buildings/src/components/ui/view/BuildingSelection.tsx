@@ -7,12 +7,13 @@ import { StartAlignmentButton } from "../../shared/ui/StartAlignmentButton";
 import {
   alignmentSlice,
   prepareInitialTransform,
-} from "../../../store/slices/alignmentSlice";
-import { uiSlice } from "../../../store/slices/uiSlice";
+} from "@slices/alignmentSlice";
+import { uiSlice } from "@slices/uiSlice";
+import { modelUploadSlice } from "@slices/modelUploadSlice";
+
 import { useDispatch, useSelector } from "react-redux";
 import { Building } from "../../../types/types";
-import { modelUploadSlice } from "../../../store/slices/modelUploadSlice";
-import { AppDispatch } from "../../../store";
+import { AppDispatch } from "@store";
 
 interface Props extends EnabledProps {
   className?: string;

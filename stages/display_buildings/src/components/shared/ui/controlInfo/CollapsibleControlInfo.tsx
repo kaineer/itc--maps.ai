@@ -2,10 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import classes from "./CollapsibleControlInfo.module.css";
-import {
-  helpInfoSlice,
-  KnownMode,
-} from "../../../../store/slices/helpInfoSlice";
+import { helpInfoSlice, KnownMode } from "@slices/helpInfoSlice";
 
 interface Props {
   mode: KnownMode;

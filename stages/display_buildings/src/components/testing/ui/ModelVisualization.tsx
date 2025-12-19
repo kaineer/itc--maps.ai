@@ -5,7 +5,7 @@
  * rendering is implemented in production.
  */
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { Mesh, MeshStandardMaterial } from "three";
 import { useRef, useState } from "react";
 import { useFrame } from "@react-three/fiber";

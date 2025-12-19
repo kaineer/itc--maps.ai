@@ -2,10 +2,7 @@ import { useEffect, useCallback, useRef, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  alignmentSlice,
-  ModelPosition,
-} from "../../../store/slices/alignmentSlice";
+import { alignmentSlice, ModelPosition } from "@slices/alignmentSlice";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
 import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { ModelData } from "../../../utils/modelTransform";

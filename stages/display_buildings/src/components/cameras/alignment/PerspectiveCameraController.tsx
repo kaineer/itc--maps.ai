@@ -2,7 +2,7 @@ import { useEffect, useCallback, useState } from "react";
 import { useThree } from "@react-three/fiber";
 import { Vector3, PerspectiveCamera } from "three";
 import { useDispatch, useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import {
   calculateModelBoundingBox,
   ModelData,

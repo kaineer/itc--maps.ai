@@ -1,6 +1,6 @@
 import { BasePolygonBuilding } from "./BasePolygonBuilding";
 import { Building } from "../../../types/types";
-import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
 
 interface Props {

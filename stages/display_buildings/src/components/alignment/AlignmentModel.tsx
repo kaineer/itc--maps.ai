@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, MeshBasicMaterial, Box3 } from "three";
 import { EnabledProps } from "../shared/types";
-import { alignmentSlice } from "../../store/slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { modelsCache } from "../../utils/modelsCache";
 import { ModelData } from "../../utils/modelTransform";
 

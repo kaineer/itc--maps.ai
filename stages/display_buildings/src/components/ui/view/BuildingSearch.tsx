@@ -1,13 +1,13 @@
 import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { buildingsSlice } from "../../../store/slices/buildingsSlice";
-import { viewSlice } from "../../../store/slices/viewSlice";
+import { buildingsSlice } from "@slices/buildingsSlice";
+import { viewSlice } from "@slices/viewSlice";
 import { Building } from "../../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "../../../utils/constants";
 import classes from "./BuildingSearch.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "../CollapsibleForm";
-import { ModelPosition } from "../../../store/slices/alignmentSlice";
+import { ModelPosition } from "@slices/alignmentSlice";
 
 interface Props {
   enabled?: boolean;

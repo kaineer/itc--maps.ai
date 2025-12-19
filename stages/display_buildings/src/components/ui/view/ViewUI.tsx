@@ -2,19 +2,16 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import {
-  buildingsSlice,
-  fetchInitialBuildings,
-} from "../../../store/slices/buildingsSlice";
-import { viewSlice } from "../../../store/slices/viewSlice";
+import { buildingsSlice, fetchInitialBuildings } from "@slices/buildingsSlice";
+import { viewSlice } from "@slices/viewSlice";
 import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
 import { ViewStage } from "../../stage/ui/ViewStage";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
-import { type AppDispatch } from "../../../store";
+import { type AppDispatch } from "@store";
 import { type Building } from "../../../types/types";
-import { addPolygonWithModelRequest } from "../../../store/slices/alignmentSlice";
+import { addPolygonWithModelRequest } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 
 interface Props {

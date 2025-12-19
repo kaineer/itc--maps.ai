@@ -1,7 +1,7 @@
 import classes from "./Hero.module.css";
 import { ReactNode, MouseEvent } from "react";
 import clsx from "clsx";
-import { uiSlice } from "../../../store/slices/uiSlice";
+import { uiSlice } from "@slices/uiSlice";
 import { useDispatch } from "react-redux";
 
 interface LayerProps {

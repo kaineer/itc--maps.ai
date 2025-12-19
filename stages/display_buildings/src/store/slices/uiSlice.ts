@@ -2,8 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 const defaultUIMode = "intro";
 
-export type UIMode = "intro" | "view" | "alignment" | "modelSetup";
+// Режимы работы приложения
+export type UIMode = "intro" | "view" | "alignment";
 
+// Форма, показанная в интерфейсе
 export type BuildingFormMode = "none" | "search" | "select";
 
 interface UIState {
@@ -28,12 +30,6 @@ export const uiSlice = createSlice({
     },
     selectAlignmentMode: (state) => {
       state.currentMode = "alignment";
-    },
-    selectModelSetupMode: (state) => {
-      state.currentMode = "modelSetup";
-    },
-    resetUI: (state) => {
-      state.currentMode = defaultUIMode;
     },
     setBuildingFormMode: (state, action: PayloadAction<BuildingFormMode>) => {
       state.buildingFormMode = action.payload;

@@ -8,9 +8,7 @@ import {
 export type KnownMode =
   | "topCameraControls"
   | "perspectiveCameraControls"
-  | "modelSetupControls"
-  | "viewControls"
-  | "buildingSearch";
+  | "viewControls";
 
 interface HelpInfoState {
   known: Record<KnownMode, boolean>;
@@ -20,9 +18,7 @@ const defaultInitialState: HelpInfoState = {
   known: {
     topCameraControls: false,
     perspectiveCameraControls: false,
-    modelSetupControls: false,
     viewControls: false,
-    buildingSearch: false,
   },
 };
 
