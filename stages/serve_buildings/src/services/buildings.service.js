@@ -20,7 +20,7 @@ const createBuildingsService = () => {
   const getModelsData = async () => {
     const models = await getAllModels();
     return models.filter(
-      (m) => Array.isArray(m.polygons) && m.polygons.length > 2,
+      (m) => Array.isArray(m.polygons) && m.polygons.length > 0,
     );
   };
 

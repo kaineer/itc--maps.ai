@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { uiSlice, uiLocalStorageMiddleware } from "./slices/uiSlice";
+import { uiSlice } from "./slices/uiSlice";
 import { buildingsSlice } from "./slices/buildingsSlice";
 import { alignmentSlice } from "./slices/alignmentSlice";
 import { viewSlice } from "./slices/viewSlice";
 import { modelUploadSlice } from "./slices/modelUploadSlice";
+import {
+  helpInfoSlice,
+  helpInfoStorageMiddleware,
+} from "./slices/helpInfoSlice";
 
 export function setupStore() {
   const store = configureStore({
@@ -13,6 +17,7 @@ export function setupStore() {
       [alignmentSlice.reducerPath]: alignmentSlice.reducer,
       [viewSlice.reducerPath]: viewSlice.reducer,
       [modelUploadSlice.reducerPath]: modelUploadSlice.reducer,
+      [helpInfoSlice.reducerPath]: helpInfoSlice.reducer,
       // Add other reducers here as they are created
     },
     middleware: (getDefaultMiddleware) =>
@@ -20,7 +25,7 @@ export function setupStore() {
         serializableCheck: {
           ignoredActions: ["persist/PERSIST"],
         },
-      }).concat(uiLocalStorageMiddleware),
+      }).concat(helpInfoStorageMiddleware),
     devTools: process.env.NODE_ENV !== "production",
   });
 

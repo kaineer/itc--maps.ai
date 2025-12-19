@@ -2,7 +2,10 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import clsx from "clsx";
 import classes from "./CollapsibleControlInfo.module.css";
-import { KnownMode, uiSlice } from "../../../../store/slices/uiSlice";
+import {
+  helpInfoSlice,
+  KnownMode,
+} from "../../../../store/slices/helpInfoSlice";
 
 interface Props {
   mode: KnownMode;
@@ -16,8 +19,8 @@ export const CollapsibleControlInfo = ({
   className = "",
 }: Props) => {
   const dispatch = useDispatch();
-  const { getKnown } = uiSlice.selectors;
-  const { setKnown } = uiSlice.actions;
+  const { getKnown } = helpInfoSlice.selectors;
+  const { setKnown } = helpInfoSlice.actions;
 
   const known = useSelector(getKnown);
   const isKnownFromRedux = known[mode];
