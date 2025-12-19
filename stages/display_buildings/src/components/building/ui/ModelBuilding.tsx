@@ -24,7 +24,7 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
     scale = 1,
     rotation = 0,
   } = building;
-  const fbx = useFBX("http://10.1.0.71" + modelUrl!);
+  const fbx = useFBX(modelUrl!);
   const fbxPosition = [position.x, 0, position.z];
 
   const handleClick = () => {
