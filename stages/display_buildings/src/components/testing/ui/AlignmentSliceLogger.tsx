@@ -7,7 +7,7 @@
 
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../../store/alignmentSlice";
+import { alignmentSlice } from "../../../store/slices/alignmentSlice";
 
 interface Props {
   enabled?: boolean;
@@ -29,7 +29,6 @@ export const AlignmentSliceLogger = ({
     getPerspectiveCameraState,
     getCurrentCameraView,
     getModelTransform,
-    getSelectedModel,
     getSelectedPolygons,
     getPositionStep,
     getRotationStep,
@@ -43,7 +42,6 @@ export const AlignmentSliceLogger = ({
   const perspectiveCameraState = useSelector(getPerspectiveCameraState);
   const currentCameraView = useSelector(getCurrentCameraView);
   const modelTransform = useSelector(getModelTransform);
-  const selectedModel = useSelector(getSelectedModel);
   const selectedPolygons = useSelector(getSelectedPolygons);
   const positionStep = useSelector(getPositionStep);
   const rotationStep = useSelector(getRotationStep);
@@ -96,19 +94,9 @@ export const AlignmentSliceLogger = ({
     console.log("Position:", modelTransform.position);
     console.log("Rotation:", modelTransform.rotation, "degrees");
     console.log("Scale:", modelTransform.scale);
-    console.log(
-      "Selected Model:",
-      selectedModel ? `Yes (${selectedModel.id})` : "No",
-    );
     console.log("Selected Polygons:", selectedPolygons.length);
     console.groupEnd();
-  }, [
-    enabled,
-    logModelTransform,
-    modelTransform,
-    selectedModel,
-    selectedPolygons,
-  ]);
+  }, [enabled, logModelTransform, modelTransform, selectedPolygons]);
 
   // Log step configuration changes
   useEffect(() => {

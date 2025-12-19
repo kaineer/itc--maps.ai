@@ -10,7 +10,7 @@
 
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { uiSlice } from "../../../store/uiSlice";
+import { uiSlice } from "../../../store/slices/uiSlice";
 import {
   loadUIState,
   saveUIState,
@@ -56,7 +56,7 @@ export const UILocalStorageDebug = ({
     if (isAvailable) {
       try {
         const data = localStorage.getItem(UI_STORAGE_KEY);
-        setLocalStorageData(data ? JSON.parse(data) : null);
+        // setLocalStorageData(data ? JSON.parse(data) : null);
       } catch (error) {
         console.error("Ошибка обновления данных из localStorage:", error);
       }

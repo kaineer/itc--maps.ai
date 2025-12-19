@@ -5,17 +5,16 @@ import { OrbitControls } from "@react-three/drei";
 import {
   buildingsSlice,
   fetchInitialBuildings,
-} from "../../store/buildingsSlice";
-import { viewSlice } from "../../store/viewSlice";
-import { ViewControlsInfo } from "../cameras/view/ViewControlsInfo";
-import { BuildingSearch } from "./BuildingSearch";
-import { Ground } from "../static/Ground";
-import { Lighting } from "../static/Lighting";
-import { ViewStage } from "../stage/ui/ViewStage";
-import { ViewCameraController } from "../cameras/view/ViewCameraController";
-import { type AppDispatch } from "../../store";
-import { type Building } from "../../types/types";
-import { alignmentSlice } from "../../store/alignmentSlice";
+} from "../../../store/slices/buildingsSlice";
+import { viewSlice } from "../../../store/slices/viewSlice";
+import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
+import { Ground } from "../../static/Ground";
+import { Lighting } from "../../static/Lighting";
+import { ViewStage } from "../../stage/ui/ViewStage";
+import { ViewCameraController } from "../../cameras/view/ViewCameraController";
+import { type AppDispatch } from "../../../store";
+import { type Building } from "../../../types/types";
+import { addPolygonWithModelRequest } from "../../../store/slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 
 interface Props {
@@ -27,11 +26,6 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
   const { getCameraState } = viewSlice.selectors;
-  const {
-  //  selectModelForAlignment,
-    addPolygonForAlignment,
-  //  startAlignmentProcess,
-  } = alignmentSlice.actions;
 
   const buildings = useSelector(getBuildings);
   const loading = useSelector(getLoading);
@@ -39,9 +33,9 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraState = useSelector(getCameraState);
 
   const handleBuildingClick = (building: Building) => {
-    dispatch(addPolygonForAlignment(building));
+    dispatch(addPolygonWithModelRequest(building));
     onBuildingSelect && onBuildingSelect(building);
-  }
+  };
 
   useEffect(() => {
     // Fetch initial position and buildings when component mounts
@@ -85,7 +79,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Ground />
 
         {/* Buildings */}
-        <ViewStage buildings={buildings} onBuildingClick={handleBuildingClick} />
+        <ViewStage
+          buildings={buildings}
+          onBuildingClick={handleBuildingClick}
+        />
 
         {/* Camera controls for view mode */}
         <OrbitControls

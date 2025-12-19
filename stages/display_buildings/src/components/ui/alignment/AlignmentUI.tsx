@@ -2,15 +2,15 @@ import styles from "./AlignmentUI.module.css";
 
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "../../store/alignmentSlice";
-import { uiSlice } from "../../store/uiSlice";
+import { alignmentSlice } from "../../../store/slices/alignmentSlice";
+import { uiSlice } from "../../../store/slices/uiSlice";
 
-import { Ground } from "../static/Ground";
-import { Lighting } from "../static/Lighting";
+import { Ground } from "../../static/Ground";
+import { Lighting } from "../../static/Lighting";
 
-import { AlignmentStageContainer } from "../stage/ui/AlignmentStageContainer";
-import { AlignmentCameraGroup } from "../cameras/alignment/AlignmentCameraGroup";
-import { AlignmentUIGroup } from "./alignment/AlignmentUIGroup";
+import { AlignmentStageContainer } from "../../stage/ui/AlignmentStageContainer";
+import { AlignmentCameraGroup } from "../../cameras/alignment/AlignmentCameraGroup";
+import { AlignmentUIGroup } from "./AlignmentUIGroup";
 
 /**
  * AlignmentUI component for the alignment mode.

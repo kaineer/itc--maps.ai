@@ -32,16 +32,18 @@ export function saveToLocalStorage<T>(key: string, data: T): boolean {
  * @returns Загруженные данные или значение по умолчанию
  */
 export function loadFromLocalStorage<T>(key: string, defaultValue: T): T {
-  try {
-    const serializedData = localStorage.getItem(key);
-    if (serializedData === null) {
-      return defaultValue;
-    }
-    return JSON.parse(serializedData) as T;
-  } catch (error) {
-    console.error(`Ошибка загрузки из localStorage (ключ: ${key}):`, error);
-    return defaultValue;
-  }
+  return defaultValue;
+  // TODO: uncomment when fixed
+  // try {
+  //   const serializedData = localStorage.getItem(key);
+  //   if (serializedData === null) {
+  //     return defaultValue;
+  //   }
+  //   return JSON.parse(serializedData) as T;
+  // } catch (error) {
+  //   console.error(`Ошибка загрузки из localStorage (ключ: ${key}):`, error);
+  //   return defaultValue;
+  // }
 }
 
 /**

@@ -1,7 +1,13 @@
 const fastify = require("fastify")({ logger: true });
 const cors = require("@fastify/cors");
+const multipart = require("@fastify/multipart");
 const fs = require("fs").promises;
 const path = require("path");
+const { pipeline } = require("stream/promises");
+const { createWriteStream, createReadStream } = require("fs");
+
+const { uploadRoutes } = require("./src/routes/upload.routes");
+const { modelsRoutes } = require("./src/routes/models.routes");
 
 // Load building data
 let buildingsData = [];
@@ -213,6 +219,43 @@ fastify.get(
   },
 );
 
+const registerModelsRoute = (fastify) => {
+  fastify.get("/model/:modelId", async (request, reply) => {
+    const { modelId } = request.params;
+
+    // Валидация modelId для предотвращения path traversal атак
+    if (!modelId || modelId.includes("..") || modelId.includes("/")) {
+      throw fastify.httpErrors.badRequest("Некорректный ID модели");
+    }
+
+    // Формируем путь к файлу в директории public
+    // Предполагаем, что public находится в корне проекта
+    const modelPath = path.join(process.cwd(), "public", `${modelId}.fbx`);
+
+    try {
+      // Проверяем существование файла
+      await fs.access(modelPath);
+
+      // Определяем MIME-тип для FBX файлов
+      // FBX обычно имеет MIME-тип application/octet-stream или text/plain
+      const mimeType = "application/octet-stream";
+
+      // Отправляем файл
+      return reply
+        .header("Content-Type", mimeType)
+        .header("Content-Disposition", `inline; filename="${modelId}.fbx"`)
+        .send(createReadStream(modelPath));
+    } catch (error) {
+      if (error.code === "ENOENT") {
+        throw fastify.httpErrors.notFound(
+          `Модель с ID "${modelId}" не найдена`,
+        );
+      }
+      throw error;
+    }
+  });
+};
+
 // Health check endpoint
 fastify.get("/health", async (request, reply) => {
   return {
@@ -231,9 +274,22 @@ const start = async () => {
     // Register CORS
     await fastify.register(cors, {
       origin: true, // Allow all origins
-      methods: ["GET", "PUT", "POST", "DELETE"],
+      methods: ["GET", "PUT", "POST", "DELETE", "OPTIONS", "PATCH"],
       allowedHeaders: ["Content-Type", "Authorization"],
     });
+
+    await fastify.register(multipart, {
+      limits: {
+        fileSize: 10 * 1024 * 1024, // 10mb
+        files: 5,
+      },
+    });
+
+    await uploadRoutes(fastify);
+    await modelsRoutes(fastify);
+
+    // NOTE: should be run **before** static registering
+    registerModelsRoute(fastify);
 
     // Serve static files from public directory
     await fastify.register(require("@fastify/static"), {

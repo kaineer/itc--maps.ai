@@ -3,11 +3,11 @@ import {
   loadUIState,
   saveUIState,
   UI_STORAGE_KEY,
-} from "../utils/localStorage";
+} from "../../utils/localStorage";
 
 const defaultUIMode = "intro";
 
-export type UIMode = "view" | "alignment" | "modelSetup" | "intro";
+export type UIMode = "intro" | "view" | "alignment" | "modelSetup";
 
 export type KnownMode =
   | "topCameraControls"
@@ -47,7 +47,7 @@ export const uiSlice = createSlice({
     selectViewMode: (state) => {
       state.currentMode = "view";
     },
-    selectAligmentMode: (state) => {
+    selectAlignmentMode: (state) => {
       state.currentMode = "alignment";
     },
     selectModelSetupMode: (state) => {

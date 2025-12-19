@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { uiSlice, uiLocalStorageMiddleware } from "./uiSlice";
-import { buildingsSlice } from "./buildingsSlice";
-import { alignmentSlice } from "./alignmentSlice";
-import { viewSlice } from "./viewSlice";
+import { uiSlice, uiLocalStorageMiddleware } from "./slices/uiSlice";
+import { buildingsSlice } from "./slices/buildingsSlice";
+import { alignmentSlice } from "./slices/alignmentSlice";
+import { viewSlice } from "./slices/viewSlice";
+import { modelUploadSlice } from "./slices/modelUploadSlice";
 
 export function setupStore() {
   const store = configureStore({
@@ -11,6 +12,7 @@ export function setupStore() {
       [buildingsSlice.reducerPath]: buildingsSlice.reducer,
       [alignmentSlice.reducerPath]: alignmentSlice.reducer,
       [viewSlice.reducerPath]: viewSlice.reducer,
+      [modelUploadSlice.reducerPath]: modelUploadSlice.reducer,
       // Add other reducers here as they are created
     },
     middleware: (getDefaultMiddleware) =>

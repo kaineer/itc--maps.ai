@@ -2,10 +2,13 @@ import json
 import math
 import sys
 import xml.etree.ElementTree as ET
+from errno import EACCES
 from typing import Any, Dict, List
 
+EARTH_RADIUS = 6371000  # Earth's radius in meters
 
-def lat_lng_to_mercator(lat: float, lng: float) -> List[float]:
+
+def lat_lng_to_mercator(lat: float, lng: float):
     """
     Convert latitude and longitude to Mercator projection coordinates.
 
@@ -21,13 +24,13 @@ def lat_lng_to_mercator(lat: float, lng: float) -> List[float]:
     lng_rad = math.radians(lng)
 
     # Mercator projection formulas
-    x = lng_rad
-    z = math.log(math.tan(math.pi / 4 + lat_rad / 2))
+    x = EARTH_RADIUS * lng_rad
+    z = EARTH_RADIUS * math.log(math.tan(math.pi / 4 + lat_rad / 2))
 
     return {"x": x, "z": z}
 
 
-def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]) -> List[float]:
+def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]):
     """
     Convert latitude and longitude to linear normalized coordinates.
 
@@ -57,7 +60,7 @@ def lat_lng_to_linear(lat: float, lng: float, bounds: Dict[str, float]) -> List[
 
 def transform_coordinates(
     lat: float, lng: float, translation_type: str, bounds: Dict[str, float]
-) -> List[float]:
+):
     """
     Transform coordinates based on translation type.
 

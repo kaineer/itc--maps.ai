@@ -1,7 +1,108 @@
 # Model Alignment Tool Implementation Plan
 
+## Phase 8: Model Alignment System Refactoring (Current Phase)
+**Цель**: Полная интеграция системы выравнивания с кэшем моделей и API управления моделями
+
+### Задача A1: Переделать AlignmentUI и нижележащие компоненты на предмет получения модели из modelCache
+**Описание**: Интеграция кэша моделей во все компоненты выравнивания для оптимизации загрузки и устранения дублирования кода
+- **Подзадачи**:
+  1. Обновить `AlignmentUI.tsx` для использования `modelsCache.getModel()`
+  2. Переделать компоненты выравнивания (`AlignmentStage`, `AlignedModel`) на работу с кэшем
+  3. Устранить дублирование кода загрузки FBX моделей
+  4. Оптимизировать перерисовку компонентов при загрузке моделей
+- **Критерии успеха**:
+  - Все компоненты выравнивания используют единый кэш моделей
+  - Устранено дублирование кода загрузки FBX
+  - Улучшена производительность загрузки моделей
+
+### Задача A2: Добавить переход в режим выравнивания при нажатии кнопки "Начать выравнивание"
+**Описание**: Реализация полноценного переключения между режимами просмотра и выравнивания
+- **Подзадачи**:
+  1. Реализовать переключение режимов в Redux store (добавить флаг `isAlignmentMode`)
+  2. Обновить `StartAlignmentButton` для активации режима выравнивания
+  3. Настроить камеры для режима выравнивания (позиционирование, управление)
+  4. Инициализировать трансформации модели при старте выравнивания через `prepareInitialTransform`
+  5. Обновить UI для отображения только релевантных элементов в режиме выравнивания
+- **Критерии успеха**:
+  - Плавный переход между режимами просмотра и выравнивания
+  - Автоматическая настройка камер для выравнивания
+  - Корректная инициализация трансформаций модели
+
+### Задача A3: Поправить интерфейс добавления модели/полигонов в выравнивание
+**Описание**: Улучшение UI/UX процесса выбора моделей и полигонов для выравнивания
+- **Подзадачи**:
+  1. Улучшить `BuildingSelection` компонент для более интуитивного выбора полигонов
+  2. Добавить визуальную обратную связь при выборе полигонов (подсветка, анимация)
+  3. Создать компонент выбора модели из списка доступных моделей
+  4. Упростить процесс добавления/удаления элементов из выравнивания
+  5. Добавить валидацию выбора (минимальное количество полигонов, совместимость модели)
+- **Критерии успеха**:
+  - Интуитивный интерфейс выбора моделей и полигонов
+  - Ясная визуальная обратная связь
+  - Упрощенный рабочий процесс добавления элементов
+
+### Задача A4: ОБЯЗАТЕЛЬНО добавить API и вызовы API для создания объекта модели в таблице моделей
+**Описание**: Создание полноценной системы управления моделями через API с возможностью просмотра непривязанных моделей
+- **Подзадачи**:
+  1. **Backend API**:
+     - Создать таблицу моделей в базе данных (если используется) или файловую структуру
+     - Реализовать CRUD endpoints:
+       - `GET /models` - список всех моделей
+       - `GET /models/:id` - получение конкретной модели
+       - `POST /models` - создание новой записи модели
+       - `PUT /models/:id` - обновление модели
+       - `DELETE /models/:id` - удаление модели
+     - Добавить endpoints для метаданных моделей
+   
+  2. **Frontend Integration**:
+     - Создать Redux slice для управления моделями (`modelsSlice.ts`)
+     - Реализовать thunks для API вызовов
+     - Создать UI компоненты для работы с таблицей моделей
+     - Добавить страницу/компонент для просмотра непривязанных моделей
+   
+  3. **Database Schema** (пример):
+     ```sql
+     CREATE TABLE models (
+       id UUID PRIMARY KEY,
+       name VARCHAR(255) NOT NULL,
+       file_path VARCHAR(500) NOT NULL,
+       file_format VARCHAR(10) NOT NULL,
+       vertex_count INTEGER,
+       bounding_box JSONB,
+       created_at TIMESTAMP DEFAULT NOW(),
+       updated_at TIMESTAMP DEFAULT NOW(),
+       is_linked BOOLEAN DEFAULT FALSE,
+       linked_building_id UUID REFERENCES buildings(id)
+     );
+     ```
+   
+  4. **UI Components**:
+     - `ModelsTable` - таблица со списком моделей
+     - `ModelDetails` - детальная информация о модели
+     - `ModelUploadForm` - форма загрузки новой модели
+     - `UnlinkedModelsView` - просмотр непривязанных моделей
+- **Критерии успеха**:
+  - Полноценная RESTful API для управления моделями
+  - Frontend интеграция с Redux и UI компонентами
+  - Возможность просмотра и управления непривязанными моделями
+  - Синхронизация состояния между загруженными моделями и таблицей моделей
+
+### Технические требования Phase 8
+- **Сроки**: Высокий приоритет, особенно задача A4
+- **Зависимости**: Задачи A1-A3 могут выполняться параллельно, A4 требует завершения backend части
+- **Тестирование**: Unit тесты для API, интеграционные тесты для frontend-backend взаимодействия
+- **Документация**: Обновить API документацию и инструкции по использованию системы управления моделями
+
 ## Overview
-Create a system for aligning 3D models with their corresponding building polygons, allowing precise positioning and scaling adjustments with visual feedback.
+Create a system for aligning 3D models with their corresponding building polygons, allowing precise positioning and scaling adjustments with visual feedback. Current focus: Phase 8 - Model Alignment System Refactoring.
+
+## Current Status (Phase 8 IN PROGRESS)
+- ✅ **Model Cache System**: Implemented `modelsCache.ts` for optimized FBX loading
+- ✅ **Start Alignment Button**: Created `StartAlignmentButton` component with CSS
+- ✅ **Alignment Slice Refactoring**: Updated with `prepareInitialTransform` thunk
+- ✅ **Model Upload Enhancement**: Added async model loading with FBXLoader
+- ✅ **Backend Utilities**: Enhanced with binary download support
+- 🚧 **Phase 8 Tasks**: Integration with model cache and API development in progress
 
 ## Implementation Phases
 

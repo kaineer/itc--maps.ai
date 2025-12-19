@@ -1,0 +1,160 @@
+.logoRow {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.logoImg {
+    width: 80px;
+    height: auto;
+    display: block;
+}
+
+.orgName {
+    font-family: var(--font-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    line-height: 1.4;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.contactsTitle {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin-bottom: var(--spacing-xs);
+    color: var(--color-primary);
+}
+
+.contactItem {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+
+    & i {
+        color: var(--color-primary);
+        font-size: 1.125rem;
+        width: 20px;
+    }
+
+    & a:hover {
+        color: var(--color-primary);
+    }
+}
+
+.socials {
+    display: flex;
+    gap: 1rem;
+}
+
+.link {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--color-light-1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    color: var(--color-primary);
+    transition: all var(--transition-normal);
+    border: 2px solid var(--color-border);
+
+    &:hover {
+        background: var(--color-primary);
+        color: var(--color-text-light);
+        transform: translateY(-3px);
+        box-shadow: 0 4px 15px var(--color-primary-glow);
+        border-color: var(--color-primary);
+    }
+}
+
+.legalInfo {
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    line-height: 1.6;
+
+    & p {
+        display: inline;
+    }
+
+    & p:not(:last-child)::after {
+        content: " | ";
+    }
+}
+
+.copyright {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+}
+
+.footer {
+    position: relative;
+    background: var(--color-light-2);
+    border-top: 1px solid var(--color-border);
+    padding: var(--spacing-xl) var(--spacing-md);
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            var(--color-primary) 50%,
+            transparent 100%
+        );
+    }
+
+    & a {
+        color: inherit;
+        text-decoration: none;
+        transition: color var(--transition-fast);
+    }
+
+    & a:hover {
+        color: var(--color-primary);
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-lg) var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: var(--spacing-md) var(--spacing-sm);
+    }
+
+    .container {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+
+    .socials {
+        flex-wrap: wrap;
+    }
+
+    .logoImg {
+        width: 60px;
+    }
+
+    .orgName {
+        font-size: 1rem;
+    }
+}

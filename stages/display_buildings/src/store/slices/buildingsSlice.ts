@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { Building, BuildingNode } from "../types/types";
 // import { putBackend, getBackend } from "../utils/backend";
 import { initializeViewCamera } from "./viewSlice";
-import { getPublic } from "../utils/public";
+import { getPublic } from "../../utils/public";
+import { Building, BuildingNode } from "../../types/types";
 
 /**
  * TODO: тут мы по-быстрому прикручиваем получение данных из /public

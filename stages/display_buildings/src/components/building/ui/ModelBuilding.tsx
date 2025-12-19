@@ -2,29 +2,34 @@ import { Vector3, Box3 } from "three";
 import { Building } from "../../../types/types";
 import { useFBX } from "@react-three/drei";
 import { useEffect } from "react";
-import * as THREE from 'three';
+import * as THREE from "three";
 
 interface Props {
   building: Building;
   onClick?: (building: Building) => void;
 }
 
-const applyToArrayOrElement = <T,>(e: Array<T>|T, fn: (a: T) => void) => {
+const applyToArrayOrElement = <T,>(e: Array<T> | T, fn: (a: T) => void) => {
   if (Array.isArray(e)) {
     (e as Array<T>).forEach(fn);
   } else {
     fn(e as T);
   }
-}
+};
 
 export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
-  const { modelUrl, position = { x: 0, z: 0 }, scale = 1, rotation = 0 } = building;
+  const {
+    modelUrl,
+    position = { x: 0, z: 0 },
+    scale = 1,
+    rotation = 0,
+  } = building;
   const fbx = useFBX("http://10.1.0.71" + modelUrl!);
   const fbxPosition = [position.x, 0, position.z];
 
   const handleClick = () => {
     onClick(building);
-  }
+  };
 
   if (fbx) {
     const box = new Box3().setFromObject(fbx);
@@ -38,7 +43,7 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
     const mat = material as THREE.MeshStandardMaterial;
 
     if (mat.map) {
-      console.log('Texture map found:', mat.map);
+      console.log("Texture map found:", mat.map);
       mat.map.encoding = THREE.sRGBEncoding;
       mat.map.flipY = false; // Для FBX обычно false
       mat.map.needsUpdate = true;
@@ -55,7 +60,7 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
       const mesh = child as THREE.Mesh;
 
       if (mesh.isMesh && mesh.material) {
-        console.log('Mesh found:', mesh.name);
+        console.log("Mesh found:", mesh.name);
 
         const material = mesh.material;
 
@@ -66,18 +71,21 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
             fixMaterial(mat as THREE.Material);
           });
         } else {
-          console.log('Material:', material);
+          console.log("Material:", material);
           fixMaterial(material as THREE.Material);
         }
       }
     });
   }, [fbx]);
 
-  const rotY = rotation * Math.PI / 180;
+  const rotY = (rotation * Math.PI) / 180;
 
-  return <primitive
-    object={fbx} position={fbxPosition}
-    scale={[scale, scale, scale]}
-    rotation={[0, rotY, 0]}
-  />;
+  return (
+    <primitive
+      object={fbx}
+      position={fbxPosition}
+      scale={[scale, scale, scale]}
+      rotation={[0, rotY, 0]}
+    />
+  );
 };

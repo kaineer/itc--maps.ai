@@ -3,9 +3,12 @@
 import { Box3, Vector3 } from "three";
 
 // Constants
-import { CAMERA_HEIGHTS, MODEL_CONSTANTS } from "./constants";
+import { CAMERA_HEIGHTS /* , MODEL_CONSTANTS*/ } from "./constants";
 
-import { Building } from "../types/types";
+import { Building, BuildingNode } from "../types/types";
+import { CameraState, ModelPosition } from "../store/slices/alignmentSlice";
+
+const defaultPolygonSize = 10;
 
 // Model data loaded via useFBX() from @react-three/drei
 export interface ModelData {
@@ -19,30 +22,55 @@ export interface ModelData {
   };
 }
 
+// type SerializableModelData = Omit<ModelData, "modelObject" | "metadata">;
+
 // Use Three.js Box3 for bounding box calculations
 // Box3 provides: min (Vector3), max (Vector3), and methods like getCenter(), getSize()
 
-export interface CameraState {
-  position: [number, number, number];
-  target: [number, number, number];
-  fov: number;
-  isOrthographic: boolean;
-  orthographicSize?: number;
-}
-
 export interface ModelTransform {
-  position: [number, number, number];
+  position: ModelPosition;
   rotation: number; // Rotation around Y axis in degrees
   scale: number; // Uniform scale factor
   yOffset?: number; // Optional Y offset for ground level placement
 }
+
+const calculatePositionedPolygonBBox = (polygon: Building): Box3 => {
+  const center = polygon.position || { x: 0, z: 0 };
+
+  const size = defaultPolygonSize;
+
+  const polygonBBox = new Box3(
+    new Vector3(center.x - size / 2, 0, center.z - size / 2),
+    new Vector3(center.x + size / 2, 10, center.z + size / 2),
+  );
+
+  return polygonBBox;
+};
+
+const calculateFreePolygonBBox = (polygon: Building): Box3 => {
+  const polygonBBox = new Box3();
+
+  polygon.nodes.forEach((node: BuildingNode) => {
+    const point = new Vector3(node.x, 0, node.z);
+    polygonBBox.expandByPoint(point);
+  });
+
+  const polygonHeight = polygon.height || 10;
+
+  const min = polygonBBox.min.clone();
+  const max = polygonBBox.max.clone();
+  max.y = polygonHeight;
+  polygonBBox.set(min, max);
+
+  return polygonBBox;
+};
 
 /**
  * Calculate bounding box for multiple building polygons
  * @param polygons Array of building polygons
  * @returns Combined bounding box
  */
-export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
+export function calculatePolygonsBoundingBox(polygons: Building[]): Box3 {
   const bbox = new Box3();
 
   if (!polygons.length) {
@@ -51,16 +79,9 @@ export function calculatePolygonBoundingBox(polygons: Building[]): Box3 {
 
   // Calculate individual bounding boxes for each polygon and union them
   polygons.forEach((polygon) => {
-    // TODO: Extract actual vertices from polygon geometry
-    // For now, use position as center point
-    const center = polygon.position || { x: 0, z: 0 };
-    // Create a simple bounding box around the center
-    const size = 10; // Default building size
-
-    const polygonBBox = new Box3(
-      new Vector3(center.x - size / 2, 0, center.z - size / 2),
-      new Vector3(center.x + size / 2, 10, center.z + size / 2),
-    );
+    const polygonBBox = polygon.position
+      ? calculatePositionedPolygonBBox(polygon)
+      : calculateFreePolygonBBox(polygon);
 
     // Union this polygon's bounding box with the combined bounding box
     bbox.union(polygonBBox);
@@ -110,7 +131,7 @@ export function calculateInitialModelPosition(
   const minY = modelBBox.min.y * calculatedScale;
   const yOffset = -minY;
 
-  const position: [number, number, number] = [
+  const position: ModelPosition = [
     polygonCenter.x,
     yOffset, // Adjusted for ground level placement
     polygonCenter.z,
@@ -179,14 +200,14 @@ export function calculateTopCameraPosition(
   const finalCameraHeight = Math.max(cameraHeight, minCameraHeight);
 
   // Position camera directly above model center
-  const position: [number, number, number] = [
+  const position: ModelPosition = [
     modelCenter.x,
     finalCameraHeight,
     modelCenter.z,
   ];
 
   // Target is the center of the model (looking straight down)
-  const target: [number, number, number] = [modelCenter.x, 0, modelCenter.z];
+  const target: ModelPosition = [modelCenter.x, 0, modelCenter.z];
 
   return {
     position,
@@ -212,41 +233,33 @@ export function calculatePerspectiveCameraPosition(
   // Take maximum of width and length, multiply by 1.5
   const maxHorizontalSize = Math.max(modelSize.x, modelSize.z);
   // const distance = maxHorizontalSize * 1.5;
-  const distance = maxHorizontalSize * 7;
+  const distance = maxHorizontalSize * 3;
 
   // Position camera north of model, elevated to see entire model
   // Use model height plus some extra clearance
-  const cameraHeight = Math.max(
-    modelSize.y * 1.2,
-    CAMERA_HEIGHTS.EYE_LEVEL * 2,
-  );
-  const position: [number, number, number] = [
+  const cameraHeight = CAMERA_HEIGHTS.EYE_LEVEL;
+  const position: ModelPosition = [
     modelCenter.x,
     cameraHeight,
     modelCenter.z - distance, // North of model
   ];
 
   // Target is slightly above the base of the model for better viewing angle
-  const targetHeight = Math.max(modelSize.y * 0.3, CAMERA_HEIGHTS.EYE_LEVEL);
-  const target: [number, number, number] = [
-    modelCenter.x,
-    targetHeight,
-    modelCenter.z,
-  ];
+  const targetHeight = CAMERA_HEIGHTS.EYE_LEVEL;
+  const target: ModelPosition = [modelCenter.x, targetHeight, modelCenter.z];
 
   // Calculate distance from camera to target
-  const cameraDistance = Math.sqrt(
-    Math.pow(position[0] - target[0], 2) +
-      Math.pow(position[1] - target[1], 2) +
-      Math.pow(position[2] - target[2], 2),
-  );
+  // const cameraDistance = Math.sqrt(
+  //   Math.pow(position[0] - target[0], 2) +
+  //     Math.pow(position[1] - target[1], 2) +
+  //     Math.pow(position[2] - target[2], 2),
+  // );
 
   return {
     position,
     target,
     fov: 60,
-    isOrthographic: false,
-    cameraDistance,
+    cameraDistance: distance,
   };
 }
 
@@ -256,8 +269,8 @@ export function calculatePerspectiveCameraPosition(
  * @returns Target position (always at ground level)
  */
 export function calculateTopCameraTarget(
-  cameraPosition: [number, number, number],
-): [number, number, number] {
+  cameraPosition: ModelPosition,
+): ModelPosition {
   return [cameraPosition[0], 0, cameraPosition[2]];
 }
 
@@ -274,10 +287,39 @@ export function calculateOrbitalCameraPosition(
   angleRadians: number,
   distance: number,
   height: number = CAMERA_HEIGHTS.EYE_LEVEL,
-): [number, number, number] {
+): ModelPosition {
   return [
     modelCenter.x + Math.sin(angleRadians) * distance,
     height,
     modelCenter.z + Math.cos(angleRadians) * distance,
   ];
+}
+
+/**
+ * Calculate world bbox for model
+ *
+ * NOTE: this one DOES NOT concerns of model rotation
+ *
+ * @param modelBBox Bounding box of model
+ * @param scale Scalar for model scale
+ * @param position Model position near polygons
+ * @returns Another bounding box near polygons
+ */
+export function calculateWorldBBox(
+  modelBBox: Box3,
+  scale: number,
+  position: ModelPosition,
+) {
+  const worldModelBBox = modelBBox.clone();
+
+  const vScale = new Vector3(scale, scale, scale);
+  const vPosition = new Vector3(...position);
+
+  worldModelBBox.min.multiply(vScale);
+  worldModelBBox.max.multiply(vScale);
+
+  worldModelBBox.min.add(vPosition);
+  worldModelBBox.max.add(vPosition);
+
+  return worldModelBBox;
 }

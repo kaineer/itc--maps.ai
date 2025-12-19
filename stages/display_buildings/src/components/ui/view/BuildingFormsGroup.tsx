@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { uiSlice, BuildingFormMode } from "../../store/uiSlice";
+import { uiSlice, BuildingFormMode } from "../../../store/slices/uiSlice";
 import { BuildingSearch } from "./BuildingSearch";
 import { BuildingSelection } from "./BuildingSelection";
 
@@ -12,14 +12,16 @@ export const BuildingFormsGroup = () => {
   const buildingFormMode = useSelector(getBuildingFormMode);
 
   const isModeEnabled = (mode: BuildingFormMode): boolean => {
-    return (buildingFormMode === "none" || mode === buildingFormMode);
-  }
+    return buildingFormMode === "none" || mode === buildingFormMode;
+  };
 
   const handleFormToggle = (mode: BuildingFormMode) => (expanded: boolean) => {
     if (expanded) {
       dispatch(setBuildingFormMode(mode));
+    } else {
+      dispatch(setBuildingFormMode("none"));
     }
-  }
+  };
 
   return (
     <>
@@ -27,7 +29,10 @@ export const BuildingFormsGroup = () => {
         enabled={isModeEnabled("search")}
         onToggled={handleFormToggle("search")}
       />
-      <BuildingSelection />
+      <BuildingSelection
+        enabled={isModeEnabled("select")}
+        onToggled={handleFormToggle("select")}
+      />
     </>
   );
-}
+};

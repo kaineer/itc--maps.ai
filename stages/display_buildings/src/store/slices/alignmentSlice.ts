@@ -1,23 +1,26 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
-  ModelData,
-  calculatePolygonBoundingBox,
+  calculatePolygonsBoundingBox,
   calculateModelBoundingBox,
   calculateInitialModelPosition,
   calculateTopCameraPosition,
   calculatePerspectiveCameraPosition,
-} from "../utils/modelTransform";
-import { Building, Scale } from "../types/types";
+  ModelTransform,
+  calculateWorldBBox,
+} from "../../utils/modelTransform";
+import { Building, Scale } from "../../types/types";
 import {
   addPosition,
   subtractPosition,
   distanceBetween,
   scaleToLength,
   directionTo,
-  positionsEqual,
-} from "../components/shared/positionMath";
-import { Vector3 } from "three";
-import { CAMERA_HEIGHTS } from "../utils/constants";
+} from "../../components/shared/positionMath";
+import { Vector3, Box3 } from "three";
+import { CAMERA_HEIGHTS } from "../../utils/constants";
+import { modelsCache } from "../../utils/modelsCache";
+import { patchBackend, putBackend } from "../../utils/backend";
+import { uiSlice } from "./uiSlice";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -29,7 +32,7 @@ export const positionStepMin = 0.5;
 export const positionStepMax = 20;
 export const positionStepFactor = 1.5;
 
-type ModelPosition = [number, number, number];
+export type ModelPosition = [number, number, number];
 
 export interface CameraState {
   position: ModelPosition;
@@ -70,7 +73,7 @@ export interface AlignmentState {
 
   // Alignment process state
   selectedPolygons: Building[];
-  currentModel: ModelData | null;
+  modelUUID: string | null;
   modelTransform: {
     position: ModelPosition;
     rotation: ModelRotation;
@@ -120,7 +123,7 @@ const initialState: AlignmentState = {
 
   // Alignment process state
   selectedPolygons: [],
-  currentModel: null,
+  modelUUID: null,
   modelTransform: {
     position: [0, 0, 0],
     rotation: 0,
@@ -194,12 +197,25 @@ export const alignmentSlice = createSlice({
     resetAlignment: () => initialState,
 
     // Model selection and polygon management
-    selectModelForAlignment: (state, action: PayloadAction<ModelData>) => {
-      state.currentModel = action.payload;
+    selectModelForAlignment: (state, action: PayloadAction<string>) => {
+      state.modelUUID = action.payload;
     },
 
     addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
-      state.selectedPolygons.push(action.payload);
+      const building = action.payload;
+      const alreadyAdded = state.selectedPolygons.some(
+        (p) => p.id === building.id,
+      );
+      if (!alreadyAdded) {
+        state.selectedPolygons.push(action.payload);
+      }
+    },
+
+    removePolygonFromAlignment: (state, action: PayloadAction<Building>) => {
+      const building = action.payload;
+      state.selectedPolygons = state.selectedPolygons.filter(
+        (p) => p.id !== building.id,
+      );
     },
 
     resetAlignmentPolygons: (state) => {
@@ -207,89 +223,45 @@ export const alignmentSlice = createSlice({
     },
 
     // Alignment process control
-    startAlignmentProcess: (state) => {
-      // Check that polygons are added and model is selected with non-zero bounding box
-      if (state.selectedPolygons.length === 0) {
-        throw new Error("Cannot start alignment: no polygons selected");
-      }
-
-      if (!state.currentModel) {
-        throw new Error("Cannot start alignment: no model selected");
-      }
-
-      // Calculate bounding boxes
-      const polygonBBox = calculatePolygonBoundingBox(state.selectedPolygons);
-      const modelBBox = calculateModelBoundingBox(state.currentModel);
-
-      // Check if model has non-zero bounding box
-      const modelSize = modelBBox.getSize(new Vector3());
-      if (
-        modelSize.x < minExtent &&
-        modelSize.y < minExtent &&
-        modelSize.z < minExtent
-      ) {
-        throw new Error("Cannot start alignment: model is too small");
-      }
-
-      // Calculate initial model position and scale
-      const initialTransform = calculateInitialModelPosition(
-        polygonBBox,
-        modelBBox,
-      );
+    startAlignmentProcess: (
+      state,
+      action: PayloadAction<{
+        initialTransform: ModelTransform;
+        modelBBox: Box3;
+        polygonBBox: Box3;
+      }>,
+    ) => {
+      const { initialTransform, modelBBox, polygonBBox } = action.payload;
 
       // Only update model transform if it hasn't been set yet (preserve user changes)
-      if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
-        state.modelTransform = {
-          position: initialTransform.position,
-          rotation: 0,
-          scale: initialTransform.scale, // Use scale as number
-        };
-      }
+      // if (positionsEqual(state.modelTransform.position, [0, 0, 0])) {
+      state.modelTransform = {
+        position: initialTransform.position,
+        rotation: 0,
+        scale: initialTransform.scale, // Use scale as number
+      };
+      // }
+      //
+      const worldModelBBox = calculateWorldBBox(
+        modelBBox,
+        initialTransform.scale,
+        initialTransform.position,
+      );
 
       // Calculate model center for camera positioning
-      const modelCenter = new Vector3(...state.modelTransform.position);
+      const modelCenter = new Vector3();
+      worldModelBBox.getCenter(modelCenter);
 
-      // Only set up cameras if they haven't been initialized yet
-      // Check if cameras are at their default positions AND targets
-      const isTopCameraDefault =
-        positionsEqual(
-          state.cameraStates.top.position,
-          defaultTopCamera.position,
-        ) &&
-        positionsEqual(state.cameraStates.top.target, defaultTopCamera.target);
+      state.cameraStates.top = calculateTopCameraPosition(
+        modelCenter,
+        worldModelBBox,
+        polygonBBox,
+      );
 
-      const isPerspectiveCameraDefault =
-        positionsEqual(
-          state.cameraStates.perspective.position,
-          defaultPerspectiveCamera.position,
-        ) &&
-        positionsEqual(
-          state.cameraStates.perspective.target,
-          defaultPerspectiveCamera.target,
-        );
-
-      if (isTopCameraDefault) {
-        state.cameraStates.top = calculateTopCameraPosition(
-          modelCenter,
-          modelBBox,
-          polygonBBox,
-        );
-        // Top camera initialized
-      }
-
-      if (isPerspectiveCameraDefault) {
-        const newCamera = calculatePerspectiveCameraPosition(
-          modelCenter,
-          modelBBox,
-        );
-
-        state.cameraStates.perspective = newCamera;
-        // Perspective camera initialized
-      }
-
-      // Start the alignment process
-      state.isAligning = true;
-      state.alignmentProgress = 0;
+      state.cameraStates.perspective = calculatePerspectiveCameraPosition(
+        modelCenter,
+        worldModelBBox,
+      );
     },
 
     // Model transformation actions
@@ -578,7 +550,7 @@ export const alignmentSlice = createSlice({
 
         // Calculate direction vector from target to current position
         const direction = directionTo(cameraState.target, cameraState.position);
-        const [dx, dy, dz] = direction;
+        const [dx, _, dz] = direction;
 
         // Calculate current horizontal distance
         const horizontalDistance = Math.sqrt(dx * dx + dz * dz);
@@ -634,6 +606,13 @@ export const alignmentSlice = createSlice({
     },
   },
 
+  extraReducers: (builder) => {
+    builder.addCase(addPolygonWithModelRequest.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.modelUUID = action.payload.modelId;
+      }
+    });
+  },
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
@@ -643,7 +622,7 @@ export const alignmentSlice = createSlice({
     getPerspectiveCameraState: (state) => state.cameraStates.perspective,
 
     // Model and polygon selectors
-    getSelectedModel: (state) => state.currentModel,
+    getModelUUID: (state) => state.modelUUID,
     getSelectedPolygons: (state) => state.selectedPolygons,
     getModelTransform: (state) => state.modelTransform,
 
@@ -670,6 +649,11 @@ export const alignmentSlice = createSlice({
       isAligning: state.isAligning,
       progress: state.alignmentProgress,
     }),
+
+    getCanStartAlignment: (state) =>
+      Boolean(state.modelUUID) &&
+      state.selectedPolygons &&
+      state.selectedPolygons.length > 0,
   },
 });
 
@@ -697,3 +681,124 @@ function updateCameraPositionFromDistance(cameraState: CameraState) {
     cameraState.position = addPosition(cameraState.target, scaledDirection);
   }
 }
+
+interface ThunkParams {
+  modelUUID: string;
+  polygons: Building[];
+}
+
+// TODO: передать modelUUID и полигоны через параметры thunk из компонента
+export const prepareInitialTransform = createAsyncThunk(
+  "alignment/prepareInitialTransform",
+  async (
+    { modelUUID, polygons }: ThunkParams,
+    { dispatch, rejectWithValue },
+  ) => {
+    if (polygons.length === 0) {
+      return rejectWithValue("Cannot start alignment: no polygons selected");
+    }
+
+    if (!modelUUID) {
+      return rejectWithValue("Cannot start alignment: no model selected");
+    }
+
+    const modelData = await modelsCache.getModel(modelUUID);
+    if (!modelData) {
+      return rejectWithValue("Model not found");
+    }
+
+    const polygonBBox = calculatePolygonsBoundingBox(polygons);
+    const modelBBox = calculateModelBoundingBox(modelData);
+
+    const modelSize = modelBBox.getSize(new Vector3());
+    if (modelSize.x < minExtent && modelSize.z < minExtent) {
+      return rejectWithValue("Cannot start alignment: model is too small");
+    }
+
+    const initialTransform = calculateInitialModelPosition(
+      polygonBBox,
+      modelBBox,
+    );
+
+    dispatch(
+      alignmentSlice.actions.startAlignmentProcess({
+        initialTransform,
+        modelBBox,
+        polygonBBox,
+      }),
+    );
+
+    dispatch(uiSlice.actions.selectAlignmentMode());
+  },
+);
+
+export const addPolygonWithModelRequest = createAsyncThunk(
+  "alignment/addPolygonWithModelRequest",
+  async (polygonData: Building, { dispatch }) => {
+    const { addPolygonForAlignment } = alignmentSlice.actions;
+    dispatch(addPolygonForAlignment(polygonData));
+
+    if (polygonData.address) {
+      const response = await putBackend("/models/address", {
+        address: polygonData.address,
+      });
+      return response;
+    }
+
+    return null;
+  },
+);
+
+/**
+ * Save alignment data to backend via PATCH /models/:modelId
+ * After successful save, switches to view mode
+ */
+export const saveAlignment = createAsyncThunk(
+  "alignment/saveAlignment",
+  async (_, { getState, dispatch, rejectWithValue }) => {
+    const state = getState() as { alignment: AlignmentState };
+    const { modelUUID, modelTransform, selectedPolygons } = state.alignment;
+    const { selectViewMode } = uiSlice.actions;
+
+    if (!modelUUID) {
+      return rejectWithValue("Cannot save alignment: no model selected");
+    }
+
+    if (selectedPolygons.length === 0) {
+      return rejectWithValue("Cannot save alignment: no polygons selected");
+    }
+
+    const pa = selectedPolygons.find((p) => p.address);
+    let address: string | null = null;
+    if (pa) {
+      address = pa.address;
+    }
+
+    try {
+      // Prepare transform data for API
+      const transformData = {
+        position: modelTransform.position,
+        rotation: modelTransform.rotation,
+        scale: modelTransform.scale,
+        polygons: selectedPolygons.map((p) => p.id),
+        address,
+      };
+
+      // Send PATCH request to save alignment
+      const response = await patchBackend(
+        `/models/${modelUUID}`,
+        transformData,
+      );
+
+      // Switch to view mode after successful save
+      dispatch(selectViewMode());
+
+      return response.data;
+    } catch (error) {
+      console.error("Failed to save alignment:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to save alignment",
+      );
+    }
+  },
+);

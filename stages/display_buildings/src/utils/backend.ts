@@ -1,4 +1,8 @@
-const BACKEND_BASE_URL = "http://localhost:5000";
+import { backendUrl, normalizeEndpoint, serveFromPublic } from "./network";
+
+const urlForBackend = (endpoint: string): string => {
+  return backendUrl + normalizeEndpoint(endpoint);
+};
 
 /**
  * Utility function for making backend API calls
@@ -12,11 +16,8 @@ export async function fetchBackend(
   endpoint: string,
   options: RequestInit = {},
 ): Promise<Response> {
-  // Normalize endpoint - ensure it starts with a slash
-  const normalizedEndpoint = endpoint.startsWith("/")
-    ? endpoint
-    : `/${endpoint}`;
-  const url = `${BACKEND_BASE_URL}${normalizedEndpoint}`;
+  const suffix = serveFromPublic ? ".json" : "";
+  const url = urlForBackend(endpoint) + suffix;
 
   return fetch(url, {
     ...options,
@@ -25,27 +26,6 @@ export async function fetchBackend(
       ...options.headers,
     },
   });
-}
-
-/**
- * Convenience function for making PUT requests to the backend
- */
-export async function putBackend<T = any>(
-  endpoint: string,
-  body: any,
-  options: Omit<RequestInit, "method" | "body"> = {},
-): Promise<T> {
-  const response = await fetchBackend(endpoint, {
-    method: "PUT",
-    body: JSON.stringify(body),
-    ...options,
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP error! status: ${response.status}`);
-  }
-
-  return response.json();
 }
 
 /**
@@ -66,6 +46,29 @@ export async function getBackend<T = any>(
 
   return response.json();
 }
+
+/**
+ * Convenience function for making PUT requests to the backend
+ */
+async function putSeriousBackend<T = any>(
+  endpoint: string,
+  body: any,
+  options: Omit<RequestInit, "method" | "body"> = {},
+): Promise<T> {
+  const response = await fetchBackend(endpoint, {
+    method: "PUT",
+    body: JSON.stringify(body),
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export const putBackend = serveFromPublic ? getBackend : putSeriousBackend;
 
 /**
  * Convenience function for making POST requests to the backend
@@ -105,4 +108,48 @@ export async function deleteBackend<T = any>(
   }
 
   return response.json();
+}
+
+export async function patchBackend<T = any>(
+  endpoint: string,
+  body: any,
+  options: Omit<RequestInit, "method"> = {},
+): Promise<T> {
+  const response = await fetchBackend(endpoint, {
+    method: "PATCH",
+    body: JSON.stringify(body),
+    ...options,
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  return response.json();
+}
+
+export async function uploadToBackend(endpoint: string, formData: FormData) {
+  const url = urlForBackend(endpoint);
+  return await fetch(url, {
+    method: "POST",
+    body: formData,
+    // headers: {}
+    //   // Заголовки при необходимости
+    //   headers: {
+    //     'Authorization': 'Bearer your-token-here', // если нужно
+    //   },
+  });
+}
+
+export const urlForModel = (uuid: string): string => {
+  return urlForBackend("/model/" + uuid);
+};
+
+export async function downloadBinaryFromBackend(
+  endpoint: string,
+): Promise<Response> {
+  const url = urlForBackend(endpoint);
+  return await fetch(url, {
+    method: "GET",
+  });
 }

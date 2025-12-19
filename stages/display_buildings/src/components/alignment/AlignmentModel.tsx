@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Mesh, MeshBasicMaterial, Box3 } from "three";
 import { EnabledProps } from "../shared/types";
-import { alignmentSlice } from "../../store/alignmentSlice";
+import { alignmentSlice } from "../../store/slices/alignmentSlice";
+import { modelsCache } from "../../utils/modelsCache";
+import { ModelData } from "../../utils/modelTransform";
 
 interface Props extends EnabledProps {}
 
@@ -17,12 +19,26 @@ interface Props extends EnabledProps {}
  * 4. Positions the model with bottom face center at modelTransform.position
  */
 export const AlignmentModel = ({ enabled = true }: Props) => {
-  const { getSelectedModel, getModelTransform } = alignmentSlice.selectors;
-  const currentModel = useSelector(getSelectedModel);
+  const { getModelUUID, getModelTransform } = alignmentSlice.selectors;
+  const modelUUID = useSelector(getModelUUID);
   const modelTransform = useSelector(getModelTransform);
+  const [currentModel, setCurrentModel] = useState<ModelData | null>(null);
 
   const modelRef = useRef<any>(null);
   const originalMaterialsRef = useRef<Map<Mesh, any>>(new Map());
+
+  useEffect(() => {
+    const fetchModelFromCache = async () => {
+      const model = await modelsCache.getModel(modelUUID);
+      if (model) {
+        setCurrentModel(model);
+      }
+    };
+
+    if (modelUUID) {
+      fetchModelFromCache();
+    }
+  }, [modelUUID]);
 
   // Apply wireframe material to model
   useEffect(() => {
