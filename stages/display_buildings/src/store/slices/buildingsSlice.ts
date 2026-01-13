@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { putBackend, getBackend } from "@utils/backend";
 import { initializeViewCamera } from "./viewSlice";
 import { Building, BuildingNode, ModelPosition } from "../../types/types";
-import { DEFAULT_CAMERA_POSITIONS } from "@utils/constants";
+import { DEFAULT_CAMERA_POSITIONS, DISTANCES } from "@utils/constants";
 
 /**
  * TODO: тут мы по-быстрому прикручиваем получение данных из /public
@@ -88,7 +88,7 @@ export const fetchInitialBuildings = createAsyncThunk<Building[]>(
 
     if (initializeViewCamera.fulfilled.match(cameraResult)) {
       const { position } = cameraResult.payload;
-      const distance = 300; // 300 meters as specified
+      const distance = DISTANCES.BUILDING_DISTANCE;
 
       // Then, fetch buildings around that position
       const buildingsResult = await dispatch(

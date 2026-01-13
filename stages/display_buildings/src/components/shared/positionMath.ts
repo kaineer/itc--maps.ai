@@ -3,7 +3,7 @@
  * Provides common operations for 3D position vectors used throughout the application
  */
 
-import { type ModelPosition } from "@slices/alignmentSlice";
+import { type ModelPosition } from "src/types/types";
 
 /**
  * Add two positions together (vector addition)

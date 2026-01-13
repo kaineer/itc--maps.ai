@@ -70,6 +70,12 @@ export const DISTANCES = {
 
   /** Default camera distance for perspective view */
   DEFAULT_CAMERA_DISTANCE: 20.0,
+
+  /** Distance from camera to furthest building */
+  BUILDING_DISTANCE: 300.0,
+
+  /** Distance from last loaded camera position */
+  LAST_LOADED_CAMERA_DISTANCE: 50.0,
 } as const;
 
 /**

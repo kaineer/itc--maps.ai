@@ -3,7 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
-import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "@utils/constants";
+import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import { AppDispatch } from "@store/index";
 import { distance2dBetween } from "../../shared/positionMath";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
@@ -29,9 +29,17 @@ export const ViewCameraController = () => {
   }, [cameraPosition, cameraTarget]);
 
   useEffect(() => {
-    if (distance2dBetween(cameraPosition, lastLoadedPosition) > 50) {
+    if (
+      distance2dBetween(cameraPosition, lastLoadedPosition) >
+      DISTANCES.LAST_LOADED_CAMERA_DISTANCE
+    ) {
       const [x, _, z] = cameraPosition;
-      dispatch(fetchBuildings({ position: { x, z }, distance: 300 }));
+      dispatch(
+        fetchBuildings({
+          position: { x, z },
+          distance: DISTANCES.BUILDING_DISTANCE,
+        }),
+      );
     }
   }, [cameraPosition, dispatch]);
 
