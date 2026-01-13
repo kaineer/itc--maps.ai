@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { putBackend, getBackend } from "@utils/backend";
 import { initializeViewCamera } from "./viewSlice";
-// import { getPublic } from "../../utils/public";
-import { Building, BuildingNode } from "../../types/types";
+import { Building, BuildingNode, ModelPosition } from "../../types/types";
+import { DEFAULT_CAMERA_POSITIONS } from "@utils/constants";
 
 /**
  * TODO: тут мы по-быстрому прикручиваем получение данных из /public
@@ -23,6 +23,8 @@ interface BuildingsState {
   loading: boolean;
   // Error message if any operation fails
   error: string | null;
+  //
+  lastLoadedPosition: ModelPosition;
   // Active filters for building list
   filters: {
     // Filter by model presence: true=has model, false=no model, null=show all
@@ -31,6 +33,8 @@ interface BuildingsState {
     searchQuery: string;
   };
 }
+
+const defaultCameraPosition = DEFAULT_CAMERA_POSITIONS.VIEW;
 
 const initialState: BuildingsState = {
   buildings: [],
@@ -41,6 +45,7 @@ const initialState: BuildingsState = {
     hasModel: null, // Show all buildings by default
     searchQuery: "", // No search filter by default
   },
+  lastLoadedPosition: defaultCameraPosition,
 };
 
 // Async thunk for fetching initial position from backend API
@@ -157,6 +162,8 @@ export const buildingsSlice = createSlice({
       .addCase(fetchBuildings.fulfilled, (state, action) => {
         state.loading = false;
         state.buildings = action.payload;
+        const { x, z } = action.meta.arg.position;
+        state.lastLoadedPosition = [x, 0, z];
       })
       // Handle building fetch failure
       .addCase(fetchBuildings.rejected, (state, action) => {
@@ -192,6 +199,8 @@ export const buildingsSlice = createSlice({
     getError: (state) => state.error,
     // Get current filter settings
     getFilters: (state) => state.filters,
+    //
+    getLastLoadedPosition: (state) => state.lastLoadedPosition,
     // Get buildings filtered by current search query and model presence
     getFilteredBuildings: (state) => {
       let filtered = state.buildings;

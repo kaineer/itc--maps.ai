@@ -57,6 +57,15 @@ export const distanceBetween = (a: ModelPosition, b: ModelPosition): number => {
   return Math.sqrt(dx * dx + dy * dy + dz * dz);
 };
 
+export const distance2dBetween = (
+  a: ModelPosition,
+  b: ModelPosition,
+): number => {
+  const dx = a[0] - b[0];
+  const dy = a[1] - b[1];
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
 /**
  * Normalize a position vector (make it unit length)
  * @param position Position to normalize

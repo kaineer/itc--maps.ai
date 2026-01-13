@@ -4,12 +4,17 @@ import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
 import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "@utils/constants";
+import { AppDispatch } from "@store/index";
+import { distance2dBetween } from "../../shared/positionMath";
+import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
 
 export const ViewCameraController = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { getCameraPosition, getCameraTarget } = viewSlice.selectors;
+  const { getLastLoadedPosition } = buildingsSlice.selectors;
   const cameraPosition = useSelector(getCameraPosition);
   const cameraTarget = useSelector(getCameraTarget);
+  const lastLoadedPosition = useSelector(getLastLoadedPosition);
 
   // Use refs to store current Redux state for useFrame callback
   const currentReduxState = useRef({
@@ -22,6 +27,13 @@ export const ViewCameraController = () => {
     currentReduxState.current.position = cameraPosition;
     currentReduxState.current.target = cameraTarget;
   }, [cameraPosition, cameraTarget]);
+
+  useEffect(() => {
+    if (distance2dBetween(cameraPosition, lastLoadedPosition) > 50) {
+      const [x, _, z] = cameraPosition;
+      dispatch(fetchBuildings({ position: { x, z }, distance: 300 }));
+    }
+  }, [cameraPosition, dispatch]);
 
   const moveState = useRef({
     forward: false,
