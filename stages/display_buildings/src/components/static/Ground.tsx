@@ -1,9 +1,15 @@
 import { useSelector } from "react-redux";
 import { viewSlice } from "@slices/viewSlice";
+import { ModelPosition } from "src/types/types";
 
-export const Ground = () => {
+interface Props {
+  position: ModelPosition;
+}
+
+export const Ground = ({ position }: Props) => {
   const { getGroundCenter } = viewSlice.selectors;
-  const { x, z } = useSelector(getGroundCenter);
+  // const { x, z } = useSelector(getGroundCenter);
+  const [x, _, z] = position;
 
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[x, -0.1, z]} receiveShadow>

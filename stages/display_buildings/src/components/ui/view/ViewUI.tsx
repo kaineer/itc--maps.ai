@@ -39,7 +39,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     dispatch(fetchInitialBuildings());
   }, [dispatch]);
 
-  if (loading) {
+  if (!buildings) {
     return <div className="loading">Loading 3D buildings visualization...</div>;
   }
 
@@ -73,7 +73,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Lighting />
 
         {/* Ground plane for reference */}
-        <Ground />
+        <Ground position={cameraState.position} />
 
         {/* Buildings */}
         <ViewStage

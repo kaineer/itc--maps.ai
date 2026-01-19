@@ -3,17 +3,19 @@
  * Составные части URL, для построения внутри
  *   функции makeUrlFromConfig
  */
+type NetworkPort = string | number | undefined;
+
 interface NetworkConfigItem {
   protocol?: string;
   host?: string;
-  port?: string | number;
+  port: NetworkPort;
 }
 
 const backendConfig: NetworkConfigItem = {
   protocol: "http",
   host: "localhost",
   port: 5000,
-}
+};
 
 // const backendConfig = {
 //   protocol: "http",
@@ -35,7 +37,20 @@ const networkConfig = {
    */
   // serveFromPublic: true,
   serveFromPublic: false,
-}
+};
+
+const isEmpty = (value: NetworkPort) =>
+  typeof value === "undefined" || value === "";
+
+const isPortByDefault = (protocol: string, port: NetworkPort): boolean => {
+  if (protocol === "http") {
+    return isEmpty(port) || port === 80;
+  } else if (protocol === "https") {
+    return isEmpty(port) || port === 443;
+  }
+
+  return false;
+};
 
 const makeUrlFromConfig = ({
   protocol = "http",
@@ -43,16 +58,19 @@ const makeUrlFromConfig = ({
   port = "",
 }: NetworkConfigItem) => {
   return (
-    protocol + "://" + host + (port ? ":" + port : "")
+    protocol +
+    "://" +
+    host +
+    (isPortByDefault(protocol, port) ? "" : ":" + String(port))
   );
-}
+};
 
 export const normalizeEndpoint = (endpoint: string) => {
   if (endpoint.startsWith("/")) {
     return endpoint;
   }
   return "/" + endpoint;
-}
+};
 
 export const backendUrl = makeUrlFromConfig(networkConfig.backend);
 export const minioUrl = makeUrlFromConfig(networkConfig.minio);

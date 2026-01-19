@@ -59,7 +59,7 @@ export const AlignmentUI = () => {
         <Lighting />
 
         {/* Ground plane for reference */}
-        <Ground />
+        <Ground position={currentCamera.position} />
 
         {/* Alignment stage: renders selected polygons and alignment model */}
         <AlignmentStageContainer enabled={true} />

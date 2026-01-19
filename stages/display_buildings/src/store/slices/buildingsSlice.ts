@@ -4,12 +4,6 @@ import { initializeViewCamera } from "./viewSlice";
 import { Building, BuildingNode, ModelPosition } from "../../types/types";
 import { DEFAULT_CAMERA_POSITIONS, DISTANCES } from "@utils/constants";
 
-/**
- * TODO: тут мы по-быстрому прикручиваем получение данных из /public
- */
-// const getBackend = getPublic;
-// const putBackend = getPublic;
-
 interface BuildingsResponse {
   buildings: Building[];
 }
@@ -53,7 +47,7 @@ const initialState: BuildingsState = {
 export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
   async () => {
-    const data = await getBackend<{ x: number; z: number }>("/start");
+    const data = await getBackend<{ x: number; z: number }>("start");
     return { x: data.x, z: data.z };
   },
 );
