@@ -11,35 +11,23 @@ describe("service without data function", () => {
 });
 
 describe("service with data function", () => {
-  let fn = null;
-  beforeEach(() => {
-    fn = (() => {
-      let number = 1;
-      return async () => {
-        const value = number;
-        number++;
-        return value;
-      };
-    })();
-  });
-
   it("should return data with cacheValues", async () => {
     const service = createModelCache(async () => "data");
     expect(await service.cacheValues()).toBe("data");
   });
 
   it("should not run data function twice", async () => {
-    const service = createModelCache(fn);
+    const service = createModelCache(async () => []);
 
-    expect(await service.cacheValues()).toBe(1);
-    expect(await service.cacheValues()).toBe(1);
+    const values = await service.cacheValues();
+    expect(await service.cacheValues()).toBe(values);
   });
 
   it("should run data function again after invalidation", async () => {
-    const service = createModelCache(fn);
+    const service = createModelCache(async () => []);
 
-    expect(await service.cacheValues()).toBe(1);
+    const values = await service.cacheValues();
     service.invalidateCache();
-    expect(await service.cacheValues()).toBe(2);
+    expect(await service.cacheValues()).not.toBe(values);
   });
 });
