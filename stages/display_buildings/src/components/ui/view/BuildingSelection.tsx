@@ -13,7 +13,7 @@ import { modelUploadSlice } from "@slices/modelUploadSlice";
 
 import { useDispatch, useSelector } from "react-redux";
 import { Building } from "../../../types/types";
-import { AppDispatch } from "@store";
+import { AppDispatch } from "@store/index";
 
 interface Props extends EnabledProps {
   className?: string;

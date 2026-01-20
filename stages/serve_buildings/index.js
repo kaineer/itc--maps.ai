@@ -8,6 +8,7 @@ const { createWriteStream, createReadStream } = require("fs");
 
 const { uploadRoutes } = require("./src/routes/upload.routes");
 const { modelsRoutes } = require("./src/routes/models.routes");
+const { buildingsRoutes } = require("./src/routes/buildings.routes");
 
 // Load building data
 let buildingsData = [];
@@ -287,6 +288,7 @@ const start = async () => {
 
     await uploadRoutes(fastify);
     await modelsRoutes(fastify);
+    await buildingsRoutes(fastify);
 
     // NOTE: should be run **before** static registering
     registerModelsRoute(fastify);

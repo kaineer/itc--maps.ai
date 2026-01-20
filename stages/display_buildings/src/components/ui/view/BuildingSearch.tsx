@@ -8,6 +8,7 @@ import classes from "./BuildingSearch.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "../CollapsibleForm";
 import { ModelPosition } from "@slices/alignmentSlice";
+import { putBackend } from "@utils/backend";
 
 interface Props {
   enabled?: boolean;
@@ -36,7 +37,6 @@ export const BuildingSearch = ({
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
   const [foundBuilding, setFoundBuilding] = useState<Building | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const { getFilteredBuildings } = buildingsSlice.selectors;
@@ -44,7 +44,7 @@ export const BuildingSearch = ({
 
   // Auto-focus search input when form expands
   useEffect(() => {
-    if (isExpanded && searchInputRef.current) {
+    if (searchInputRef.current) {
       // Small delay to ensure DOM is ready and transition completes
       const timer = setTimeout(() => {
         if (searchInputRef.current) {
@@ -53,7 +53,7 @@ export const BuildingSearch = ({
       }, 50);
       return () => clearTimeout(timer);
     }
-  }, [isExpanded]);
+  }, []);
 
   /**
    * Get building position from either position field or first node
@@ -107,6 +107,26 @@ export const BuildingSearch = ({
     return normalized;
   };
 
+  const searchBuilding = () => {
+    const fetchBuildings = async () => {
+      try {
+        const result = await putBackend("buildings/address", {
+          address: searchQuery.trim(),
+        });
+
+        moveCameraToBuilding(result);
+      } catch (err) {
+        setSearchError(String(err));
+      }
+    };
+
+    if (!searchQuery.trim()) {
+      setSearchError("Введите адрес для поиска");
+    } else {
+      fetchBuildings();
+    }
+  };
+
   /**
    * Search for building by address
    * Supports formats:
@@ -115,7 +135,7 @@ export const BuildingSearch = ({
    * - Partial matches
    * - Поиск должен учитывать и улицу и номер дома
    */
-  const searchBuilding = () => {
+  const legacy_searchBuilding = () => {
     if (!searchQuery.trim()) {
       setSearchError("Введите адрес для поиска");
       return;

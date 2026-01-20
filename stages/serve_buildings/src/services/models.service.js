@@ -7,6 +7,7 @@ const {
   ConflictError,
 } = require("../errors/application.errors");
 const { createModelCache } = require("./modelCache");
+const { normalizeAddress } = require("../utils/address");
 
 const j2 = (obj) => JSON.stringify(obj, null, 2);
 
@@ -158,9 +159,13 @@ const createModelsService0 = () => {
   };
 
   const findModelByAddress = async (address) => {
-    console.log("findModeByAddress");
+    console.log("findModelByAddress", address);
     const models = await getAllModels();
-    const model = models.find((m) => m.address === address);
+    const normalizedAddress = normalizeAddress(address);
+    const model = models.find(
+      (m) =>
+        m.address && normalizeAddress(m.address).includes(normalizedAddress),
+    );
     if (!model) {
       throw new NotFoundError("Model with address not found");
     }

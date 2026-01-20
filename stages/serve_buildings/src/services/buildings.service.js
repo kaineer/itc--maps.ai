@@ -1,18 +1,18 @@
 const { createImportService } = require("./import.service");
-const { createModelsService } = require("./models.service");
+const { normalizeAddress } = require("../utils/address");
+const { join } = require("path");
 
 const createBuildingsService = () => {
   let buildingsData = null;
   const importDir = join(__dirname, "../../../import/");
   const { readJSONFile } = createImportService(importDir);
-  const { getAllModels } = createModelsService();
 
   const getStaticBuildingsData0 = async () => {
-    return readJSONFile("buildings.json");
+    return readJSONFile("buildings.json", { buildings: [] });
   };
   const getStaticBuildingsData = async () => {
-    if (buildingsData === null) {
-      buildingsData = await getStaticBuildingsData0();
+    if (!buildingsData) {
+      buildingsData = (await getStaticBuildingsData0()).buildings;
     }
     return buildingsData;
   };
@@ -22,6 +22,15 @@ const createBuildingsService = () => {
     return models.filter(
       (m) => Array.isArray(m.polygons) && m.polygons.length > 0,
     );
+  };
+
+  const findBuildingByAddress = async (address) => {
+    const normalizedAddress = normalizeAddress(address);
+    const buildings = await getStaticBuildingsData();
+
+    return buildings.find(({ address }) => {
+      return address && normalizeAddress(address).includes(normalizedAddress);
+    });
   };
 
   const createMapPolygonData = async () => {
@@ -59,6 +68,10 @@ const createBuildingsService = () => {
   };
 
   const getBuildingsInDistance = async (x, z, distance) => {};
+
+  return {
+    findBuildingByAddress,
+  };
 };
 
 module.exports = {
