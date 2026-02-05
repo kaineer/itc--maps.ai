@@ -143,6 +143,8 @@ export const COORDINATES = {
 
   /** West direction vector (negative X in Three.js) */
   WEST: { x: -1, y: 0, z: 0 },
+
+  START: { x: -6736606.72045857, z: 7713514.742933013 },
 } as const;
 
 /**

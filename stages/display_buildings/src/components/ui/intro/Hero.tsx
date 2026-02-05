@@ -107,11 +107,11 @@ const HeroContainer = ({
 );
 
 export const Hero = () => {
-  const { selectViewMode } = uiSlice.actions;
+  const { selectLoginMode } = uiSlice.actions;
   const dispatch = useDispatch();
 
   const handleClick = () => {
-    dispatch(selectViewMode());
+    dispatch(selectLoginMode());
   };
 
   return (

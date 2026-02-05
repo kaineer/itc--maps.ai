@@ -20,6 +20,7 @@
       "@slices/*": ["src/store/slices/*"],
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
+      "@hooks/*": ["src/hooks/*"],
     },
 
     /* Linting */

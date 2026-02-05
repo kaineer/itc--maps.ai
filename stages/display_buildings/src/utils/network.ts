@@ -13,7 +13,7 @@ interface NetworkConfigItem {
 
 const backendConfig: NetworkConfigItem = {
   protocol: "http",
-  host: "localhost",
+  host: "10.1.0.248",
   port: 5000,
 };
 

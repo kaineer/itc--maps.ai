@@ -2,11 +2,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { putBackend, getBackend } from "@utils/backend";
 import { initializeViewCamera } from "./viewSlice";
 import { Building, BuildingNode, ModelPosition } from "../../types/types";
-import { DEFAULT_CAMERA_POSITIONS, DISTANCES } from "@utils/constants";
+import {
+  DEFAULT_CAMERA_POSITIONS,
+  DISTANCES,
+  COORDINATES,
+} from "@utils/constants";
 
-interface BuildingsResponse {
-  buildings: Building[];
-}
+type BuildingsResponse = Building[];
 
 interface BuildingsState {
   // List of all loaded buildings
@@ -47,8 +49,12 @@ const initialState: BuildingsState = {
 export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
   async () => {
-    const data = await getBackend<{ x: number; z: number }>("start");
-    return { x: data.x, z: data.z };
+    try {
+      const data = await getBackend<{ x: number; z: number }>("start");
+      return { x: data.x, z: data.z };
+    } catch (err) {
+      return COORDINATES.START;
+    }
   },
 );
 
@@ -68,7 +74,7 @@ export const fetchBuildings = createAsyncThunk(
       position,
       distance,
     });
-    return data.buildings || [];
+    return data || [];
   },
 );
 

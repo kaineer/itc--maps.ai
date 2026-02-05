@@ -5,6 +5,7 @@ import { ViewUI } from "./components/ui/view/ViewUI";
 import { AlignmentUI } from "./components/ui/alignment/AlignmentUI";
 import { uiSlice } from "@slices/uiSlice";
 import { Match } from "./components/shared/Match";
+import { LoginUI } from "./components/ui/login/LoginUI";
 
 const store = setupStore();
 
@@ -17,6 +18,7 @@ const AppContent = () => {
       <Match
         value={currentMode}
         intro={() => <IntroUI />}
+        login={() => <LoginUI />}
         view={() => <ViewUI />}
         alignment={() => <AlignmentUI />}
       />

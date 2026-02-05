@@ -9,7 +9,7 @@ import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
 import { ViewStage } from "../../stage/ui/ViewStage";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
-import { type AppDispatch } from "@store";
+import { type AppDispatch } from "@store/index";
 import { type Building } from "../../../types/types";
 import { addPolygonWithModelRequest } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
@@ -21,11 +21,10 @@ interface Props {
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { getBuildings, getLoading, getError } = buildingsSlice.selectors;
+  const { getBuildings, getError } = buildingsSlice.selectors;
   const { getCameraState } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
-  const loading = useSelector(getLoading);
   const error = useSelector(getError);
   const cameraState = useSelector(getCameraState);
 
@@ -85,7 +84,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <OrbitControls
           makeDefault
           enablePan={true}
-          enableZoom={true}
+          enableZoom={false}
           enableRotate={true}
           maxPolarAngle={Math.PI / 2} // Prevent going below ground
           target={cameraState.target}

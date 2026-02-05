@@ -5,6 +5,7 @@ import {
   DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
+  COORDINATES,
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
 
@@ -158,8 +159,8 @@ export const initializeViewCamera = createAsyncThunk<{
   cameraPosition: ModelPosition;
 }>("view/initializeViewCamera", async (_, { dispatch }) => {
   // Fetch starting position from backend
-  const data = await getBackend<{ x: number; z: number }>("/start");
-  const position = { x: data.x, z: data.z };
+  // const data = await getBackend<{ x: number; z: number }>("/start");
+  const position = COORDINATES.START;
 
   // Update camera state: set target to starting position, camera 10 meters north
   // North is negative Z in Three.js coordinate system

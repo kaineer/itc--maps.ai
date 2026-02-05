@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 const defaultUIMode = "intro";
 
 // Режимы работы приложения
-export type UIMode = "intro" | "view" | "alignment";
+export type UIMode = "intro" | "login" | "view" | "alignment";
 
 // Форма, показанная в интерфейсе
 export type BuildingFormMode = "none" | "search" | "select";
@@ -25,6 +25,9 @@ export const uiSlice = createSlice({
   name,
   initialState,
   reducers: {
+    selectLoginMode: (state) => {
+      state.currentMode = "login";
+    },
     selectViewMode: (state) => {
       state.currentMode = "view";
     },

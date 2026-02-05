@@ -33,6 +33,7 @@ const createBuildingsService = () => {
     });
   };
 
+  // TODO: make it work
   const createMapPolygonData = async () => {
     const usedModelCache = {};
 
@@ -41,6 +42,7 @@ const createBuildingsService = () => {
       model.polygons.forEach((polygonId) => (acc[polygonId] = model));
     }, {});
 
+    // TODO: where it should be used?
     const filterPolygon = (polygon) => {
       const model = modelsCache[polygon.id];
       const modelId = polygon.id;
@@ -65,11 +67,19 @@ const createBuildingsService = () => {
       }
       return polygon;
     };
+
+    return filterPolygon;
   };
 
-  const getBuildingsInDistance = async (x, z, distance) => {};
+  const getBuildingsInDistance = async (x, z, distance) => {
+    // TODO: filter buildings closer than distance
+    // TODO: filter polygons with filterPolygon from createMapPolygonData
+    // TODO: filter non-null elements
+    // then return
+  };
 
   return {
+    // TODO: getBuildingsInDistance,
     findBuildingByAddress,
   };
 };

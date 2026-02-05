@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ModelData } from "@utils/modelTransform";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { Box3 } from "three";
-import { downloadBinaryFromBackend } from "@utils/backend";
+import { downloadBinaryFromBackend, urlForModel } from "@utils/backend";
 
 interface SliceState {
   fileId: string | null;
@@ -84,7 +84,7 @@ export const fetchModelById = createAsyncThunk(
   "modelUpload/fetchModelById",
   async (modelId: string, { rejectWithValue }) => {
     try {
-      const response = await downloadBinaryFromBackend(urlForModel);
+      const response = await downloadBinaryFromBackend(urlForModel(modelId));
       if (!response.ok) {
         throw new Error(`Ошибка загрузки модели: ${response.statusText}`);
       }

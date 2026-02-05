@@ -20,6 +20,7 @@ export default defineConfig({
       "@slices": aliasPrefix("src/store/slices"),
       "@store": aliasPrefix("src/store"),
       "@utils": aliasPrefix("src/utils"),
+      "@hooks": aliasPrefix("src/hooks"),
     },
   },
 });

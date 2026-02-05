@@ -1,8 +1,12 @@
 import { backendUrl, normalizeEndpoint, serveFromPublic } from "./network";
+import { createTokenStorage } from "@hooks/useAuthentication";
+import { createAuthToken } from "./authToken";
 
 const urlForBackend = (endpoint: string): string => {
   return backendUrl + normalizeEndpoint(endpoint);
 };
+
+const tokenStorage = createTokenStorage();
 
 /**
  * Utility function for making backend API calls
@@ -19,11 +23,15 @@ export async function fetchBackend(
   const suffix = serveFromPublic ? ".json" : "";
   const url = urlForBackend(endpoint) + suffix;
 
+  const token = tokenStorage.getToken();
+  const { headers: authHeaders } = token ? createAuthToken(token) : {};
+
   return fetch(url, {
     ...options,
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
+      ...authHeaders,
     },
   });
 }
