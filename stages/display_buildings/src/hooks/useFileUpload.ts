@@ -1,6 +1,5 @@
 //
 import { useState, useCallback } from "react";
-import { uploadToBackend } from "@utils/backend";
 
 export interface UseFileUploadOptions {
   maxSize?: number;

@@ -19,7 +19,6 @@ import {
 import { Vector3, Box3 } from "three";
 import { CAMERA_HEIGHTS } from "@utils/constants";
 import { modelsCache } from "@utils/modelsCache";
-import { patchBackend, putBackend } from "@utils/backend";
 import { uiSlice } from "./uiSlice";
 
 export type WorldDirection = "north" | "south" | "east" | "west";

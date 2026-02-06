@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { putBackend, getBackend } from "@utils/backend";
 import { initializeViewCamera } from "./viewSlice";
 import { Building, BuildingNode, ModelPosition } from "../../types/types";
 import {

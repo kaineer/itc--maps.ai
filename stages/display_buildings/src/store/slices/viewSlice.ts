@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getBackend } from "../../utils/backend";
 import {
   CAMERA_HEIGHTS,
   DISTANCES,
