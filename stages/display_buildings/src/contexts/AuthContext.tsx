@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { createAuthService } from "@services/authService";
 import {
   AuthenticationError,
@@ -31,6 +31,19 @@ export const AuthProvider = ({ children }: Props) => {
 
   const authService = createAuthService();
   const backendService = createBackendService();
+
+  useEffect(() => {
+    const user = authService.getUser();
+    if (user) {
+      setAuthState({
+        user,
+        isAuthenticated: true,
+        error: null,
+      });
+    }
+
+    return () => authService.drop();
+  }, []);
 
   const login = async ({ login, password }: LoginCredentials) => {
     const result = await backendService.post("users/login", {
