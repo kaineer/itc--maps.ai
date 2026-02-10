@@ -10,6 +10,12 @@ export class AuthenticationError extends Error {
   }
 }
 
+export class MessageError extends Error {
+  constructor(message: string) {
+    super(message);
+  }
+}
+
 const joinUrl = (base: string, part: string): string => {
   const left = base.endsWith("/") ? base : base + "/";
   const right = part.startsWith("/") ? part.slice(1) : part;
@@ -33,6 +39,7 @@ interface FetchOptions {
   method?: HTTPMethod;
   body?: string;
   headers?: Record<string, string>;
+  signal?: AbortSignal;
 }
 
 export interface BackendService {
@@ -43,12 +50,15 @@ export interface BackendService {
   patch: (endpoint: string, body: unknown) => Promise<unknown>;
 
   urlForEndpoint: (endpoint: string) => string;
+  upload: (endpoint: string, formData: unknown) => Promise<unknown>;
   download: (endpoint: string) => Promise<Response>;
 }
 
 const methodsWithBody = ["POST", "PUT", "PATCH"];
 
-const jsonHeaders = {};
+const jsonHeaders = {
+  "Content-Type": "application/json",
+};
 
 export const createBackendService = (
   config: BackendConfig = backendConfig,
@@ -58,6 +68,8 @@ export const createBackendService = (
 
   const callFetch = async (endpoint: string, options: CallFetchOptions) => {
     const fullUrl = joinUrl(url, endpoint);
+    const controller = new AbortController();
+    const { signal } = controller;
 
     const method = options.method || defaultMethod;
     const headers = {
@@ -68,22 +80,38 @@ export const createBackendService = (
     const fetchOptions: FetchOptions = {
       method,
       headers,
+      signal,
     };
 
     if (methodsWithBody.includes(method)) {
       fetchOptions.body = JSON.stringify(options.body || {});
     }
 
-    const response = await fetch(fullUrl, fetchOptions);
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    try {
+      const response = await fetch(fullUrl, fetchOptions);
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        authService.drop();
-        throw new AuthenticationError("Not authenticated");
+      if (!response.ok) {
+        if (response.status === 401) {
+          authService.drop();
+          throw new AuthenticationError("Not authenticated");
+        }
       }
-    }
 
-    return response.json();
+      // HACK
+      if (response.headers.get("Content-Length") !== "0") {
+        return response.json();
+      }
+
+      return;
+    } catch (error) {
+      clearTimeout(timeoutId);
+      if (String(error).includes("AbortError")) {
+        throw new MessageError("Превышено время ожидания ответа");
+      }
+
+      throw new MessageError(String(error));
+    }
   };
 
   return {
@@ -109,6 +137,19 @@ export const createBackendService = (
         body,
         headers: jsonHeaders,
       });
+    },
+    upload(endpoint: string, formData: unknown): Promise<unknown> {
+      if (typeof formData === "object" && formData instanceof FormData) {
+        return fetch(joinUrl(config.url, endpoint), {
+          method: "POST",
+          body: formData,
+          headers: {
+            ...authService.getHeaders(),
+          },
+        });
+      }
+
+      return Promise.resolve(null);
     },
     download(endpoint: string): Promise<Response> {
       return fetch(joinUrl(config.url, endpoint));

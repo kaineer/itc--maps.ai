@@ -7,6 +7,8 @@ import {
   COORDINATES,
 } from "@utils/constants";
 
+import { createBackendService } from "@services/backendService";
+
 type BuildingsResponse = Building[];
 
 interface BuildingsState {
@@ -43,13 +45,19 @@ const initialState: BuildingsState = {
   lastLoadedPosition: defaultCameraPosition,
 };
 
+const backendService = createBackendService();
+
 // Async thunk for fetching initial position from backend API
 // Gets the starting position for the application
 export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
   async () => {
     try {
-      const data = await getBackend<{ x: number; z: number }>("start");
+      // const data = await getBackend<{ x: number; z: number }>("start");
+      const data = (await backendService.get("start")) as {
+        x: number;
+        z: number;
+      };
       return { x: data.x, z: data.z };
     } catch (err) {
       return COORDINATES.START;
@@ -68,11 +76,11 @@ export const fetchBuildings = createAsyncThunk(
     position: BuildingNode;
     distance: number;
   }) => {
-    // const data: BuildingsResponse = await getPublic("/buildings");
-    const data: BuildingsResponse = await putBackend("/buildings", {
+    const data: BuildingsResponse = (await backendService.put("buildings", {
       position,
       distance,
-    });
+    })) as BuildingsResponse;
+
     return data || [];
   },
 );
@@ -235,6 +243,13 @@ export const buildingsSlice = createSlice({
             building.position?.x === parseFloat(position.split(",")[0]) &&
             building.position?.z === parseFloat(position.split(",")[1]),
         ) || null
+      );
+    },
+    //
+    getIsAuthenticated: (state) => {
+      return (
+        !state.error ||
+        !String(state.error).toLowerCase().includes("not authenticated")
       );
     },
   },

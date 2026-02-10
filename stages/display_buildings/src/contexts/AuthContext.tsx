@@ -5,7 +5,11 @@ import {
   BackendService,
   createBackendService,
 } from "@services/backendService";
-import { AuthState, LoginCredentials } from "src/types/auth-types";
+import {
+  AuthResponse,
+  AuthState,
+  LoginCredentials,
+} from "src/types/auth-types";
 
 export interface AuthContextType extends AuthState, BackendService {
   login: (credentials: LoginCredentials) => Promise<void>;
@@ -15,11 +19,25 @@ export interface AuthContextType extends AuthState, BackendService {
 
 export const AuthContext = createContext<AuthContextType | undefined>(void 0);
 
+export const isAuthResponse = (obj: unknown): obj is AuthResponse => {
+  return (
+    typeof obj === "object" &&
+    obj !== null &&
+    "success" in obj &&
+    obj.success &&
+    "accessToken" in obj &&
+    typeof obj.accessToken === "string"
+  );
+};
+
 interface Props {
   children: ReactNode;
 }
 
-type Fetcher = (endpoint: string, body?: unknown) => Promise<unknown | void>;
+type Fetcher = (
+  endpoint: string,
+  body?: unknown,
+) => Promise<Response | unknown | void>;
 
 export const AuthProvider = ({ children }: Props) => {
   //
@@ -41,25 +59,22 @@ export const AuthProvider = ({ children }: Props) => {
         error: null,
       });
     }
-
-    return () => authService.drop();
   }, []);
 
   const login = async ({ login, password }: LoginCredentials) => {
     const result = await backendService.post("users/login", {
-      body: { login, password },
+      login,
+      password,
     });
 
-    if (result && typeof result === "object") {
-      if ("success" in result && "accessToken" in result) {
-        authService.store(String(result.accessToken));
+    if (isAuthResponse(result)) {
+      authService.store(String(result.accessToken));
 
-        setAuthState({
-          user: authService.getUser(),
-          isAuthenticated: true,
-          error: null,
-        });
-      }
+      setAuthState({
+        user: authService.getUser(),
+        isAuthenticated: true,
+        error: null,
+      });
     }
   };
 
@@ -78,7 +93,8 @@ export const AuthProvider = ({ children }: Props) => {
   const wrapFetch = <T extends Fetcher>(fn: T): T => {
     return (async (endpoint: string, body: unknown) => {
       try {
-        return fn(endpoint, body);
+        if (body) return fn(endpoint, body);
+        return fn(endpoint);
       } catch (err) {
         if (err instanceof AuthenticationError) {
           logout();
@@ -93,6 +109,10 @@ export const AuthProvider = ({ children }: Props) => {
     put: wrapFetch(backendService.put),
     del: wrapFetch(backendService.del),
     patch: wrapFetch(backendService.patch),
+    download: wrapFetch(backendService.download),
+    upload: wrapFetch(backendService.upload),
+    // NOTE: this one does not change
+    urlForEndpoint: backendService.urlForEndpoint,
   };
 
   const contextValue: AuthContextType = {

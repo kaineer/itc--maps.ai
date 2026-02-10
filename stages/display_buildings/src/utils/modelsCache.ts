@@ -1,7 +1,7 @@
 import * as THREE from "three";
-import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { ModelData } from "./modelTransform";
 import { createBackendService } from "@services/backendService";
+import { AuthorizedFBXLoader } from "./authorizedFBXLoader";
 
 type GroupPromise = Promise<THREE.Group>;
 
@@ -12,7 +12,8 @@ export const createModelsCache = () => {
 
   // private
   const loadModel = async (modelId: string): GroupPromise => {
-    const loader = new FBXLoader();
+    const loader = new AuthorizedFBXLoader();
+
     const modelUrl = backendService.urlForEndpoint("model/" + modelId);
     return new Promise((resolve, reject) => {
       loader.load(modelUrl, resolve, undefined, reject);

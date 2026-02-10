@@ -1,5 +1,5 @@
 import classes from "./LoginUI.module.css";
-import { useRef, MouseEvent, useEffect } from "react";
+import { useRef, useEffect, MouseEvent, useCallback, useState } from "react";
 import { uiSlice } from "@slices/uiSlice";
 import { useDispatch } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
@@ -7,33 +7,56 @@ import { useAuthentication } from "@hooks/useAuthentication";
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passRef = useRef<HTMLInputElement | null>(null);
-  const { selectViewMode } = uiSlice.actions;
-  const dispatch = useDispatch();
 
-  const { login, username, expiresAt } = useAuthentication();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const dispatch = useDispatch();
+  const { login, isAuthenticated } = useAuthentication() || {};
+  const { selectViewMode } = uiSlice.actions;
 
   useEffect(() => {
-    if (username && expiresAt && expiresAt > Date.now()) {
+    if (isAuthenticated) {
       dispatch(selectViewMode());
     }
-  }, [username, expiresAt]);
+  }, [isAuthenticated]);
 
-  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    const username = loginRef.current?.value || "";
-    const password = passRef.current?.value || "";
+  const handleClick = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      const username = loginRef.current?.value || "";
+      const password = passRef.current?.value || "";
 
-    e.preventDefault();
+      e.preventDefault();
 
-    login(username, password);
-  };
+      if (login) {
+        login({
+          login: username,
+          password,
+        }).catch((error) => {
+          if (error instanceof Error) {
+            setErrorMessage(String(error.message));
+            setTimeout(() => setErrorMessage(null), 10000);
+          }
+        });
+      }
+    },
+    [login],
+  );
 
   return (
     <div className={classes.login}>
       <form className={classes.form}>
         <div className={classes.column}>
+          {errorMessage && (
+            <div className={classes.errorMessage}>{errorMessage}</div>
+          )}
           <h1 className={classes.title}>Вход</h1>
-          <input ref={loginRef} className={classes.input} type="text"></input>
           <input
+            name="login"
+            ref={loginRef}
+            className={classes.input}
+            type="text"
+          ></input>
+          <input
+            name="password"
             ref={passRef}
             className={classes.input}
             type="password"

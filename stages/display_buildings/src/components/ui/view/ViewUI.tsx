@@ -13,6 +13,8 @@ import { type AppDispatch } from "@store/index";
 import { type Building } from "../../../types/types";
 import { addPolygonWithModelRequest } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
+import { uiSlice } from "@slices/uiSlice";
+import { useAuthentication } from "@hooks/useAuthentication";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -21,11 +23,16 @@ interface Props {
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { getBuildings, getError } = buildingsSlice.selectors;
+  const { getBuildings, getError, getIsAuthenticated } =
+    buildingsSlice.selectors;
   const { getCameraState } = viewSlice.selectors;
+  const { selectLoginMode } = uiSlice.actions;
+  const { logout } = useAuthentication();
 
   const buildings = useSelector(getBuildings);
   const error = useSelector(getError);
+  const isAuthenticated = useSelector(getIsAuthenticated);
+
   const cameraState = useSelector(getCameraState);
 
   const handleBuildingClick = (building: Building) => {
@@ -37,6 +44,13 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     // Fetch initial position and buildings when component mounts
     dispatch(fetchInitialBuildings());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      dispatch(selectLoginMode());
+      logout();
+    }
+  }, [isAuthenticated]);
 
   if (!buildings) {
     return <div className="loading">Loading 3D buildings visualization...</div>;

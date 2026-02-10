@@ -57,3 +57,13 @@
   font-size: 36px;
   color: #fff;
 }
+
+.errorMessage {
+  color: #fff;
+  font-size: 32px;
+
+  background-color: #bf616a;
+  padding: 8px;
+  border: solid 1px #8c474e;
+  border-radius: 8px;
+}

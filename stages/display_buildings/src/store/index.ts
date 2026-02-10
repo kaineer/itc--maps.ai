@@ -8,6 +8,7 @@ import {
   helpInfoSlice,
   helpInfoStorageMiddleware,
 } from "./slices/helpInfoSlice";
+import { rtkQueryErrorHandler } from "./middleware/unauthorized";
 
 export function setupStore() {
   const store = configureStore({
@@ -25,7 +26,7 @@ export function setupStore() {
         serializableCheck: {
           ignoredActions: ["persist/PERSIST"],
         },
-      }).concat(helpInfoStorageMiddleware),
+      }).concat(helpInfoStorageMiddleware, rtkQueryErrorHandler),
     devTools: process.env.NODE_ENV !== "production",
   });
 

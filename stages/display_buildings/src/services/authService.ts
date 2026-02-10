@@ -27,7 +27,7 @@ export const createAuthService = (
     storage.removeItem(key);
   };
 
-  const getHeaders = () => {
+  const getHeaders = (): AuthHeaders => {
     const token = storage.getItem(key);
     if (token) {
       return {
@@ -42,6 +42,9 @@ export const createAuthService = (
     if (token) {
       const [_, right] = token.split(".");
       const data = JSON.parse(atob(right));
+      const hasExpired = data.exp < Date.now() / 1000;
+
+      if (hasExpired) return null;
 
       return {
         login: data.name,

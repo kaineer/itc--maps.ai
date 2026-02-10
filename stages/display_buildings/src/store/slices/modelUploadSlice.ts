@@ -3,6 +3,7 @@ import { ModelData } from "@utils/modelTransform";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { Box3 } from "three";
 import { createBackendService } from "@services/backendService";
+import { useAuthentication } from "@hooks/useAuthentication";
 
 interface SliceState {
   fileId: string | null;
@@ -84,8 +85,11 @@ export const fetchModelById = createAsyncThunk(
   "modelUpload/fetchModelById",
   async (modelId: string, { rejectWithValue }) => {
     try {
-      const backendService = createBackendService();
-      const { download, urlForEndpoint } = backendService;
+      debugger;
+      const { download, urlForEndpoint } = useAuthentication() || {
+        download: () => null,
+        urlForEndpoint: () => "",
+      };
 
       const response = await download(urlForEndpoint("/model/" + modelId));
       if (!response.ok) {
