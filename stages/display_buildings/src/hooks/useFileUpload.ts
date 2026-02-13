@@ -1,6 +1,6 @@
 //
+import { createBackendService } from "@services/backendService";
 import { useState, useCallback } from "react";
-import { useAuthentication } from "./useAuthentication";
 
 export interface UseFileUploadOptions {
   maxSize?: number;
@@ -23,7 +23,9 @@ export const useFileUpload = (options: UseFileUploadOptions = {}) => {
     onError,
   } = options;
 
-  const { upload } = useAuthentication();
+  const backendService = createBackendService();
+
+  const { upload } = backendService;
 
   const [uploadState, setUploadState] = useState<UploadState>({
     isUploading: false,

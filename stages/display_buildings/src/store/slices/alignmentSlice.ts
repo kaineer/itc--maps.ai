@@ -778,13 +778,14 @@ export const saveAlignment = createAsyncThunk(
       // Prepare transform data for API
       const transformData = {
         position: modelTransform.position,
-        rotation: modelTransform.rotation,
+        rotation: [0, modelTransform.rotation, 0],
         scale: modelTransform.scale,
         polygons: selectedPolygons.map((p) => p.id),
         address,
       };
 
-      const { patch } = createBackendService();
+      // const { patch } = createBackendService();
+      const { put: patch } = createBackendService();
 
       if (patch) {
         // Send PATCH request to save alignment

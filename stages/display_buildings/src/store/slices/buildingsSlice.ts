@@ -53,7 +53,6 @@ export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
   async () => {
     try {
-      // const data = await getBackend<{ x: number; z: number }>("start");
       const data = (await backendService.get("start")) as {
         x: number;
         z: number;

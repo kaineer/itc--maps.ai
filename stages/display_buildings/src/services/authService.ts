@@ -47,7 +47,7 @@ export const createAuthService = (
       if (hasExpired) return null;
 
       return {
-        login: data.name,
+        login: data.unique_name,
         role: data.role,
       };
     }

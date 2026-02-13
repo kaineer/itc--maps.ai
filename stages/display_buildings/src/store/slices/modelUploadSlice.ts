@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { ModelData } from "@utils/modelTransform";
 import { FBXLoader } from "three/examples/jsm/Addons.js";
 import { Box3 } from "three";
-import { createBackendService } from "@services/backendService";
 import { useAuthentication } from "@hooks/useAuthentication";
 
 interface SliceState {
@@ -85,7 +84,6 @@ export const fetchModelById = createAsyncThunk(
   "modelUpload/fetchModelById",
   async (modelId: string, { rejectWithValue }) => {
     try {
-      debugger;
       const { download, urlForEndpoint } = useAuthentication() || {
         download: () => null,
         urlForEndpoint: () => "",

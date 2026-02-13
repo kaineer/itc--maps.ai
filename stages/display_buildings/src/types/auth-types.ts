@@ -18,3 +18,9 @@ export interface AuthState {
   isAuthenticated: boolean;
   error: string | null;
 }
+
+export interface AuthHookType extends AuthState {
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => void;
+  hasRole: (role: string) => boolean;
+}

@@ -6,26 +6,28 @@ import { AlignmentUI } from "./components/ui/alignment/AlignmentUI";
 import { uiSlice } from "@slices/uiSlice";
 import { Match } from "./components/shared/Match";
 import { LoginUI } from "./components/ui/login/LoginUI";
-import { AuthProvider } from "@contexts/AuthContext";
-import { useEffect } from "react";
+import { AuthInitialization } from "./components/shared/AuthInitialization";
 import { useAuthentication } from "@hooks/useAuthentication";
+import { useEffect } from "react";
 
 const store = setupStore();
 
 const AppContent = () => {
   const { getUIMode } = uiSlice.selectors;
   const currentMode = useSelector(getUIMode);
-
   const { isAuthenticated } = useAuthentication();
-  const { selectLoginMode } = uiSlice.actions;
+
+  const { selectLoginMode, selectViewMode } = uiSlice.actions;
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isAuthenticated && currentMode !== "intro") {
       dispatch(selectLoginMode());
+    } else if (isAuthenticated && currentMode === "login") {
+      dispatch(selectViewMode());
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, currentMode]);
 
   return (
     <Match
@@ -40,11 +42,10 @@ const AppContent = () => {
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Provider store={store}>
-        <AppContent />
-      </Provider>
-    </AuthProvider>
+    <Provider store={store}>
+      <AuthInitialization />
+      <AppContent />
+    </Provider>
   );
 };
 

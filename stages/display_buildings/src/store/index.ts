@@ -4,6 +4,7 @@ import { buildingsSlice } from "./slices/buildingsSlice";
 import { alignmentSlice } from "./slices/alignmentSlice";
 import { viewSlice } from "./slices/viewSlice";
 import { modelUploadSlice } from "./slices/modelUploadSlice";
+import { authenticationSlice } from "@slices/authenticationSlice";
 import {
   helpInfoSlice,
   helpInfoStorageMiddleware,
@@ -19,6 +20,7 @@ export function setupStore() {
       [viewSlice.reducerPath]: viewSlice.reducer,
       [modelUploadSlice.reducerPath]: modelUploadSlice.reducer,
       [helpInfoSlice.reducerPath]: helpInfoSlice.reducer,
+      [authenticationSlice.reducerPath]: authenticationSlice.reducer,
       // Add other reducers here as they are created
     },
     middleware: (getDefaultMiddleware) =>
