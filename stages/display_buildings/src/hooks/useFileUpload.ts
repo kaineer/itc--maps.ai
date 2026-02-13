@@ -1,6 +1,6 @@
 //
+import { createBackendService } from "@services/backendService";
 import { useState, useCallback } from "react";
-import { uploadToBackend } from "@utils/backend";
 
 export interface UseFileUploadOptions {
   maxSize?: number;
@@ -22,6 +22,10 @@ export const useFileUpload = (options: UseFileUploadOptions = {}) => {
     onSuccess,
     onError,
   } = options;
+
+  const backendService = createBackendService();
+
+  const { upload } = backendService;
 
   const [uploadState, setUploadState] = useState<UploadState>({
     isUploading: false,
@@ -76,7 +80,9 @@ export const useFileUpload = (options: UseFileUploadOptions = {}) => {
 
         // Для демонстрации прогресса можно использовать XMLHttpRequest
         // или добавить обработчик прогресса для fetch с помощью ReadableStream
-        const response = await uploadToBackend(endpoint, formData);
+        // const response = await uploadToBackend(endpoint, formData);
+
+        const response = await upload(endpoint, formData);
 
         if (!response.ok) {
           throw new Error(`HTTP ошибка: ${response.status}`);

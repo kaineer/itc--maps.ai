@@ -104,7 +104,7 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
 
   const buttonText = fileIsLoading ? "Загружаю..." : "Выберите модель";
 
-  const handleUploadSuccess = ({ modelId }: { modelId: string }) => {
+  const handleUploadSuccess = ({ model: modelId }: { model: string }) => {
     dispatch(selectModelForAlignment(modelId));
   };
 

@@ -26,6 +26,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   const buildings = useSelector(getBuildings);
   const error = useSelector(getError);
+
   const cameraState = useSelector(getCameraState);
 
   const handleBuildingClick = (building: Building) => {

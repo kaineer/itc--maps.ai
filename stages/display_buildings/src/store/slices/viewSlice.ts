@@ -1,5 +1,4 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getBackend } from "../../utils/backend";
 import {
   CAMERA_HEIGHTS,
   DISTANCES,
@@ -8,6 +7,9 @@ import {
   COORDINATES,
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
+import { createBackendService } from "@services/backendService";
+
+const backendService = createBackendService();
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -159,8 +161,8 @@ export const initializeViewCamera = createAsyncThunk<{
   cameraPosition: ModelPosition;
 }>("view/initializeViewCamera", async (_, { dispatch }) => {
   // Fetch starting position from backend
-  // const data = await getBackend<{ x: number; z: number }>("/start");
-  const position = COORDINATES.START;
+
+  const position = await backendService.get("buildings/start");
 
   // Update camera state: set target to starting position, camera 10 meters north
   // North is negative Z in Three.js coordinate system

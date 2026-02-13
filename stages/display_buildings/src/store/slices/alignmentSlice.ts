@@ -19,8 +19,10 @@ import {
 import { Vector3, Box3 } from "three";
 import { CAMERA_HEIGHTS } from "@utils/constants";
 import { modelsCache } from "@utils/modelsCache";
-import { patchBackend, putBackend } from "@utils/backend";
 import { uiSlice } from "./uiSlice";
+// import { useAuthentication } from "@hooks/useAuthentication";
+// import { createAuthService } from "@services/authService";
+import { createBackendService } from "@services/backendService";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -776,22 +778,27 @@ export const saveAlignment = createAsyncThunk(
       // Prepare transform data for API
       const transformData = {
         position: modelTransform.position,
-        rotation: modelTransform.rotation,
+        rotation: [0, modelTransform.rotation, 0],
         scale: modelTransform.scale,
         polygons: selectedPolygons.map((p) => p.id),
         address,
       };
 
-      // Send PATCH request to save alignment
-      const response = await patchBackend(
-        `/models/${modelUUID}`,
-        transformData,
-      );
+      // const { patch } = createBackendService();
+      const { put: patch } = createBackendService();
 
-      // Switch to view mode after successful save
-      dispatch(selectViewMode());
+      if (patch) {
+        // Send PATCH request to save alignment
+        const response = (await patch(
+          `/models/${modelUUID}`,
+          transformData,
+        )) as Response;
 
-      return response.data;
+        // Switch to view mode after successful save
+        dispatch(selectViewMode());
+
+        return response.data;
+      }
     } catch (error) {
       console.error("Failed to save alignment:", error);
       return rejectWithValue(

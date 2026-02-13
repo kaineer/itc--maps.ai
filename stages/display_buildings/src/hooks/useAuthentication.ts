@@ -1,124 +1,43 @@
-import { postBackend } from "@utils/backend";
-import { createAuthToken } from "@utils/authToken";
-import { useState } from "react";
+import {
+  authenticationSlice,
+  loginThunk,
+  logoutThunk,
+} from "@slices/authenticationSlice";
+import { AppDispatch } from "@store/index";
+import { useDispatch, useSelector } from "react-redux";
+import { AuthHookType, LoginCredentials } from "src/types/auth-types";
 
-interface UserData {
-  username: string;
-  role: string;
-  expiresAt: number;
-}
+export const useAuthentication = (): AuthHookType => {
+  const dispatch = useDispatch<AppDispatch>();
 
-type LoginSuccessResult = UserData & { success: true };
+  const { getIsAuthenticated, getUser, getUserRole, getError } =
+    authenticationSlice.selectors;
 
-interface LoginFailureResult {
-  success: false;
-  message: string;
-}
+  const isAuthenticated = useSelector(getIsAuthenticated);
+  const userRole = useSelector(getUserRole);
+  const user = useSelector(getUser);
+  const error = useSelector(getError);
 
-type LoginResult = LoginSuccessResult | LoginFailureResult;
+  const login = async (credentials: LoginCredentials): Promise<void> => {
+    const { login: username, password } = credentials;
 
-export interface AuthResult {
-  login: (username: string, password: string) => Promise<LoginResult>;
-  logout: () => void;
-  getToken: () => string | null;
-  username: string | null;
-  expiresAt: number | null;
-  role: string | null;
-}
+    dispatch(loginThunk({ login: username, password }));
+  };
 
-interface TokenStorage {
-  setToken: (token: string) => void;
-  getToken: () => string | null;
-  dropToken: () => void;
-}
+  const logout = async (): Promise<void> => {
+    dispatch(logoutThunk());
+  };
 
-type BrowserStorage = Pick<Storage, "getItem" | "setItem" | "removeItem">;
-
-export const createTokenStorage = (
-  storage: BrowserStorage = localStorage,
-): TokenStorage => {
-  const authTokenKey = "auth/token";
+  const hasRole = (name: string): boolean => {
+    return userRole === name;
+  };
 
   return {
-    setToken(token: string) {
-      storage.setItem(authTokenKey, token);
-    },
-    getToken() {
-      return storage.getItem(authTokenKey);
-    },
-    dropToken() {
-      storage.removeItem(authTokenKey);
-    },
-  };
-};
-
-export const useAuthentication = (
-  storage: BrowserStorage = localStorage,
-): AuthResult => {
-  const authStorage: TokenStorage = createTokenStorage(storage);
-
-  const [accessToken, setAccessToken] = useState<string | null>(
-    authStorage.getToken(),
-  );
-
-  const updateToken = (value: string | null) => {
-    if (typeof value === "string") {
-      authStorage.setToken(value);
-    } else {
-      authStorage.dropToken();
-    }
-    setAccessToken(value);
-  };
-
-  const login = async (
-    username: string,
-    password: string,
-  ): Promise<LoginResult> => {
-    const response = await postBackend("users/login", {
-      login: username,
-      password,
-    });
-
-    if (response.success) {
-      const { accessToken: token } = response;
-
-      updateToken(token);
-
-      return {
-        success: true,
-        ...getUser0(token),
-      };
-    } else {
-      updateToken(null);
-
-      return {
-        success: false,
-        message: response.message,
-      };
-    }
-  };
-
-  const logout = () => {
-    updateToken(null);
-  };
-
-  const getUser0 = (token: string): UserData => {
-    const { username, role, expiresAt } = createAuthToken(token);
-    return { username, role, expiresAt };
-  };
-
-  const getUser: () => UserData | null = () => {
-    return typeof accessToken === "string" ? getUser0(accessToken) : null;
-  };
-
-  const { username = null, expiresAt = null, role = null } = getUser() || {};
-
-  return {
+    isAuthenticated,
+    user,
+    error,
     login,
     logout,
-    getToken: () => authStorage.getToken(),
-    username,
-    expiresAt,
-    role,
+    hasRole,
   };
 };

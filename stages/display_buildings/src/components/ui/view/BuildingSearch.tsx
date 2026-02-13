@@ -7,8 +7,7 @@ import { CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import classes from "./BuildingSearch.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "../CollapsibleForm";
-import { ModelPosition } from "@slices/alignmentSlice";
-import { putBackend } from "@utils/backend";
+import { useAuthentication } from "@hooks/useAuthentication";
 
 interface Props {
   enabled?: boolean;
@@ -41,6 +40,8 @@ export const BuildingSearch = ({
 
   const { getFilteredBuildings } = buildingsSlice.selectors;
   const buildings = useSelector(getFilteredBuildings);
+
+  const { put } = useAuthentication();
 
   // Auto-focus search input when form expands
   useEffect(() => {
@@ -110,7 +111,7 @@ export const BuildingSearch = ({
   const searchBuilding = () => {
     const fetchBuildings = async () => {
       try {
-        const result = await putBackend("buildings/address", {
+        const result = await put("buildings/address", {
           address: searchQuery.trim(),
         });
 

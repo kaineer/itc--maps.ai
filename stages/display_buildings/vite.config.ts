@@ -21,6 +21,8 @@ export default defineConfig({
       "@store": aliasPrefix("src/store"),
       "@utils": aliasPrefix("src/utils"),
       "@hooks": aliasPrefix("src/hooks"),
+      "@contexts": aliasPrefix("src/contexts"),
+      "@services": aliasPrefix("src/services"),
     },
   },
 });
