@@ -28,16 +28,14 @@ export const AlignmentModel = ({ enabled = true }: Props) => {
   const originalMaterialsRef = useRef<Map<Mesh, any>>(new Map());
 
   useEffect(() => {
-    const fetchModelFromCache = async () => {
+    const fetchModelFromCache = async (modelUUID: string) => {
       const model = await modelsCache.getModel(modelUUID);
       if (model) {
         setCurrentModel(model);
       }
     };
 
-    if (modelUUID) {
-      fetchModelFromCache();
-    }
+    modelUUID && fetchModelFromCache(modelUUID);
   }, [modelUUID]);
 
   // Apply wireframe material to model

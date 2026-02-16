@@ -10,6 +10,11 @@ export class AuthenticationError extends Error {
   }
 }
 
+export class ParseError extends Error {
+  constructor(message: string) {
+    super(message.split("\n")[0]);
+  }
+}
 export class MessageError extends Error {
   constructor(message: string) {
     super(message);
@@ -96,11 +101,18 @@ export const createBackendService = (
           authService.drop();
           throw new AuthenticationError("Not authenticated");
         }
+        if (response.status === 500) {
+          throw new MessageError("Серверу нехорошо");
+        }
       }
 
       // HACK
       if (response.headers.get("Content-Length") !== "0") {
-        return response.json();
+        try {
+          return response.json();
+        } catch (err) {
+          throw new ParseError(String(err));
+        }
       }
 
       return;
@@ -115,7 +127,7 @@ export const createBackendService = (
   };
 
   return {
-    get(endpoint: string): Promise<unknown> {
+    get: (endpoint: string): Promise<unknown> => {
       return callFetch(endpoint, { method: "GET", headers: jsonHeaders });
     },
     post(endpoint: string, body: unknown): Promise<unknown> {

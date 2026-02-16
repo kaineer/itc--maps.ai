@@ -35,5 +35,5 @@ export function setupStore() {
   return store;
 }
 
-export type RootState = ReturnType<ReturnType<typeof setupStore>["getState"]>;
+// export type RootState = ReturnType<ReturnType<typeof setupStore>["getState"]>;
 export type AppDispatch = ReturnType<typeof setupStore>["dispatch"];

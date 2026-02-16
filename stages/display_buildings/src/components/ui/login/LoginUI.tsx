@@ -1,23 +1,32 @@
 import classes from "./LoginUI.module.css";
 import { useRef, useEffect, MouseEvent, useCallback, useState } from "react";
-import { uiSlice } from "@slices/uiSlice";
-import { useDispatch } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
+import { useNavigate } from "react-router";
 
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passRef = useRef<HTMLInputElement | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const { login, isAuthenticated } = useAuthentication() || {};
-  const { selectViewMode } = uiSlice.actions;
+  const navigate = useNavigate();
+  const { login, error, cleanError, isAuthenticated } =
+    useAuthentication() || {};
 
   useEffect(() => {
     if (isAuthenticated) {
-      dispatch(selectViewMode());
+      navigate("/view");
     }
   }, [isAuthenticated]);
+
+  useEffect(() => {
+    setErrorMessage(error);
+
+    if (error) {
+      setTimeout(() => {
+        cleanError();
+      }, 5000);
+    }
+  }, [error]);
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -30,10 +39,9 @@ export const LoginUI = () => {
         login({
           login: username,
           password,
-        }).catch((error) => {
-          if (error instanceof Error) {
-            setErrorMessage(String(error.message));
-            setTimeout(() => setErrorMessage(null), 10000);
+        }).then(() => {
+          if (passRef.current) {
+            passRef.current.value = "";
           }
         });
       }
@@ -50,6 +58,7 @@ export const LoginUI = () => {
           )}
           <h1 className={classes.title}>Вход</h1>
           <input
+            autoFocus={true}
             name="login"
             ref={loginRef}
             className={classes.input}

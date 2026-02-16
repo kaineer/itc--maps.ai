@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { uiSlice, BuildingFormMode } from "@slices/uiSlice";
 import { BuildingSearch } from "./BuildingSearch";
-import { BuildingSelection } from "./BuildingSelection";
 import { Logout } from "./Logout";
+import { BuildingSelection } from "./building-selection/BuildingSelection";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();

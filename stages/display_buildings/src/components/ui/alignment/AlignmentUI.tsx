@@ -3,7 +3,6 @@ import styles from "./AlignmentUI.module.css";
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import { uiSlice } from "@slices/uiSlice";
 
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
@@ -28,15 +27,8 @@ import { AlignmentUIGroup } from "./AlignmentUIGroup";
  */
 export const AlignmentUI = () => {
   const { getCurrentCamera } = alignmentSlice.selectors;
-  const { getUIMode } = uiSlice.selectors;
 
   const currentCamera = useSelector(getCurrentCamera);
-  const currentMode = useSelector(getUIMode);
-
-  // Only render if we're in alignment mode
-  if (currentMode !== "alignment") {
-    return null;
-  }
 
   return (
     <>

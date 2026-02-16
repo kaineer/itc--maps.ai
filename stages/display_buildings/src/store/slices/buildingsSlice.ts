@@ -8,6 +8,7 @@ import {
 } from "@utils/constants";
 
 import { createBackendService } from "@services/backendService";
+import { createAction } from "@reduxjs/toolkit";
 
 type BuildingsResponse = Building[];
 
@@ -20,6 +21,8 @@ interface BuildingsState {
   loading: boolean;
   // Error message if any operation fails
   error: string | null;
+  //
+  hashPosition: { x: number; z: number } | null;
   //
   lastLoadedPosition: ModelPosition;
   // Active filters for building list
@@ -38,6 +41,7 @@ const initialState: BuildingsState = {
   selectedBuildingId: null,
   loading: false,
   error: null,
+  hashPosition: null,
   filters: {
     hasModel: null, // Show all buildings by default
     searchQuery: "", // No search filter by default
@@ -51,13 +55,21 @@ const backendService = createBackendService();
 // Gets the starting position for the application
 export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
-  async () => {
+  async (_, { getState }) => {
     try {
-      const data = (await backendService.get("start")) as {
-        x: number;
-        z: number;
-      };
-      return { x: data.x, z: data.z };
+      const {
+        buildings: { hashPosition },
+      } = getState() as any; // TODO Fix it
+
+      if (!hashPosition) {
+        const data = (await backendService.get("start")) as {
+          x: number;
+          z: number;
+        };
+        return { x: data.x, z: data.z };
+      } else {
+        return hashPosition;
+      }
     } catch (err) {
       return COORDINATES.START;
     }
@@ -105,6 +117,26 @@ export const fetchInitialBuildings = createAsyncThunk<Building[]>(
     }
 
     throw new Error("Failed to initialize camera with starting position");
+  },
+);
+
+export const fetchStartPositionFromHash = createAction(
+  "buildings/hash2start",
+  () => {
+    const { hash } = window.location;
+    const parts = hash.slice(1).split("&");
+    if (hash && Array.isArray(parts) && parts.length > 1) {
+      const [x, z] = parts.map((p) => Number(p.split("=")[1]));
+
+      return {
+        payload: {
+          x,
+          z,
+        },
+      };
+    }
+
+    return { payload: {} };
   },
 );
 
@@ -192,6 +224,12 @@ export const buildingsSlice = createSlice({
         state.loading = false;
         state.error =
           action.error.message || "Failed to fetch initial buildings";
+      })
+      .addCase(fetchStartPositionFromHash, (state, action) => {
+        const { x, z } = action.payload || {};
+        if (typeof x === "number" && typeof z === "number") {
+          state.hashPosition = { x, z };
+        }
       });
   },
   selectors: {

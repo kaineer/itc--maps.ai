@@ -3,7 +3,12 @@ import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
-import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
+import {
+  MOVEMENT_SPEEDS,
+  CAMERA_HEIGHTS,
+  DISTANCES,
+  EYE_LEVEL_HEIGHT,
+} from "@utils/constants";
 import { AppDispatch } from "@store/index";
 import { distance2dBetween } from "../../shared/positionMath";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
@@ -15,6 +20,7 @@ export const ViewCameraController = () => {
   const cameraPosition = useSelector(getCameraPosition);
   const cameraTarget = useSelector(getCameraTarget);
   const lastLoadedPosition = useSelector(getLastLoadedPosition);
+  const { updateCameraPosition, updateCameraTarget } = viewSlice.actions;
 
   // Use refs to store current Redux state for useFrame callback
   const currentReduxState = useRef({
@@ -108,6 +114,27 @@ export const ViewCameraController = () => {
       eventTarget.removeEventListener("keydown", handleKeyDown);
       eventTarget.removeEventListener("keyup", handleKeyUp);
     };
+  }, []);
+
+  useEffect(() => {
+    const [x, _, z] = lastLoadedPosition;
+    if (x && z) {
+      const query = "x=" + x + "&z=" + z;
+      window.location.hash = "#" + query;
+    }
+  }, [lastLoadedPosition]);
+
+  useEffect(() => {
+    const { hash } = window.location;
+    const parts = hash.slice(1).split("&");
+    if (hash && Array.isArray(parts) && parts.length > 1) {
+      const [x, z] = parts.map((p) => Number(p.split("=")[1]));
+
+      // if (x && z) {
+      //   dispatch(updateCameraPosition([x, EYE_LEVEL_HEIGHT, z]));
+      //   dispatch(updateCameraTarget([x, EYE_LEVEL_HEIGHT, z + 10]));
+      // }
+    }
   }, []);
 
   useFrame((state, delta) => {
@@ -212,11 +239,9 @@ export const ViewCameraController = () => {
           camera.position.z = newCameraZ;
 
           // Update Redux state to keep in sync
+          dispatch(updateCameraTarget([newTargetX, 0, newTargetZ]));
           dispatch(
-            viewSlice.actions.updateCameraTarget([newTargetX, 0, newTargetZ]),
-          );
-          dispatch(
-            viewSlice.actions.updateCameraPosition([
+            updateCameraPosition([
               newCameraX,
               CAMERA_HEIGHTS.EYE_LEVEL, // Fixed eye level height
               newCameraZ,

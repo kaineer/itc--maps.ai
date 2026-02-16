@@ -22,7 +22,9 @@ export default defineConfig({
       "@utils": aliasPrefix("src/utils"),
       "@hooks": aliasPrefix("src/hooks"),
       "@contexts": aliasPrefix("src/contexts"),
+      "@components": aliasPrefix("src/components"),
       "@services": aliasPrefix("src/services"),
+      "@.types": aliasPrefix("src/types"),
     },
   },
 });

@@ -1,8 +1,7 @@
 import classes from "./Hero.module.css";
-import { ReactNode, MouseEvent } from "react";
+import { ReactNode } from "react";
 import clsx from "clsx";
-import { uiSlice } from "@slices/uiSlice";
-import { useDispatch } from "react-redux";
+import { Link } from "react-router";
 
 interface LayerProps {
   name: string;
@@ -56,17 +55,13 @@ const FeaturesBar = () => (
   </div>
 );
 
-const EnterLink = ({
-  onClick,
-}: {
-  onClick: (e: MouseEvent<HTMLAnchorElement>) => void;
-}) => (
-  <a className={classes.cta} href="#" onClick={onClick}>
+const EnterLink = ({}: {}) => (
+  <Link className={classes.cta} to="/login">
     <span>Войти в метавселенную</span>
     <span className={classes.ctaIcon}>
       <i className="fas fa-arrow-right"></i>
     </span>
-  </a>
+  </Link>
 );
 
 const CollageItem = ({ id, img }: { id: string; img: string }) => (
@@ -87,11 +82,7 @@ const HeroCollage = () => (
   </div>
 );
 
-const HeroContainer = ({
-  onClick,
-}: {
-  onClick: (e: MouseEvent<HTMLAnchorElement>) => void;
-}) => (
+const HeroContainer = ({}: {}) => (
   <div className={classes.container}>
     <div className={classes.content}>
       <TopLine />
@@ -100,33 +91,26 @@ const HeroContainer = ({
         3D-карта города Екатеринбург, разработанная школьниками города
       </p>
       <FeaturesBar />
-      <EnterLink onClick={onClick} />
+      <EnterLink />
     </div>
     <HeroCollage />
   </div>
 );
 
 export const Hero = () => {
-  const { selectLoginMode } = uiSlice.actions;
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    dispatch(selectLoginMode());
-  };
-
   return (
     <main className={classes.hero}>
       <HeroLayer name="image" />
       <HeroLayer name="light" />
       <HeroLayer name="shapes">
-        <HeroShape id="1" />
-        <HeroShape id="2" />
-        <HeroShape id="3" />
+        <HeroShape id="shape1" />
+        <HeroShape id="shape2" />
+        <HeroShape id="shape3" />
       </HeroLayer>
       <HeroLayer name="logo">
         <img src="/images/Logo5.png" alt="" className={classes.logoWatermark} />
       </HeroLayer>
-      <HeroContainer onClick={handleClick} />
+      <HeroContainer />
     </main>
   );
 };
