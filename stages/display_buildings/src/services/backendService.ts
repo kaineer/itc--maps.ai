@@ -1,3 +1,10 @@
+import {
+  BaseQueryFn,
+  FetchArgs,
+  fetchBaseQuery,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from "@reduxjs/toolkit/query/react";
 import { AuthService, createAuthService } from "./authService";
 
 interface BackendConfig {
@@ -57,6 +64,13 @@ export interface BackendService {
   urlForEndpoint: (endpoint: string) => string;
   upload: (endpoint: string, formData: unknown) => Promise<unknown>;
   download: (endpoint: string) => Promise<Response>;
+  baseQuery: BaseQueryFn<
+    string | FetchArgs,
+    unknown,
+    FetchBaseQueryError,
+    {},
+    FetchBaseQueryMeta
+  >;
 }
 
 const methodsWithBody = ["POST", "PUT", "PATCH"];
@@ -70,6 +84,16 @@ export const createBackendService = (
   authService: AuthService = createAuthService(),
 ): BackendService => {
   const { url } = config;
+
+  const prepareHeaders = (headers: Headers) => {
+    const authHeaders = authService.getHeaders();
+    if (
+      "Authorization" in authHeaders &&
+      typeof authHeaders.Authorization === "string"
+    ) {
+      headers.set("Authorization", authHeaders.Authorization);
+    }
+  };
 
   const callFetch = async (endpoint: string, options: CallFetchOptions) => {
     const fullUrl = joinUrl(url, endpoint);
@@ -126,6 +150,11 @@ export const createBackendService = (
     }
   };
 
+  const urlForEndpoint = (endpoint: string): string => {
+    const { url } = config;
+    return joinUrl(url, endpoint);
+  };
+
   return {
     get: (endpoint: string): Promise<unknown> => {
       return callFetch(endpoint, { method: "GET", headers: jsonHeaders });
@@ -166,9 +195,10 @@ export const createBackendService = (
     download(endpoint: string): Promise<Response> {
       return fetch(joinUrl(config.url, endpoint));
     },
-    urlForEndpoint(endpoint: string): string {
-      const { url } = config;
-      return joinUrl(url, endpoint);
-    },
+    urlForEndpoint,
+    baseQuery: fetchBaseQuery({
+      baseUrl: config.url,
+      prepareHeaders,
+    }),
   };
 };

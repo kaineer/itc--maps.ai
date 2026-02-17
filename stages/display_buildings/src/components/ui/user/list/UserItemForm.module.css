@@ -1,0 +1,48 @@
+.container {
+  background: #f5f7fa;
+  box-shadow:
+    3px 4px 4px rgba(0, 0, 0, 0.25),
+    -3px -1px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 15px;
+
+  width: 502px;
+  /* height: 450px; */
+  height: 240px;
+
+  display: inline-flex;
+  flex-direction: column;
+
+  padding: 8px;
+
+  gap: 16px;
+}
+
+.removePanel,
+.roles {
+  width: 100%;
+}
+
+.header {
+  font-size: 36px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sectionHeader {
+  font-size: 32px;
+  font-weight: normal;
+}
+
+.roleButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+}
+
+.removePanel {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

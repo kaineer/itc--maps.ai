@@ -1,16 +1,17 @@
 import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";
 import { IntroUI } from "@components/ui/intro/IntroUI";
-import { LoginUI } from "@components/ui/login/LoginUI";
+import { UserListUI } from "@components/ui/user/list/UserListUI";
 import { ViewUI } from "@components/ui/view/ViewUI";
-import { BrowserRouter, Route, Routes } from "react-router";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 export const AuthorizedRouter = () => (
   <BrowserRouter>
     <Routes>
       <Route index element={<IntroUI />} />
-      <Route path="login" element={<LoginUI />} />
+      <Route path="login" element={<Navigate to="/view" />} />
       <Route path="view" element={<ViewUI />} />
       <Route path="align" element={<AlignmentUI />} />
+      <Route path="users" element={<UserListUI />} />
     </Routes>
   </BrowserRouter>
 );

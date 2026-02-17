@@ -1,5 +1,9 @@
 export interface User {
+  id: string;
   login: string;
+  name: string;
+  phone: string;
+  schoolName: string;
   role: string;
 }
 

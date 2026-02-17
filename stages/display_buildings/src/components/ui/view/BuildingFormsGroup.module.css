@@ -1,0 +1,10 @@
+.group {
+  /** group to contain buttons */
+  display: inline-flex;
+  flex-direction: column;
+  gap: 20px;
+
+  position: absolute;
+  left: 20px;
+  top: 20px;
+}

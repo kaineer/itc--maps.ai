@@ -1,0 +1,51 @@
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 15px;
+  border: none;
+}
+
+.variation-640x100 {
+  width: 640px;
+  height: 100px;
+}
+
+.variation-210x56 {
+  width: 210px;
+  height: 56px;
+
+  font-size: 20px;
+}
+
+.variation-346x68 {
+  width: 345px;
+  height: 68px;
+
+  font-size: 24px;
+}
+
+.variation-violet {
+  color: #fff;
+  background-color: #9605ca;
+}
+
+.variation-red {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.variation-green {
+  background-color: #22c55e;
+  color: #fff;
+}
+
+.variation-grey {
+  background-color: #797979;
+  color: #fff;
+}
+
+.variation-pointer {
+  cursor: pointer;
+}

@@ -1,22 +1,14 @@
 import classes from "./LoginUI.module.css";
 import { useRef, useEffect, MouseEvent, useCallback, useState } from "react";
 import { useAuthentication } from "@hooks/useAuthentication";
-import { useNavigate } from "react-router";
+import { Input } from "@components/kit/Input";
 
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passRef = useRef<HTMLInputElement | null>(null);
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const navigate = useNavigate();
-  const { login, error, cleanError, isAuthenticated } =
-    useAuthentication() || {};
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/view");
-    }
-  }, [isAuthenticated]);
+  const { login, error, cleanError } = useAuthentication() || {};
 
   useEffect(() => {
     setErrorMessage(error);
@@ -57,19 +49,8 @@ export const LoginUI = () => {
             <div className={classes.errorMessage}>{errorMessage}</div>
           )}
           <h1 className={classes.title}>Вход</h1>
-          <input
-            autoFocus={true}
-            name="login"
-            ref={loginRef}
-            className={classes.input}
-            type="text"
-          ></input>
-          <input
-            name="password"
-            ref={passRef}
-            className={classes.input}
-            type="password"
-          ></input>
+          <Input autoFocus={true} name="login" ref={loginRef} />
+          <Input name="password" ref={passRef} isPassword={true} />
           <button onClick={handleClick} className={classes.button}>
             Войти
           </button>

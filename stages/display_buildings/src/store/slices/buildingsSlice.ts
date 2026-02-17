@@ -8,7 +8,6 @@ import {
 } from "@utils/constants";
 
 import { createBackendService } from "@services/backendService";
-import { createAction } from "@reduxjs/toolkit";
 
 type BuildingsResponse = Building[];
 
@@ -21,8 +20,6 @@ interface BuildingsState {
   loading: boolean;
   // Error message if any operation fails
   error: string | null;
-  //
-  hashPosition: { x: number; z: number } | null;
   //
   lastLoadedPosition: ModelPosition;
   // Active filters for building list
@@ -41,7 +38,6 @@ const initialState: BuildingsState = {
   selectedBuildingId: null,
   loading: false,
   error: null,
-  hashPosition: null,
   filters: {
     hasModel: null, // Show all buildings by default
     searchQuery: "", // No search filter by default
@@ -57,19 +53,11 @@ export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
   async (_, { getState }) => {
     try {
-      const {
-        buildings: { hashPosition },
-      } = getState() as any; // TODO Fix it
-
-      if (!hashPosition) {
-        const data = (await backendService.get("start")) as {
-          x: number;
-          z: number;
-        };
-        return { x: data.x, z: data.z };
-      } else {
-        return hashPosition;
-      }
+      const data = (await backendService.get("start")) as {
+        x: number;
+        z: number;
+      };
+      return { x: data.x, z: data.z };
     } catch (err) {
       return COORDINATES.START;
     }
@@ -120,25 +108,29 @@ export const fetchInitialBuildings = createAsyncThunk<Building[]>(
   },
 );
 
-export const fetchStartPositionFromHash = createAction(
-  "buildings/hash2start",
-  () => {
-    const { hash } = window.location;
-    const parts = hash.slice(1).split("&");
-    if (hash && Array.isArray(parts) && parts.length > 1) {
-      const [x, z] = parts.map((p) => Number(p.split("=")[1]));
+// // TODO: разобраться в зоопарке, и выбрать один вариант
+// //   загрузки начальной позиции
+// // (имеется в виду одна загрузка тут и одна в viewSlice)
+// //
+// export const fetchStartPositionFromHash = createAction(
+//   "buildings/hash2start",
+//   () => {
+//     const { hash } = window.location;
+//     const parts = hash.slice(1).split("&");
+//     if (hash && Array.isArray(parts) && parts.length > 1) {
+//       const [x, z] = parts.map((p) => Number(p.split("=")[1]));
 
-      return {
-        payload: {
-          x,
-          z,
-        },
-      };
-    }
+//       return {
+//         payload: {
+//           x,
+//           z,
+//         },
+//       };
+//     }
 
-    return { payload: {} };
-  },
-);
+//     return { payload: {} };
+//   },
+// );
 
 export const buildingsSlice = createSlice({
   name: "buildings",
@@ -177,20 +169,6 @@ export const buildingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Handle initial position fetch
-      .addCase(fetchInitialPosition.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchInitialPosition.fulfilled, (state) => {
-        // Position fetched successfully, but buildings not loaded yet
-        // Keep loading state true for the subsequent buildings fetch
-      })
-      .addCase(fetchInitialPosition.rejected, (state, action) => {
-        state.loading = false;
-        state.error =
-          action.error.message || "Failed to fetch initial position";
-      })
       // Handle building fetch request start
       .addCase(fetchBuildings.pending, (state) => {
         state.loading = true;
@@ -224,12 +202,6 @@ export const buildingsSlice = createSlice({
         state.loading = false;
         state.error =
           action.error.message || "Failed to fetch initial buildings";
-      })
-      .addCase(fetchStartPositionFromHash, (state, action) => {
-        const { x, z } = action.payload || {};
-        if (typeof x === "number" && typeof z === "number") {
-          state.hashPosition = { x, z };
-        }
       });
   },
   selectors: {
