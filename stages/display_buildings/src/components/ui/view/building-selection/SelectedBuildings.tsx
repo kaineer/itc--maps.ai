@@ -1,0 +1,59 @@
+import classes from "./SelectedBuildings.module.css";
+import { alignmentSlice } from "@slices/alignmentSlice";
+import { useDispatch } from "react-redux";
+import { MouseEvent } from "react";
+import { type Building } from "@.types/types";
+import { RemoveButton } from "./RemoveButton";
+
+interface Props {
+  buildings: Building[];
+}
+
+export const SelectedBuildings = ({ buildings }: Props) => {
+  const selectedPolygons = buildings;
+  const dispatch = useDispatch();
+  const { removePolygonFromAlignment } = alignmentSlice.actions;
+
+  const handleRemovePolygon = (
+    building: Building,
+    e: MouseEvent<HTMLButtonElement>,
+  ) => {
+    e.stopPropagation();
+    dispatch(removePolygonFromAlignment(building));
+  };
+
+  return (
+    <div className={classes.buildingList}>
+      <div className={classes.listHeader}>
+        <h4 className={classes.subtitle}>
+          Выбранные здания:
+          {selectedPolygons && selectedPolygons.length > 0 && (
+            <span className={classes.countBadge}>
+              {selectedPolygons.length}
+            </span>
+          )}
+        </h4>
+      </div>
+
+      {selectedPolygons && selectedPolygons.length > 0 ? (
+        <ul className={classes.list}>
+          {selectedPolygons.map((building: Building, index: number) => (
+            <li key={building.id || index} className={classes.listItem}>
+              {/* Отображаем address если он есть, иначе id */}
+              <span className={classes.buildingName}>
+                {building.address ? building.address : building.id}
+              </span>
+
+              <RemoveButton
+                onClick={(e) => handleRemovePolygon(building, e)}
+                description={`Удалить ${building.address || building.id}`}
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className={classes.emptyMessage}>Здания не выбраны</p>
+      )}
+    </div>
+  );
+};

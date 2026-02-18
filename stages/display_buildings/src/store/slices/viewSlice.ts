@@ -162,7 +162,14 @@ export const initializeViewCamera = createAsyncThunk<{
 }>("view/initializeViewCamera", async (_, { dispatch }) => {
   // Fetch starting position from backend
 
-  const position = await backendService.get("buildings/start");
+  const { hash } = window.location;
+  const parts = hash.slice(1).split("&");
+  const fromHash = hash && Array.isArray(parts) && parts.length > 1;
+  const [x, z] = parts.map((p) => Number(p.split("=")[1]));
+
+  const position = fromHash
+    ? { x, z }
+    : await backendService.get("buildings/start");
 
   // Update camera state: set target to starting position, camera 10 meters north
   // North is negative Z in Three.js coordinate system

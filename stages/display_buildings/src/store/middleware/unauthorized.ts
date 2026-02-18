@@ -7,9 +7,9 @@ export const rtkQueryErrorHandler: Middleware = (api) => (next) => (action) => {
     // Проверяем, есть ли статус 401 в ошибке
     if (action.payload?.status === 401 || action.error?.status === 401) {
       // Диспатчим действие для выхода пользователя или перенаправления
-      api.dispatch({ type: "ui/selectLoginMode" });
+      // api.dispatch({ type: "ui/selectLoginMode" });
       // Или напрямую перенаправляем (зависит от вашего роутера)
-      // window.location.href = '/login';
+      window.location.href = "/login";
     }
   }
   return next(action);

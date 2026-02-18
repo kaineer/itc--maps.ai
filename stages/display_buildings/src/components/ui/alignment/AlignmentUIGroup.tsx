@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import { TopCameraControlInfo } from "../../cameras/alignment/TopCameraControlInfo";
-import { PerspectiveCameraControlInfo } from "../../cameras/alignment/PerspectiveCameraControlInfo";
-import { Match } from "../../shared/Match";
-import { EnabledProps } from "../../shared/types";
 import { FinishAlignment } from "./FinishAlignment";
+import { EnabledProps } from "@.types/component-types";
+import { TopCameraControlInfo } from "@components/cameras/alignment/TopCameraControlInfo";
+import { PerspectiveCameraControlInfo } from "@components/cameras/alignment/PerspectiveCameraControlInfo";
+import { Match } from "@components/shared/Match";
 
 interface Props extends EnabledProps {
   className?: string;

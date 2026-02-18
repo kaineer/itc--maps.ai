@@ -1,8 +1,10 @@
 import { useDispatch, useSelector } from "react-redux";
 import { uiSlice, BuildingFormMode } from "@slices/uiSlice";
 import { BuildingSearch } from "./BuildingSearch";
-import { BuildingSelection } from "./BuildingSelection";
 import { Logout } from "./Logout";
+import { BuildingSelection } from "./building-selection/BuildingSelection";
+import classes from "./BuildingFormsGroup.module.css";
+import { UserList } from "./UserList";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();
@@ -25,7 +27,7 @@ export const BuildingFormsGroup = () => {
   };
 
   return (
-    <>
+    <div className={classes.group}>
       <BuildingSearch
         enabled={isModeEnabled("search")}
         onToggled={handleFormToggle("search")}
@@ -34,7 +36,8 @@ export const BuildingFormsGroup = () => {
         enabled={isModeEnabled("select")}
         onToggled={handleFormToggle("select")}
       />
+      <UserList enabled={isModeEnabled("none")} />
       <Logout enabled={isModeEnabled("none")} />
-    </>
+    </div>
   );
 };

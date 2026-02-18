@@ -1,23 +1,23 @@
 import classes from "./LoginUI.module.css";
 import { useRef, useEffect, MouseEvent, useCallback, useState } from "react";
-import { uiSlice } from "@slices/uiSlice";
-import { useDispatch } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
+import { Input } from "@components/kit/Input";
+import { Button } from "@components/kit/Button";
+import { Column } from "@components/kit/Container";
+import { toast } from "sonner";
 
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passRef = useRef<HTMLInputElement | null>(null);
 
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const dispatch = useDispatch();
-  const { login, isAuthenticated } = useAuthentication() || {};
-  const { selectViewMode } = uiSlice.actions;
+  const { login, error, cleanError } = useAuthentication() || {};
 
   useEffect(() => {
-    if (isAuthenticated) {
-      dispatch(selectViewMode());
+    if (error) {
+      toast.error(error, { duration: 5000 });
+      setTimeout(cleanError, 5000);
     }
-  }, [isAuthenticated]);
+  }, [error]);
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLButtonElement>) => {
@@ -30,10 +30,9 @@ export const LoginUI = () => {
         login({
           login: username,
           password,
-        }).catch((error) => {
-          if (error instanceof Error) {
-            setErrorMessage(String(error.message));
-            setTimeout(() => setErrorMessage(null), 10000);
+        }).then(() => {
+          if (passRef.current) {
+            passRef.current.value = "";
           }
         });
       }
@@ -44,27 +43,14 @@ export const LoginUI = () => {
   return (
     <div className={classes.login}>
       <form className={classes.form}>
-        <div className={classes.column}>
-          {errorMessage && (
-            <div className={classes.errorMessage}>{errorMessage}</div>
-          )}
+        <Column gap={24}>
           <h1 className={classes.title}>Вход</h1>
-          <input
-            name="login"
-            ref={loginRef}
-            className={classes.input}
-            type="text"
-          ></input>
-          <input
-            name="password"
-            ref={passRef}
-            className={classes.input}
-            type="password"
-          ></input>
-          <button onClick={handleClick} className={classes.button}>
+          <Input autoFocus={true} name="login" ref={loginRef} />
+          <Input name="password" ref={passRef} isPassword={true} />
+          <Button onClick={handleClick} variation="640x100 violet">
             Войти
-          </button>
-        </div>
+          </Button>
+        </Column>
       </form>
     </div>
   );

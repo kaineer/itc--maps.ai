@@ -1,5 +1,10 @@
 export interface User {
+  id: string;
   login: string;
+  email: string;
+  name: string;
+  phone: string;
+  schoolName: string;
   role: string;
 }
 
@@ -15,11 +20,13 @@ export interface LoginCredentials {
 
 export interface AuthState {
   user: User | null;
-  isAuthenticated: boolean;
   error: string | null;
+  isAuthenticated: boolean;
+  starting: boolean;
 }
 
 export interface AuthHookType extends AuthState {
+  cleanError: () => void;
   login: (credentials: LoginCredentials) => Promise<void>;
   logout: () => void;
   hasRole: (role: string) => boolean;

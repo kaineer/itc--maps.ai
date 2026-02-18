@@ -7,6 +7,7 @@ interface AuthenticationState {
   user: User | null;
   accessToken: string | null;
   loginInProgress: boolean;
+  starting: boolean;
   error: string | null;
 }
 
@@ -14,6 +15,7 @@ const initialState: AuthenticationState = {
   user: null,
   accessToken: null,
   loginInProgress: false,
+  starting: true,
   error: null,
 };
 
@@ -61,28 +63,34 @@ export const authFromLocalStorage = createAction(
 export const authenticationSlice = createSlice({
   name: "authentication",
   initialState,
-  reducers: {},
+  reducers: {
+    cleanError: (state) => {
+      state.error = null;
+    },
+  },
   selectors: {
     getUser: (state) => state.user,
     getUsername: (state) => state.user?.login,
     getUserRole: (state) => state.user?.role,
     getIsAuthenticated: (state) => Boolean(state.user),
     getError: (state) => state.error,
+    getStarting: (state) => state.starting,
   },
   extraReducers: (builder) => {
     builder
       .addCase(loginThunk.pending, (state) => {
         state.loginInProgress = true;
       })
-      .addCase(loginThunk.rejected, (state /*, action */) => {
+      .addCase(loginThunk.rejected, (state, { error: { message = null } }) => {
         state.loginInProgress = false;
-        state.error = "Не удалось прилогиниться";
+        state.error = message;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
-        const { accessToken = "" } = action.payload || {};
         state.loginInProgress = false;
 
-        if (accessToken) {
+        if (action.payload?.accessToken) {
+          const { accessToken } = action.payload;
+
           authService.store(accessToken);
           state.user = authService.getUser();
         }
@@ -90,14 +98,14 @@ export const authenticationSlice = createSlice({
       .addCase(logoutThunk.fulfilled, (state, action) => {
         const success = action.payload;
         if (success) {
-          state.user = null;
-          state.accessToken = null;
           authService.drop();
+          state.user = state.accessToken = null;
         }
       })
       .addCase(authFromLocalStorage, (state, action) => {
         const user = action.payload;
         state.user = user;
+        state.starting = false;
       });
   },
 });
