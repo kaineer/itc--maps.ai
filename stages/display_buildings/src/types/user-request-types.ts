@@ -1,5 +1,10 @@
 import { User } from "./auth-types";
 
-export type CreateUser = Omit<User, "id">;
+interface BackendRole {
+  role: number;
+}
 
-export type UserResponse = Omit<User, "role"> & { role: number };
+export type CreateUser = Omit<User, "id" | "role"> &
+  BackendRole & { password: string };
+
+export type UserResponse = Omit<User, "role"> & BackendRole;

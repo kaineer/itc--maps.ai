@@ -1,5 +1,5 @@
 import { User } from "@.types/auth-types";
-import { UserResponse } from "@.types/user-request-types";
+import { CreateUser, UserResponse } from "@.types/user-request-types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBackendService } from "@services/backendService";
 
@@ -20,6 +20,13 @@ export const userApi = createApi({
   baseQuery,
   tagTypes: ["userList"],
   endpoints: (build) => ({
+    postUser: build.mutation<CreateUser, User>({
+      query: (newUser) => ({
+        url: "/users",
+        method: "POST",
+        body: newUser,
+      }),
+    }),
     getUserList: build.query<User[], void>({
       query: () => "/users",
       providesTags: ["userList"],
