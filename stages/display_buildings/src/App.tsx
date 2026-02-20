@@ -8,7 +8,7 @@ const App = () => {
   return (
     <Provider store={setupStore()}>
       <AuthInitialization>
-        <Toaster position="bottom-right" richColors />
+        <Toaster position="bottom-right" richColors visibleToasts={5} />
         <AppContent />
       </AuthInitialization>
     </Provider>

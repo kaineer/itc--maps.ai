@@ -13,6 +13,7 @@ import { type AppDispatch } from "@store/index";
 import { type Building } from "../../../types/types";
 import { addPolygonWithModelRequest } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
+import { toast } from "sonner";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -39,20 +40,18 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     dispatch(fetchInitialBuildings());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (error) {
+      toast.error(String(error));
+    }
+  }, [error]);
+
   if (!buildings) {
     return <div className="loading">Loading 3D buildings visualization...</div>;
   }
 
   if (error) {
-    return (
-      <div className="error">
-        <h3>Error loading buildings</h3>
-        <p>{error}</p>
-        <p style={{ marginTop: "10px", fontSize: "14px" }}>
-          Make sure the backend server is running on localhost:5000
-        </p>
-      </div>
-    );
+    return null;
   }
 
   return (

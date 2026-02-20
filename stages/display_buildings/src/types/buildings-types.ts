@@ -19,13 +19,20 @@ export interface BuildingNode {
   z: number;
 }
 
+interface ModelMetadata {
+  position: ModelPosition;
+  rotation: ModelPosition;
+  scale: number;
+}
+
 export interface Building {
   id: string;
   address: string | null;
   nodes: BuildingNode[];
   height: number;
   position?: BuildingNode;
-  modelUrl?: string;
+  model?: string;
+  modelMetadata?: ModelMetadata;
 }
 
 export interface ModelAlignment {

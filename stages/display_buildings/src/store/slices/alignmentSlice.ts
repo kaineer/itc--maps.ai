@@ -755,10 +755,9 @@ export const addPolygonWithModelRequest = createAsyncThunk(
  */
 export const saveAlignment = createAsyncThunk(
   "alignment/saveAlignment",
-  async (_, { getState, dispatch, rejectWithValue }) => {
+  async (_, { getState, rejectWithValue }) => {
     const state = getState() as { alignment: AlignmentState };
     const { modelUUID, modelTransform, selectedPolygons } = state.alignment;
-    const { selectViewMode } = uiSlice.actions;
 
     if (!modelUUID) {
       return rejectWithValue("Cannot save alignment: no model selected");
@@ -793,9 +792,6 @@ export const saveAlignment = createAsyncThunk(
           `/models/${modelUUID}`,
           transformData,
         )) as Response;
-
-        // Switch to view mode after successful save
-        dispatch(selectViewMode());
 
         return response.data;
       }

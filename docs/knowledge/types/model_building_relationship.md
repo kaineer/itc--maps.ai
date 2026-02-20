@@ -58,6 +58,8 @@ interface Building {
   height: number;
   position?: BuildingNode;
   modelUrl?: string;  // Points to shared model
+
+  model?: string;
 }
 ```
 

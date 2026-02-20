@@ -20,7 +20,7 @@ export const Logout = ({ enabled = true }: Props) => {
   if (!enabled) return null;
 
   return (
-    <NavigationButton enabled={enabled} onClick={handleClick}>
+    <NavigationButton enabled={enabled} onClick={handleClick} title="Выйти">
       <IoIosLogOut />
     </NavigationButton>
   );

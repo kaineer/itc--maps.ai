@@ -6,6 +6,7 @@ import {
   FetchBaseQueryMeta,
 } from "@reduxjs/toolkit/query/react";
 import { AuthService, createAuthService } from "./authService";
+import { createCookiesService } from "./cookiesService";
 
 interface BackendConfig {
   url: string;
@@ -79,6 +80,8 @@ const jsonHeaders = {
   "Content-Type": "application/json",
 };
 
+const { getCookie } = createCookiesService();
+
 export const createBackendService = (
   config: BackendConfig = backendConfig,
   authService: AuthService = createAuthService(),
@@ -126,7 +129,7 @@ export const createBackendService = (
           throw new AuthenticationError("Not authenticated");
         }
         if (response.status === 500) {
-          throw new MessageError("Серверу нехорошо");
+          throw new MessageError(getCookie("http.500"));
         }
       }
 

@@ -1,8 +1,23 @@
+import { AllowRoute } from "@components/shared/AllowRoute";
 import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";
 import { IntroUI } from "@components/ui/intro/IntroUI";
+import { UserCreateUI } from "@components/ui/user/create/UserCreateUI";
 import { UserListUI } from "@components/ui/user/list/UserListUI";
 import { ViewUI } from "@components/ui/view/ViewUI";
+import { ReactNode } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+
+const Allow = ({
+  enable,
+  redirect,
+  children,
+}: {
+  enable: boolean;
+  redirect: string;
+  children: ReactNode;
+}) => {
+  return enable ? children : <Navigate to={redirect} />;
+};
 
 export const AuthorizedRouter = () => (
   <BrowserRouter>
@@ -11,7 +26,22 @@ export const AuthorizedRouter = () => (
       <Route path="login" element={<Navigate to="/view" />} />
       <Route path="view" element={<ViewUI />} />
       <Route path="align" element={<AlignmentUI />} />
-      <Route path="users" element={<UserListUI />} />
+      <Route
+        path="users"
+        element={
+          <AllowRoute role="Admin" redirect="view">
+            <UserListUI />
+          </AllowRoute>
+        }
+      />
+      <Route
+        path="users/create"
+        element={
+          <AllowRoute role="Admin" redirect="view">
+            <UserCreateUI />
+          </AllowRoute>
+        }
+      />
     </Routes>
   </BrowserRouter>
 );

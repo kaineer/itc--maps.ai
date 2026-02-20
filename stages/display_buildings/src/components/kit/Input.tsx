@@ -5,6 +5,7 @@ interface Props {
   defaultValue?: string;
   value?: string;
   name: string;
+  placeholder?: string;
   ref?: RefObject<HTMLInputElement | null>;
   onInput?: InputEventHandler<HTMLInputElement>;
   autoFocus?: boolean;
@@ -15,6 +16,7 @@ export const Input = ({
   defaultValue,
   value,
   name,
+  placeholder,
   ref,
   onInput,
   autoFocus = false,
@@ -36,6 +38,7 @@ export const Input = ({
       autoFocus={autoFocus}
       className={classes.input}
       name={name}
+      placeholder={placeholder}
       ref={ref}
       onInput={onInput}
       type={isPassword ? "password" : "text"}

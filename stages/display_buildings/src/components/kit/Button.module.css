@@ -30,22 +30,49 @@
 
 .variation-violet {
   color: #fff;
-  background-color: #9605ca;
+  background-color: #bc00ff;
+
+  &:hover {
+    background-color: #9605ca;
+  }
 }
 
 .variation-red {
   background-color: #ef4444;
   color: #fff;
+
+  &:hover {
+    background-color: #fe1e1e;
+  }
 }
 
 .variation-green {
   background-color: #22c55e;
   color: #fff;
+
+  &:hover {
+    background-color: #1eee6a;
+  }
 }
 
 .variation-grey {
+  background-color: #888888;
+  color: #fff;
+
+  outline: solid 1px #666;
+
+  &:hover {
+    background-color: #797979;
+  }
+}
+
+.variation-black {
   background-color: #797979;
   color: #fff;
+
+  &:hover {
+    background-color: #000;
+  }
 }
 
 .variation-pointer {
