@@ -7,6 +7,7 @@ interface Props {
   route?: string;
   onClick?: (e: MouseEvent<HTMLDivElement>) => void;
   enabled?: boolean;
+  title?: string;
 }
 
 export const NavigationButton = ({
@@ -14,6 +15,7 @@ export const NavigationButton = ({
   route,
   onClick,
   enabled,
+  title,
 }: Props) => {
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ export const NavigationButton = ({
     typeof route === "string" ? () => navigate(route) : onClick;
 
   return (
-    <div className={classes.container} onClick={handleClick}>
+    <div className={classes.container} onClick={handleClick} title={title}>
       {children}
     </div>
   );

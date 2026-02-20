@@ -1,5 +1,7 @@
+export type UserId = string;
+
 export interface User {
-  id: string;
+  id: UserId;
   login: string;
   email: string;
   name: string;

@@ -5,6 +5,7 @@ import { uiSlice } from "@slices/uiSlice";
 import { saveAlignment } from "@slices/alignmentSlice";
 import { type AppDispatch } from "@store/index";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
+import { useNavigate } from "react-router";
 
 interface Props {
   enabled?: boolean;
@@ -27,14 +28,15 @@ export const FinishAlignment = ({
   onToggled,
 }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { selectViewMode } = uiSlice.actions;
+  const navigate = useNavigate();
 
   /**
    * Handle save alignment button click
    * Saves current alignment to backend via PATCH /models/:modelId
    */
-  const handleSaveAlignment = () => {
-    dispatch(saveAlignment());
+  const handleSaveAlignment = async () => {
+    await dispatch(saveAlignment());
+    navigate("/view");
   };
 
   /**
@@ -42,7 +44,7 @@ export const FinishAlignment = ({
    * Switches UI mode from alignment back to view
    */
   const handleReturnToView = () => {
-    dispatch(selectViewMode());
+    navigate("/view");
   };
 
   return (

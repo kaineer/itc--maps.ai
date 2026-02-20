@@ -1,4 +1,4 @@
-import { User } from "@.types/auth-types";
+import { User, UserId } from "@.types/auth-types";
 import { CreateUser, UserResponse } from "@.types/user-request-types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBackendService } from "@services/backendService";
@@ -20,12 +20,13 @@ export const userApi = createApi({
   baseQuery,
   tagTypes: ["userList"],
   endpoints: (build) => ({
-    postUser: build.mutation<CreateUser, User>({
+    postUser: build.mutation<User, Partial<CreateUser>>({
       query: (newUser) => ({
         url: "/users",
         method: "POST",
         body: newUser,
       }),
+      invalidatesTags: ["userList"],
     }),
     getUserList: build.query<User[], void>({
       query: () => "/users",
@@ -33,7 +34,18 @@ export const userApi = createApi({
       transformResponse: (data) =>
         Array.isArray(data) ? data.map((u0) => fixRole(u0)) : [],
     }),
+    deleteUser: build.mutation<void, UserId>({
+      query: (userId) => ({
+        url: "/users/" + userId,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["userList"],
+    }),
   }),
 });
 
-export const { useGetUserListQuery } = userApi;
+export const {
+  useGetUserListQuery,
+  usePostUserMutation,
+  useDeleteUserMutation,
+} = userApi;

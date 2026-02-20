@@ -108,30 +108,6 @@ export const fetchInitialBuildings = createAsyncThunk<Building[]>(
   },
 );
 
-// // TODO: разобраться в зоопарке, и выбрать один вариант
-// //   загрузки начальной позиции
-// // (имеется в виду одна загрузка тут и одна в viewSlice)
-// //
-// export const fetchStartPositionFromHash = createAction(
-//   "buildings/hash2start",
-//   () => {
-//     const { hash } = window.location;
-//     const parts = hash.slice(1).split("&");
-//     if (hash && Array.isArray(parts) && parts.length > 1) {
-//       const [x, z] = parts.map((p) => Number(p.split("=")[1]));
-
-//       return {
-//         payload: {
-//           x,
-//           z,
-//         },
-//       };
-//     }
-
-//     return { payload: {} };
-//   },
-// );
-
 export const buildingsSlice = createSlice({
   name: "buildings",
   initialState,

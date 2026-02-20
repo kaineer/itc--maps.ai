@@ -3,12 +3,7 @@ import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
-import {
-  MOVEMENT_SPEEDS,
-  CAMERA_HEIGHTS,
-  DISTANCES,
-  EYE_LEVEL_HEIGHT,
-} from "@utils/constants";
+import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import { AppDispatch } from "@store/index";
 import { distance2dBetween } from "../../shared/positionMath";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
@@ -119,23 +114,10 @@ export const ViewCameraController = () => {
   useEffect(() => {
     const [x, _, z] = lastLoadedPosition;
     if (x && z) {
-      const query = "x=" + x + "&z=" + z;
+      const query = "x=" + x.toFixed(2) + "&z=" + z.toFixed(2);
       window.location.hash = "#" + query;
     }
   }, [lastLoadedPosition]);
-
-  useEffect(() => {
-    const { hash } = window.location;
-    const parts = hash.slice(1).split("&");
-    if (hash && Array.isArray(parts) && parts.length > 1) {
-      const [x, z] = parts.map((p) => Number(p.split("=")[1]));
-
-      // if (x && z) {
-      //   dispatch(updateCameraPosition([x, EYE_LEVEL_HEIGHT, z]));
-      //   dispatch(updateCameraTarget([x, EYE_LEVEL_HEIGHT, z + 10]));
-      // }
-    }
-  }, []);
 
   useFrame((state, delta) => {
     const { camera, controls } = state;
