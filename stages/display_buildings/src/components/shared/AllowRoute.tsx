@@ -1,5 +1,5 @@
 import { useAuthentication } from "@hooks/useAuthentication";
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { useNavigate } from "react-router";
 
 interface Props {
@@ -18,8 +18,17 @@ export const AllowRoute = ({
   const { hasRole } = useAuthentication();
   const navigate = useNavigate();
 
-  if (typeof role === "string" && !hasRole(role)) navigate(redirect);
-  if (!enabled) navigate(redirect);
+  useEffect(() => {
+    if (typeof role === "string" && !hasRole(role)) {
+      navigate(redirect);
+    }
+    if (!enabled) {
+      navigate(redirect);
+    }
+  }, [role, enabled, redirect, hasRole]);
+
+  if (typeof role === "string" && !hasRole(role)) return null;
+  if (!enabled) return null;
 
   return children;
 };
