@@ -1,5 +1,0 @@
-{
-  "scripts": {
-    "dev:front": "cd stages/display_buildings && npm run dev"
-  }
-}

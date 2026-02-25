@@ -1,6 +1,6 @@
 // Model transformation utilities for 3D model alignment
 // Based on alignment scenarios documentation
-import { Box3, Vector3 } from "three";
+import { Box3, Group, Object3D, Vector3 } from "three";
 
 // Constants
 import { CAMERA_HEIGHTS /* , MODEL_CONSTANTS*/ } from "./constants";
@@ -14,7 +14,7 @@ const defaultPolygonSize = 10;
 export interface ModelData {
   id: string;
   // The loaded model object from useFBX() - typically a Group containing meshes
-  modelObject: any; // Three.js Group or Object3D
+  modelObject: Group | Object3D;
   metadata: {
     fileFormat: string;
     vertexCount: number;

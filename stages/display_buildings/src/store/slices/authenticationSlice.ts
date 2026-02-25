@@ -9,6 +9,7 @@ interface AuthenticationState {
   loginInProgress: boolean;
   starting: boolean;
   error: string | null;
+  errorDescription: string | null;
 }
 
 const initialState: AuthenticationState = {
@@ -17,6 +18,7 @@ const initialState: AuthenticationState = {
   loginInProgress: false,
   starting: true,
   error: null,
+  errorDescription: null,
 };
 
 const backendService = createBackendService();
@@ -24,14 +26,18 @@ const authService = createAuthService();
 
 export const loginThunk = createAsyncThunk(
   "authentication/login",
-  async ({ login, password }: LoginCredentials) => {
-    const response = (await backendService.post("users/login", {
-      login,
-      password,
-    })) as AuthResponse;
+  async ({ login, password }: LoginCredentials, { rejectWithValue }) => {
+    try {
+      const response = (await backendService.post("users/login", {
+        login,
+        password,
+      })) as AuthResponse;
 
-    if (response.success) {
-      return response;
+      if (response.success) {
+        return response;
+      }
+    } catch (err) {
+      return rejectWithValue(err);
     }
   },
 );
@@ -66,6 +72,7 @@ export const authenticationSlice = createSlice({
   reducers: {
     cleanError: (state) => {
       state.error = null;
+      state.errorDescription = null;
     },
   },
   selectors: {
@@ -74,6 +81,7 @@ export const authenticationSlice = createSlice({
     getUserRole: (state) => state.user?.role,
     getIsAuthenticated: (state) => Boolean(state.user),
     getError: (state) => state.error,
+    getErrorDescription: (state) => state.errorDescription,
     getStarting: (state) => state.starting,
   },
   extraReducers: (builder) => {
@@ -81,9 +89,13 @@ export const authenticationSlice = createSlice({
       .addCase(loginThunk.pending, (state) => {
         state.loginInProgress = true;
       })
-      .addCase(loginThunk.rejected, (state, { error: { message = null } }) => {
+      .addCase(loginThunk.rejected, (state, action) => {
+        const message = action.payload.message;
+        const description = action.payload.description;
+
         state.loginInProgress = false;
         state.error = message;
+        state.errorDescription = description;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.loginInProgress = false;

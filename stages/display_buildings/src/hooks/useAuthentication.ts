@@ -10,14 +10,21 @@ import { AuthHookType, LoginCredentials } from "src/types/auth-types";
 export const useAuthentication = (): AuthHookType => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { getIsAuthenticated, getUser, getUserRole, getError, getStarting } =
-    authenticationSlice.selectors;
+  const {
+    getIsAuthenticated,
+    getUser,
+    getUserRole,
+    getError,
+    getErrorDescription,
+    getStarting,
+  } = authenticationSlice.selectors;
   const { cleanError: cleanErrorAction } = authenticationSlice.actions;
 
   const isAuthenticated = useSelector(getIsAuthenticated);
   const userRole = useSelector(getUserRole);
   const user = useSelector(getUser);
   const error = useSelector(getError);
+  const errorDescription = useSelector(getErrorDescription);
   const starting = useSelector(getStarting);
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
@@ -41,7 +48,10 @@ export const useAuthentication = (): AuthHookType => {
   return {
     isAuthenticated,
     user,
-    error,
+    error: {
+      title: error,
+      description: errorDescription,
+    },
     starting,
     cleanError,
     login,

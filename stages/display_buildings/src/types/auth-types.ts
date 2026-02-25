@@ -22,7 +22,10 @@ export interface LoginCredentials {
 
 export interface AuthState {
   user: User | null;
-  error: string | null;
+  error: {
+    title: string | null;
+    description: string | null;
+  } | null;
   isAuthenticated: boolean;
   starting: boolean;
 }

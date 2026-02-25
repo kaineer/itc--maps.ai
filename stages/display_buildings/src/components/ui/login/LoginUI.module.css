@@ -7,6 +7,10 @@
   justify-content: center;
 }
 
+.failure {
+  filter: blur(3px);
+}
+
 .form {
   /* */
 }

@@ -23,9 +23,13 @@ export class ParseError extends Error {
     super(message.split("\n")[0]);
   }
 }
-export class MessageError extends Error {
-  constructor(message: string) {
-    super(message);
+export class MessageError {
+  message: string;
+  description: string;
+
+  constructor({ title, description }: { title: string; description: string }) {
+    this.message = title;
+    this.description = description;
   }
 }
 
@@ -146,10 +150,17 @@ export const createBackendService = (
     } catch (error) {
       clearTimeout(timeoutId);
       if (String(error).includes("AbortError")) {
-        throw new MessageError("Превышено время ожидания ответа");
+        throw new MessageError(getCookie("http.toolong"));
       }
 
-      throw new MessageError(String(error));
+      if (String(error).includes("Failed to fetch")) {
+        throw new MessageError(getCookie("http.nope"));
+      }
+
+      throw new MessageError({
+        title: "Мы не знаем, что это такое",
+        description: String(error),
+      });
     }
   };
 
