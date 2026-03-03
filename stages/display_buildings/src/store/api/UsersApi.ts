@@ -1,17 +1,20 @@
 import { User, UserId } from "@.types/auth-types";
-import { CreateUser, UserResponse } from "@.types/user-request-types";
+import {
+  CreateUser,
+  UpdateUser,
+  UserResponse,
+} from "@.types/user-request-types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBackendService } from "@services/backendService";
+import { getRoleName } from "@utils/roles";
 
 const backendService = createBackendService();
 const { baseQuery } = backendService;
 
-const roleNames = ["User", "Creator", "Admin"];
-
 const fixRole = (u0: UserResponse): User => {
   return {
     ...u0,
-    role: roleNames[u0.role],
+    role: getRoleName(u0.role),
   };
 };
 
@@ -25,6 +28,14 @@ export const userApi = createApi({
         url: "/users",
         method: "POST",
         body: newUser,
+      }),
+      invalidatesTags: ["userList"],
+    }),
+    putUser: build.mutation<User, UpdateUser>({
+      query: ({ id, ...patch }) => ({
+        url: "/users/" + id,
+        method: "PUT",
+        body: patch,
       }),
       invalidatesTags: ["userList"],
     }),
@@ -46,6 +57,7 @@ export const userApi = createApi({
 
 export const {
   useGetUserListQuery,
+  usePutUserMutation,
   usePostUserMutation,
   useDeleteUserMutation,
 } = userApi;

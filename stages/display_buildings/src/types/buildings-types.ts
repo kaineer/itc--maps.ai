@@ -43,3 +43,9 @@ export interface ModelAlignment {
 }
 
 export type ModelPosition = [number, number, number];
+
+export interface UpdateBuilding {
+  id: string;
+  address: string | null;
+  height: number | null;
+}

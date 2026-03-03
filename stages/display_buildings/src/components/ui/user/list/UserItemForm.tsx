@@ -2,7 +2,8 @@ import classes from "./UserItemForm.module.css";
 import { User } from "@.types/auth-types";
 import { Button } from "@components/kit/Button";
 import { useAuthentication } from "@hooks/useAuthentication";
-import { useDeleteUserMutation } from "@store/api/UsersApi";
+import { useDeleteUserMutation, usePutUserMutation } from "@store/api/UsersApi";
+import { getRoleIndex } from "@utils/roles";
 import { toast } from "sonner";
 
 interface Props {
@@ -14,14 +15,14 @@ export const UserItemForm = ({ user }: Props) => {
   const { user: currentUser } = useAuthentication();
 
   const [deleteUser] = useDeleteUserMutation();
+  const [updateUser] = usePutUserMutation();
   const enabledRemove = login !== currentUser?.login;
 
   const handleRoleChange =
     (newRole: string) => (e: MouseEvent<HTMLButtonElement>) => {
-      console.log({
+      updateUser({
         id,
-        login,
-        role: newRole,
+        role: getRoleIndex(newRole),
       });
     };
 

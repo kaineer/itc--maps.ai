@@ -18,6 +18,7 @@ export const SelectedBuildings = ({ buildings }: Props) => {
     building: Building,
     e: MouseEvent<HTMLButtonElement>,
   ) => {
+    e.preventDefault();
     e.stopPropagation();
     dispatch(removePolygonFromAlignment(building));
   };

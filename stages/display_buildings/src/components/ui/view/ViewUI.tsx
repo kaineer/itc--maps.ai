@@ -11,7 +11,8 @@ import { ViewStage } from "../../stage/ui/ViewStage";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
 import { type Building } from "../../../types/types";
-import { addPolygonWithModelRequest } from "@slices/alignmentSlice";
+import { alignmentSlice } from "@slices/alignmentSlice";
+
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 
@@ -23,6 +24,7 @@ interface Props {
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
+  const { addPolygonForAlignment } = alignmentSlice.actions;
   const { getCameraState } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
@@ -31,7 +33,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraState = useSelector(getCameraState);
 
   const handleBuildingClick = (building: Building) => {
-    dispatch(addPolygonWithModelRequest(building));
+    dispatch(addPolygonForAlignment(building));
     onBuildingSelect && onBuildingSelect(building);
   };
 

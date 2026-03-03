@@ -1,4 +1,4 @@
-import { User } from "src/types/types";
+import { UserJWTData } from "@.types/auth-types";
 
 const serviceKey: string = "auth/access";
 
@@ -12,7 +12,7 @@ export interface AuthService {
   store: (token: string) => void;
   drop: () => void;
   getHeaders: () => AuthHeaders;
-  getUser: () => User | null;
+  getUser: () => UserJWTData | null;
 }
 
 export const createAuthService = (
@@ -37,7 +37,7 @@ export const createAuthService = (
     return {};
   };
 
-  const getUser = (): User | null => {
+  const getUser = (): UserJWTData | null => {
     const token = storage.getItem(key);
     if (token) {
       const [_, right] = token.split(".");

@@ -10,6 +10,8 @@ export interface User {
   role: string;
 }
 
+export type UserJWTData = Pick<User, "login" | "role">;
+
 export interface AuthResponse {
   success: true;
   accessToken: string;

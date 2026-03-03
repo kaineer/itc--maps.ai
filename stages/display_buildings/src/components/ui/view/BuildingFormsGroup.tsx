@@ -5,6 +5,7 @@ import { Logout } from "./Logout";
 import { BuildingSelection } from "./building-selection/BuildingSelection";
 import classes from "./BuildingFormsGroup.module.css";
 import { UserList } from "./UserList";
+import { BuildingEdit } from "./BuildingEdit";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();
@@ -35,6 +36,10 @@ export const BuildingFormsGroup = () => {
       <BuildingSelection
         enabled={isModeEnabled("select")}
         onToggled={handleFormToggle("select")}
+      />
+      <BuildingEdit
+        enabled={isModeEnabled("edit")}
+        onToggled={handleFormToggle("edit")}
       />
       <UserList enabled={isModeEnabled("none")} />
       <Logout enabled={isModeEnabled("none")} />

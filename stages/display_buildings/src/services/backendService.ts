@@ -40,7 +40,8 @@ const joinUrl = (base: string, part: string): string => {
 };
 
 const backendConfig: BackendConfig = {
-  url: "http://10.1.0.248:5000",
+  // url: "http://10.1.0.248:5000",
+  url: "http://10.1.0.71:8080",
 };
 
 type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

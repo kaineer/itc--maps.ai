@@ -5,6 +5,7 @@ import { EnabledProps } from "@.types/component-types";
 import { TopCameraControlInfo } from "@components/cameras/alignment/TopCameraControlInfo";
 import { PerspectiveCameraControlInfo } from "@components/cameras/alignment/PerspectiveCameraControlInfo";
 import { Match } from "@components/shared/Match";
+import { ButtonsGroup } from "@components/kit/ButtonsGroup";
 
 interface Props extends EnabledProps {
   className?: string;
@@ -40,13 +41,15 @@ export const AlignmentUIGroup = ({ enabled, className = "" }: Props) => {
   }
 
   return (
-    <div className={className}>
-      <FinishAlignment onToggled={() => null} />
+    <>
+      <ButtonsGroup>
+        <FinishAlignment onToggled={() => null} />
+      </ButtonsGroup>
       <Match
         value={currentCameraView}
         top={() => <TopCameraControlInfo />}
         perspective={() => <PerspectiveCameraControlInfo />}
       />
-    </div>
+    </>
   );
 };

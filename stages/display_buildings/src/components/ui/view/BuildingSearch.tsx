@@ -1,13 +1,14 @@
+import classes from "./BuildingSearch.module.css";
 import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "@slices/buildingsSlice";
 import { viewSlice } from "@slices/viewSlice";
 import { Building, ModelPosition } from "../../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
-import classes from "./BuildingSearch.module.css";
 import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { createBackendService } from "@services/backendService";
+import { FormHeader } from "./building-search/FormHeader";
 
 interface Props {
   enabled?: boolean;
@@ -168,16 +169,7 @@ export const BuildingSearch = ({
       closeTitle="Скрыть поиск"
       onToggled={onToggled}
     >
-      <div className={classes.searchHeader}>
-        <h3 className={classes.title}>Поиск зданий</h3>
-        <p className={classes.subtitle}>
-          Введите адрес в формате: "Улица, Номер дома"
-          <br />
-          Поддерживаются: 12А, 12-А, 12/1, 12 корп 1 и т.д.
-          <br />
-          Примеры: "Чкалова, 3", "ул Чкалова 3", "Чкалова 3"
-        </p>
-      </div>
+      <FormHeader />
 
       <div className={classes.searchControls}>
         <div className={classes.inputGroup}>

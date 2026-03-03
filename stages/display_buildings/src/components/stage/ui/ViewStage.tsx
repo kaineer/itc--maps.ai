@@ -1,3 +1,4 @@
+import { UniqueItems } from "@components/shared/UniqueItems";
 import { Building } from "../../../types/types";
 import { RenderBuilding } from "../../building/ui/RenderBuilding";
 
@@ -8,14 +9,16 @@ interface Props {
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
   return (
-    <>
-      {buildings.map((building) => (
+    <UniqueItems<Building, string>
+      items={buildings}
+      getKey={(building) => building.model || building.id}
+      render={(building, key) => (
         <RenderBuilding
-          key={building.id}
+          key={key}
           building={building}
           onBuildingClick={onBuildingClick}
         />
-      ))}
-    </>
+      )}
+    />
   );
 };

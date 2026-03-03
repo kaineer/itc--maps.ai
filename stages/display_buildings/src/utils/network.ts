@@ -13,8 +13,8 @@ interface NetworkConfigItem {
 
 const backendConfig: NetworkConfigItem = {
   protocol: "http",
-  host: "10.1.0.248",
-  port: 5000,
+  host: "10.1.0.71",
+  port: 8080,
 };
 
 // const backendConfig = {

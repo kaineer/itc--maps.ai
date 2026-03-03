@@ -74,7 +74,7 @@ export const ViewCameraController = () => {
         case "KeyD":
           moveState.current.right = true;
           break;
-        case "ShiftLeft":
+        case "AltLeft":
           moveState.current.faster = true;
           break;
       }
@@ -94,7 +94,7 @@ export const ViewCameraController = () => {
         case "KeyD":
           moveState.current.right = false;
           break;
-        case "ShiftLeft":
+        case "AltLeft":
           moveState.current.faster = false;
           break;
       }
@@ -122,7 +122,7 @@ export const ViewCameraController = () => {
   useFrame((state, delta) => {
     const { camera, controls } = state;
     const moveSpeed =
-      (moveState.current.faster ? MOVEMENT_SPEEDS.FAST : MOVEMENT_SPEEDS.BASE) *
+      (moveState.current.faster ? MOVEMENT_SPEEDS.FAST : MOVEMENT_SPEEDS.FAST) *
       delta;
 
     // Get current Redux state from refs (updated by useEffect)

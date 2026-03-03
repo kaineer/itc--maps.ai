@@ -1,15 +1,23 @@
 import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { createAuthService } from "@services/authService";
 import { createBackendService } from "@services/backendService";
-import { AuthResponse, LoginCredentials, User } from "src/types/auth-types";
+import {
+  AuthResponse,
+  LoginCredentials,
+  UserJWTData,
+} from "src/types/auth-types";
+
+interface ErrorWithDescription {
+  title: string;
+  description: string;
+}
 
 interface AuthenticationState {
-  user: User | null;
+  user: UserJWTData | null;
   accessToken: string | null;
   loginInProgress: boolean;
   starting: boolean;
-  error: string | null;
-  errorDescription: string | null;
+  error: ErrorWithDescription | null;
 }
 
 const initialState: AuthenticationState = {
@@ -18,7 +26,6 @@ const initialState: AuthenticationState = {
   loginInProgress: false,
   starting: true,
   error: null,
-  errorDescription: null,
 };
 
 const backendService = createBackendService();
@@ -90,12 +97,11 @@ export const authenticationSlice = createSlice({
         state.loginInProgress = true;
       })
       .addCase(loginThunk.rejected, (state, action) => {
-        const message = action.payload.message;
-        const description = action.payload.description;
-
         state.loginInProgress = false;
-        state.error = message;
-        state.errorDescription = description;
+        state.error = {
+          title: action.payload.message,
+          description: action.payload.description,
+        };
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.loginInProgress = false;

@@ -1,3 +1,4 @@
 {
-  "dev:front": "cd stages/display_buildings && npm run dev"
+  "dev:front": "cd stages/display_buildings && npm run dev",
+  "dev:deploy": "./scripts/deploy.sh"
 }

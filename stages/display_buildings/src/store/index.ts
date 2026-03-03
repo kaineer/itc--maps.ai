@@ -11,6 +11,7 @@ import {
 } from "./slices/helpInfoSlice";
 import { rtkQueryErrorHandler } from "./middleware/unauthorized";
 import { userApi } from "./api/UsersApi";
+import { buildingsApi } from "./api/BuildingsApi";
 
 export function setupStore() {
   const store = configureStore({
@@ -26,6 +27,7 @@ export function setupStore() {
 
       // API
       [userApi.reducerPath]: userApi.reducer,
+      [buildingsApi.reducerPath]: buildingsApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -37,6 +39,7 @@ export function setupStore() {
         rtkQueryErrorHandler,
         // API
         userApi.middleware,
+        buildingsApi.middleware,
       ),
     devTools: process.env.NODE_ENV !== "production",
   });

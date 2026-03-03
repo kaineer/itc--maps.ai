@@ -51,7 +51,7 @@ const backendService = createBackendService();
 // Gets the starting position for the application
 export const fetchInitialPosition = createAsyncThunk(
   "buildings/fetchInitialPosition",
-  async (_, { getState }) => {
+  async (_) => {
     try {
       const data = (await backendService.get("start")) as {
         x: number;

@@ -1,7 +1,6 @@
 import { useDispatch } from "react-redux";
 import classes from "./FinishAlignment.module.css";
 import clsx from "clsx";
-import { uiSlice } from "@slices/uiSlice";
 import { saveAlignment } from "@slices/alignmentSlice";
 import { type AppDispatch } from "@store/index";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";

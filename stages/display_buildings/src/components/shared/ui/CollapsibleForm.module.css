@@ -1,75 +1,51 @@
-.collapsedButton {
-    width: 40px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #333;
-    font-size: 20px;
-    font-weight: normal;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition: all 0.2s ease;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-}
-
-.collapsedButton:hover {
-    background-color: rgba(255, 255, 255, 1);
-    transform: scale(1.1);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
 /* Expanded state - full search panel */
 .expanded {
-    max-width: 320px;
+  max-width: 320px;
 }
 
 .panel {
-    background-color: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    padding: 16px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    font-family:
-        -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-        sans-serif;
-    position: relative;
+  background-color: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
+  position: relative;
 }
 
 /* Close button in expanded panel */
 .closeButton {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: none;
-    border: none;
-    color: #6c757d;
-    font-size: 20px;
-    cursor: pointer;
-    width: 24px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-    padding: 0;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 20px;
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  padding: 0;
 }
 
 .closeButton:hover {
-    background-color: rgba(0, 0, 0, 0.1);
-    color: #333;
+  background-color: rgba(0, 0, 0, 0.1);
+  color: #333;
 }
 
 /* Footer note at the bottom of expanded panel */
 .footer {
-    margin-top: 16px;
-    padding-top: 12px;
-    border-top: 1px solid #e9ecef;
-    font-size: 11px;
-    color: #6c757d;
-    text-align: center;
-    line-height: 1.3;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid #e9ecef;
+  font-size: 11px;
+  color: #6c757d;
+  text-align: center;
+  line-height: 1.3;
 }

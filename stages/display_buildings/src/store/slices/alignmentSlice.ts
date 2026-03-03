@@ -606,13 +606,13 @@ export const alignmentSlice = createSlice({
     },
   },
 
-  extraReducers: (builder) => {
-    builder.addCase(addPolygonWithModelRequest.fulfilled, (state, action) => {
-      if (action.payload) {
-        state.modelUUID = action.payload.modelId;
-      }
-    });
-  },
+  // extraReducers: (builder) => {
+  //   builder.addCase(addPolygonWithModelRequest.fulfilled, (state, action) => {
+  //     if (action.payload) {
+  //       state.modelUUID = action.payload.modelId;
+  //     }
+  //   });
+  // },
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,
@@ -732,22 +732,23 @@ export const prepareInitialTransform = createAsyncThunk(
   },
 );
 
-export const addPolygonWithModelRequest = createAsyncThunk(
-  "alignment/addPolygonWithModelRequest",
-  async (polygonData: Building, { dispatch }) => {
-    const { addPolygonForAlignment } = alignmentSlice.actions;
-    dispatch(addPolygonForAlignment(polygonData));
+// export const addPolygonWithModelRequest = createAsyncThunk(
+//   "alignment/addPolygonWithModelRequest",
+//   async (polygonData: Building, { dispatch }) => {
+//     const { addPolygonForAlignment } = alignmentSlice.actions;
+//     dispatch(addPolygonForAlignment(polygonData));
 
-    if (polygonData.address) {
-      const response = await putBackend("/models/address", {
-        address: polygonData.address,
-      });
-      return response;
-    }
+//     if (polygonData.address) {
+//       const { put } = createBackendService();
+//       const response = await put("/models/address", {
+//         address: polygonData.address,
+//       });
+//       return response;
+//     }
 
-    return null;
-  },
-);
+//     return null;
+//   },
+// );
 
 /**
  * Save alignment data to backend via PATCH /models/:modelId

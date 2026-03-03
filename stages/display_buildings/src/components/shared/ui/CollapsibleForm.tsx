@@ -1,6 +1,7 @@
-import classes from "./CollapsibleForm.module.css"
-import { ReactNode, useEffect, useState } from "react";
+import classes from "./CollapsibleForm.module.css";
+import { ReactNode, useState } from "react";
 import clsx from "clsx";
+import { NavigationButton } from "@components/kit/NavigationButton";
 
 interface Props {
   enabled?: boolean;
@@ -14,7 +15,6 @@ interface Props {
     buttonText: string;
     title: string;
   };
-  isCollapsed?: boolean;
 }
 
 interface CloseButtonProps {
@@ -24,15 +24,11 @@ interface CloseButtonProps {
 
 const CloseButton = ({ onClick, title }: CloseButtonProps) => {
   return (
-    <button
-      onClick={onClick}
-      className={classes.closeButton}
-      title={ title }
-    >
+    <button onClick={onClick} className={classes.closeButton} title={title}>
       ×
     </button>
   );
-}
+};
 
 const FooterNote = () => {
   return (
@@ -40,47 +36,37 @@ const FooterNote = () => {
       <div>Нажмите × чтобы скрыть</div>
     </div>
   );
-}
+};
 
 export const CollapsibleForm = ({
   enabled = true,
   className,
   children,
-  isCollapsed = true,
   onToggled,
   closeTitle = "",
   collapsedClassName,
   expandedClassName,
-  collapsed: {
-    buttonText,
-    title,
-  }
+  collapsed: { buttonText, title },
 }: Props) => {
-  const [isExpanded, setIsExpanded] = useState<boolean>(!isCollapsed);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
   const handleExpand = () => {
     setIsExpanded(true);
-  }
+    onToggled(true);
+  };
 
   const handleClose = () => {
     setIsExpanded(false);
-  }
-
-  useEffect(() => {
-    onToggled(isExpanded);
-  }, [isExpanded]);
+    onToggled(false);
+  };
 
   if (!enabled) return null;
 
   if (!isExpanded) {
     return (
-      <div
-        className={clsx(className, collapsedClassName)}
-        onClick={handleExpand}
-        title={title}
-      >
-        <button className={classes.collapsedButton}>{buttonText}</button>
-      </div>
+      <NavigationButton onClick={handleExpand} title={title}>
+        {buttonText}
+      </NavigationButton>
     );
   }
 
@@ -88,9 +74,9 @@ export const CollapsibleForm = ({
     <div className={clsx(className, expandedClassName)}>
       <div className={classes.panel}>
         <CloseButton onClick={handleClose} title={closeTitle} />
-        { children }
+        {children}
         <FooterNote />
       </div>
     </div>
   );
-}
+};
