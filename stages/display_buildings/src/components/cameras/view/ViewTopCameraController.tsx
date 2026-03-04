@@ -8,7 +8,7 @@ import { AppDispatch } from "@store/index";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
 import { distance2dBetween } from "@components/shared/positionMath";
 
-export const ViewCameraController = () => {
+export const ViewTopCameraController = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { getCameraPosition, getCameraTarget } = viewSlice.selectors;
   const { getLastLoadedPosition, getLoading } = buildingsSlice.selectors;
@@ -31,10 +31,11 @@ export const ViewCameraController = () => {
     currentReduxState.current.target = cameraTarget;
   }, [cameraPosition, cameraTarget]);
 
+  // Check if camera moved enough to reload buildings
   useEffect(() => {
     if (
       distance2dBetween(cameraPosition, lastLoadedPosition) >
-      DISTANCES.LAST_LOADED_CAMERA_DISTANCE
+      DISTANCES.BUILDING_DISTANCE
     ) {
       if (!buildingsLoading) {
         const [x, _, z] = cameraPosition;
@@ -46,7 +47,7 @@ export const ViewCameraController = () => {
         );
       }
     }
-  }, [cameraPosition, dispatch, buildingsLoading]);
+  }, [cameraPosition, dispatch, buildingsLoading, lastLoadedPosition]);
 
   const moveState = useRef({
     forward: false,
@@ -62,7 +63,7 @@ export const ViewCameraController = () => {
     target: cameraTarget,
   });
 
-  // Handle keyboard input
+  // Handle keyboard input for WASD movement
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       switch (event.code) {
@@ -115,6 +116,7 @@ export const ViewCameraController = () => {
     };
   }, []);
 
+  // Update URL hash with camera position
   useEffect(() => {
     const [x, _, z] = lastLoadedPosition;
     if (x && z) {
@@ -125,9 +127,7 @@ export const ViewCameraController = () => {
 
   useFrame((state, delta) => {
     const { camera, controls } = state;
-    const moveSpeed =
-      (moveState.current.faster ? MOVEMENT_SPEEDS.FAST : MOVEMENT_SPEEDS.FAST) *
-      delta;
+    const moveSpeed = MOVEMENT_SPEEDS.MAP * delta;
 
     // Get current Redux state from refs (updated by useEffect)
     const currentPosition = currentReduxState.current.position;
@@ -144,12 +144,27 @@ export const ViewCameraController = () => {
 
     // If Redux state changed, update Three.js camera and controls
     if (hasReduxPositionChanged || hasReduxTargetChanged) {
-      // Update camera position from Redux (ensure Y coordinate is fixed at eye level)
+      // For top-down view, camera is positioned at fixed height
       camera.position.set(
         currentPosition[0],
-        CAMERA_HEIGHTS.EYE_LEVEL, // Fixed eye level height
+        CAMERA_HEIGHTS.TOP_DOWN, // Fixed top-down height
         currentPosition[2],
       );
+
+      // Use standard Y-up coordinate system (Three.js default)
+      // For top-down view, camera looks down the negative Y axis
+      camera.up.set(0, 1, 0);
+
+      // For top-down view, look straight down at ground level (y=0)
+      // The camera is at height TOP_DOWN, looking at the point directly below it
+      const lookAtPoint = new THREE.Vector3(
+        currentPosition[0], // Same X as camera
+        0, // Look at ground level
+        currentPosition[2], // Same Z as camera
+      );
+
+      // Look at ground point directly below camera
+      camera.lookAt(lookAtPoint);
 
       // Update OrbitControls target from Redux
       if (controls && "target" in controls) {
@@ -166,77 +181,72 @@ export const ViewCameraController = () => {
       prevReduxState.current.target = currentTarget;
     }
 
-    // Handle WASD keyboard movement
+    // Handle WASD keyboard movement for top-down camera
     if (
       moveState.current.forward ||
       moveState.current.backward ||
       moveState.current.left ||
       moveState.current.right
     ) {
-      // Get camera direction
-      const cameraDirection = new THREE.Vector3();
-      camera.getWorldDirection(cameraDirection);
-
-      // Remove vertical component to keep movement horizontal
-      cameraDirection.y = 0;
-      cameraDirection.normalize();
-
-      // Calculate right vector for strafing
-      const rightVector = new THREE.Vector3();
-      rightVector.crossVectors(cameraDirection, new THREE.Vector3(0, 1, 0));
-      rightVector.normalize();
-
-      // Calculate movement vector
+      // For top-down camera, movement is simpler - just move in XZ plane
       const moveVector = new THREE.Vector3();
 
+      // Forward/backward moves along camera's forward direction (north/south in top view)
       if (moveState.current.forward) {
-        moveVector.add(cameraDirection);
+        moveVector.z -= moveSpeed; // Move north (negative Z in Three.js)
       }
       if (moveState.current.backward) {
-        moveVector.sub(cameraDirection);
+        moveVector.z += moveSpeed; // Move south (positive Z in Three.js)
       }
+
+      // Left/right moves along camera's right direction (west/east in top view)
       if (moveState.current.left) {
-        moveVector.sub(rightVector);
+        moveVector.x -= moveSpeed; // Move west (negative X)
       }
       if (moveState.current.right) {
-        moveVector.add(rightVector);
+        moveVector.x += moveSpeed; // Move east (positive X)
       }
 
-      // Normalize diagonal movement
-      if (moveVector.length() > 0) {
-        moveVector.normalize();
-        moveVector.multiplyScalar(moveSpeed);
+      // Move both camera and controls target simultaneously
+      // This maintains OrbitControls rotation while allowing WASD movement
+      if (controls && "target" in controls) {
+        const controlsTarget = (controls as any).target;
+        const newTargetX = controlsTarget.x + moveVector.x;
+        const newTargetZ = controlsTarget.z + moveVector.z;
+        const newCameraX = camera.position.x + moveVector.x;
+        const newCameraZ = camera.position.z + moveVector.z;
 
-        // Move both camera and controls target simultaneously
-        // This maintains OrbitControls rotation while allowing WASD movement
-        if (controls && "target" in controls) {
-          const controlsTarget = (controls as any).target;
-          const newTargetX = controlsTarget.x + moveVector.x;
-          const newTargetZ = controlsTarget.z + moveVector.z;
-          const newCameraX = camera.position.x + moveVector.x;
-          const newCameraZ = camera.position.z + moveVector.z;
+        // Update Three.js objects
+        controlsTarget.x = newTargetX;
+        controlsTarget.z = newTargetZ;
+        camera.position.x = newCameraX;
+        camera.position.z = newCameraZ;
 
-          // Update Three.js objects
-          controlsTarget.x = newTargetX;
-          controlsTarget.z = newTargetZ;
-          camera.position.x = newCameraX;
-          camera.position.z = newCameraZ;
+        // Keep camera at fixed top-down height
+        camera.position.y = CAMERA_HEIGHTS.TOP_DOWN;
 
-          // Update Redux state to keep in sync
-          dispatch(updateCameraTarget([newTargetX, 0, newTargetZ]));
-          dispatch(
-            updateCameraPosition([
-              newCameraX,
-              CAMERA_HEIGHTS.EYE_LEVEL, // Fixed eye level height
-              newCameraZ,
-            ]),
-          );
-        }
+        // Update Redux state to keep in sync
+        dispatch(updateCameraTarget([newTargetX, 0, newTargetZ]));
+        dispatch(
+          updateCameraPosition([
+            newCameraX,
+            CAMERA_HEIGHTS.TOP_DOWN, // Fixed top-down height
+            newCameraZ,
+          ]),
+        );
       }
     }
 
-    // Ensure fixed height at eye level (in case Redux state has wrong Y value)
-    camera.position.y = CAMERA_HEIGHTS.EYE_LEVEL;
+    // Ensure fixed height at top-down level
+    camera.position.y = CAMERA_HEIGHTS.TOP_DOWN;
+
+    // Ensure camera maintains top-down orientation looking straight down
+    // Always look at ground level (y=0) directly below camera's XZ position
+    camera.lookAt(
+      camera.position.x,
+      0, // Ground level
+      camera.position.z,
+    );
   });
 
   return null;

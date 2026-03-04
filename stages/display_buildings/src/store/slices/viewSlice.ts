@@ -4,12 +4,13 @@ import {
   DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
-  COORDINATES,
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
 import { createBackendService } from "@services/backendService";
 
 const backendService = createBackendService();
+
+type ViewMode = "perspective" | "top";
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -30,6 +31,8 @@ export interface ViewState {
   fixedHeight: number;
   //
   groundCenter: BuildingNode;
+  //
+  viewMode: ViewMode;
 }
 
 // Default camera position for View mode
@@ -47,6 +50,7 @@ const initialState: ViewState = {
   movementSpeed: 5.0,
   fixedHeight: CAMERA_HEIGHTS.EYE_LEVEL, // Eye level in meters
   groundCenter: { x: 0, z: 0 },
+  viewMode: "perspective",
 };
 
 export const viewSlice = createSlice({
@@ -109,6 +113,14 @@ export const viewSlice = createSlice({
     setGroundCenter: (state, action: PayloadAction<BuildingNode>) => {
       state.groundCenter = action.payload;
     },
+
+    toggleViewMode: (state) => {
+      if (state.viewMode === "top") {
+        state.viewMode = "perspective";
+      } else {
+        state.viewMode = "top";
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -126,13 +138,27 @@ export const viewSlice = createSlice({
   },
   selectors: {
     // Get entire camera state
-    getCameraState: (state) => state.camera,
+    // getCameraState: (state) => state.camera,
 
     // Get camera position
-    getCameraPosition: (state) => state.camera.position,
+    getCameraPosition: (state): ModelPosition => {
+      if (state.viewMode === "perspective") {
+        return state.camera.position;
+      } else {
+        const [x, _, z] = state.camera.position;
+        return [x, 500, z];
+      }
+    },
 
     // Get camera target
-    getCameraTarget: (state) => state.camera.target,
+    getCameraTarget: (state): ModelPosition => {
+      if (state.viewMode === "perspective") {
+        return state.camera.target;
+      } else {
+        const [x, _, z] = state.camera.position;
+        return [x, 0, z];
+      }
+    },
 
     // Get camera field of view
     getCameraFov: (state) => state.camera.fov,
@@ -147,7 +173,7 @@ export const viewSlice = createSlice({
     getFixedHeight: (state) => state.fixedHeight,
 
     // Get entire view state
-    getViewState: (state) => state,
+    getViewMode: (state) => state.viewMode,
 
     // Get ground center
     getGroundCenter: (state) => state.groundCenter,

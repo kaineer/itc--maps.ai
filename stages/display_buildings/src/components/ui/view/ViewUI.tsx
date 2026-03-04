@@ -7,14 +7,17 @@ import { viewSlice } from "@slices/viewSlice";
 import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
-import { ViewStage } from "../../stage/ui/ViewStage";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
-import { type Building } from "../../../types/types";
+import { ModelPosition, type Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
+import { ViewStage } from "@components/stage/ui/ViewStage";
+import { ViewTopStage } from "@components/stage/ui/ViewTopStage";
+import { Match } from "@components/shared/Match";
+import { ViewTopCameraController } from "@components/cameras/view/ViewTopCameraController";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -25,12 +28,16 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment } = alignmentSlice.actions;
-  const { getCameraState } = viewSlice.selectors;
+  const { getViewMode, getCameraPosition, getCameraTarget, getCameraFov } =
+    viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
   const error = useSelector(getError);
 
-  const cameraState = useSelector(getCameraState);
+  const cameraPosition: ModelPosition = useSelector(getCameraPosition);
+  const cameraTarget: ModelPosition = useSelector(getCameraTarget);
+  const cameraFov = useSelector(getCameraFov);
+  const viewMode = useSelector(getViewMode);
 
   const handleBuildingClick = (building: Building) => {
     dispatch(addPolygonForAlignment(building));
@@ -63,8 +70,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
       <Canvas
         camera={{
-          position: cameraState.position,
-          fov: cameraState.fov,
+          position: cameraPosition,
+          fov: cameraFov,
         }}
         shadows
       >
@@ -74,26 +81,41 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Lighting />
 
         {/* Ground plane for reference */}
-        <Ground position={cameraState.position} />
+        <Ground position={cameraPosition} />
 
         {/* Buildings */}
-        <ViewStage
-          buildings={buildings}
-          onBuildingClick={handleBuildingClick}
+        <Match
+          value={viewMode}
+          top={() => (
+            <ViewTopStage
+              buildings={buildings}
+              onBuildingClick={handleBuildingClick}
+            />
+          )}
+          perspective={() => (
+            <ViewStage
+              buildings={buildings}
+              onBuildingClick={handleBuildingClick}
+            />
+          )}
         />
 
         {/* Camera controls for view mode */}
         <OrbitControls
           makeDefault
-          enablePan={true}
+          enablePan={viewMode === "perspective"}
           enableZoom={false}
-          enableRotate={true}
+          enableRotate={viewMode === "perspective"}
           maxPolarAngle={Math.PI / 2} // Prevent going below ground
-          target={cameraState.target}
+          target={cameraTarget}
         />
 
         {/* Camera movement controller (WASD controls) */}
-        <ViewCameraController />
+        <Match
+          value={viewMode}
+          top={() => <ViewTopCameraController />}
+          perspective={() => <ViewCameraController />}
+        />
       </Canvas>
     </>
   );

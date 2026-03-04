@@ -20,7 +20,6 @@ export const PerspectiveCameraController = ({
   const { getModelUUID, getPerspectiveCameraState, getModelTransform } =
     alignmentSlice.selectors;
   const {
-    updateCameraState,
     increaseCameraDistance,
     decreaseCameraDistance,
     rotateCameraAroundTarget,

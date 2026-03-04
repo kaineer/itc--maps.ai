@@ -18,7 +18,7 @@ export const CAMERA_HEIGHTS = {
   GROUND_LEVEL: 0.05,
 
   /** Default camera height for top-down view */
-  TOP_DOWN: 100.0,
+  TOP_DOWN: 200.0,
 
   /** Minimum camera height to prevent going below ground */
   MIN_HEIGHT: 0.01,
@@ -36,6 +36,9 @@ export const MOVEMENT_SPEEDS = {
 
   /** Slow/precise movement speed */
   SLOW: 1.0,
+
+  /** For map */
+  MAP: 100.0,
 } as const;
 
 /**

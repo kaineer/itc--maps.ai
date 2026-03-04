@@ -9,12 +9,12 @@ interface Props {
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
   return (
-    <UniqueItems<Building, string>
+    <UniqueItems
       items={buildings}
-      getKey={(building) => building.model || building.id}
-      render={(building, key) => (
+      getKey={(building) => building.model}
+      render={(building) => (
         <RenderBuilding
-          key={key}
+          key={building.id}
           building={building}
           onBuildingClick={onBuildingClick}
         />

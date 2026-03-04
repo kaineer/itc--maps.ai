@@ -62,8 +62,8 @@ export const distance2dBetween = (
   b: ModelPosition,
 ): number => {
   const dx = a[0] - b[0];
-  const dy = a[1] - b[1];
-  return Math.sqrt(dx * dx + dy * dy);
+  const dz = a[2] - b[2]; // because gorizontal coordinates are x and z
+  return Math.sqrt(dx * dx + dz * dz);
 };
 
 /**
