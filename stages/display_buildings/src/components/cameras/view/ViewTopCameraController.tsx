@@ -16,7 +16,8 @@ export const ViewTopCameraController = () => {
   const cameraTarget = useSelector(getCameraTarget);
 
   const lastLoadedPosition = useSelector(getLastLoadedPosition);
-  const { updateCameraPosition, updateCameraTarget } = viewSlice.actions;
+  const { updateCameraPosition, updateCameraTarget, toggleViewMode } =
+    viewSlice.actions;
   const buildingsLoading = useSelector(getLoading);
 
   // Use refs to store current Redux state for useFrame callback
@@ -81,6 +82,11 @@ export const ViewTopCameraController = () => {
           break;
         case "AltLeft":
           moveState.current.faster = true;
+          break;
+        case "Space":
+          if (event.ctrlKey) {
+            dispatch(toggleViewMode());
+          }
           break;
       }
     };

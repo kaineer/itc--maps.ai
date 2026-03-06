@@ -2,6 +2,7 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { Building } from "../../../types/types";
 import { ThreeEvent } from "@react-three/fiber";
+import { UI_COLORS } from "@utils/constants";
 
 type OnClickFunction = (building: Building) => void;
 
@@ -67,10 +68,10 @@ export const BasePolygonBuilding = ({
     const rotation = Math.atan2(dz, dx);
 
     const color = highlighted
-      ? "#ff0000"
+      ? UI_COLORS.HIGHLIGHTED
       : building.address
-        ? "#8B4513"
-        : "#A9A9A9";
+        ? UI_COLORS.BUILDING
+        : UI_COLORS.ANONYMOUS;
 
     if (length > 0) {
       meshes.push(

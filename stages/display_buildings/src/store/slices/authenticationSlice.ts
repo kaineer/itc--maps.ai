@@ -8,7 +8,7 @@ import {
 } from "src/types/auth-types";
 
 interface ErrorWithDescription {
-  title: string;
+  message: string;
   description: string;
 }
 
@@ -44,7 +44,11 @@ export const loginThunk = createAsyncThunk(
         return response;
       }
     } catch (err) {
-      return rejectWithValue(err);
+      // return rejectWithValue(err);
+      return rejectWithValue({
+        title: err?.message,
+        description: err?.description,
+      });
     }
   },
 );
@@ -99,8 +103,8 @@ export const authenticationSlice = createSlice({
       .addCase(loginThunk.rejected, (state, action) => {
         state.loginInProgress = false;
         state.error = {
-          title: action.payload.message,
-          description: action.payload.description,
+          message: action?.payload?.message,
+          description: action?.payload?.description,
         };
       })
       .addCase(loginThunk.fulfilled, (state, action) => {

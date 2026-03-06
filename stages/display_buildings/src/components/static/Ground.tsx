@@ -1,3 +1,4 @@
+import { UI_COLORS } from "@utils/constants";
 import { ModelPosition } from "src/types/types";
 
 interface Props {
@@ -10,7 +11,7 @@ export const Ground = ({ position }: Props) => {
   return (
     <mesh rotation={[-Math.PI / 2, 0, 0]} position={[x, -0.1, z]} receiveShadow>
       <planeGeometry args={[2000, 2000]} />
-      <meshStandardMaterial color="#90EE90" />
+      <meshStandardMaterial color={UI_COLORS.GROUND} />
     </mesh>
   );
 };

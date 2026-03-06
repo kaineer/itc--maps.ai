@@ -7,6 +7,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { AuthService, createAuthService } from "./authService";
 import { createCookiesService } from "./cookiesService";
+import { backendUrl } from "@utils/network";
 
 interface BackendConfig {
   url: string;
@@ -40,8 +41,7 @@ const joinUrl = (base: string, part: string): string => {
 };
 
 const backendConfig: BackendConfig = {
-  // url: "http://10.1.0.248:5000",
-  url: "http://10.1.0.71:8080",
+  url: backendUrl,
 };
 
 type HTTPMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH";

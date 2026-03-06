@@ -1,14 +1,8 @@
 import { Building } from "@.types/buildings-types";
-import { useEffect, useMemo, useRef } from "react";
-import {
-  Box3,
-  DoubleSide,
-  Mesh,
-  Shape,
-  ShapeGeometry,
-  Vector2,
-  Vector3,
-} from "three";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { DoubleSide, Mesh, Shape, ShapeGeometry, Vector2 } from "three";
+import { ModelBuilding } from "./ModelBuilding";
+import { UI_COLORS } from "@utils/constants";
 
 interface Props {
   building: Building;
@@ -19,9 +13,23 @@ export const RenderBuildingTop = ({
   building,
   onBuildingClick = () => null,
 }: Props) => {
-  // const color = "#4a90e2";
-  const color = "#f00";
+  const color = UI_COLORS.BUILDING;
   const meshRef = useRef<Mesh>(null);
+
+  const [opacity, setOpacity] = useState<number>(0.1);
+
+  useEffect(() => {
+    if (opacity < 0.99) {
+      setTimeout(() => {
+        const nextOpacity = 1 - (1 - opacity) / 2;
+        if (nextOpacity >= 0.99) {
+          setOpacity(1);
+        } else {
+          setOpacity(nextOpacity);
+        }
+      }, 300);
+    }
+  }, [opacity]);
 
   // Создаем геометрию на основе узлов здания
   const geometry = useMemo(() => {
@@ -56,98 +64,13 @@ export const RenderBuildingTop = ({
     return new ShapeGeometry(shape);
   }, [building.nodes]);
 
-  // Вычисляем и выводим информацию о bounding box
-  useEffect(() => {
-    if (geometry && meshRef.current) {
-      const mesh = meshRef.current;
-
-      // Получаем мировую матрицу mesh
-      mesh.updateWorldMatrix(true, false);
-
-      // Создаем временный bounding box
-      const bbox = new Box3().setFromObject(mesh);
-
-      // Получаем центр в мировых координатах
-      const center = new Vector3();
-      bbox.getCenter(center);
-
-      // Получаем углы bounding box
-      const min = bbox.min;
-      const max = bbox.max;
-
-      console.log("=== Анализ mesh после трансформаций ===");
-      console.log(
-        "📊 Позиция mesh (локальная):",
-        `(${mesh.position.x.toFixed(2)}, ${mesh.position.y.toFixed(2)}, ${mesh.position.z.toFixed(2)})`,
-      );
-
-      console.log(
-        "🔄 Поворот mesh (радианы):",
-        `(${mesh.rotation.x.toFixed(2)}, ${mesh.rotation.y.toFixed(2)}, ${mesh.rotation.z.toFixed(2)})`,
-      );
-
-      console.log("📐 Bounding Box (мировые координаты):");
-      console.log(
-        "  Min:",
-        `(${min.x.toFixed(2)}, ${min.y.toFixed(2)}, ${min.z.toFixed(2)})`,
-      );
-      console.log(
-        "  Max:",
-        `(${max.x.toFixed(2)}, ${max.y.toFixed(2)}, ${max.z.toFixed(2)})`,
-      );
-      console.log(
-        "  Center:",
-        `(${center.x.toFixed(2)}, ${center.y.toFixed(2)}, ${center.z.toFixed(2)})`,
-      );
-
-      // Получаем несколько ключевых точек в мировых координатах
-      const worldPoints = [];
-
-      // Берем первые 5 вершин из геометрии (если они есть)
-      if (mesh.geometry.attributes.position) {
-        const positions = mesh.geometry.attributes.position.array;
-        const count = Math.min(5, positions.length / 3);
-
-        console.log(`🔍 Первые ${count} вершин в МИРОВЫХ координатах:`);
-
-        for (let i = 0; i < count; i++) {
-          const idx = i * 3;
-          // Создаем локальную точку из геометрии
-          const localPoint = new Vector3(
-            positions[idx],
-            positions[idx + 1],
-            positions[idx + 2],
-          );
-
-          // Преобразуем в мировые координаты
-          const worldPoint = localPoint.clone().applyMatrix4(mesh.matrixWorld);
-
-          console.log(
-            `  Вершина ${i}: локальная (${localPoint.x.toFixed(2)}, ${localPoint.y.toFixed(2)}, ${localPoint.z.toFixed(2)}) -> мировая (${worldPoint.x.toFixed(2)}, ${worldPoint.y.toFixed(2)}, ${worldPoint.z.toFixed(2)})`,
-          );
-
-          worldPoints.push(worldPoint);
-        }
-
-        // Проверяем расстояние от камеры (если знаем позицию камеры)
-        // Но это сложно получить напрямую, поэтому просто дадим рекомендацию
-        console.log(
-          "👀 Расстояние от центра сцены (0,0,0) до центра здания:",
-          center.length().toFixed(2),
-        );
-
-        if (center.length() > 50) {
-          console.log(
-            "⚠️ Здание далеко от центра! Попробуйте приблизить камеру или переместить камеру в эту точку",
-          );
-        }
-      }
-
-      console.log("=====================================");
-    }
-  }, [geometry]);
-
-  if (!geometry) return null;
+  if (!building.nodes)
+    return (
+      <ModelBuilding
+        building={building}
+        onClick={() => onBuildingClick(building)}
+      />
+    );
 
   return (
     <mesh
@@ -159,8 +82,10 @@ export const RenderBuildingTop = ({
     >
       <meshStandardMaterial
         color={color}
+        transparent={opacity < 0.99}
         side={DoubleSide} // Отрисовываем с обеих сторон
         emissive="#000000"
+        opacity={opacity}
         roughness={0.7}
         metalness={0.1}
       />

@@ -18,6 +18,7 @@ import { ViewStage } from "@components/stage/ui/ViewStage";
 import { ViewTopStage } from "@components/stage/ui/ViewTopStage";
 import { Match } from "@components/shared/Match";
 import { ViewTopCameraController } from "@components/cameras/view/ViewTopCameraController";
+import { DummyNotification } from "./DummyNotification";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -28,8 +29,14 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment } = alignmentSlice.actions;
-  const { getViewMode, getCameraPosition, getCameraTarget, getCameraFov } =
-    viewSlice.selectors;
+  const { enableNotification } = viewSlice.actions;
+  const {
+    getViewMode,
+    getCameraPosition,
+    getCameraTarget,
+    getCameraFov,
+    getNotificationEnabled,
+  } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
   const error = useSelector(getError);
@@ -38,10 +45,16 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraTarget: ModelPosition = useSelector(getCameraTarget);
   const cameraFov = useSelector(getCameraFov);
   const viewMode = useSelector(getViewMode);
+  // TODO: убрать нафиг
+  const notificationEnabled = useSelector(getNotificationEnabled);
 
   const handleBuildingClick = (building: Building) => {
-    dispatch(addPolygonForAlignment(building));
-    onBuildingSelect && onBuildingSelect(building);
+    if (building.model) {
+      dispatch(enableNotification());
+    } else {
+      dispatch(addPolygonForAlignment(building));
+      onBuildingSelect && onBuildingSelect(building);
+    }
   };
 
   useEffect(() => {
@@ -67,6 +80,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     <>
       <ViewControlsInfo showDetailed={true} />
       <BuildingFormsGroup />
+
+      <DummyNotification enabled={notificationEnabled} />
 
       <Canvas
         camera={{
@@ -103,7 +118,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         {/* Camera controls for view mode */}
         <OrbitControls
           makeDefault
-          enablePan={viewMode === "perspective"}
+          enablePan={true}
           enableZoom={false}
           enableRotate={viewMode === "perspective"}
           maxPolarAngle={Math.PI / 2} // Prevent going below ground

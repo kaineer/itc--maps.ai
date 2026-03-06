@@ -3,7 +3,7 @@ import { RenderBuilding } from "../../building/ui/RenderBuilding";
 
 interface Props {
   buildings: Building[];
-  onBuildingClick?: (buildingId: string) => void;
+  onBuildingClick?: (building: Building) => void;
 }
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {

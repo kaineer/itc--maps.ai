@@ -2,6 +2,7 @@ import { BasePolygonBuilding } from "./BasePolygonBuilding";
 import { Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 interface Props {
   building: Building;
@@ -17,6 +18,21 @@ export const SolidPolygonBuilding = ({
   const polygons = useSelector(getSelectedPolygons);
   const highlighted = Boolean(polygons.find((p) => p.id === building.id));
 
+  const [opacity, setOpacity] = useState<number>(0.1);
+
+  useEffect(() => {
+    if (opacity < 0.99) {
+      setTimeout(() => {
+        const nextOpacity = 1 - (1 - opacity) / 2;
+        if (nextOpacity >= 0.99) {
+          setOpacity(1);
+        } else {
+          setOpacity(nextOpacity);
+        }
+      }, 300);
+    }
+  }, [opacity]);
+
   const handleClick = () => {
     if (onClick) {
       // Create a unique building ID using address and position
@@ -29,7 +45,7 @@ export const SolidPolygonBuilding = ({
     <BasePolygonBuilding
       building={building}
       highlighted={highlighted}
-      opacity={1.0}
+      opacity={opacity}
       onClick={handleClick}
     />
   );

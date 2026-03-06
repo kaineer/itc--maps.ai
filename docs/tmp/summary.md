@@ -1,8 +1,8 @@
 # Project Summary - Maps.ai Model Alignment System Development
 
-## Session Status: Phase 8 - Model Alignment System Refactoring - COMMITTED & PUSHED
+## Session Status: Phase 9 - Top-Down View Mode Implementation - COMMITTED & PUSHED
 
-## Current State (Branch: master) - Enhanced Architecture with Model Cache and Alignment System
+## Current State (Branch: master) - Enhanced Architecture with Dual View Modes
 
 ### ✅ Phase 1: Core Infrastructure - COMPLETED
 ### ✅ Phase 2: Camera Controller Architecture - COMPLETED
@@ -11,42 +11,44 @@
 ### ✅ Phase 5: Building Search & Navigation - COMPLETED
 ### ✅ Phase 6: UI Localization & Component Refinement - COMPLETED
 ### ✅ Phase 7: Redux Store Structure Reorganization - COMPLETED
-### ✅ Phase 8: Model Alignment System Refactoring - COMMITTED & PUSHED
+### ✅ Phase 8: Model Alignment System Refactoring - COMPLETED
+### ✅ Phase 9: Top-Down View Mode Implementation - COMMITTED & PUSHED
 
-## Recent Accomplishments (Latest Session) - Model Vertical Alignment & Component Refactoring
+## Recent Accomplishments (Latest Session) - Top-Down View Mode & Camera Controller Implementation
 
-### 1. **Model Vertical Alignment Implementation**
-- **ModelBuilding enhancement**: Added vertical position adjustment based on model bounding box
-- **Ground level placement**: Models now correctly placed at ground level (y=0) instead of floating
-- **Three.js Box3 integration**: Used Box3 to calculate model bottom position for proper alignment
-- **Async handling**: Added refs for position and scale to handle async model loading
+### 1. **ViewTopCameraController Implementation**
+- **Top-down camera controller**: New component for map navigation mode
+- **WASD movement**: Movement in XZ plane (north/south/east/west) with MAP speed (100 units/sec)
+- **Automatic building reload**: Triggers fetchBuildings when camera moves 300+ meters (DISTANCES.BUILDING_DISTANCE)
+- **Fixed height**: Camera positioned at CAMERA_HEIGHTS.TOP_DOWN (100 meters)
+- **Straight-down orientation**: Always looks at ground level (y=0) with proper camera.up.set(0, 1, 0)
 
-### 2. **BuildingSearch Component Refactoring**
-- **FormHeader extraction**: Extracted FormHeader component into separate file for better separation
-- **Component structure**: Improved component architecture with better file organization
-- **CSS cleanup**: Cleaned up CSS imports and organization in BuildingSearch
+### 2. **Dual View Mode System**
+- **View mode switching**: Support for 'top' (map) and 'perspective' (3D) modes in ViewUI
+- **Dynamic OrbitControls**: Enabled only in perspective mode, disabled in top mode
+- **Conditional rendering**: ViewTopStage for top mode, ViewStage for perspective mode
+- **Camera controller switching**: ViewTopCameraController for top, ViewCameraController for perspective
 
-### 3. **New Components Added**
-- **FormHeader**: Dedicated component for building search header
-- **UniqueItems**: Shared component for unique item management
-- **BuildingEdit**: Component for editing buildings with dedicated CSS
-- **BuildingsApi**: API layer for building-related backend calls
-- **Roles utility**: Role-based access control utility
+### 3. **New Supporting Components**
+- **ViewTopStage**: Top-down building rendering component
+- **RenderBuildingTop**: Simplified building rendering for top view
+- **ToggleMode**: UI component for switching between view modes
+- **MapItems**: Shared component for map item management
 
-### 4. **Deployment Infrastructure**
-- **Deploy scripts**: Added deploy directory and deployment script
-- **Configuration**: Updated scripts.json with deployment configuration
-- **Backup system**: Created backup mechanism for deployment safety
+### 4. **Store Enhancements**
+- **viewSlice updates**: Added getViewMode, getCameraFov selectors
+- **View mode state**: Support for switching between 'top' and 'perspective' modes
+- **Camera state separation**: Split cameraState into position, target, fov for flexibility
 
-### 5. **Store and Type Updates**
-- **Authentication slice**: Enhanced with better error handling and state management
-- **Building types**: Updated with additional properties for better type safety
-- **Network utilities**: Improved network utility functions for better API integration
+### 5. **Constants Updates**
+- **MOVEMENT_SPEEDS.MAP**: Added 100.0 speed constant for map navigation
+- **View mode constants**: Support for top/perspective view switching
 
-### 6. **Alignment System Improvements**
-- **AlignmentUIGroup**: Updated to use ButtonsGroup wrapper for better UI consistency
-- **Code cleanup**: Commented out unused async thunks in alignmentSlice
-- **Maintainability**: Improved code organization and maintainability across slices
+### 6. **Git Workflow Completed**
+- **Commit**: `c926951` - "Add ViewTopCameraController and top-down view mode support"
+- **Changes**: 15 files changed, 583 insertions(+), 80 deletions(-)
+- **Push**: Successfully pushed to origin/master
+- **Status**: All changes committed and synchronized with remote repository
 
 ### 2. **Start Alignment Button Component**
 - **Новый компонент**: Создан `StartAlignmentButton.tsx` с CSS стилями
@@ -75,66 +77,67 @@
 
 ## ✅ Git Workflow Completed
 
-### Git Commit & Push Summary
-- **Commit**: `8b0f479` - "Refactor ModelBuilding with vertical alignment and BuildingSearch component structure"
-- **Changes**: 36 files changed, 859 insertions(+), 186 deletions(-)
+### Latest Commit & Push Summary
+- **Commit**: `c926951` - "Add ViewTopCameraController and top-down view mode support"
+- **Previous Commit**: `8b0f479` - "Refactor ModelBuilding with vertical alignment and BuildingSearch component structure"
+- **Total Changes**: 51 files changed, 1442 insertions(+), 266 deletions(-) across both commits
 - **Push**: Successfully pushed to origin/master
 - **Status**: All changes committed and synchronized with remote repository
 
 ### Key Technical Achievements
-1. **Fixed Model Positioning**: Resolved issue where 3D models were floating above ground level
-2. **Improved Component Architecture**: Better separation of concerns with extracted components
-3. **Enhanced Type Safety**: Updated TypeScript types across the codebase
-4. **Added Deployment Infrastructure**: Ready for production deployment with backup system
-5. **Optimized Performance**: Model cache integration for better loading performance
+1. **Dual View Mode System**: Complete implementation of top-down and perspective view modes
+2. **ViewTopCameraController**: New camera controller with WASD movement for map navigation
+3. **Automatic Building Reload**: Smart reloading when camera moves beyond BUILDING_DISTANCE
+4. **Enhanced ViewUI**: Dynamic switching between view modes with appropriate controls
+5. **Performance Optimization**: MAP movement speed (100 units/sec) for smooth navigation
 
-## 🎯 Next Development Tasks (Phase 9)
+## 🎯 Next Development Tasks (Phase 10)
 
-### Phase 9: Production Deployment & Performance Optimization
+### Phase 10: View Mode Integration & User Experience Enhancement
 
 #### Immediate Tasks
-1. **Deployment Testing**
-   - Test deployment script in staging environment
-   - Verify backup and restore functionality
-   - Check production build process
+1. **View Mode Integration Testing**
+   - Test seamless switching between top and perspective modes
+   - Verify camera state preservation during mode switches
+   - Test building rendering in both view modes
 
-2. **Performance Optimization**
-   - Profile model loading performance with cache
-   - Optimize Three.js rendering for complex scenes
-   - Implement lazy loading for building components
+2. **Camera Controller Improvements**
+   - Fine-tune movement speeds for both view modes
+   - Add zoom functionality for top-down view
+   - Implement camera bounds/limits for map navigation
 
-3. **UI/UX Improvements**
-   - Enhance BuildingEdit component with full CRUD operations
-   - Improve BuildingSearch with better address parsing
-   - Add loading states and error handling across components
+3. **UI/UX Enhancements**
+   - Improve ToggleMode component with visual feedback
+   - Add keyboard shortcuts for view mode switching
+   - Enhance ViewControlsInfo with top-down control documentation
 
-4. **Testing & Quality Assurance**
-   - Add unit tests for new components (FormHeader, UniqueItems, BuildingEdit)
-   - Implement integration tests for model alignment system
-   - Add end-to-end testing for building search and selection
+4. **Performance Optimization**
+   - Optimize ViewTopStage rendering for large numbers of buildings
+   - Implement level-of-detail (LOD) for top-down building rendering
+   - Add view frustum culling for performance
 
 #### Technical Implementation Priorities
-1. **Model Loading Pipeline**
-   - Optimize FBX loading with progressive enhancement
-   - Implement model preloading for better user experience
-   - Add model validation and error recovery
+1. **Camera System Refinement**
+   - Unify camera state management across view modes
+   - Implement smooth transitions between view modes
+   - Add camera presets for common viewing positions
 
-2. **State Management**
-   - Refine Redux selectors for better performance
-   - Implement memoization for expensive calculations
-   - Add state persistence for user preferences
+2. **Building Rendering Optimization**
+   - Differentiate rendering techniques for top vs perspective views
+   - Implement billboarding for distant buildings in top view
+   - Add building selection highlighting in both view modes
 
-3. **API Layer Enhancement**
-   - Complete BuildingsApi implementation
-   - Add request/response interceptors for error handling
-   - Implement API caching for frequently accessed data
+3. **User Experience Features**
+   - Add mini-map or overview display
+   - Implement camera position saving/loading
+   - Add grid or coordinate display for top-down view
 
-#### Success Criteria for Phase 9
-- ✅ Deployment script works reliably in production environment
-- ✅ Model loading performance improved by at least 30%
-- ✅ All new components have comprehensive test coverage
-- ✅ User experience metrics show improvement in task completion time
-- ✅ Codebase passes all TypeScript strict mode checks
+#### Success Criteria for Phase 10
+- ✅ Smooth, seamless switching between view modes
+- ✅ Consistent camera behavior across both view modes
+- ✅ Optimized performance for large-scale map navigation
+- ✅ Intuitive user controls documented and working
+- ✅ All new components integrated and tested
 1. **Переделать AlignmentUI и нижележащие компоненты** на предмет получения модели из `modelCache`
    - Интеграция кэша моделей в компоненты выравнивания
    - Оптимизация загрузки и отображения 3D моделей

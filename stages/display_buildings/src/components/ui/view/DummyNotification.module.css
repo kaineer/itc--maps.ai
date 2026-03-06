@@ -1,0 +1,156 @@
+.notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  max-width: 90vw;
+  max-height: 80vh;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  padding: 32px;
+  z-index: 1000;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
+    sans-serif;
+  border: 1px solid #e0e0e0;
+  animation: fadeIn 0.3s ease-out;
+  overflow-y: auto;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.closeButton {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #f5f5f5;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  color: #666;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.closeButton:hover {
+  background: #e0e0e0;
+  color: #333;
+  transform: scale(1.1);
+}
+
+.closeButton:active {
+  transform: scale(0.95);
+}
+
+.title {
+  color: #1a237e;
+  font-size: 28px;
+  font-weight: 700;
+  margin: 0 0 20px 0;
+  line-height: 1.2;
+  text-align: center;
+  border-bottom: 2px solid #3f51b5;
+  padding-bottom: 16px;
+  padding-right: 40px; /* Space for close button */
+}
+
+.subtitle {
+  color: #424242;
+  font-size: 15px;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+  text-align: center;
+  font-style: italic;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 4px solid #3f51b5;
+}
+
+.content {
+  color: #333;
+  font-size: 16px;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.content p {
+  margin: 0 0 20px 0;
+}
+
+.content p:last-child {
+  margin-bottom: 0;
+}
+
+.children {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #e0e0e0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .notification {
+    width: 450px;
+    padding: 24px;
+  }
+
+  .title {
+    font-size: 24px;
+    padding-right: 36px;
+  }
+
+  .subtitle {
+    font-size: 14px;
+  }
+
+  .content {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification {
+    width: calc(100vw - 40px);
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 22px;
+    padding-right: 32px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    padding: 12px;
+  }
+
+  .content {
+    font-size: 14px;
+  }
+
+  .closeButton {
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+}

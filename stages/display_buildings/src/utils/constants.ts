@@ -187,6 +187,13 @@ export const UI_CONSTANTS = {
   SEARCH_DEBOUNCE: 300,
 } as const;
 
+export const UI_COLORS = {
+  BUILDING: "#708090",
+  ANONYMOUS: "#696969",
+  HIGHLIGHTED: "#E8D0A9",
+  GROUND: "#F5F5DC",
+};
+
 // Re-export commonly used constants for backward compatibility
 export const EYE_LEVEL_HEIGHT = CAMERA_HEIGHTS.EYE_LEVEL;
 export const GROUND_LEVEL_HEIGHT = CAMERA_HEIGHTS.GROUND_LEVEL;

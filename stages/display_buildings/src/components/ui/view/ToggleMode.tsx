@@ -18,7 +18,11 @@ export const ToggleMode = ({ enabled }: Props) => {
   if (!enabled) return null;
 
   return (
-    <NavigationButton enabled={enabled} onClick={handleClick} title="Выйти">
+    <NavigationButton
+      enabled={enabled}
+      onClick={handleClick}
+      title="Переключить режим"
+    >
       <GoMoveToTop />
     </NavigationButton>
   );

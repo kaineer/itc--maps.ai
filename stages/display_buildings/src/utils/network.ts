@@ -11,17 +11,22 @@ interface NetworkConfigItem {
   port: NetworkPort;
 }
 
-const backendConfig: NetworkConfigItem = {
-  protocol: "http",
-  host: "10.1.0.71",
-  port: 8080,
+const tryToLoad = (key: string): unknown => {
+  try {
+    return JSON.parse(localStorage.getItem(key) || "null");
+  } catch (err) {
+    return null;
+  }
 };
 
-// const backendConfig = {
-//   protocol: "http",
-//   host: "localhost",
-//   port: 5173,
-// }
+const loadedBackendConfig = tryToLoad("ekb3d/backend");
+
+const backendConfig: NetworkConfigItem =
+  (loadedBackendConfig as NetworkConfigItem | null) || {
+    protocol: "http",
+    host: "10.1.0.248",
+    port: 8080,
+  };
 
 const networkConfig = {
   /**

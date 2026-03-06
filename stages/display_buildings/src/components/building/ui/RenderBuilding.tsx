@@ -15,6 +15,7 @@ export const RenderBuilding = ({ building, onBuildingClick }: Props) => {
       onBuildingClick(building);
     }
   };
+
   if (typeof modelId === "string") {
     return <ModelBuilding building={building} onClick={handleBuildingClick} />;
   }

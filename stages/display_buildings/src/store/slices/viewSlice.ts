@@ -4,6 +4,7 @@ import {
   DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
+  EYE_LEVEL_HEIGHT,
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
 import { createBackendService } from "@services/backendService";
@@ -33,6 +34,8 @@ export interface ViewState {
   groundCenter: BuildingNode;
   //
   viewMode: ViewMode;
+  //
+  notification: boolean;
 }
 
 // Default camera position for View mode
@@ -51,6 +54,8 @@ const initialState: ViewState = {
   fixedHeight: CAMERA_HEIGHTS.EYE_LEVEL, // Eye level in meters
   groundCenter: { x: 0, z: 0 },
   viewMode: "perspective",
+  // TODO: это явный хак, есичо
+  notification: false,
 };
 
 export const viewSlice = createSlice({
@@ -117,9 +122,20 @@ export const viewSlice = createSlice({
     toggleViewMode: (state) => {
       if (state.viewMode === "top") {
         state.viewMode = "perspective";
+        const [x, _, z] = state.camera.position;
+        // TODO check this
+        state.camera.target = [x, EYE_LEVEL_HEIGHT, z + 10];
       } else {
         state.viewMode = "top";
       }
+    },
+
+    enableNotification: (state) => {
+      state.notification = true;
+    },
+
+    disableNotification: (state) => {
+      state.notification = false;
     },
   },
   extraReducers: (builder) => {
@@ -177,6 +193,9 @@ export const viewSlice = createSlice({
 
     // Get ground center
     getGroundCenter: (state) => state.groundCenter,
+
+    //
+    getNotificationEnabled: (state) => state.notification,
   },
 });
 
