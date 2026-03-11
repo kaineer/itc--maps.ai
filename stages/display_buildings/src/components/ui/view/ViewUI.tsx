@@ -19,6 +19,7 @@ import { ViewTopStage } from "@components/stage/ui/ViewTopStage";
 import { Match } from "@components/shared/Match";
 import { ViewTopCameraController } from "@components/cameras/view/ViewTopCameraController";
 import { DummyNotification } from "./DummyNotification";
+import { WorldMap } from "./openstreet/WorldMap";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -29,13 +30,19 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment } = alignmentSlice.actions;
-  const { enableNotification } = viewSlice.actions;
+  const {
+    enableNotification,
+    disableNotification,
+    enableMinimap,
+    disableMinimap,
+  } = viewSlice.actions;
   const {
     getViewMode,
     getCameraPosition,
     getCameraTarget,
     getCameraFov,
     getNotificationEnabled,
+    getMinimapEnabled,
   } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
@@ -47,6 +54,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const viewMode = useSelector(getViewMode);
   // TODO: убрать нафиг
   const notificationEnabled = useSelector(getNotificationEnabled);
+  const showMinimap = useSelector(getMinimapEnabled);
 
   const handleBuildingClick = (building: Building) => {
     if (building.model) {
@@ -55,6 +63,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       dispatch(addPolygonForAlignment(building));
       onBuildingSelect && onBuildingSelect(building);
     }
+  };
+
+  const handleNotificationClose = () => {
+    dispatch(disableNotification());
   };
 
   useEffect(() => {
@@ -81,7 +93,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       <ViewControlsInfo showDetailed={true} />
       <BuildingFormsGroup />
 
-      <DummyNotification enabled={notificationEnabled} />
+      <DummyNotification
+        enabled={notificationEnabled}
+        onClose={handleNotificationClose}
+      />
 
       <Canvas
         camera={{
@@ -132,6 +147,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           perspective={() => <ViewCameraController />}
         />
       </Canvas>
+
+      {showMinimap && <WorldMap mapCenter={cameraPosition} />}
     </>
   );
 };

@@ -24,7 +24,7 @@ const loadedBackendConfig = tryToLoad("ekb3d/backend");
 const backendConfig: NetworkConfigItem =
   (loadedBackendConfig as NetworkConfigItem | null) || {
     protocol: "http",
-    host: "10.1.0.248",
+    host: "10.1.0.71",
     port: 8080,
   };
 

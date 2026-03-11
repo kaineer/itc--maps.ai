@@ -1,7 +1,5 @@
 import { PropsWithChildren } from "react";
 import classes from "./DummyNotification.module.css";
-import { useDispatch } from "react-redux";
-import { viewSlice } from "@slices/viewSlice";
 
 interface Props extends PropsWithChildren {
   enabled?: boolean;
@@ -11,20 +9,17 @@ interface Props extends PropsWithChildren {
 export const DummyNotification = ({
   enabled = true,
   children,
-  onClose,
+  onClose = () => null,
 }: Props) => {
   if (!enabled) {
     return null;
   }
 
-  const dispatch = useDispatch();
-  const { disableNotification } = viewSlice.actions;
-
   return (
     <div className={classes.notification}>
       <button
         className={classes.closeButton}
-        onClick={() => dispatch(disableNotification())}
+        onClick={onClose}
         aria-label="Закрыть"
       >
         ×

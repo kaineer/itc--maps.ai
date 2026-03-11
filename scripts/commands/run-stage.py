@@ -7,7 +7,6 @@ A comprehensive command for managing the project build pipeline with dependency 
 
 import hashlib
 import json
-import os
 import subprocess
 import sys
 from pathlib import Path

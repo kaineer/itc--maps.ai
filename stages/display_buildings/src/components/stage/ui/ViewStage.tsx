@@ -14,7 +14,7 @@ export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
       getKey={(building) => building.model}
       render={(building) => (
         <RenderBuilding
-          key={building.id}
+          key={building.model || building.id}
           building={building}
           onBuildingClick={onBuildingClick}
         />

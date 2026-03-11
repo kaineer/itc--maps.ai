@@ -5,8 +5,7 @@ import xml.etree.ElementTree as ET
 from errno import EACCES
 from typing import Any, Dict, List
 
-EARTH_RADIUS = 6371000  # Earth's radius in meters
-
+EARTH_RADIUS = 6378137  # Earth's radius in meters
 
 def lat_lng_to_mercator(lat: float, lng: float):
     """

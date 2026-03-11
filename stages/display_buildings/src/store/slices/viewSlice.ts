@@ -36,6 +36,8 @@ export interface ViewState {
   viewMode: ViewMode;
   //
   notification: boolean;
+  //
+  minimap: boolean;
 }
 
 // Default camera position for View mode
@@ -56,6 +58,7 @@ const initialState: ViewState = {
   viewMode: "perspective",
   // TODO: это явный хак, есичо
   notification: false,
+  minimap: true,
 };
 
 export const viewSlice = createSlice({
@@ -70,6 +73,14 @@ export const viewSlice = createSlice({
     // Update camera target (look-at point)
     updateCameraTarget: (state, action: PayloadAction<ModelPosition>) => {
       state.camera.target = action.payload;
+    },
+
+    moveCameraToLocation: (state, action: PayloadAction<ModelPosition>) => {
+      const position = action.payload;
+      const [x, _, z] = position;
+
+      state.camera.position = [x, EYE_LEVEL_HEIGHT, z];
+      state.camera.target = [x, EYE_LEVEL_HEIGHT, z + 10];
     },
 
     // Update camera field of view
@@ -137,6 +148,14 @@ export const viewSlice = createSlice({
     disableNotification: (state) => {
       state.notification = false;
     },
+
+    enableMinimap: (state) => {
+      state.minimap = true;
+    },
+
+    disableMinimap: (state) => {
+      state.minimap = false;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -196,6 +215,9 @@ export const viewSlice = createSlice({
 
     //
     getNotificationEnabled: (state) => state.notification,
+
+    //
+    getMinimapEnabled: (state) => state.minimap,
   },
 });
 
