@@ -4,7 +4,7 @@ import { RenderBuilding } from "../../building/ui/RenderBuilding";
 
 interface Props {
   buildings: Building[];
-  onBuildingClick?: (building: Building) => void;
+  onBuildingClick?: (building: Building, ctrlKey: boolean) => void;
 }
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {

@@ -6,7 +6,7 @@ import { ModelData } from "@utils/modelTransform";
 
 interface Props {
   building: Building;
-  onClick?: (building: Building) => void;
+  onClick?: (building: Building, ctrlKey: boolean) => void;
 }
 
 export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
@@ -46,8 +46,8 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
     }
   }, [modelId]);
 
-  const handleClick = () => {
-    onClick(building);
+  const handleClick = (e: any) => {
+    onClick(building, e.ctrlKey);
   };
 
   const rotY = (((rotation && rotation[1]) || 0) * Math.PI) / 180;

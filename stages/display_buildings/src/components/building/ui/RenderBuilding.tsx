@@ -4,15 +4,15 @@ import { SolidPolygonBuilding } from "./SolidPolygonBuilding";
 
 interface Props {
   building: Building;
-  onBuildingClick?: (building: Building) => void;
+  onBuildingClick?: (building: Building, ctrlKey: boolean) => void;
 }
 
 export const RenderBuilding = ({ building, onBuildingClick }: Props) => {
   const { model: modelId } = building;
 
-  const handleBuildingClick = () => {
+  const handleBuildingClick = (building: Building, ctrlKey: boolean) => {
     if (onBuildingClick) {
-      onBuildingClick(building);
+      onBuildingClick(building, ctrlKey);
     }
   };
 

@@ -11,8 +11,6 @@ import { createBackendService } from "@services/backendService";
 
 const backendService = createBackendService();
 
-type ViewMode = "perspective" | "top";
-
 // Camera state for View mode
 export interface ViewCameraState {
   position: ModelPosition;
@@ -32,8 +30,6 @@ export interface ViewState {
   fixedHeight: number;
   //
   groundCenter: BuildingNode;
-  //
-  viewMode: ViewMode;
   //
   notification: boolean;
   //
@@ -55,7 +51,6 @@ const initialState: ViewState = {
   movementSpeed: 5.0,
   fixedHeight: CAMERA_HEIGHTS.EYE_LEVEL, // Eye level in meters
   groundCenter: { x: 0, z: 0 },
-  viewMode: "perspective",
   // TODO: это явный хак, есичо
   notification: false,
   minimap: true,
@@ -130,17 +125,6 @@ export const viewSlice = createSlice({
       state.groundCenter = action.payload;
     },
 
-    toggleViewMode: (state) => {
-      if (state.viewMode === "top") {
-        state.viewMode = "perspective";
-        const [x, _, z] = state.camera.position;
-        // TODO check this
-        state.camera.target = [x, EYE_LEVEL_HEIGHT, z + 10];
-      } else {
-        state.viewMode = "top";
-      }
-    },
-
     enableNotification: (state) => {
       state.notification = true;
     },
@@ -177,22 +161,13 @@ export const viewSlice = createSlice({
 
     // Get camera position
     getCameraPosition: (state): ModelPosition => {
-      if (state.viewMode === "perspective") {
-        return state.camera.position;
-      } else {
-        const [x, _, z] = state.camera.position;
-        return [x, 500, z];
-      }
+      const [x, _, z] = state.camera.position;
+      return [x, 500, z];
     },
 
     // Get camera target
     getCameraTarget: (state): ModelPosition => {
-      if (state.viewMode === "perspective") {
-        return state.camera.target;
-      } else {
-        const [x, _, z] = state.camera.position;
-        return [x, 0, z];
-      }
+      return state.camera.target;
     },
 
     // Get camera field of view
@@ -206,9 +181,6 @@ export const viewSlice = createSlice({
 
     // Get fixed camera height
     getFixedHeight: (state) => state.fixedHeight,
-
-    // Get entire view state
-    getViewMode: (state) => state.viewMode,
 
     // Get ground center
     getGroundCenter: (state) => state.groundCenter,

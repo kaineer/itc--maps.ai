@@ -10,7 +10,7 @@ import { Lighting } from "../../static/Lighting";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
 import { ModelPosition, type Building } from "../../../types/types";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import { alignmentSlice, saveMetadata } from "@slices/alignmentSlice";
 
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
@@ -30,14 +30,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment } = alignmentSlice.actions;
+  const { enableNotification, disableNotification } = viewSlice.actions;
   const {
-    enableNotification,
-    disableNotification,
-    enableMinimap,
-    disableMinimap,
-  } = viewSlice.actions;
-  const {
-    getViewMode,
     getCameraPosition,
     getCameraTarget,
     getCameraFov,
@@ -51,14 +45,20 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraPosition: ModelPosition = useSelector(getCameraPosition);
   const cameraTarget: ModelPosition = useSelector(getCameraTarget);
   const cameraFov = useSelector(getCameraFov);
-  const viewMode = useSelector(getViewMode);
   // TODO: убрать нафиг
   const notificationEnabled = useSelector(getNotificationEnabled);
   const showMinimap = useSelector(getMinimapEnabled);
 
-  const handleBuildingClick = (building: Building) => {
+  const handleBuildingClick = (
+    building: Building,
+    ctrlKey: boolean = false,
+  ) => {
     if (building.model) {
-      dispatch(enableNotification());
+      if (!ctrlKey) {
+        dispatch(enableNotification());
+      } else {
+        dispatch(saveMetadata(building));
+      }
     } else {
       dispatch(addPolygonForAlignment(building));
       onBuildingSelect && onBuildingSelect(building);
@@ -114,20 +114,9 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <Ground position={cameraPosition} />
 
         {/* Buildings */}
-        <Match
-          value={viewMode}
-          top={() => (
-            <ViewTopStage
-              buildings={buildings}
-              onBuildingClick={handleBuildingClick}
-            />
-          )}
-          perspective={() => (
-            <ViewStage
-              buildings={buildings}
-              onBuildingClick={handleBuildingClick}
-            />
-          )}
+        <ViewStage
+          buildings={buildings}
+          onBuildingClick={handleBuildingClick}
         />
 
         {/* Camera controls for view mode */}
@@ -135,17 +124,13 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           makeDefault
           enablePan={true}
           enableZoom={false}
-          enableRotate={viewMode === "perspective"}
+          enableRotate={true}
           maxPolarAngle={Math.PI / 2} // Prevent going below ground
           target={cameraTarget}
         />
 
         {/* Camera movement controller (WASD controls) */}
-        <Match
-          value={viewMode}
-          top={() => <ViewTopCameraController />}
-          perspective={() => <ViewCameraController />}
-        />
+        <ViewCameraController />
       </Canvas>
 
       {showMinimap && <WorldMap mapCenter={cameraPosition} />}

@@ -732,23 +732,79 @@ export const prepareInitialTransform = createAsyncThunk(
   },
 );
 
-// export const addPolygonWithModelRequest = createAsyncThunk(
-//   "alignment/addPolygonWithModelRequest",
-//   async (polygonData: Building, { dispatch }) => {
-//     const { addPolygonForAlignment } = alignmentSlice.actions;
-//     dispatch(addPolygonForAlignment(polygonData));
+/*
+{
+  "id": "c25ed2a3-d8eb-c49d-eedf-108bb03750ab",
+  "model": "00f69b90c52d4c78aaef66a3b2ca0a96",
+  "x": -6744241.966030714,
+  "z": 7722194.167061017,
+  "rot": [
+    0,
+    0,
+    0
+  ],
+  "address": "улица Чкалова, 3",
+  "height": 12,
+  "polygons": [
+    "c25ed2a3-d8eb-c49d-eedf-108bb03750ab",
+    "66c34322-29de-2d10-f8a1-a65403e5cf6c",
+    "3df85e50-7deb-6613-0983-358bf1eb9de6"
+  ],
+  "modelMetadata": {
+    "position": [
+      -6744232.391492261,
+      -0.19061288385870992,
+      7722176.713037413
+    ],
+    "rotation": [
+      0,
+      147,
+      0
+    ],
+    "scale": 0.19103864843972293
+  }
+}
+*/
 
-//     if (polygonData.address) {
-//       const { put } = createBackendService();
-//       const response = await put("/models/address", {
-//         address: polygonData.address,
-//       });
-//       return response;
-//     }
+export const saveMetadata = createAsyncThunk(
+  // move model down
+  "alignment/saveMetadata",
+  async (metadata: any, { rejectWithValue }) => {
+    const {
+      address,
+      polygons,
+      modelMetadata: { position, rotation, scale },
+      model: modelId,
+    } = metadata;
 
-//     return null;
-//   },
-// );
+    try {
+      const [x, y, z] = position;
+
+      const transformData = {
+        position: [x, y - 0.1, z],
+        rotation,
+        scale,
+        polygons,
+        address,
+      };
+
+      const { put: patch } = createBackendService();
+
+      if (patch) {
+        const response = (await patch(
+          "/models/" + modelId,
+          transformData,
+        )) as Response;
+        return response.data;
+      }
+    } catch (error) {
+      console.error("Failed to save alignment:", error);
+      return rejectWithValue(
+        error instanceof Error ? error.message : "Failed to save alignment",
+      );
+    }
+  },
+);
 
 /**
  * Save alignment data to backend via PATCH /models/:modelId
@@ -756,7 +812,7 @@ export const prepareInitialTransform = createAsyncThunk(
  */
 export const saveAlignment = createAsyncThunk(
   "alignment/saveAlignment",
-  async (_, { getState, rejectWithValue }) => {
+  async (_, { dispatch, getState, rejectWithValue }) => {
     const state = getState() as { alignment: AlignmentState };
     const { modelUUID, modelTransform, selectedPolygons } = state.alignment;
 

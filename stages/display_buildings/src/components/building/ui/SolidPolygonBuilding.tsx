@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 interface Props {
   building: Building;
   // onClick?: (buildingId: string) => void;
-  onClick?: (building: Building) => void;
+  onClick?: (building: Building, ctrlKey: boolean) => void;
 }
 
 export const SolidPolygonBuilding = ({
@@ -33,14 +33,15 @@ export const SolidPolygonBuilding = ({
     }
   }, [opacity]);
 
-  const handleClick = () => {
+  const handleClick = (e: any) => {
     if (onClick) {
       // Create a unique building ID using address and position
       // const buildingId = `${building.address}|${building.position?.x},${building.position?.z}`;
       // onClick(buildingId);
-      onClick(building);
+      onClick(building, e.ctrlKey);
     }
   };
+
   return (
     <BasePolygonBuilding
       building={building}

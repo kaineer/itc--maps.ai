@@ -1,4 +1,6 @@
 {
   "dev:front": "cd stages/display_buildings && npm run dev",
+  "dev:build:front": "cd stages/display_buildings && npm run build",
+  "dev:pm2": "cd stages && pm2 start all -f pm2.config.js",
   "dev:deploy": "./scripts/deploy.sh"
 }

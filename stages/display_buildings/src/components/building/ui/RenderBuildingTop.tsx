@@ -6,7 +6,7 @@ import { UI_COLORS } from "@utils/constants";
 
 interface Props {
   building: Building;
-  onBuildingClick: (building: Building) => void;
+  onBuildingClick: (building: Building, ctrlKey: boolean) => void;
 }
 
 export const RenderBuildingTop = ({
@@ -65,12 +65,7 @@ export const RenderBuildingTop = ({
   }, [building.nodes]);
 
   if (!building.nodes)
-    return (
-      <ModelBuilding
-        building={building}
-        onClick={() => onBuildingClick(building)}
-      />
-    );
+    return <ModelBuilding building={building} onClick={onBuildingClick} />;
 
   return (
     <mesh
@@ -78,7 +73,7 @@ export const RenderBuildingTop = ({
       ref={meshRef}
       position={[0, 0.5, 0]}
       rotation={[-Math.PI / 2, 0, 0]} // Поворачиваем, чтобы многоугольник лежал горизонтально
-      onClick={() => onBuildingClick(building)}
+      onClick={onBuildingClick}
     >
       <meshStandardMaterial
         color={color}
