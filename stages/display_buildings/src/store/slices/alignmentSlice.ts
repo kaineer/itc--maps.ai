@@ -73,6 +73,8 @@ export interface AlignmentState {
 
   // Alignment process state
   selectedPolygons: Building[];
+  modelToEdit: Building | null;
+
   modelUUID: string | null;
   modelTransform: {
     position: ModelPosition;
@@ -123,6 +125,7 @@ const initialState: AlignmentState = {
 
   // Alignment process state
   selectedPolygons: [],
+  modelToEdit: null,
   modelUUID: null,
   modelTransform: {
     position: [0, 0, 0],
@@ -209,6 +212,17 @@ export const alignmentSlice = createSlice({
       if (!alreadyAdded) {
         state.selectedPolygons.push(action.payload);
       }
+    },
+
+    selectModelToEdit: (state, action: PayloadAction<Building>) => {
+      const building = action.payload;
+      if (building.model && building.modelMetadata) {
+        state.modelToEdit = building;
+      }
+    },
+
+    dropModelToEdit: (state) => {
+      state.modelToEdit = null;
     },
 
     removePolygonFromAlignment: (state, action: PayloadAction<Building>) => {
@@ -654,6 +668,8 @@ export const alignmentSlice = createSlice({
       Boolean(state.modelUUID) &&
       state.selectedPolygons &&
       state.selectedPolygons.length > 0,
+
+    getModelToEdit: (state) => state.modelToEdit,
   },
 });
 
@@ -778,10 +794,8 @@ export const saveMetadata = createAsyncThunk(
     } = metadata;
 
     try {
-      const [x, y, z] = position;
-
       const transformData = {
-        position: [x, y - 0.1, z],
+        position,
         rotation,
         scale,
         polygons,

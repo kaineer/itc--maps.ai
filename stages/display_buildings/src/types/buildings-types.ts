@@ -25,15 +25,24 @@ interface ModelMetadata {
   scale: number;
 }
 
-export interface Building {
+interface BuildingWithModel {
   id: string;
+  model: string;
+  address: string | null;
+  height: number;
+  polygons: string[];
+  modelMetadata: ModelMetadata;
+}
+
+interface BuildingWithoutModel {
+  id: string;
+  model: null;
+  height: number;
   address: string | null;
   nodes: BuildingNode[];
-  height: number;
-  position?: BuildingNode;
-  model?: string;
-  modelMetadata?: ModelMetadata;
 }
+
+export type Building = BuildingWithoutModel | BuildingWithModel;
 
 export interface ModelAlignment {
   modelId: string;

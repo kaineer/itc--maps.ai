@@ -1,4 +1,6 @@
 import { AllowRoute } from "@components/shared/AllowRoute";
+import { TrackPointListUI } from "@components/track-point/list/TrackPointListUI";
+import { TrackListUI } from "@components/track/list/TrackListUI";
 import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";
 import { IntroUI } from "@components/ui/intro/IntroUI";
 import { UserCreateUI } from "@components/ui/user/create/UserCreateUI";
@@ -26,6 +28,22 @@ export const AuthorizedRouter = () => (
         element={
           <AllowRoute role="Admin" redirect="/view">
             <UserCreateUI />
+          </AllowRoute>
+        }
+      />
+      <Route
+        path="tracks"
+        element={
+          <AllowRoute role="Admin" redirect="login">
+            <TrackListUI />
+          </AllowRoute>
+        }
+      />
+      <Route
+        path="tracks/:trackId"
+        element={
+          <AllowRoute role="Admin" redirect="login">
+            <TrackPointListUI />
           </AllowRoute>
         }
       />

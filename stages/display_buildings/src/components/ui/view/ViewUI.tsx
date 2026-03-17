@@ -15,11 +15,9 @@ import { alignmentSlice, saveMetadata } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 import { ViewStage } from "@components/stage/ui/ViewStage";
-import { ViewTopStage } from "@components/stage/ui/ViewTopStage";
-import { Match } from "@components/shared/Match";
-import { ViewTopCameraController } from "@components/cameras/view/ViewTopCameraController";
 import { DummyNotification } from "./DummyNotification";
 import { WorldMap } from "./openstreet/WorldMap";
+import { KeyboardModifiers } from "@utils/keyboardModifiers";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -29,7 +27,7 @@ interface Props {
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
-  const { addPolygonForAlignment } = alignmentSlice.actions;
+  const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
   const { enableNotification, disableNotification } = viewSlice.actions;
   const {
     getCameraPosition,
@@ -50,15 +48,10 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const showMinimap = useSelector(getMinimapEnabled);
 
   const handleBuildingClick = (
-    building: Building,
-    ctrlKey: boolean = false,
+    building: Building /* , keys: KeyboardModifiers */,
   ) => {
     if (building.model) {
-      if (!ctrlKey) {
-        dispatch(enableNotification());
-      } else {
-        dispatch(saveMetadata(building));
-      }
+      dispatch(selectModelToEdit(building));
     } else {
       dispatch(addPolygonForAlignment(building));
       onBuildingSelect && onBuildingSelect(building);
@@ -66,7 +59,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   };
 
   const handleNotificationClose = () => {
-    dispatch(disableNotification());
+    // dispatch(disableNotification());
   };
 
   useEffect(() => {

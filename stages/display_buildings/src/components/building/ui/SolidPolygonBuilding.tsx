@@ -3,11 +3,15 @@ import { Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import {
+  getKeyboardModifiers,
+  KeyboardModifiers,
+} from "@utils/keyboardModifiers";
 
 interface Props {
   building: Building;
   // onClick?: (buildingId: string) => void;
-  onClick?: (building: Building, ctrlKey: boolean) => void;
+  onClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
 export const SolidPolygonBuilding = ({
@@ -38,7 +42,7 @@ export const SolidPolygonBuilding = ({
       // Create a unique building ID using address and position
       // const buildingId = `${building.address}|${building.position?.x},${building.position?.z}`;
       // onClick(buildingId);
-      onClick(building, e.ctrlKey);
+      onClick(building, getKeyboardModifiers(e));
     }
   };
 

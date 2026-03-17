@@ -3,10 +3,14 @@ import { useEffect, useState, useRef } from "react";
 import { Building } from "@.types/buildings-types";
 import { modelsCache } from "@utils/modelsCache";
 import { ModelData } from "@utils/modelTransform";
+import {
+  getKeyboardModifiers,
+  type KeyboardModifiers,
+} from "@utils/keyboardModifiers";
 
 interface Props {
   building: Building;
-  onClick?: (building: Building, ctrlKey: boolean) => void;
+  onClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
 export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
@@ -47,7 +51,7 @@ export const ModelBuilding = ({ building, onClick = () => null }: Props) => {
   }, [modelId]);
 
   const handleClick = (e: any) => {
-    onClick(building, e.ctrlKey);
+    onClick(building, getKeyboardModifiers(e));
   };
 
   const rotY = (((rotation && rotation[1]) || 0) * Math.PI) / 180;

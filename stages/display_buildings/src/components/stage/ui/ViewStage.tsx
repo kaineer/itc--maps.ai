@@ -1,10 +1,11 @@
 import { UniqueItems } from "@components/shared/UniqueItems";
 import { Building } from "../../../types/types";
 import { RenderBuilding } from "../../building/ui/RenderBuilding";
+import { KeyboardModifiers } from "@utils/keyboardModifiers";
 
 interface Props {
   buildings: Building[];
-  onBuildingClick?: (building: Building, ctrlKey: boolean) => void;
+  onBuildingClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {

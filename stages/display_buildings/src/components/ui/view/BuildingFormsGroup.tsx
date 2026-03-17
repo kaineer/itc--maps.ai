@@ -7,6 +7,7 @@ import classes from "./BuildingFormsGroup.module.css";
 import { UserList } from "./UserList";
 import { BuildingEdit } from "./BuildingEdit";
 import { ToggleMinimap } from "./ToggleMinimap";
+import { BuildingModelEdit } from "./BuildingModelEdit";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();
@@ -41,6 +42,10 @@ export const BuildingFormsGroup = () => {
       <BuildingEdit
         enabled={isModeEnabled("edit")}
         onToggled={handleFormToggle("edit")}
+      />
+      <BuildingModelEdit
+        enabled={isModeEnabled("edit-model")}
+        onToggled={handleFormToggle("edit-model")}
       />
       <UserList enabled={isModeEnabled("none")} />
       <Logout enabled={isModeEnabled("none")} />

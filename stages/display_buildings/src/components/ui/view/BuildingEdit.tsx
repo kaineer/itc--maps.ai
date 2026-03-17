@@ -1,10 +1,11 @@
 import classes from "./BuildingEdit.module.css";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
 import { usePatchPolygonMutation } from "@store/api/BuildingsApi";
+import { Building } from "@.types/buildings-types";
 
 interface Props {
   enabled?: boolean;
@@ -33,10 +34,17 @@ export const BuildingEdit = ({
   const [success, setSuccess] = useState<string | null>(null);
 
   const { getSelectedPolygons } = alignmentSlice.selectors;
-  const selectedPolygons = useSelector(getSelectedPolygons);
+  const selectedPolygons: Building[] = useSelector(getSelectedPolygons);
   const polygon = selectedPolygons.length === 1 ? selectedPolygons[0] : "";
 
   const [updateBuilding] = usePatchPolygonMutation();
+
+  useEffect(() => {
+    if (polygon) {
+      setAddress(polygon.address || "");
+      setHeight(String(polygon.height / 3));
+    }
+  }, [polygon]);
 
   /**
    * Handle save button click
@@ -83,7 +91,7 @@ export const BuildingEdit = ({
    * Clear all form fields and messages
    */
   const clearForm = () => {
-    setHeight("");
+    setHeight("1");
     setAddress("");
     setError(null);
     setSuccess(null);
@@ -138,8 +146,8 @@ export const BuildingEdit = ({
             placeholder="количество этажей"
             className={classes.formInput}
             disabled={isSaving}
-            min="0.1"
-            step="0.1"
+            min="1"
+            step="1"
           />
         </div>
 

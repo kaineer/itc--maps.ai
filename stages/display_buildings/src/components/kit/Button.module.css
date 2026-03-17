@@ -28,6 +28,14 @@
   font-size: 24px;
 }
 
+.variation-small {
+  width: 80px;
+  height: 24px;
+
+  font-size: 14px;
+  border-radius: 5px;
+}
+
 .variation-violet {
   color: #fff;
   background-color: #bc00ff;

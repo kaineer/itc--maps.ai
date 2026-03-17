@@ -6,7 +6,12 @@ const defaultUIMode = "intro";
 export type UIMode = "intro" | "login" | "view" | "alignment";
 
 // Форма, показанная в интерфейсе
-export type BuildingFormMode = "none" | "search" | "select" | "edit";
+export type BuildingFormMode =
+  | "none"
+  | "search"
+  | "select"
+  | "edit"
+  | "edit-model";
 
 interface UIState {
   currentMode: UIMode;

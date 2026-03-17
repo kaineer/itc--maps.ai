@@ -10,8 +10,8 @@ import {
   helpInfoStorageMiddleware,
 } from "./slices/helpInfoSlice";
 import { rtkQueryErrorHandler } from "./middleware/unauthorized";
-import { userApi } from "./api/UsersApi";
-import { buildingsApi } from "./api/BuildingsApi";
+
+import { apiMiddlewares, apiReducers } from "./api";
 
 export function setupStore() {
   const store = configureStore({
@@ -26,8 +26,7 @@ export function setupStore() {
       // Add other reducers here as they are created
 
       // API
-      [userApi.reducerPath]: userApi.reducer,
-      [buildingsApi.reducerPath]: buildingsApi.reducer,
+      ...apiReducers,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -38,8 +37,7 @@ export function setupStore() {
         helpInfoStorageMiddleware,
         rtkQueryErrorHandler,
         // API
-        userApi.middleware,
-        buildingsApi.middleware,
+        ...apiMiddlewares,
       ),
     devTools: process.env.NODE_ENV !== "production",
   });

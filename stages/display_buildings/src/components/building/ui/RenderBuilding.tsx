@@ -1,18 +1,19 @@
+import { KeyboardModifiers } from "@utils/keyboardModifiers";
 import { Building } from "../../../types/types";
 import { ModelBuilding } from "./ModelBuilding";
 import { SolidPolygonBuilding } from "./SolidPolygonBuilding";
 
 interface Props {
   building: Building;
-  onBuildingClick?: (building: Building, ctrlKey: boolean) => void;
+  onBuildingClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
 export const RenderBuilding = ({ building, onBuildingClick }: Props) => {
   const { model: modelId } = building;
 
-  const handleBuildingClick = (building: Building, ctrlKey: boolean) => {
+  const handleBuildingClick = (building: Building, keys: KeyboardModifiers) => {
     if (onBuildingClick) {
-      onBuildingClick(building, ctrlKey);
+      onBuildingClick(building, keys);
     }
   };
 

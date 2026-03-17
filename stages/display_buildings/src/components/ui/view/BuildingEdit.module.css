@@ -144,7 +144,19 @@
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 8px;
+}
+
+.buttonGroup .saveButton,
+.buttonGroup .clearButton,
+.buttonGroup .deleteButton {
+  margin-top: 0;
 }
 
 .saveButton:hover:not(:disabled) {
@@ -159,7 +171,7 @@
 
 .clearButton {
   width: 100%;
-  padding: 6px 12px;
+  padding: 8px 12px;
   background-color: transparent;
   color: #6c757d;
   border: 1px solid #dee2e6;
@@ -167,7 +179,29 @@
   font-size: 13px;
   cursor: pointer;
   transition: all 0.2s;
-  margin-bottom: 8px;
+}
+
+.deleteButton {
+  width: 100%;
+  padding: 10px 16px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteButton:hover:not(:disabled) {
+  background-color: #c82333;
+}
+
+.deleteButton:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  opacity: 0.65;
 }
 
 .clearButton:hover:not(:disabled) {
