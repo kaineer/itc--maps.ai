@@ -38,7 +38,8 @@ export const WorldMap = ({ mapCenter = [0, 0, 0], zoom = 13 }: Props) => {
     setCenter([lat, lon]);
   }, [mapCenter]);
 
-  const urlTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+  // const urlTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png" as const;
+  const urlTemplate = "http://10.1.0.71:3000/osm_tiles/{z}/{x}/{y}.png";
 
   return (
     <div className={classes.container}>

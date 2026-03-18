@@ -7,6 +7,8 @@ BACKUP_DIR="$PWD/deploy/$TIMESTAMP"
 BACKUP_BASE="backup.tar.gz"
 BACKUP_FILE="$BACKUP_DIR/$BACKUP_BASE"
 
+REMOTE_HOST=ekb71
+
 XRED="\033[31;1m"
 XGREEN="\033[32;1m"
 
@@ -54,15 +56,15 @@ if [[ "$BRANCH" == "master" ]]; then
 
   tar -cz -f "$BACKUP_FILE" -C "$PWD/stages/display_buildings/dist" .
 
-  try "scp $BACKUP_FILE ekbmaps:~/frontend/ >/dev/null 2>&1" "Copying $BACKUP_BASE onto host"
+  try "scp $BACKUP_FILE $REMOTE_HOST:~/frontend/ >/dev/null 2>&1" "Copying $BACKUP_BASE onto host"
   # echo -ne " * Copying $BACKUP_BASE onto host."
-  # scp "$BACKUP_FILE" ekbmaps:~/frontend/ >/dev/null 2>&1
+  # scp "$BACKUP_FILE" $REMOTE_HOST:~/frontend/ >/dev/null 2>&1
   # echo ".done"
 
-  try "scp ./scripts/nginx/nginx.conf ekbmaps:~/frontend/ >/dev/null 2>&1" "Copying nginx.conf to frontend"
+  try "scp ./scripts/nginx/nginx.conf $REMOTE_HOST:~/frontend/ >/dev/null 2>&1" "Copying nginx.conf to frontend"
 
   x "Building volume with docker."
-  ssh ekbmaps "
+  ssh $REMOTE_HOST "
     # Очистка volume перед распаковкой
     cd /home/ekb3d/frontend &&
       docker stop nginx-app &&
