@@ -38,11 +38,13 @@ export const WorldMap = ({ mapCenter = [0, 0, 0], zoom = 13 }: Props) => {
     setCenter([lat, lon]);
   }, [mapCenter]);
 
+  const urlTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
+
   return (
     <div className={classes.container}>
       <MapContainer center={center} zoom={zoom} className={classes.map}>
         <TileLayer
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          url={urlTemplate}
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
         <ChangeView center={center} />

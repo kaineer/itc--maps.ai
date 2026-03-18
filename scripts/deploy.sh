@@ -59,6 +59,8 @@ if [[ "$BRANCH" == "master" ]]; then
   # scp "$BACKUP_FILE" ekbmaps:~/frontend/ >/dev/null 2>&1
   # echo ".done"
 
+  try "scp ./scripts/nginx/nginx.conf ekbmaps:~/frontend/ >/dev/null 2>&1" "Copying nginx.conf to frontend"
+
   x "Building volume with docker."
   ssh ekbmaps "
     # Очистка volume перед распаковкой
