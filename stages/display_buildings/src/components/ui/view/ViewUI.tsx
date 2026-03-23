@@ -9,15 +9,14 @@ import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
-import { ModelPosition, type Building } from "../../../types/types";
-import { alignmentSlice, saveMetadata } from "@slices/alignmentSlice";
+import type { ModelPosition, Building } from "../../../types/types";
+import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 import { ViewStage } from "@components/stage/ui/ViewStage";
 import { DummyNotification } from "./DummyNotification";
 import { WorldMap } from "./openstreet/WorldMap";
-import { KeyboardModifiers } from "@utils/keyboardModifiers";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -28,7 +27,6 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
-  const { enableNotification, disableNotification } = viewSlice.actions;
   const {
     getCameraPosition,
     getCameraTarget,

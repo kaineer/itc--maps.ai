@@ -149,6 +149,8 @@ export const createBackendService = (
 
       return;
     } catch (error) {
+      console.error({ error });
+
       clearTimeout(timeoutId);
       if (String(error).includes("AbortError")) {
         throw new MessageError(getCookie("http.toolong"));
@@ -156,6 +158,10 @@ export const createBackendService = (
 
       if (String(error).includes("Failed to fetch")) {
         throw new MessageError(getCookie("http.nope"));
+      }
+
+      if (error instanceof AuthenticationError) {
+        throw new MessageError(getCookie("http.401"));
       }
 
       throw new MessageError({

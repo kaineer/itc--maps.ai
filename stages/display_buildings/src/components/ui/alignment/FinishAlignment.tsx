@@ -1,10 +1,12 @@
-import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import classes from "./FinishAlignment.module.css";
 import clsx from "clsx";
-import { saveAlignment } from "@slices/alignmentSlice";
-import { type AppDispatch } from "@store/index";
+import { alignmentSlice } from "@slices/alignmentSlice";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { useNavigate } from "react-router";
+import { toast } from "sonner";
+import { CreateModel } from "@.types/buildings-types";
+import { useCreateModelPositionMutation } from "@store/api/ModelsApi";
 
 interface Props {
   enabled?: boolean;
@@ -26,16 +28,54 @@ export const FinishAlignment = ({
   className = "",
   onToggled,
 }: Props) => {
-  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const { getModelUUID, getSelectedPolygons, getModelTransform } =
+    alignmentSlice.selectors;
+
+  const [createModel] = useCreateModelPositionMutation();
+
+  const modelUUID = useSelector(getModelUUID);
+  const selectedPolygons = useSelector(getSelectedPolygons);
+  const modelTransform = useSelector(getModelTransform);
 
   /**
    * Handle save alignment button click
    * Saves current alignment to backend via PATCH /models/:modelId
    */
   const handleSaveAlignment = async () => {
-    await dispatch(saveAlignment());
-    navigate("/view");
+    if (!modelUUID) {
+      return toast.error("Cannot save alignment: no model selected");
+    }
+
+    if (selectedPolygons.length === 0) {
+      return toast.error("Cannot save alignment: no polygons selected");
+    }
+
+    const pa = selectedPolygons.find((p) => p.address);
+    let address: string | null = null;
+    if (pa) {
+      address = pa.address;
+    }
+
+    try {
+      const { position, rotation, scale } = modelTransform;
+
+      const transformData: CreateModel = {
+        id: modelUUID,
+        position,
+        rotation: [0, rotation, 0],
+        scale,
+        polygons: selectedPolygons.map((p) => p.id),
+        address: address || void 0,
+      };
+
+      createModel(transformData);
+      navigate("/view");
+    } catch (err) {
+      //
+      toast.error(String(err));
+    }
   };
 
   /**

@@ -42,7 +42,9 @@ export const useAuthentication = (): AuthHookType => {
   };
 
   const hasRole = (name: string): boolean => {
-    return userRole === name;
+    // name/names -> may be used as several roles
+    const roles = name.split(",").map((s) => s.trim());
+    return Boolean(userRole && roles.includes(userRole));
   };
 
   return {

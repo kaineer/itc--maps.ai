@@ -2,12 +2,13 @@ export const Lighting = () => {
   return (
     <>
       {/* Ambient Light */}
-      <ambientLight intensity={0.4} />
+      <ambientLight intensity={3} color="#ffffff" />
 
       {/* Directional Light */}
       <directionalLight
         position={[100, 200, 100]}
         intensity={0.8}
+        color="#ffffff"
         castShadow
         shadow-mapSize-width={2048}
         shadow-mapSize-height={2048}

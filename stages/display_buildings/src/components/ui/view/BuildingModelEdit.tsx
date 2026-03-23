@@ -4,10 +4,14 @@ import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
-import { Building } from "@.types/buildings-types";
-import { saveMetadata } from "@slices/alignmentSlice";
+import { Building, UpdateModel } from "@.types/buildings-types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
+import {
+  useDeleteModelMutation,
+  useUpdateModelPositionMutation,
+} from "@store/api/ModelsApi";
+import { toast } from "sonner";
 
 interface Props {
   enabled?: boolean;
@@ -45,6 +49,8 @@ export const BuildingModelEdit = ({
   const building: Building | null = useSelector(getModelToEdit);
 
   const dispatch = useDispatch<AppDispatch>();
+  const [removeModel] = useDeleteModelMutation();
+  const [updateModel] = useUpdateModelPositionMutation();
 
   useEffect(() => {
     if (building && building.model && building.modelMetadata) {
@@ -94,23 +100,20 @@ export const BuildingModelEdit = ({
     setIsSaving(true);
     setError(null);
 
-    // Create updated metadata in the format expected by saveMetadata
-    const updatedMetadata = {
-      ...building,
-      modelMetadata: {
-        ...building.modelMetadata,
-        rotation: [0, rotationValue, 0], // Сохраняем только Y вращение
-        scale: scaleValue,
-        position: [
-          building.modelMetadata.position[0],
-          groundLevelValue,
-          building.modelMetadata.position[2],
-        ],
-      },
+    const updatedMetadata: UpdateModel = {
+      id: building.model,
+      polygons: building.polygons,
+      position: [
+        building.modelMetadata.position[0],
+        groundLevelValue,
+        building.modelMetadata.position[2],
+      ],
+      rotation: rotationValue,
+      scale: scaleValue,
+      address: building.address || void 0,
     };
 
-    dispatch(saveMetadata(updatedMetadata))
-      .unwrap()
+    updateModel(updatedMetadata)
       .then(() => {
         const changes = [];
         if (rotation.trim()) changes.push(`поворот: ${rotation}°`);
@@ -118,6 +121,12 @@ export const BuildingModelEdit = ({
         if (groundLevel.trim()) changes.push(`уровень: ${groundLevel}`);
 
         setSuccess(`Изменения сохранены: ${changes.join(", ")}`);
+
+        toast.info("Изменения сохранены", {
+          description: changes.join(", "),
+          duration: 10000,
+        });
+
         setIsSaving(false);
       })
       .catch((err: any) => {
@@ -132,18 +141,15 @@ export const BuildingModelEdit = ({
   /**
    * Handle delete model button click
    */
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (!building || !building.model) return;
 
     setIsDeleting(true);
     setError(null);
 
-    // TODO: Implement actual model deletion API call
-    // For now, just show success message
-    setTimeout(() => {
-      setSuccess("Модель помечена для удаления (функция в разработке)");
-      setIsDeleting(false);
-    }, 1000);
+    await removeModel(building.model);
+    setSuccess("Модель помечена для удаления (функция в разработке)");
+    setIsDeleting(false);
   };
 
   /**

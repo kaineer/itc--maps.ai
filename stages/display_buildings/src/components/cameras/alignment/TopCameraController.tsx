@@ -8,6 +8,7 @@ import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { ModelData } from "@utils/modelTransform";
 import { modelsCache } from "@utils/modelsCache";
 import { ModelPosition } from "../../../types/types";
+import { toast } from "sonner";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 
@@ -22,8 +23,14 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const dragStartCameraPos = useRef<ModelPosition>([0, 0, 0]);
   const dragStartModelPos = useRef<ModelPosition>([0, 0, 0]);
 
-  const { getTopCameraState, getModelTransform, getModelUUID } =
-    alignmentSlice.selectors;
+  const {
+    getTopCameraState,
+    getModelTransform,
+    getModelUUID,
+    getPositionStep,
+    getRotationStep,
+    getScaleStep,
+  } = alignmentSlice.selectors;
   const {
     moveTopCameraInDirection,
     moveModelInDirection,
@@ -42,6 +49,10 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const cameraState = useSelector(getTopCameraState);
   const modelTransform = useSelector(getModelTransform);
   const modelUUID = useSelector(getModelUUID);
+  const positionStep = useSelector(getPositionStep);
+  const rotationStep = useSelector(getRotationStep);
+  const scaleStep = useSelector(getScaleStep);
+
   const [currentModel, setCurrentModel] = useState<ModelData | null>(null);
 
   useEffect(() => {
@@ -58,6 +69,16 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
       fetchModelFromCache();
     }
   }, [modelUUID]);
+
+  useEffect(() => {
+    toast.info("Шаг перемещения: " + String(positionStep) + "м");
+  }, [positionStep]);
+  useEffect(() => {
+    toast.info("Шаг поворота: " + String(rotationStep) + "градусов");
+  }, [rotationStep]);
+  useEffect(() => {
+    toast.info("Процент масштабирования: " + String(scaleStep));
+  }, [scaleStep]);
 
   // Key to direction mapping using event.code for layout independence
   // Imported from shared module for consistency across controllers

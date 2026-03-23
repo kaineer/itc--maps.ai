@@ -5,6 +5,8 @@
 
   height: 300px;
   width: 300px;
+
+  border: solid 1px #ccc;
 }
 
 .map {

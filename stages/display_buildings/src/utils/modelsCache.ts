@@ -62,6 +62,8 @@ export const createModelsCache = () => {
       if (child instanceof THREE.Mesh) {
         const mesh = child as THREE.Mesh;
 
+        console.log(mesh);
+
         // Handle single material
         if (mesh.material) {
           if (Array.isArray(mesh.material)) {
@@ -82,24 +84,24 @@ export const createModelsCache = () => {
     });
 
     // Third pass: ensure all meshes are visible and properly configured
-    model.traverse((child) => {
-      if (child instanceof THREE.Mesh) {
-        const mesh = child as THREE.Mesh;
+    // model.traverse((child) => {
+    //   if (child instanceof THREE.Mesh) {
+    //     const mesh = child as THREE.Mesh;
 
-        // Ensure mesh is visible
-        mesh.visible = true;
+    //     // Ensure mesh is visible
+    //     mesh.visible = true;
 
-        // Ensure mesh casts and receives shadows
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
+    //     // Ensure mesh casts and receives shadows
+    //     mesh.castShadow = true;
+    //     mesh.receiveShadow = true;
 
-        // Ensure frustum culling is enabled
-        mesh.frustumCulled = true;
+    //     // Ensure frustum culling is enabled
+    //     mesh.frustumCulled = true;
 
-        // Ensure matrix auto-update
-        mesh.matrixAutoUpdate = true;
-      }
-    });
+    //     // Ensure matrix auto-update
+    //     mesh.matrixAutoUpdate = true;
+    //   }
+    // });
 
     console.log(
       `🔧 Fixed ${materialCount} materials and ${meshCount} meshes for model ${modelId}`,

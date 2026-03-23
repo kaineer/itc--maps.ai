@@ -1,5 +1,8 @@
 // NOTE: мне бы хотелось, чтобы эта штука никогда не пригодилась
 //   но увы
+export type BuildingId = string;
+export type ModelId = string;
+
 export interface Rotation {
   rotX: number;
   rotY: number;
@@ -19,15 +22,28 @@ export interface BuildingNode {
   z: number;
 }
 
-interface ModelMetadata {
+export interface ModelMetadata {
   position: ModelPosition;
   rotation: ModelPosition;
   scale: number;
 }
 
+export interface UpdateModel extends Omit<ModelMetadata, "rotation"> {
+  id: ModelId;
+  rotation: number;
+  polygons: BuildingId[];
+  address?: string;
+}
+
+export interface CreateModel extends ModelMetadata {
+  id: ModelId;
+  polygons: BuildingId[];
+  address?: string;
+}
+
 interface BuildingWithModel {
-  id: string;
-  model: string;
+  id: BuildingId;
+  model: ModelId;
   address: string | null;
   height: number;
   polygons: string[];
@@ -35,7 +51,7 @@ interface BuildingWithModel {
 }
 
 interface BuildingWithoutModel {
-  id: string;
+  id: BuildingId;
   model: null;
   height: number;
   address: string | null;
@@ -45,7 +61,7 @@ interface BuildingWithoutModel {
 export type Building = BuildingWithoutModel | BuildingWithModel;
 
 export interface ModelAlignment {
-  modelId: string;
+  modelId: ModelId;
   position: Position;
   scale: number;
   rotation?: Rotation;
@@ -54,7 +70,7 @@ export interface ModelAlignment {
 export type ModelPosition = [number, number, number];
 
 export interface UpdateBuilding {
-  id: string;
+  id: BuildingId;
   address: string | null;
   height: number | null;
 }
