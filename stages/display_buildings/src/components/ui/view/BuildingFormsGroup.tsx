@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { uiSlice, BuildingFormMode } from "@slices/uiSlice";
-import { BuildingSearch } from "./BuildingSearch";
+// import { BuildingSearch } from "./BuildingSearch";
 import { Logout } from "./Logout";
 import { BuildingSelection } from "./building-selection/BuildingSelection";
 import classes from "./BuildingFormsGroup.module.css";
@@ -22,19 +22,12 @@ export const BuildingFormsGroup = () => {
   };
 
   const handleFormToggle = (mode: BuildingFormMode) => (expanded: boolean) => {
-    if (expanded) {
-      dispatch(setBuildingFormMode(mode));
-    } else {
-      dispatch(setBuildingFormMode("none"));
-    }
+    const sendMode = expanded ? mode : "none";
+    dispatch(setBuildingFormMode(sendMode));
   };
 
   return (
     <div className={classes.group}>
-      <BuildingSearch
-        enabled={isModeEnabled("search")}
-        onToggled={handleFormToggle("search")}
-      />
       <BuildingSelection
         enabled={isModeEnabled("select")}
         onToggled={handleFormToggle("select")}
@@ -48,8 +41,8 @@ export const BuildingFormsGroup = () => {
         onToggled={handleFormToggle("edit-model")}
       />
       <UserList enabled={isModeEnabled("none")} />
-      <Logout enabled={isModeEnabled("none")} />
       <ToggleMinimap enabled={isModeEnabled("none")} />
+      <Logout enabled={isModeEnabled("none")} />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import { alignmentSlice } from "./slices/alignmentSlice";
 import { viewSlice } from "./slices/viewSlice";
 import { modelUploadSlice } from "./slices/modelUploadSlice";
 import { authenticationSlice } from "@slices/authenticationSlice";
+import { minimapSlice } from "@slices/minimapSlice";
 import {
   helpInfoSlice,
   helpInfoStorageMiddleware,
@@ -23,6 +24,7 @@ export function setupStore() {
       [modelUploadSlice.reducerPath]: modelUploadSlice.reducer,
       [helpInfoSlice.reducerPath]: helpInfoSlice.reducer,
       [authenticationSlice.reducerPath]: authenticationSlice.reducer,
+      [minimapSlice.reducerPath]: minimapSlice.reducer,
       // Add other reducers here as they are created
 
       // API

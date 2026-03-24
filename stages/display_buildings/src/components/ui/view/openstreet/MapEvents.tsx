@@ -1,3 +1,4 @@
+import { minimapSlice } from "@slices/minimapSlice";
 import { viewSlice } from "@slices/viewSlice";
 import { mercatorToMetrics } from "@utils/mercator";
 import { useMapEvents } from "react-leaflet";
@@ -7,6 +8,7 @@ import { useDispatch } from "react-redux";
 export const MapEvents = () => {
   const dispatch = useDispatch();
   const { moveCameraToLocation } = viewSlice.actions;
+  const { setZoom } = minimapSlice.actions;
 
   useMapEvents({
     click(e) {
@@ -15,6 +17,11 @@ export const MapEvents = () => {
       const { lat, lng } = e.latlng;
       const { x, z } = mercatorToMetrics(lng, lat);
       dispatch(moveCameraToLocation([-x, 0, z]));
+    },
+    zoomend(e) {
+      const map = e.target;
+      const newZoom = map.getZoom();
+      dispatch(setZoom(newZoom));
     },
   });
   return null;

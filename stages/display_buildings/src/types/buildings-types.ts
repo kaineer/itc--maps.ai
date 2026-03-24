@@ -50,9 +50,9 @@ interface BuildingWithModel {
   modelMetadata: ModelMetadata;
 }
 
-interface BuildingWithoutModel {
+export interface BuildingWithoutModel {
   id: BuildingId;
-  model: null;
+  model: undefined;
   height: number;
   address: string | null;
   nodes: BuildingNode[];

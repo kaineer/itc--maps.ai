@@ -16,7 +16,7 @@ import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 import { ViewStage } from "@components/stage/ui/ViewStage";
 import { DummyNotification } from "./DummyNotification";
-import { WorldMap } from "./openstreet/WorldMap";
+import { Minimap } from "./openstreet/Minimap";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -124,7 +124,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
         <ViewCameraController />
       </Canvas>
 
-      {showMinimap && <WorldMap mapCenter={cameraPosition} />}
+      {showMinimap && <Minimap mapCenter={cameraPosition} />}
     </>
   );
 };
