@@ -3,7 +3,11 @@ import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { buildingsSlice } from "@slices/buildingsSlice";
 import { viewSlice } from "@slices/viewSlice";
-import { Building, ModelPosition } from "../../../types/types";
+import {
+  Building,
+  isBuildingWithModel,
+  ModelPosition,
+} from "../../../types/types";
 import { CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
@@ -64,7 +68,7 @@ export const BuildingSearch = ({
   const getBuildingPosition = (
     building: Building,
   ): { x: number; z: number } | null => {
-    if (building.position) {
+    if (isBuildingWithModel(building)) {
       // Use explicit position if available
       return { x: building.position.x, z: building.position.z };
     } else if (building.nodes && building.nodes.length > 0) {

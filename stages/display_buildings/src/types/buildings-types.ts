@@ -41,7 +41,7 @@ export interface CreateModel extends ModelMetadata {
   address?: string;
 }
 
-interface BuildingWithModel {
+interface BuildingWithModel extends ModelMetadata {
   id: BuildingId;
   model: ModelId;
   address: string | null;
@@ -59,6 +59,12 @@ export interface BuildingWithoutModel {
 }
 
 export type Building = BuildingWithoutModel | BuildingWithModel;
+
+export const isBuildingWithModel = (
+  building: Building,
+): building is BuildingWithModel => {
+  return typeof building.id === "string" && typeof building.model === "string";
+};
 
 export interface ModelAlignment {
   modelId: ModelId;
