@@ -80,3 +80,8 @@ export interface UpdateBuilding {
   address: string | null;
   height: number | null;
 }
+
+export interface QueryObjects {
+  position: { x: number; z: number };
+  distance: number;
+}

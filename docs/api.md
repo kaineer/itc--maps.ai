@@ -423,6 +423,23 @@ body:
 #### Доступ
 
  * Полный доступ для всех, пока не стали ограничивать видимость экскурсий
+
+#### Ответ
+
+```yaml
+- name: "point1_name" # например, мы решили точку переименовать
+  type: "point1_type" # опять же, поменять ограничения
+  description: "long point1 description",
+  position: [x, y, z]
+  rotation: [a, b, c]
+  targetPosition: [xt, yt, zt]
+- name: "point2_name"
+  type: "point2_type"
+  description: "long point description",
+  position: [x, y, z]
+  rotation: [a, b, c]
+  targetPosition: [xt, yt, zt]
+```
  
 ### Получить список моделей
 

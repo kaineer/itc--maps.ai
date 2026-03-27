@@ -8,6 +8,7 @@ import {
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
 import { createBackendService } from "@services/backendService";
+import { TrackPointId } from "@.types/track-types";
 
 const backendService = createBackendService();
 
@@ -34,6 +35,8 @@ export interface ViewState {
   notification: boolean;
   //
   minimap: boolean;
+  //
+  pointToAttach: TrackPointId | null;
 }
 
 // Default camera position for View mode
@@ -54,6 +57,7 @@ const initialState: ViewState = {
   // TODO: это явный хак, есичо
   notification: false,
   minimap: true,
+  pointToAttach: null,
 };
 
 export const viewSlice = createSlice({
@@ -140,6 +144,14 @@ export const viewSlice = createSlice({
     disableMinimap: (state) => {
       state.minimap = false;
     },
+
+    setPointToAttach: (state, action: PayloadAction<TrackPointId | null>) => {
+      state.pointToAttach = action.payload;
+    },
+
+    clearPointToAttach: (state) => {
+      state.pointToAttach = null;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -190,6 +202,9 @@ export const viewSlice = createSlice({
 
     //
     getMinimapEnabled: (state) => state.minimap,
+
+    //
+    getPointToAttach: (state) => state.pointToAttach,
   },
 });
 

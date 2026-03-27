@@ -1,3 +1,4 @@
+import { QueryObjects } from "@.types/buildings-types";
 import type {
   CreateTrack,
   CreateTrackPoint,
@@ -41,6 +42,15 @@ export const tracksApi = createApi({
       }),
       invalidatesTags: ["tracks"],
     }),
+    // PUT: Получить точки по координатам и расстоянию
+    queryTrackPoints: build.query<QueryObjects, TrackPoint[]>({
+      query: (pointAndDistance) => ({
+        url: "/tracks/points",
+        method: "PUT",
+        body: pointAndDistance,
+      }),
+      providesTags: ["points"],
+    }),
     getTrackPoints: build.query<TrackWithPoints, TrackId>({
       query: (trackId) => ({
         url: "/tracks/" + trackId,
@@ -82,4 +92,5 @@ export const {
   usePostTrackPointMutation,
   usePutTrackPointMutation,
   useDeleteTrackPointMutation,
+  useQueryTrackPointsQuery,
 } = tracksApi;
