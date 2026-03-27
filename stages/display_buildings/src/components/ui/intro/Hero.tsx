@@ -38,30 +38,47 @@ const HeroTitle = () => (
   </h1>
 );
 
-const Icon = ({ title, slug }: { title: string; slug: string }) => (
+const Icon = ({
+  title,
+  slug,
+  path,
+}: {
+  title: string;
+  slug: string;
+  path?: string;
+}) => (
   <span className={classes.featureItem}>
     <i className={`fas fa-${slug}`}></i>
-    {title}
+    {path ? <Link to={path}>{title}</Link> : title}
   </span>
 );
 
-const FeaturesBar = () => (
-  <div className={classes.featuresBar}>
-    <Icon title="3D-модели" slug="cube" />
-    <span className={classes.featureDot} />
-    <Icon title="Карта" slug="map-marker-alt" />
-    <span className={classes.featureDot} />
-    <Icon title="Ученики" slug="users" />
-  </div>
-);
+// const FeaturesBar = () => (
+//   <div className={classes.featuresBar}>
+//     <Icon title="3D-модели" slug="cube" path="/offers/create" />
+//     <span className={classes.featureDot} />
+//     <Icon title="Карта" slug="map-marker-alt" />
+//     <span className={classes.featureDot} />
+//     <Icon title="Ученики" slug="users" />
+//   </div>
+// );
 
 const EnterLink = ({}: {}) => (
-  <Link className={classes.cta} to="/login">
-    <span>Войти в метавселенную</span>
-    <span className={classes.ctaIcon}>
-      <i className="fas fa-arrow-right"></i>
-    </span>
-  </Link>
+  <div style={{ display: "inline-flex", gap: "1rem", flexDirection: "column" }}>
+    <Link className={classes.cta} to="/view">
+      <span>Войти в метавселенную</span>
+      <span className={classes.ctaIcon}>
+        <i className="fas fa-arrow-right"></i>
+      </span>
+    </Link>
+    <Link
+      style={{ height: "56px", textAlign: "center", justifyContent: "center" }}
+      className={classes.cta}
+      to="/login"
+    >
+      <span>Войти с логином</span>
+    </Link>
+  </div>
 );
 
 const CollageItem = ({ id, img }: { id: string; img: string }) => (
@@ -90,7 +107,7 @@ const HeroContainer = ({}: {}) => (
       <p className={classes.subtitle}>
         3D-карта города Екатеринбург, разработанная школьниками города
       </p>
-      <FeaturesBar />
+      {/* <FeaturesBar /> */}
       <EnterLink />
     </div>
     <HeroCollage />

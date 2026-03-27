@@ -1,10 +1,15 @@
 import classes from "./BuildingEdit.module.css";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
-import { Building, UpdateModel } from "@.types/buildings-types";
+import {
+  Building,
+  isBuildingWithModel,
+  ModelMetadata,
+  UpdateModel,
+} from "@.types/buildings-types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
 import {
@@ -43,6 +48,12 @@ export const BuildingModelEdit = ({
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [metadata, setMetadata] = useState<
+    (ModelMetadata & { address: string | null }) | null
+  >(null);
+  const [showMetadata, setShowMetadata] = useState<boolean>(false);
+
+  const metadataRef = useRef<HTMLTextAreaElement>(null);
 
   const { getModelToEdit } = alignmentSlice.selectors;
   const { dropModelToEdit } = alignmentSlice.actions;
@@ -65,6 +76,13 @@ export const BuildingModelEdit = ({
 
       // Ground level - Y компонент позиции (высота над землей)
       setGroundLevel(String(position[1] || 0));
+
+      setMetadata({
+        position: building.modelMetadata.position,
+        rotation: building.modelMetadata.rotation,
+        scale: building.modelMetadata.scale,
+        address: building.address,
+      });
     }
   }, [building]);
 
@@ -138,6 +156,26 @@ export const BuildingModelEdit = ({
       });
   };
 
+  const importMetadata = () => {
+    if (metadataRef.current) {
+      const { position, rotation, scale, address } = JSON.parse(
+        metadataRef.current.value,
+      );
+
+      if (building && isBuildingWithModel(building)) {
+        const updatedMetadata: UpdateModel = {
+          id: building.model,
+          polygons: building.polygons,
+          position,
+          rotation: (rotation as [number, number, number])[1],
+          scale,
+          address,
+        };
+        updateModel(updatedMetadata);
+      }
+    }
+  };
+
   /**
    * Handle delete model button click
    */
@@ -184,6 +222,12 @@ export const BuildingModelEdit = ({
     }
   };
 
+  const toggleMetadata = (e) => {
+    if (e.ctrlKey) {
+      setShowMetadata((prev) => !prev);
+    }
+  };
+
   if (!building || !building.model) return null;
 
   return (
@@ -204,7 +248,7 @@ export const BuildingModelEdit = ({
         <p className={classes.subtitle}>Измените параметры 3D модели здания</p>
       </div>
 
-      <div className={classes.editForm}>
+      <div className={classes.editForm} onClick={toggleMetadata}>
         <div className={classes.formGroup}>
           <label className={classes.formLabel} htmlFor="address-input">
             Адрес здания
@@ -287,6 +331,15 @@ export const BuildingModelEdit = ({
             Высота основания модели над уровнем земли (в метрах)
           </p>
         </div>
+
+        {showMetadata && (
+          <>
+            <div className={classes.buttonGroup}>
+              <textarea ref={metadataRef}>{JSON.stringify(metadata)}</textarea>
+            </div>
+            <button onClick={importMetadata}>Использовать метаданные</button>
+          </>
+        )}
 
         <div className={classes.buttonGroup}>
           {(rotation || scale || groundLevel) && (

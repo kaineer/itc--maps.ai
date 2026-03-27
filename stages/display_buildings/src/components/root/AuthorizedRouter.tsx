@@ -3,6 +3,7 @@ import { TrackPointListUI } from "@components/track-point/list/TrackPointListUI"
 import { TrackListUI } from "@components/track/list/TrackListUI";
 import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";
 import { IntroUI } from "@components/ui/intro/IntroUI";
+import { CreateModelOfferUI } from "@components/ui/uploader/CreateModelOfferUI";
 import { UserCreateUI } from "@components/ui/user/create/UserCreateUI";
 import { UserListUI } from "@components/ui/user/list/UserListUI";
 import { ViewUI } from "@components/ui/view/ViewUI";
@@ -15,6 +16,14 @@ export const AuthorizedRouter = () => (
       <Route path="login" element={<Navigate to="/view" />} />
       <Route path="view" element={<ViewUI />} />
       <Route path="align" element={<AlignmentUI />} />
+      <Route
+        path="offers/create"
+        element={
+          <AllowRoute role="Uploader,Creator,Admin" redirect="/view">
+            <CreateModelOfferUI />
+          </AllowRoute>
+        }
+      />
       <Route
         path="users"
         element={

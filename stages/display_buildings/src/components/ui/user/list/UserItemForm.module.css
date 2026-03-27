@@ -6,8 +6,6 @@
   border-radius: 15px;
 
   width: 502px;
-  /* height: 450px; */
-  height: 240px;
 
   display: inline-flex;
   flex-direction: column;
@@ -22,6 +20,11 @@
   width: 100%;
 }
 
+.roles {
+  display: flex;
+  flex-direction: column;
+}
+
 .header {
   font-size: 36px;
   width: 100%;
@@ -33,12 +36,16 @@
 .sectionHeader {
   font-size: 32px;
   font-weight: normal;
+  margin-bottom: 10px;
 }
 
 .roleButtons {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   gap: 8px;
+
+  justify-content: center;
 }
 
 .removePanel {

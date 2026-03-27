@@ -1,11 +1,29 @@
+[Gist](https://gist.github.com/kaineer/69ee25e40796051068cbc6f5b918d638)
+
 ## Здания
+
+### Получить начальную точку
+
+`GET /buildings/start` -- получить точку из которой будет начато движение
+
+#### Доступ
+ * Полный доступ, в т.ч. неприлогиненным пользователям
+
+#### Ответ
+```
+x: -6736606.72045857,
+z: 7713514.742933013
+```
 
 ### Получить с бэкенда здания вокруг точки
 
 `PUT /buildings` -- _Получить здания вокруг точки с координатами x и z, на расстоянии distance
 
+#### Доступ
+ * Полный доступ, в т.ч. неприлогиненным пользователям
+
 #### Тело запроса
-```
+```jsonc
 {
   position: {
     x: number, z: number
@@ -17,7 +35,7 @@
 Судя по описанным ролям, пользователи со свободным доступом к карте должны иметь возможность использовать именно этот запрос.
 
 #### Ответ
-```json
+```jsonc
 [
   // По одному на каждое стандартное здание
   { "id": "234234", "nd": [{"lat": 66.3333, "lng": 65.4444}, ...]},
@@ -55,16 +73,20 @@
 
 `PUT /buildings/address`
 
+#### Доступ
+
+ * User, Creator, Admin
+
 #### Тело запроса
-```
+```jsonc
 {
-  address: string // Что искать
+  "address": "string"// Что искать
 }
 ```
 
 #### Ответ
 
-```
+```jsonc
 {
   address?: string;
   nodes: [{ x, z }, ...];
@@ -89,6 +111,9 @@
 
 `POST /upload`
 
+#### Доступ
+ * Uploader, Creator, Admin
+
 _И где-то в параметрах будет прикрепляться file с моделькой_
 
 ```yaml
@@ -97,7 +122,7 @@ body:
 ```
 
 #### Ответ
-```json
+```jsonc
 {
   "model": "model_id"
 }
@@ -127,6 +152,10 @@ body:
 
 `PUT /model/:model_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 ```yaml
 body:
   position: [x, y, z],
@@ -135,7 +164,7 @@ body:
 ```
 
 #### Ответ
-```json
+```jsonc
 {
   "id": "model_id",
   "position": [lat, y, lng], // возможно, lat и lng еще местами поменяются, будем смотреть
@@ -158,6 +187,10 @@ _Т.е. получив ответ, снова переустанавливаем
 
 `GET /model/:model_id`
 
+#### Доступ
+
+ * Для всех, в т.ч. анонимно
+
 _в ответ должен приходить бинарник модельки. Возможно, это будет по-другому._
 
 ## Экскурсии
@@ -165,6 +198,10 @@ _в ответ должен приходить бинарник модельки
 ### Получить список экскурсий
 
 `GET /tracks/`
+
+#### Доступ
+
+ * User, Creator, Admin
 
 #### Ответ
 ```json
@@ -186,6 +223,10 @@ _в ответ должен приходить бинарник модельки
 
 `GET /tracks/:track_id`
 
+#### Доступ
+
+ * User, Creator, Admin
+
 #### Ответ
 ```json
 [
@@ -206,6 +247,10 @@ _Для каждой точки точно будет нужно какое-то
 ### Создать новую экскурсию
 
 `POST /tracks`
+
+#### Доступ
+
+ * Creator, Admin
 
 ```yaml
 body:
@@ -233,6 +278,10 @@ body:
 
 `DELETE /tracks/:track_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 _При удалении экскурсии модели, привязанные к экскурсии должны быть тоже почищены, по идее._
 
 #### Ошибки:
@@ -255,12 +304,18 @@ _При удалении экскурсии модели, привязанные
 
 `POST /tracks/:track_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 ```yaml
 body:
   name: "point_name"
   type: "point_type" # может, не тип, а что-то другое
+  description: "long point description",
   position: [x, y, z]
   rotation: [a, b, c]
+  targetPosition: [xt, yt, zt]
 ```
 
 #### Ответ
@@ -287,13 +342,19 @@ body:
 
 `PUT /tracks/:track_id/:point_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 #### Параметры
 ```yaml
 body:
   name: "point_name" # например, мы решили точку переименовать
   type: "point_type" # опять же, поменять ограничения
+  description: "long point description",
   position: [x, y, z]
   rotation: [a, b, c]
+  targetPosition: [xt, yt, zt]
 ```
 
 #### Ошибки:
@@ -318,6 +379,10 @@ body:
 
 `DELETE /tracks/:track_id/:point_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 #### Ошибки:
 ```yaml
 # Если по роли не положено создавать точки в экскурсии
@@ -339,9 +404,31 @@ body:
  * Если не найдена экскурсия, шлется сообщение, что не найдена экскурсия
  * Если экскурсия есть, но точки нет, шлется сообщение, что не найдена точка
 
- ### Получить список моделей
+### Получить точки экскурсий поблизости 
+
+`PUT /tracks/points`
+
+#### Тело запроса
+
+```yaml
+body:
+  position: 
+    x: "number"
+    z: "number"
+  distance: "number"
+```
+
+#### Доступ
+
+ * Полный доступ для всех, пока не стали ограничивать видимость экскурсий
+ 
+### Получить список моделей
 
  `PUT /models`
+
+#### Доступ
+
+ * Creator, Admin
 
  #### Описание
  Запрос возвращает список всех доступных моделей с их загруженными метаданными. На данный момент запрос не принимает параметров.
@@ -389,6 +476,10 @@ body:
 
 `PUT /models/address`
 
+#### Доступ
+
+ * User, Creator, Admin
+
 #### Тело запроса
 ```yaml
 body:
@@ -415,6 +506,10 @@ scale: масштаб
 
 `PATCH /models/:model_id`
 
+#### Доступ
+
+ * Creator, Admin
+
 #### Тело запроса
 
 ```yaml
@@ -430,6 +525,10 @@ body:
 ### Удалить модель и ее метаданные
 
 `DELETE /models/:model_id`
+
+#### Доступ
+
+ * Creator, Admin
 
 #### Ответ
 
@@ -447,3 +546,79 @@ body:
   object: "model"
   message: "Model not found"
 ```
+
+## Предложения моделек
+
+### Добавить метаданные запроса для модели
+
+`POST /model-offers/`
+
+#### Доступ
+
+ * Uploader
+
+#### Тело запроса
+
+```yaml
+body:
+  address: string
+  description: string
+  author: string
+  modelId: string
+```
+
+#### Ошибки
+```yaml
+- code: 400
+  object: "model-offer"
+  message: "Model is too large"
+
+- code: 400
+  object: "model-offer"
+  message: "Wrong model format"
+
+- code: 400
+  object: "model-offer"
+  message: "Invalid request"
+  # Пропущены address, description или modelId
+```
+
+### Посмотреть все предложения
+
+`GET /model-offers/`
+
+#### Доступ
+
+ * Uploader (возможно), Creator, Admin
+
+#### Ответ
+
+```yaml
+offers:
+  - modelId: string
+    address: string
+    description: string
+    author: string
+```
+
+### Переместить предложение в общий пулл метаданных
+
+`POST /model-offers/approve`
+
+#### Доступ
+
+ * Creator, Admin
+
+```yaml
+body:
+  modelId: string
+```
+
+#### Ошибки
+```yaml
+- code: 401
+  object: "model-offer"
+  message: "Не достаточно прав, чтобы утвердить модель"
+```
+
+Замечание: возможно, в базе, кроме копирования записи в таблицу models_metadata нужно будет еще помечать запись в model_offers, как утвержденную (чтобы можно было потом посмотреть на список заявок)

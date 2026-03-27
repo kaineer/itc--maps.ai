@@ -8,6 +8,10 @@ import { UserList } from "./UserList";
 import { BuildingEdit } from "./BuildingEdit";
 import { ToggleMinimap } from "./ToggleMinimap";
 import { BuildingModelEdit } from "./BuildingModelEdit";
+import { Allow } from "@components/shared/Allow";
+import { UploadFormButton } from "./UploadFormButton";
+import { LoginUI } from "../login/LoginUI";
+import { LogIn } from "./LogIn";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();
@@ -28,6 +32,7 @@ export const BuildingFormsGroup = () => {
 
   return (
     <div className={classes.group}>
+      <LogIn enabled={isModeEnabled("none")} />
       <BuildingSelection
         enabled={isModeEnabled("select")}
         onToggled={handleFormToggle("select")}
@@ -41,6 +46,7 @@ export const BuildingFormsGroup = () => {
         onToggled={handleFormToggle("edit-model")}
       />
       <UserList enabled={isModeEnabled("none")} />
+      <UploadFormButton enabled={isModeEnabled("none")} />
       <ToggleMinimap enabled={isModeEnabled("none")} />
       <Logout enabled={isModeEnabled("none")} />
     </div>

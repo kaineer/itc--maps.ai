@@ -2,13 +2,14 @@ import { MouseEvent } from "react";
 import { useAuthentication } from "@hooks/useAuthentication";
 import { IoIosLogOut } from "react-icons/io";
 import { NavigationButton } from "@components/kit/NavigationButton";
+import { Allow } from "@components/shared/Allow";
 
 interface Props {
   enabled?: boolean;
 }
 
 export const Logout = ({ enabled = true }: Props) => {
-  const { logout } = useAuthentication();
+  const { logout, isAuthenticated } = useAuthentication();
 
   const handleClick = (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -20,8 +21,10 @@ export const Logout = ({ enabled = true }: Props) => {
   if (!enabled) return null;
 
   return (
-    <NavigationButton enabled={enabled} onClick={handleClick} title="Выйти">
-      <IoIosLogOut />
-    </NavigationButton>
+    <Allow condition={isAuthenticated}>
+      <NavigationButton enabled={enabled} onClick={handleClick} title="Выйти">
+        <IoIosLogOut />
+      </NavigationButton>
+    </Allow>
   );
 };

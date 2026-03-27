@@ -7,6 +7,8 @@ interface BackendRole {
 export type CreateUser = Omit<User, "id" | "role"> &
   BackendRole & { password: string };
 
-export type UpdateUser = { id: User["id"] } & Partial<Omit<User, "id">>;
+export type UpdateUser = { id: User["id"]; role: number } & Partial<
+  Omit<User, "id" | "role">
+>;
 
 export type UserResponse = Omit<User, "role"> & BackendRole;

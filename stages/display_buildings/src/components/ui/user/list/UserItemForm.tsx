@@ -1,4 +1,5 @@
 import classes from "./UserItemForm.module.css";
+import { type MouseEvent } from "react";
 import { User } from "@.types/auth-types";
 import { Button } from "@components/kit/Button";
 import { useAuthentication } from "@hooks/useAuthentication";
@@ -18,13 +19,12 @@ export const UserItemForm = ({ user }: Props) => {
   const [updateUser] = usePutUserMutation();
   const enabledRemove = login !== currentUser?.login;
 
-  const handleRoleChange =
-    (newRole: string) => (e: MouseEvent<HTMLButtonElement>) => {
-      updateUser({
-        id,
-        role: getRoleIndex(newRole),
-      });
-    };
+  const handleRoleChange = (newRole: string) => () => {
+    updateUser({
+      id,
+      role: getRoleIndex(newRole),
+    });
+  };
 
   const variation = (active: boolean) =>
     active ? "210x56 green" : "210x56 grey pointer";
@@ -70,6 +70,13 @@ export const UserItemForm = ({ user }: Props) => {
             onClick={handleRoleChange("User")}
           >
             Пользователь
+          </Button>
+          <Button
+            key="uploader"
+            variation={variation(role === "Uploader")}
+            onClick={handleRoleChange("Uploader")}
+          >
+            Загрузчик
           </Button>
         </div>
       </div>

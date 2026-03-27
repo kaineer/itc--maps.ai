@@ -1,6 +1,6 @@
 // HACK
 
-const userRoles = ["User", "Creator", "Admin"];
+const userRoles = ["User", "Creator", "Admin", "Uploader"];
 
 export const getRoleIndex = (role: string): number => {
   return userRoles.indexOf(role);

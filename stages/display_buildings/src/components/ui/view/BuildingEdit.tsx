@@ -6,6 +6,7 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
 import { usePatchPolygonMutation } from "@store/api/BuildingsApi";
 import { Building } from "@.types/buildings-types";
+import { Allow } from "@components/shared/Allow";
 
 interface Props {
   enabled?: boolean;
@@ -113,103 +114,105 @@ export const BuildingEdit = ({
   if (!polygon) return null;
 
   return (
-    <CollapsibleForm
-      enabled={enabled}
-      className={clsx(classes.container, className)}
-      collapsedClassName={classes.collapsed}
-      expandedClassName={classes.expanded}
-      collapsed={{
-        buttonText: "✏️",
-        title: "Нажмите для редактирования полигона",
-      }}
-      closeTitle="Скрыть форму редактирования"
-      onToggled={onToggled}
-    >
-      <div className={classes.editHeader}>
-        <h3 className={classes.title}>Исправить здание</h3>
-        <p className={classes.subtitle}>
-          Введите новые значения для высоты (в этажах) и/или адреса полигона
-        </p>
-      </div>
-
-      <div className={classes.editForm}>
-        <div className={classes.formGroup}>
-          <label className={classes.formLabel} htmlFor="height-input">
-            Высота полигона (этажи)
-          </label>
-          <input
-            id="height-input"
-            type="number"
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="количество этажей"
-            className={classes.formInput}
-            disabled={isSaving}
-            min="1"
-            step="1"
-          />
+    <Allow role="Admin,Creator">
+      <CollapsibleForm
+        enabled={enabled}
+        className={clsx(classes.container, className)}
+        collapsedClassName={classes.collapsed}
+        expandedClassName={classes.expanded}
+        collapsed={{
+          buttonText: "✏️",
+          title: "Нажмите для редактирования полигона",
+        }}
+        closeTitle="Скрыть форму редактирования"
+        onToggled={onToggled}
+      >
+        <div className={classes.editHeader}>
+          <h3 className={classes.title}>Исправить здание</h3>
+          <p className={classes.subtitle}>
+            Введите новые значения для высоты (в этажах) и/или адреса полигона
+          </p>
         </div>
 
-        <div className={classes.formGroup}>
-          <label className={classes.formLabel} htmlFor="address-input">
-            Адрес полигона
-          </label>
-          <input
-            id="address-input"
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="например, Чкалова, 3"
-            className={classes.formInput}
-            disabled={isSaving}
-          />
-        </div>
+        <div className={classes.editForm}>
+          <div className={classes.formGroup}>
+            <label className={classes.formLabel} htmlFor="height-input">
+              Высота полигона (этажи)
+            </label>
+            <input
+              id="height-input"
+              type="number"
+              value={height}
+              onChange={(e) => setHeight(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="количество этажей"
+              className={classes.formInput}
+              disabled={isSaving}
+              min="1"
+              step="1"
+            />
+          </div>
 
-        {(height || address) && (
+          <div className={classes.formGroup}>
+            <label className={classes.formLabel} htmlFor="address-input">
+              Адрес полигона
+            </label>
+            <input
+              id="address-input"
+              type="text"
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="например, Чкалова, 3"
+              className={classes.formInput}
+              disabled={isSaving}
+            />
+          </div>
+
+          {(height || address) && (
+            <button
+              onClick={clearForm}
+              className={classes.clearButton}
+              disabled={isSaving}
+            >
+              Очистить форму
+            </button>
+          )}
+
           <button
-            onClick={clearForm}
-            className={classes.clearButton}
-            disabled={isSaving}
+            onClick={handleSave}
+            disabled={isSaving || !isFormValid()}
+            className={classes.saveButton}
           >
-            Очистить форму
+            {isSaving ? "Сохранение..." : "Сохранить изменения"}
           </button>
+        </div>
+
+        {error && (
+          <div className={classes.errorMessage}>
+            <span className={classes.errorIcon}>⚠️</span>
+            {error}
+          </div>
         )}
 
-        <button
-          onClick={handleSave}
-          disabled={isSaving || !isFormValid()}
-          className={classes.saveButton}
-        >
-          {isSaving ? "Сохранение..." : "Сохранить изменения"}
-        </button>
-      </div>
+        {success && (
+          <div className={classes.successMessage}>
+            <span className={classes.successIcon}>✅</span>
+            {success}
+          </div>
+        )}
 
-      {error && (
-        <div className={classes.errorMessage}>
-          <span className={classes.errorIcon}>⚠️</span>
-          {error}
-        </div>
-      )}
-
-      {success && (
-        <div className={classes.successMessage}>
-          <span className={classes.successIcon}>✅</span>
-          {success}
-        </div>
-      )}
-
-      {!error && !success && (
-        <div className={classes.hint}>
-          <span className={classes.hintIcon}>💡</span>
-          <span className={classes.hintText}>
-            Заполните хотя бы одно поле для сохранения изменений.
-            <br />
-            Высота должна быть положительным числом.
-          </span>
-        </div>
-      )}
-    </CollapsibleForm>
+        {!error && !success && (
+          <div className={classes.hint}>
+            <span className={classes.hintIcon}>💡</span>
+            <span className={classes.hintText}>
+              Заполните хотя бы одно поле для сохранения изменений.
+              <br />
+              Высота должна быть положительным числом.
+            </span>
+          </div>
+        )}
+      </CollapsibleForm>
+    </Allow>
   );
 };

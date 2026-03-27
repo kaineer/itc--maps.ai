@@ -8,6 +8,7 @@ export type UIMode = "intro" | "login" | "view" | "alignment";
 // Форма, показанная в интерфейсе
 export type BuildingFormMode =
   | "none"
+  | "offer"
   | "search"
   | "select"
   | "edit"

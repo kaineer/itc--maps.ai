@@ -32,6 +32,7 @@ export interface TrackPoint extends TrackPointRestrictions {
   type: PointType;
   position: ModelPosition;
   rotation: ModelPosition;
+  targetPosition: ModelPosition;
 }
 
 export interface TrackWithPoints extends Track {

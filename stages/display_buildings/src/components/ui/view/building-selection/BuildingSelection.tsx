@@ -13,6 +13,7 @@ import { SelectedBuildings } from "./SelectedBuildings";
 import { StartAlignmentButton } from "@components/shared/ui/StartAlignmentButton";
 import { FileUploadButton } from "@components/shared/ui/FileUploadButton";
 import { useNavigate } from "react-router";
+import { Allow } from "@components/shared/Allow";
 
 interface Props extends EnabledProps {
   className?: string;
@@ -53,29 +54,33 @@ export const BuildingSelection = ({ enabled, onToggled }: Props) => {
   };
 
   return (
-    <CollapsibleForm
-      enabled={enabled}
-      className={classes.container}
-      collapsedClassName={classes.collapsed}
-      expandedClassName={classes.expanded}
-      collapsed={{ buttonText: "🪧", title: "Нажмите для просмотра списка" }}
-      closeTitle="Скрыть список"
-      onToggled={onToggled}
-    >
-      <div className={classes.selectHeader}>
-        <h3 className={classes.title}>Настройка модели</h3>
-      </div>
-      <SelectedBuildings buildings={selectedPolygons} />
-      {loadedModel ? (
-        <span>Файл модели загружен</span>
-      ) : (
-        <FileUploadButton
-          buttonText={buttonText}
-          allowedTypes={[""]}
-          onSuccess={handleUploadSuccess}
-        />
-      )}
-      {canStartAlignment && <StartAlignmentButton onClick={handleStartClick} />}
-    </CollapsibleForm>
+    <Allow role="Admin,Creator">
+      <CollapsibleForm
+        enabled={enabled}
+        className={classes.container}
+        collapsedClassName={classes.collapsed}
+        expandedClassName={classes.expanded}
+        collapsed={{ buttonText: "🪧", title: "Нажмите для просмотра списка" }}
+        closeTitle="Скрыть список"
+        onToggled={onToggled}
+      >
+        <div className={classes.selectHeader}>
+          <h3 className={classes.title}>Настройка модели</h3>
+        </div>
+        <SelectedBuildings buildings={selectedPolygons} />
+        {loadedModel ? (
+          <span>Файл модели загружен</span>
+        ) : (
+          <FileUploadButton
+            buttonText={buttonText}
+            allowedTypes={[""]}
+            onSuccess={handleUploadSuccess}
+          />
+        )}
+        {canStartAlignment && (
+          <StartAlignmentButton onClick={handleStartClick} />
+        )}
+      </CollapsibleForm>
+    </Allow>
   );
 };
