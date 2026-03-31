@@ -8,7 +8,8 @@ import {
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
 import { createBackendService } from "@services/backendService";
-import { TrackPointId } from "@.types/track-types";
+import { TrackId, TrackPoint, TrackPointId } from "@.types/track-types";
+import { MarkerPoint } from "./minimapSlice";
 
 const backendService = createBackendService();
 
@@ -17,6 +18,12 @@ export interface ViewCameraState {
   position: ModelPosition;
   target: ModelPosition;
   fov: number;
+  preset: boolean;
+}
+
+interface TrackPointData {
+  trackId: TrackId;
+  point: TrackPoint;
 }
 
 // View mode state
@@ -36,7 +43,9 @@ export interface ViewState {
   //
   minimap: boolean;
   //
-  pointToAttach: TrackPointId | null;
+  pointToAttach: TrackPointData | null;
+  //
+  activeMarker: MarkerPoint | null;
 }
 
 // Default camera position for View mode
@@ -49,6 +58,7 @@ const initialState: ViewState = {
     position: defaultCameraPosition,
     target: defaultCameraTarget,
     fov: defaultFov,
+    preset: false,
   },
   cameraEnabled: true,
   movementSpeed: 5.0,
@@ -58,6 +68,7 @@ const initialState: ViewState = {
   notification: false,
   minimap: true,
   pointToAttach: null,
+  activeMarker: null,
 };
 
 export const viewSlice = createSlice({
@@ -72,6 +83,14 @@ export const viewSlice = createSlice({
     // Update camera target (look-at point)
     updateCameraTarget: (state, action: PayloadAction<ModelPosition>) => {
       state.camera.target = action.payload;
+    },
+
+    setCameraPreset: (state) => {
+      state.camera.preset = true;
+    },
+
+    clearCameraPreset: (state) => {
+      state.camera.preset = false;
     },
 
     moveCameraToLocation: (state, action: PayloadAction<ModelPosition>) => {
@@ -98,6 +117,7 @@ export const viewSlice = createSlice({
         position: defaultCameraPosition,
         target: defaultCameraTarget,
         fov: defaultFov,
+        preset: false,
       };
     },
 
@@ -145,12 +165,16 @@ export const viewSlice = createSlice({
       state.minimap = false;
     },
 
-    setPointToAttach: (state, action: PayloadAction<TrackPointId | null>) => {
+    setPointToAttach: (state, action: PayloadAction<TrackPointData | null>) => {
       state.pointToAttach = action.payload;
     },
 
     clearPointToAttach: (state) => {
       state.pointToAttach = null;
+    },
+
+    setActiveMarker: (state, action: PayloadAction<MarkerPoint | null>) => {
+      state.activeMarker = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -205,6 +229,9 @@ export const viewSlice = createSlice({
 
     //
     getPointToAttach: (state) => state.pointToAttach,
+
+    //
+    getActiveMarker: (state) => state.activeMarker,
   },
 });
 
@@ -213,7 +240,7 @@ export const initializeViewCamera = createAsyncThunk<{
   position: { x: number; z: number };
   cameraTarget: ModelPosition;
   cameraPosition: ModelPosition;
-}>("view/initializeViewCamera", async (_, { dispatch }) => {
+}>("view/initializeViewCamera", async (_, { getState, dispatch }) => {
   // Fetch starting position from backend
 
   const { hash } = window.location;
@@ -221,25 +248,49 @@ export const initializeViewCamera = createAsyncThunk<{
   const fromHash = hash && Array.isArray(parts) && parts.length > 1;
   const [x, z] = parts.map((p) => Number(p.split("=")[1]));
 
-  const position = fromHash
+  const state = getState();
+  const camera = state.view.camera;
+  const viewPosition = camera.position;
+
+  // TODO: так быть не должно
+  const viewTarget = camera.target || [
+    viewPosition[0],
+    EYE_LEVEL_HEIGHT,
+    viewPosition[2] + 20,
+  ];
+  const cameraPreset = camera.preset;
+
+  const loadedPosition = fromHash
     ? { x, z }
     : await backendService.get("buildings/start");
+  const presetPosition = { x: viewPosition[0], z: viewPosition[2] };
+
+  const position = cameraPreset ? presetPosition : loadedPosition;
 
   // Update camera state: set target to starting position, camera 10 meters north
   // North is negative Z in Three.js coordinate system
-  const cameraTarget: ModelPosition = [position.x, 0, position.z];
-  const cameraPosition: ModelPosition = [
-    position.x,
-    CAMERA_HEIGHTS.EYE_LEVEL,
-    position.z - DISTANCES.FROM_BUILDING,
-  ]; // 10 meters north
+  const cameraTarget: ModelPosition = cameraPreset
+    ? viewTarget
+    : [position.x, 0, position.z];
+  const cameraPosition: ModelPosition = cameraPreset
+    ? viewPosition
+    : [
+        position.x,
+        CAMERA_HEIGHTS.EYE_LEVEL,
+        position.z - DISTANCES.FROM_BUILDING,
+      ]; // 10 meters north
 
-  const { setGroundCenter, updateCameraTarget, updateCameraPosition } =
-    viewSlice.actions;
+  const {
+    setGroundCenter,
+    updateCameraTarget,
+    updateCameraPosition,
+    clearCameraPreset,
+  } = viewSlice.actions;
 
   dispatch(setGroundCenter(position));
   dispatch(updateCameraTarget(cameraTarget));
   dispatch(updateCameraPosition(cameraPosition));
+  dispatch(clearCameraPreset());
 
   return { position, cameraTarget, cameraPosition };
 });

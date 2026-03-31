@@ -24,9 +24,16 @@ const loadedBackendConfig = tryToLoad("ekb3d/backend");
 const backendConfig: NetworkConfigItem =
   (loadedBackendConfig as NetworkConfigItem | null) || {
     protocol: "http",
-    host: "10.1.0.71",
+    host: "10.1.0.72",
     port: 8080,
   };
+
+// Cached leaflet tiles config
+const leafletConfig: NetworkConfigItem = {
+  protocol: "http",
+  host: backendConfig.host,
+  port: 3000,
+};
 
 const networkConfig = {
   /**
@@ -37,6 +44,10 @@ const networkConfig = {
    * Конфигурация для моделек
    */
   minio: backendConfig,
+  /**
+   * Конфигурация для Leaflet
+   */
+  leaflet: leafletConfig,
   /**
    * true - бэкенд отсутствует, все работает через GET-запросы
    */
@@ -79,5 +90,8 @@ export const normalizeEndpoint = (endpoint: string) => {
 
 export const backendUrl = makeUrlFromConfig(networkConfig.backend);
 export const minioUrl = makeUrlFromConfig(networkConfig.minio);
+export const leafletUrl = makeUrlFromConfig(networkConfig.leaflet);
+// export const leafletTemplate = `${leafletUrl}/osm_tiles/{z}/{x}/{y}.png`;
+export const leafletTemplate = "https://tile.openstreetmap.org/{z}/{x}/{y}.png";
 
 export const { serveFromPublic } = networkConfig;

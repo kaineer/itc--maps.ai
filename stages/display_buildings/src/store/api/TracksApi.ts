@@ -43,9 +43,9 @@ export const tracksApi = createApi({
       invalidatesTags: ["tracks"],
     }),
     // PUT: Получить точки по координатам и расстоянию
-    queryTrackPoints: build.query<QueryObjects, TrackPoint[]>({
+    queryTrackPoints: build.query<TrackPoint[], QueryObjects>({
       query: (pointAndDistance) => ({
-        url: "/tracks/points",
+        url: "/tracks/around-point",
         method: "PUT",
         body: pointAndDistance,
       }),
@@ -93,4 +93,5 @@ export const {
   usePutTrackPointMutation,
   useDeleteTrackPointMutation,
   useQueryTrackPointsQuery,
+  useLazyQueryTrackPointsQuery,
 } = tracksApi;

@@ -12,6 +12,8 @@ import { Allow } from "@components/shared/Allow";
 import { UploadFormButton } from "./UploadFormButton";
 import { LoginUI } from "../login/LoginUI";
 import { LogIn } from "./LogIn";
+import { TrackList } from "./TrackList";
+import { AttachPoint } from "./AttachPoint";
 
 export const BuildingFormsGroup = () => {
   const dispatch = useDispatch();
@@ -45,6 +47,8 @@ export const BuildingFormsGroup = () => {
         enabled={isModeEnabled("edit-model")}
         onToggled={handleFormToggle("edit-model")}
       />
+      <TrackList enabled={isModeEnabled("none")} />
+      <AttachPoint enabled={isModeEnabled("none")} />
       <UserList enabled={isModeEnabled("none")} />
       <UploadFormButton enabled={isModeEnabled("none")} />
       <ToggleMinimap enabled={isModeEnabled("none")} />

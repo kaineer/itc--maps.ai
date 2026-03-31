@@ -169,6 +169,13 @@ export const dotProduct = (a: ModelPosition, b: ModelPosition): number => {
   return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
 };
 
+export const dotProduct2d = (a: ModelPosition, b: ModelPosition): number => {
+  const an = scaleToLength([a[0], 0, a[2]], 1);
+  const bn = scaleToLength([b[0], 0, b[2]], 1);
+
+  return an[0] * bn[0] + an[2] * bn[2];
+};
+
 /**
  * Calculate cross product of two positions (a × b)
  * @param a First position
@@ -184,4 +191,8 @@ export const crossProduct = (
     a[2] * b[0] - a[0] * b[2],
     a[0] * b[1] - a[1] * b[0],
   ];
+};
+
+export const almostNone = (p: ModelPosition): boolean => {
+  return distance2dBetween(p, [0, 0, 0]) < 0.0001;
 };

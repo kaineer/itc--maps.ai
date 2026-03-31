@@ -30,6 +30,7 @@ export interface TrackPoint extends TrackPointRestrictions {
   id: TrackPointId;
   name: string;
   type: PointType;
+  description: string;
   position: ModelPosition;
   rotation: ModelPosition;
   targetPosition: ModelPosition;

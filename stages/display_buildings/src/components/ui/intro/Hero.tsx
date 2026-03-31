@@ -27,7 +27,7 @@ const TopLine = () => (
   <div className={classes.topLine}>
     <span className={classes.kct}>Колледж Цифровых Технологий</span>
     <span className={classes.divider}>/</span>
-    <span className={classes.year}>2025</span>
+    <span className={classes.year}>2025-2026</span>
   </div>
 );
 

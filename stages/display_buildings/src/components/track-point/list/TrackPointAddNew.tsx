@@ -15,6 +15,8 @@ const createPointWithName = (name: string): Omit<TrackPoint, "id"> => {
     type: "checkpoint",
     position: [0, 0, 0],
     rotation: [0, 0, 0],
+    targetPosition: [0, 0, 0],
+    description: "",
     rotationRestricted: true,
     tiltRestricted: true,
     movementRestricted: true,

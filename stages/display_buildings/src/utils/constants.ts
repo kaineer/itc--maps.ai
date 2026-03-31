@@ -78,7 +78,7 @@ export const DISTANCES = {
   BUILDING_DISTANCE: 300.0,
 
   /** Distance from last loaded camera position */
-  LAST_LOADED_CAMERA_DISTANCE: 50.0,
+  LAST_LOADED_CAMERA_DISTANCE: 80.0,
 } as const;
 
 /**

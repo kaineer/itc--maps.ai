@@ -6,17 +6,25 @@ import { viewSlice } from "@slices/viewSlice";
 import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import { AppDispatch } from "@store/index";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
-import { distance2dBetween } from "@components/shared/positionMath";
+import {
+  directionTo,
+  distance2dBetween,
+  dotProduct2d,
+} from "@components/shared/positionMath";
+import { minimapSlice } from "@slices/minimapSlice";
 
 export const ViewCameraController = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { getCameraPosition, getCameraTarget } = viewSlice.selectors;
   const { getLastLoadedPosition, getLoading } = buildingsSlice.selectors;
+  const { getMarkers } = minimapSlice.selectors;
   const cameraPosition = useSelector(getCameraPosition);
   const cameraTarget = useSelector(getCameraTarget);
+  const markers = useSelector(getMarkers);
 
   const lastLoadedPosition = useSelector(getLastLoadedPosition);
-  const { updateCameraPosition, updateCameraTarget } = viewSlice.actions;
+  const { updateCameraPosition, updateCameraTarget, setActiveMarker } =
+    viewSlice.actions;
   const buildingsLoading = useSelector(getLoading);
 
   // Use refs to store current Redux state for useFrame callback
@@ -47,6 +55,28 @@ export const ViewCameraController = () => {
       }
     }
   }, [cameraPosition, dispatch, buildingsLoading]);
+
+  useEffect(() => {
+    const closestMarker = (markers || []).find((marker) => {
+      const dist = distance2dBetween(cameraPosition, marker.position);
+      return dist < 5;
+    });
+
+    if (closestMarker) {
+      const { position, target } = closestMarker;
+      const direction = directionTo(position, target);
+      const cameraDirection = directionTo(cameraPosition, cameraTarget);
+
+      const dot2d = dotProduct2d(direction, cameraDirection);
+
+      if (Math.abs(dot2d) > 0.85) {
+        dispatch(setActiveMarker(closestMarker));
+        return void 0;
+      }
+    }
+
+    dispatch(setActiveMarker(null));
+  }, [cameraPosition, markers, dispatch]);
 
   const moveState = useRef({
     forward: false,

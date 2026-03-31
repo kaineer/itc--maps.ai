@@ -15,8 +15,8 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 import { ViewStage } from "@components/stage/ui/ViewStage";
-import { DummyNotification } from "./DummyNotification";
 import { Minimap } from "./openstreet/Minimap";
+import { MarkerNotification } from "./MarkerNotification";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -31,8 +31,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     getCameraPosition,
     getCameraTarget,
     getCameraFov,
-    getNotificationEnabled,
     getMinimapEnabled,
+    getActiveMarker,
   } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
@@ -41,8 +41,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const cameraPosition: ModelPosition = useSelector(getCameraPosition);
   const cameraTarget: ModelPosition = useSelector(getCameraTarget);
   const cameraFov = useSelector(getCameraFov);
-  // TODO: убрать нафиг
-  const notificationEnabled = useSelector(getNotificationEnabled);
+  const activeMarker = useSelector(getActiveMarker);
   const showMinimap = useSelector(getMinimapEnabled);
 
   const handleBuildingClick = (
@@ -84,10 +83,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       <ViewControlsInfo showDetailed={true} />
       <BuildingFormsGroup />
 
-      <DummyNotification
-        enabled={notificationEnabled}
-        onClose={handleNotificationClose}
-      />
+      <MarkerNotification />
 
       <Canvas
         camera={{
