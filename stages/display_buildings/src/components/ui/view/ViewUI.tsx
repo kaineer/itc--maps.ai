@@ -18,6 +18,8 @@ import { ViewStage } from "@components/stage/ui/ViewStage";
 import { Minimap } from "./openstreet/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
+import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
+
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
   onBuildingSelect?: (building: Building) => void;
@@ -81,7 +83,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   return (
     <>
       <ViewControlsInfo showDetailed={true} />
-      <BuildingFormsGroup />
+
+      <ViewSidebar />
 
       <MarkerNotification />
 

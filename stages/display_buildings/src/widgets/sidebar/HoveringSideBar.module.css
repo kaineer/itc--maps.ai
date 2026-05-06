@@ -1,0 +1,98 @@
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg-surface);
+  border-right: 1px solid var(--color-border-light);
+  transition: width 0.25s ease;
+  overflow: hidden;
+  z-index: var(--z-sticky);
+}
+
+/* ---------- IDLE ---------- */
+.idle {
+  width: 5px;
+  cursor: pointer;
+}
+
+.idle .toggleButton,
+.idle .list {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* ---------- HOVER ---------- */
+.hover {
+  width: 56px;
+  cursor: default;
+}
+
+.hover .toggleButton,
+.hover .list {
+  opacity: 1;
+  visibility: visible;
+}
+
+.hover .toggleButton {
+  width: 40px;
+  height: 40px;
+  margin: var(--spacing-sm) auto 0;
+}
+
+/* ---------- EXPANDED ---------- */
+.expanded {
+  width: 240px;
+  cursor: default;
+}
+
+.expanded .toggleButton,
+.expanded .list {
+  opacity: 1;
+  visibility: visible;
+}
+
+.expanded .toggleButton {
+  width: auto;
+  height: 40px;
+  margin: var(--spacing-sm) var(--spacing-sm) 0;
+}
+
+/* ---------- Toggle Button ---------- */
+.toggleButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--color-border-default);
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease,
+    background 0.15s ease,
+    width 0.25s ease,
+    height 0.25s ease,
+    margin 0.25s ease;
+}
+
+.toggleButton:hover {
+  background: var(--color-bg-elevated);
+  border-color: var(--color-border-focus);
+}
+
+/* ---------- List ---------- */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0 var(--spacing-sm);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  transition:
+    opacity 0.2s ease,
+    visibility 0.2s ease;
+}

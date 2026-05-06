@@ -1,0 +1,36 @@
+.item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: var(--size-button-height);
+  padding: 0 var(--spacing-sm);
+  gap: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  border-radius: var(--radius-md);
+  color: var(--color-text-primary);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-normal);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  white-space: nowrap;
+}
+
+.item:hover {
+  background: var(--color-bg-elevated);
+}
+
+.active {
+  background: var(--color-accent-primary);
+  color: var(--color-text-inverse);
+}
+
+.active:hover {
+  background: var(--color-accent-hover);
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

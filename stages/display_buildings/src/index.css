@@ -11,3 +11,210 @@
 .leaflet-control-attribution {
   display: none;
 }
+
+:root {
+  /* Polar Night */
+  --color-primary-1: #2e3440;
+  --color-primary-2: #3b4252;
+  --color-primary-3: #434c5e;
+  --color-primary-4: #4c566a;
+
+  /* Snow Storm */
+  /* --color-bg-page: #eceff4; */
+  /*--color-bg-page: #eff1f5;*/
+  --color-bg-page: #f8f9fa;
+  --color-bg-surface: #e5e9f0;
+  --color-bg-elevated: #ffffff;
+  --color-bg-input: #f0f2f6;
+
+  /* Frost */
+  --color-accent: #88c0d0;
+  --color-accent-hover: #81a1c1;
+  --color-link: #5e81ac;
+  --color-link-hover: #81a1c1;
+
+  /* Aurora */
+  --color-success: #a3be8c;
+  --color-warning: #ebcb8b;
+  --color-error: #bf616a;
+
+  /* Text */
+  --color-text-primary: #2e3440;
+  --color-text-secondary: #4c566a;
+  --color-text-disabled: #d8dee9;
+  --color-text-inverse: #eceff4;
+
+  /* Border */
+  --color-border-light: #e5e9f0;
+  --color-border-default: #d8dee9;
+  --color-border-dark: #4c566a;
+  --color-border-focus: #536280;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/** Typography */
+:root {
+  /* ===== НАСТРОЙКИ ПРОЕКТА (менять под каждый проект) ===== */
+  --type-scale: 1.25; /* Масштаб: 1.125 | 1.2 | 1.25 | 1.333 | 1.414 */
+  /*--type-base: 1rem; /* Базовый размер (16px) */
+  --type-base: 19px; /* Базовый размер (16px) */
+  --line-height-ratio: 1.5; /* Базовый интерлиньяж */
+
+  /* ===== СТЕПЕНИ МАСШТАБА (не трогать) ===== */
+  --type-step--3: calc(
+    var(--type-base) / var(--type-scale) / var(--type-scale) / var(--type-scale)
+  );
+  --type-step--2: calc(
+    var(--type-base) / var(--type-scale) / var(--type-scale)
+  );
+  --type-step--1: calc(var(--type-base) / var(--type-scale));
+  --type-step-0: var(--type-base);
+  --type-step-1: calc(var(--type-base) * var(--type-scale));
+  --type-step-2: calc(var(--type-base) * var(--type-scale) * var(--type-scale));
+  --type-step-3: calc(
+    var(--type-base) * var(--type-scale) * var(--type-scale) * var(--type-scale)
+  );
+  --type-step-4: calc(
+    var(--type-base) * var(--type-scale) * var(--type-scale) *
+      var(--type-scale) * var(--type-scale)
+  );
+  --type-step-5: calc(
+    var(--type-base) * var(--type-scale) * var(--type-scale) *
+      var(--type-scale) * var(--type-scale) * var(--type-scale)
+  );
+
+  /* ===== РАЗМЕРЫ ТЕКСТА (использовать в компонентах) ===== */
+  --font-size-micro: var(--type-step--3); /* ~10px при scale=1.25 */
+  --font-size-caption: var(--type-step--2); /* ~13px */
+  --font-size-small: var(--type-step--1); /* ~13px */
+  --font-size-body: var(--type-step-0); /* 16px */
+  --font-size-lead: var(--type-step-1); /* 20px */
+  --font-size-h3: var(--type-step-2); /* 25px */
+  --font-size-h2: var(--type-step-3); /* 31px */
+  --font-size-h1: var(--type-step-4); /* 39px */
+  --font-size-display: var(--type-step-5); /* 49px */
+
+  /* ===== LINE-HEIGHT ===== */
+  --line-height-tight: calc(var(--line-height-ratio) - 0.3); /* 1.2 */
+  --line-height-normal: var(--line-height-ratio); /* 1.5 */
+  --line-height-loose: calc(var(--line-height-ratio) + 0.1); /* 1.6 */
+
+  /* ===== ВЕСА ШРИФТА ===== */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* ===== СЕМЕЙСТВА ===== */
+  --font-family-sans:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-family-mono: "SF Mono", Monaco, Consolas, monospace;
+}
+
+/* ============================================
+   SPACING TOKENS
+   Отступы, размеры, радиусы, z-index
+   ============================================ */
+:root {
+  /* ------------------------------------------
+     НАСТРОЙКИ ПРОЕКТА (менять под каждый проект)
+     ------------------------------------------ */
+  --spacing-unit: 0.25rem; /* 4px — базовый шаг сетки */
+  --radius-unit: 0.25rem; /* 4px — базовый радиус */
+
+  /* ------------------------------------------
+     SPACING (margin, padding, gap)
+     ------------------------------------------ */
+  /* Системные шаги (0-24) */
+  --spacing-0: 0;
+  --spacing-1: calc(var(--spacing-unit) * 1); /* 0.25rem = 4px */
+  --spacing-2: calc(var(--spacing-unit) * 2); /* 0.5rem = 8px */
+  --spacing-3: calc(var(--spacing-unit) * 3); /* 0.75rem = 12px */
+  --spacing-4: calc(var(--spacing-unit) * 4); /* 1rem = 16px */
+  --spacing-5: calc(var(--spacing-unit) * 5); /* 1.25rem = 20px */
+  --spacing-6: calc(var(--spacing-unit) * 6); /* 1.5rem = 24px */
+  --spacing-8: calc(var(--spacing-unit) * 8); /* 2rem = 32px */
+  --spacing-10: calc(var(--spacing-unit) * 10); /* 2.5rem = 40px */
+  --spacing-12: calc(var(--spacing-unit) * 12); /* 3rem = 48px */
+  --spacing-14: calc(var(--spacing-unit) * 14); /* 3.5rem = 56px */
+  --spacing-16: calc(var(--spacing-unit) * 16); /* 4rem = 64px */
+  --spacing-20: calc(var(--spacing-unit) * 20); /* 5rem = 80px */
+  --spacing-24: calc(var(--spacing-unit) * 24); /* 6rem = 96px */
+
+  /* ------------------------------------------
+     СЕМАНТИЧЕСКИЕ ОТСТУПЫ (использовать в компонентах)
+     ------------------------------------------ */
+  --spacing-xs: var(--spacing-1); /* 4px — иконки рядом с текстом */
+  --spacing-sm: var(--spacing-2); /* 8px — маленькие отступы */
+  --spacing-md: var(--spacing-4); /* 16px — стандартный отступ */
+  --spacing-lg: var(--spacing-6); /* 24px — отступы между секциями */
+  --spacing-xl: var(--spacing-8); /* 32px — крупные отступы */
+  --spacing-2xl: var(--spacing-12); /* 48px — отступы между блоками */
+  --spacing-3xl: var(--spacing-16); /* 64px — отступы между страницами */
+
+  /* Специализированные отступы */
+  --spacing-stack-sm: var(
+    --spacing-2
+  ); /* 8px — вертикальный отступ между элементами формы */
+  --spacing-stack-md: var(
+    --spacing-4
+  ); /* 16px — стандартный вертикальный отступ */
+  --spacing-stack-lg: var(--spacing-6); /* 24px — отступ между группами полей */
+
+  --spacing-inline-xs: var(
+    --spacing-1
+  ); /* 4px — горизонтальный отступ между кнопками */
+  --spacing-inline-sm: var(
+    --spacing-2
+  ); /* 8px — стандартный горизонтальный отступ */
+  --spacing-inline-md: var(--spacing-3); /* 12px — между иконкой и текстом */
+
+  /* ------------------------------------------
+     BORDER-RADIUS
+     ------------------------------------------ */
+  --radius-none: 0;
+  --radius-sm: calc(var(--radius-unit) * 1); /* 4px — кнопки, чипсы */
+  --radius-md: calc(var(--radius-unit) * 2); /* 8px — карточки, инпуты */
+  --radius-lg: calc(var(--radius-unit) * 3); /* 12px — модалки, крупные блоки */
+  --radius-xl: calc(var(--radius-unit) * 4); /* 16px — панели, дропдауны */
+  --radius-2xl: calc(
+    var(--radius-unit) * 6
+  ); /* 24px — особые акцентные блоки */
+  --radius-full: 9999px; /* круги, пилюли */
+
+  /* ------------------------------------------
+     РАЗМЕРЫ КОМПОНЕНТОВ
+     ------------------------------------------ */
+  --size-input-height: calc(
+    var(--spacing-6) * 2
+  ); /* 48px — стандартная высота */
+  --size-input-height-sm: calc(
+    var(--spacing-5) * 2
+  ); /* 40px — маленький инпут */
+  --size-button-height: calc(var(--spacing-6) * 2); /* 48px */
+  --size-button-height-sm: calc(var(--spacing-5) * 2); /* 40px */
+
+  /* ------------------------------------------
+     ШИРИНЫ КОНТЕЙНЕРОВ
+     ------------------------------------------ */
+  --width-container-sm: 640px;
+  --width-container-md: 768px;
+  --width-container-lg: 1024px;
+  --width-container-xl: 1280px;
+
+  /* ------------------------------------------
+     Z-ИНДЕКСЫ (иерархия наложения)
+     ------------------------------------------ */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-header: 250;
+  --z-modal: 300;
+  --z-popover: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+}

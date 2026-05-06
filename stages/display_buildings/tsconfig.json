@@ -25,6 +25,7 @@
       "@contexts/*": ["src/contexts/*"],
       "@services/*": ["src/services/*"],
       "@.types/*": ["src/types/*"],
+      "@widgets/*": ["src/widgets/*"],
     },
 
     /* Linting */

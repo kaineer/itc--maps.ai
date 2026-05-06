@@ -51,6 +51,11 @@ if [[ "$BRANCH" == "master" ]]; then
 
   cd stages/display_buildings/
   try "npm run build >/dev/null 2>&1" "Build javascript with vite"
+  if [[ "$REMOTE_HOST" == "ekb71" ]]; then
+      try "npx vite build -c ./vite.config.71.ts"
+  else
+      try "npx vite build -c ./vite.config.72.ts"
+  fi
 
   cd - >/dev/null 2>&1
 
