@@ -6,6 +6,7 @@ import { ButtonsGroup } from "@components/kit/ButtonsGroup";
 import { ViewButton } from "@components/ui/view/ViewButton";
 import { Logout } from "@components/ui/view/Logout";
 import { AddUser } from "@components/ui/view/AddUser";
+import { UsersSideBar } from "@widgets/ui/users/sidebar/UsersSideBar";
 
 const UserListButtons = () => {
   return (
@@ -24,7 +25,7 @@ export const UserListUI = () => {
 
   return (
     <div className={classes.container}>
-      <UserListButtons />
+      <UsersSideBar />
       {data.map((user: User) => (
         <UserItemForm user={user} />
       ))}

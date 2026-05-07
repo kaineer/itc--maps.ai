@@ -1,19 +1,49 @@
 import { viewSlice } from "@slices/viewSlice";
 import { HoveringSideBar } from "@widgets/sidebar/HoveringSideBar";
 import { SideBarItem } from "@widgets/sidebar/item/SideBarItem";
-import { IoLogInOutline } from "react-icons/io5";
 import { GoMoveToTop } from "react-icons/go";
-import { IoIosLogOut } from "react-icons/io";
+import { FaListUl, FaRegBuilding } from "react-icons/fa";
+import { AuthSidebarItems } from "@widgets/ui/shared/sidebar/AuthSidebarItems";
+
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
+import { SideBarList } from "@widgets/sidebar/list/SideBarList";
+import {
+  useGetTracksListQuery,
+  useLazyGetTrackPointsQuery,
+} from "@store/api/TracksApi";
+import { useEffect, useState } from "react";
+import { Track, TrackPoint } from "@.types/track-types";
+import { almostNone } from "@components/shared/positionMath";
+import { Allow } from "@components/shared/Allow";
+import { UserListSidebarItem } from "@widgets/ui/shared/sidebar/UserlistSidebarItem";
+import { TracksSidebarItem } from "@widgets/ui/shared/sidebar/TracksSidebarItem";
 
 export const ViewSidebar = () => {
-  const { isAuthenticated, logout } = useAuthentication();
+  const { isAuthenticated } = useAuthentication();
 
   const dispatch = useDispatch();
   const { getMinimapEnabled } = viewSlice.selectors;
   const minimapEnabled = useSelector(getMinimapEnabled);
-  const { enableMinimap, disableMinimap } = viewSlice.actions;
+  const {
+    enableMinimap,
+    disableMinimap,
+    updateCameraTarget,
+    updateCameraPosition,
+    setCameraPreset,
+  } = viewSlice.actions;
+
+  const { data: tracksData, isLoading } = useGetTracksListQuery();
+  const [requestTrackPoints] = useLazyGetTrackPointsQuery();
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
+  const [trackPoints, setTrackPoints] = useState<TrackPoint[]>([]);
+
+  useEffect(() => {
+    if (!isLoading && tracksData) {
+      setTracks(tracksData);
+    }
+  }, [isLoading, tracksData]);
 
   const handleToggleMinimap = () => {
     if (minimapEnabled) {
@@ -23,25 +53,55 @@ export const ViewSidebar = () => {
     }
   };
 
+  const handleTrackChoose = async (track: Track) => {
+    setCurrentTrack(track);
+
+    const { data: fullTrack, isSuccess } = await requestTrackPoints(track.id);
+    if (isSuccess) {
+      const { points } = fullTrack;
+      setTrackPoints(points);
+    }
+  };
+
+  const handlePointChoose = async (point: TrackPoint) => {
+    if (!almostNone(point.position)) {
+      dispatch(setCameraPreset());
+      dispatch(updateCameraPosition(point.position));
+      dispatch(updateCameraTarget(point.targetPosition));
+    }
+  };
+
   return (
     <HoveringSideBar>
-      <SideBarItem
-        icon={IoLogInOutline}
-        url="/login"
-        label="Войти"
-        displayWhen={() => !isAuthenticated}
-      />
-      <SideBarItem
-        icon={IoIosLogOut}
-        label="Выйти"
-        onClick={logout}
-        displayWhen={() => isAuthenticated}
-      />
+      <AuthSidebarItems />
       <SideBarItem
         icon={GoMoveToTop}
         label={minimapEnabled ? "Выключить миникарту" : "Включить миникарту"}
         onClick={handleToggleMinimap}
       />
+      <Allow role="Admin">
+        <TracksSidebarItem />
+        <UserListSidebarItem />
+      </Allow>
+      <Allow condition={isAuthenticated}>
+        <SideBarList
+          icon={FaListUl}
+          items={tracks}
+          title="Экскурсии"
+          getLabel={(track) => track.name}
+          onClickItem={handleTrackChoose}
+        />
+        <SideBarList
+          icon={FaRegBuilding}
+          title={currentTrack?.name || ""}
+          items={trackPoints}
+          displayWhen={() =>
+            Array.isArray(trackPoints) && currentTrack !== null
+          }
+          getLabel={(point) => point.name}
+          onClickItem={handlePointChoose}
+        />
+      </Allow>
     </HoveringSideBar>
   );
 };

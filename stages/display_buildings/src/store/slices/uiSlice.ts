@@ -14,15 +14,29 @@ export type BuildingFormMode =
   | "edit"
   | "edit-model";
 
+interface SidebarState {
+  hidden: boolean;
+  expanded: boolean;
+  disabled: boolean;
+}
+
 interface UIState {
   currentMode: UIMode;
   buildingFormMode: BuildingFormMode;
+
+  sidebar: SidebarState;
 }
 
 // Начальное состояние по умолчанию
 const initialState: UIState = {
   currentMode: defaultUIMode,
   buildingFormMode: "none",
+
+  sidebar: {
+    hidden: true,
+    expanded: false,
+    disabled: false,
+  },
 };
 
 const name = "ui";
@@ -46,9 +60,38 @@ export const uiSlice = createSlice({
     cleanupBuildingFormMode: (state) => {
       state.buildingFormMode = "none";
     },
+    setSidebarHidden: (state, action: PayloadAction<boolean>) => {
+      state.sidebar.hidden = action.payload;
+    },
+    toggleSidebarHidden: (state) => {
+      const { sidebar } = state;
+      if (!sidebar.disabled) {
+        sidebar.hidden = !sidebar.hidden;
+      }
+    },
+    toggleSidebarExpanded: (state) => {
+      state.sidebar.expanded = !state.sidebar.expanded;
+    },
+    setSidebarExpanded: (state, action: PayloadAction<boolean>) => {
+      state.sidebar.expanded = action.payload;
+    },
   },
   selectors: {
     getUIMode: (state) => state.currentMode,
     getBuildingFormMode: (state) => state.buildingFormMode,
+    getSidebarDisplay: (state) => {
+      const { sidebar } = state;
+      if (sidebar.hidden) {
+        return "IDLE";
+      } else {
+        return sidebar.expanded ? "EXPANDED" : "HOVER";
+      }
+    },
+    getSidebarShowLabel: (state) => {
+      const {
+        sidebar: { hidden, expanded },
+      } = state;
+      return !hidden && expanded;
+    },
   },
 });

@@ -4,20 +4,7 @@ import { UserForm } from "./UserForm";
 import { usePostUserMutation } from "@store/api/UsersApi";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { Logout } from "@components/ui/view/Logout";
-import { ButtonsGroup } from "@components/kit/ButtonsGroup";
-import { UserList } from "@components/ui/view/UserList";
-import { ViewButton } from "@components/ui/view/ViewButton";
-
-const UserCreateButtons = () => {
-  return (
-    <ButtonsGroup>
-      <ViewButton />
-      <UserList />
-      <Logout />
-    </ButtonsGroup>
-  );
-};
+import { NewUserSideBar } from "@widgets/ui/users/sidebar/NewUserSideBar";
 
 export const UserCreateUI = () => {
   const [createUser] = usePostUserMutation();
@@ -37,7 +24,7 @@ export const UserCreateUI = () => {
 
   return (
     <div className={classes.container}>
-      <UserCreateButtons />
+      <NewUserSideBar />
       <UserForm onCreateUser={handleCreateUser} />
     </div>
   );

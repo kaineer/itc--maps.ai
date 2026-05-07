@@ -89,6 +89,7 @@ export const {
   usePostTrackMutation,
   useDeleteTrackMutation,
   useGetTrackPointsQuery,
+  useLazyGetTrackPointsQuery,
   usePostTrackPointMutation,
   usePutTrackPointMutation,
   useDeleteTrackPointMutation,

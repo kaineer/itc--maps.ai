@@ -21,15 +21,6 @@
   background: var(--color-bg-elevated);
 }
 
-.active {
-  background: var(--color-accent-primary);
-  color: var(--color-text-inverse);
-}
-
-.active:hover {
-  background: var(--color-accent-hover);
-}
-
 .label {
   overflow: hidden;
   text-overflow: ellipsis;

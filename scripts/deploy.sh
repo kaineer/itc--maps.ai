@@ -42,7 +42,7 @@ try() {
 echo " > Current branch: $BRANCH"
 echo " > Timestamp: $TIMESTAMP"
 
-if [[ "$BRANCH" == "master" ]]; then
+# if [[ "$BRANCH" == "master" ]]; then
   echo " > Let's deploy, then"
   echo ""
 
@@ -79,7 +79,7 @@ if [[ "$BRANCH" == "master" ]]; then
       docker run -d --name nginx-app -p 3000:3000 -v ./nginx.conf:/etc/nginx/conf.d/default.conf:ro -v excursion-gpt-frontend:/app/data:ro nginx:alpine
   " >/dev/null 2>&1
   ok
-else
-  echo " ! No deploys from $BRANCH"
-  echo " > only from master"
-fi
+# else
+#   echo " ! No deploys from $BRANCH"
+#   echo " > only from master"
+# fi

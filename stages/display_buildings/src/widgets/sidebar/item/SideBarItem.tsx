@@ -1,30 +1,28 @@
 import { type IconType } from "react-icons";
-import clsx from "clsx";
-import type { SidebarState } from "../HoveringSideBar";
 import classes from "./SideBarItem.module.css";
 import { useNavigate } from "react-router";
+import { uiSlice } from "@slices/uiSlice";
+import { useSelector } from "react-redux";
 
 interface Props {
   icon: IconType;
   label: string;
-  display: SidebarState;
   displayWhen?: () => boolean;
   onClick?: () => void;
   url?: string;
-  active?: boolean;
 }
 
 export function SideBarItem({
   icon: Icon,
   label,
-  display,
   displayWhen = () => true,
   onClick = () => null,
   url,
-  active = false,
 }: Props) {
   const navigate = useNavigate();
-  const showLabel = display === "EXPANDED";
+
+  const { getSidebarShowLabel } = uiSlice.selectors;
+  const showLabel = useSelector(getSidebarShowLabel);
 
   const handleClick = () => {
     (url && navigate(url)) || onClick();
@@ -37,7 +35,7 @@ export function SideBarItem({
   return (
     <li>
       <button
-        className={clsx(classes.item, active && classes.active)}
+        className={classes.item}
         onClick={handleClick}
         aria-label={label}
         title={label}
