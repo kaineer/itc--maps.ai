@@ -11,8 +11,14 @@ import { useNavigate } from "react-router";
 
 import { SelectedBuildings } from "./buildings/SelectedBuildings";
 import { StartAlignmentButton } from "@components/shared/ui/StartAlignmentButton";
+import { CenteredForm } from "@components/shared/ui/CenteredForm";
 
-export const BuildingSelection = () => {
+interface Props {
+  enabled: boolean;
+  onClose?: () => void;
+}
+
+export const BuildingSelection = ({ enabled, onClose = () => null }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getSelectedPolygons, getModelUUID, getCanStartAlignment } =
     alignmentSlice.selectors;
@@ -46,7 +52,7 @@ export const BuildingSelection = () => {
   };
 
   return (
-    <div className={classes.container}>
+    <CenteredForm enabled={enabled} onClose={onClose}>
       <div className={classes.selectHeader}>
         <h3 className={classes.title}>Настройка модели</h3>
       </div>
@@ -61,6 +67,6 @@ export const BuildingSelection = () => {
         />
       )}
       {canStartAlignment && <StartAlignmentButton onClick={handleStartClick} />}
-    </div>
+    </CenteredForm>
   );
 };

@@ -2,7 +2,13 @@ import { type IconType } from "react-icons";
 import classes from "./SideBarItem.module.css";
 import { useNavigate } from "react-router";
 import { uiSlice } from "@slices/uiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { type FC, useState } from "react";
+
+interface DisplayableForm {
+  enabled: boolean;
+  onClose: () => void;
+}
 
 interface Props {
   icon: IconType;
@@ -10,29 +16,46 @@ interface Props {
   displayWhen?: () => boolean;
   onClick?: () => void;
   url?: string;
+  form?: FC<DisplayableForm>;
 }
 
 export function SideBarItem({
   icon: Icon,
   label,
   displayWhen = () => true,
-  onClick = () => null,
+  onClick,
   url,
+  form: Form,
 }: Props) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const { getSidebarShowLabel } = uiSlice.selectors;
+  const { getSidebarShowLabel, getSidebarShowItem } = uiSlice.selectors;
+  const { setSidebarHidden } = uiSlice.actions;
   const showLabel = useSelector(getSidebarShowLabel);
+  const showItem = useSelector(getSidebarShowItem);
+  const [showForm, setShowForm] = useState(false);
 
   const handleClick = () => {
-    (url && navigate(url)) || onClick();
+    if (typeof url === "string" && url) {
+      navigate(url);
+    }
+
+    if (typeof onClick === "function") {
+      onClick();
+    }
+
+    if (Form) {
+      dispatch(setSidebarHidden(true));
+      setShowForm(true);
+    }
   };
 
   if (!displayWhen()) {
     return null;
   }
 
-  return (
+  const renderItem = () => (
     <li>
       <button
         className={classes.item}
@@ -44,5 +67,15 @@ export function SideBarItem({
         {showLabel && <span className={classes.label}>{label}</span>}
       </button>
     </li>
+  );
+
+  const renderForm = () =>
+    Form && <Form enabled={showForm} onClose={() => setShowForm(false)} />;
+
+  return (
+    <>
+      {showItem && renderItem()}
+      {renderForm()}
+    </>
   );
 }

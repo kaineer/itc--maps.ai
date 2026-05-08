@@ -17,7 +17,6 @@ export const StartAlignmentButton = ({
 
   return (
     <div className={`${classes.container} ${className}`}>
-      {/* Основная кнопка */}
       <button
         type="button"
         onClick={handleButtonClick}

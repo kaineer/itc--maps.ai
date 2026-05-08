@@ -4,7 +4,6 @@ import classes from "./CenteredForm.module.css";
 interface CenteredFormProps {
   enabled: boolean;
   children: ReactNode;
-  className?: string;
   closeTitle?: string;
   onClose: () => void;
 }

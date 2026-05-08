@@ -93,5 +93,12 @@ export const uiSlice = createSlice({
       } = state;
       return !hidden && expanded;
     },
+    getSidebarShowItem: (state) => {
+      const {
+        sidebar: { hidden },
+      } = state;
+
+      return !hidden;
+    },
   },
 });

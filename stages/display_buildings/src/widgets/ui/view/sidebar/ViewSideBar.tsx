@@ -4,6 +4,7 @@ import { SideBarItem } from "@widgets/sidebar/item/SideBarItem";
 import { GoMoveToTop } from "react-icons/go";
 import { FaListUl, FaRegBuilding } from "react-icons/fa";
 import { AuthSidebarItems } from "@widgets/ui/shared/sidebar/AuthSidebarItems";
+import { LuBuilding2 } from "react-icons/lu";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
@@ -18,6 +19,10 @@ import { almostNone } from "@components/shared/positionMath";
 import { Allow } from "@components/shared/Allow";
 import { UserListSidebarItem } from "@widgets/ui/shared/sidebar/UserlistSidebarItem";
 import { TracksSidebarItem } from "@widgets/ui/shared/sidebar/TracksSidebarItem";
+import { BuildingSelection } from "../forms/selection/BuildingSelection";
+import { EditPolygon } from "../forms/polygon/EditPolygon";
+import { alignmentSlice } from "@slices/alignmentSlice";
+import { Building } from "@.types/buildings-types";
 
 export const ViewSidebar = () => {
   const { isAuthenticated } = useAuthentication();
@@ -38,6 +43,9 @@ export const ViewSidebar = () => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [currentTrack, setCurrentTrack] = useState<Track | null>(null);
   const [trackPoints, setTrackPoints] = useState<TrackPoint[]>([]);
+  const { getSelectedPolygons } = alignmentSlice.selectors;
+  const selectedPolygons: Building[] = useSelector(getSelectedPolygons);
+  const polygon = selectedPolygons.length === 1 ? selectedPolygons[0] : "";
 
   useEffect(() => {
     if (!isLoading && tracksData) {
@@ -84,6 +92,17 @@ export const ViewSidebar = () => {
         <UserListSidebarItem />
       </Allow>
       <Allow condition={isAuthenticated}>
+        <SideBarItem
+          icon={LuBuilding2}
+          label="Выбранные полигоны"
+          form={BuildingSelection}
+        />
+        <SideBarItem
+          icon={LuBuilding2}
+          label="Изменить полигон"
+          form={EditPolygon}
+          displayWhen={() => !!polygon}
+        />
         <SideBarList
           icon={FaListUl}
           items={tracks}

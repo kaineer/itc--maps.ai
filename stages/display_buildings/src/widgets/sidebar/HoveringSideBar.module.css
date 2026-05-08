@@ -18,8 +18,7 @@
   cursor: pointer;
 }
 
-.idle .toggleButton,
-.idle .list {
+.idle .toggleButton {
   opacity: 0;
   visibility: hidden;
 }

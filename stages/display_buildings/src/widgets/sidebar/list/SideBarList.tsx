@@ -3,7 +3,7 @@ import classes from "./SideBarList.module.css";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { uiSlice } from "@slices/uiSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 interface SideBarListProps<T> {
   icon: IconType;
@@ -28,7 +28,10 @@ export function SideBarList<T>({
   onClickItem,
 }: SideBarListProps<T>) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { getSidebarShowLabel } = uiSlice.selectors;
+  const { setSidebarExpanded } = uiSlice.actions;
   const showLabel = useSelector(getSidebarShowLabel);
   const [showItems, setShowItems] = useState(true);
 
@@ -46,13 +49,22 @@ export function SideBarList<T>({
         ? onClickItem
         : () => null;
 
+  const handleTitleClick = () => {
+    if (!showLabel) {
+      dispatch(setSidebarExpanded(true));
+      setShowItems(true);
+    } else {
+      setShowItems((prev) => !prev);
+    }
+  };
+
   return (
     <li className={classes.listGroup}>
       <button
         className={classes.trigger}
         aria-label={title}
         title={title}
-        onClick={() => setShowItems((prev) => !prev)}
+        onClick={handleTitleClick}
       >
         <Icon size={20} />
         {showLabel && <span className={classes.label}>{title}</span>}

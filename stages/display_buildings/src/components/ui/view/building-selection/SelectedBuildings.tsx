@@ -2,11 +2,7 @@ import classes from "./SelectedBuildings.module.css";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useDispatch } from "react-redux";
 import { MouseEvent } from "react";
-import {
-  BuildingWithoutModel,
-  ModelPosition,
-  type Building,
-} from "@.types/types";
+import { ModelPosition, type Building } from "@.types/types";
 import { RemoveButton } from "./RemoveButton";
 import { viewSlice } from "@slices/viewSlice";
 
