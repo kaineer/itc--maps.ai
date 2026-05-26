@@ -1,17 +1,13 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   CAMERA_HEIGHTS,
-  DISTANCES,
   CAMERA_FOV,
   DEFAULT_CAMERA_POSITIONS,
   EYE_LEVEL_HEIGHT,
 } from "@utils/constants";
 import { BuildingNode, ModelPosition } from "../../types/types";
-import { createBackendService } from "@services/backendService";
-import { TrackId, TrackPoint, TrackPointId } from "@.types/track-types";
+import { TrackId, TrackPoint } from "@.types/track-types";
 import { MarkerPoint } from "./minimapSlice";
-
-const backendService = createBackendService();
 
 // Camera state for View mode
 export interface ViewCameraState {
@@ -177,20 +173,6 @@ export const viewSlice = createSlice({
       state.activeMarker = action.payload;
     },
   },
-  extraReducers: (builder) => {
-    builder
-      // Handle initializeViewCamera thunk
-      .addCase(initializeViewCamera.pending, (state) => {
-        // Camera initialization in progress
-      })
-      .addCase(initializeViewCamera.fulfilled, (state, action) => {
-        // Camera already updated by the thunk actions
-        // No additional state changes needed here
-      })
-      .addCase(initializeViewCamera.rejected, (state, action) => {
-        // Error handled by the thunk caller
-      });
-  },
   selectors: {
     // Get entire camera state
     // getCameraState: (state) => state.camera,
@@ -233,75 +215,4 @@ export const viewSlice = createSlice({
     //
     getActiveMarker: (state) => state.activeMarker,
   },
-});
-
-// Async thunk to fetch initial position and update camera
-export const initializeViewCamera = createAsyncThunk<{
-  position: { x: number; z: number };
-  cameraTarget: ModelPosition;
-  cameraPosition: ModelPosition;
-}>("view/initializeViewCamera", async (_, { getState, dispatch }) => {
-  // Fetch starting position from backend
-
-  const { hash } = window.location;
-  const parts = hash.slice(1).split("&");
-  const fromHash = hash && Array.isArray(parts) && parts.length > 1;
-  const [x, z] = parts.map((p) => Number(p.split("=")[1]));
-
-  const state = getState();
-  const camera = state.view.camera;
-  const viewPosition = camera.position;
-
-  const loadStartPosition = async () => {
-    try {
-      const data = await backendService.get("buildings/start");
-      return data;
-    } catch (error) {
-      console.log(error);
-      debugger;
-    }
-  };
-
-  // TODO: так быть не должно
-  const viewTarget = camera.target || [
-    viewPosition[0],
-    EYE_LEVEL_HEIGHT,
-    viewPosition[2] + 20,
-  ];
-  const cameraPreset = camera.preset;
-
-  const loadedPosition = fromHash
-    ? { x, z }
-    : // : await backendService.get("buildings/start");
-      await loadStartPosition();
-  const presetPosition = { x: viewPosition[0], z: viewPosition[2] };
-
-  const position = cameraPreset ? presetPosition : loadedPosition;
-
-  // Update camera state: set target to starting position, camera 10 meters north
-  // North is negative Z in Three.js coordinate system
-  const cameraTarget: ModelPosition = cameraPreset
-    ? viewTarget
-    : [position.x, 0, position.z];
-  const cameraPosition: ModelPosition = cameraPreset
-    ? viewPosition
-    : [
-        position.x,
-        CAMERA_HEIGHTS.EYE_LEVEL,
-        position.z - DISTANCES.FROM_BUILDING,
-      ]; // 10 meters north
-
-  const {
-    setGroundCenter,
-    updateCameraTarget,
-    updateCameraPosition,
-    clearCameraPreset,
-  } = viewSlice.actions;
-
-  dispatch(setGroundCenter(position));
-  dispatch(updateCameraTarget(cameraTarget));
-  dispatch(updateCameraPosition(cameraPosition));
-  dispatch(clearCameraPreset());
-
-  return { position, cameraTarget, cameraPosition };
 });

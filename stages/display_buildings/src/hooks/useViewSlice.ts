@@ -1,5 +1,6 @@
+import { ModelPosition } from "@.types/buildings-types";
 import { viewSlice } from "@slices/viewSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const {
   getCameraPosition,
@@ -16,6 +17,18 @@ export const useViewCamera = () => {
   const cameraFov = useSelector(getCameraFov);
 
   return { cameraPosition, cameraTarget, cameraFov };
+};
+
+export const useViewCameraActions = () => {
+  const { updateCameraPosition, updateCameraTarget } = viewSlice.actions;
+  const dispatch = useDispatch();
+
+  const updateCamera = (position: ModelPosition, target: ModelPosition) => {
+    dispatch(updateCameraPosition(position));
+    dispatch(updateCameraTarget(target));
+  };
+
+  return { updateCamera };
 };
 
 export const useViewMarkers = () => {

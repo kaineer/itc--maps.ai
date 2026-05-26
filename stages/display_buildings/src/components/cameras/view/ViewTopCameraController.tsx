@@ -5,7 +5,7 @@ import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
 import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import { AppDispatch } from "@store/index";
-import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
+import { buildingsSlice } from "@slices/buildingsSlice";
 import { distance2dBetween } from "@components/shared/positionMath";
 import { useViewCamera } from "@hooks/useViewSlice";
 
@@ -30,24 +30,6 @@ export const ViewTopCameraController = () => {
     currentReduxState.current.position = cameraPosition;
     currentReduxState.current.target = cameraTarget;
   }, [cameraPosition, cameraTarget]);
-
-  // Check if camera moved enough to reload buildings
-  useEffect(() => {
-    if (
-      distance2dBetween(cameraPosition, lastLoadedPosition) >
-      DISTANCES.BUILDING_DISTANCE
-    ) {
-      if (!buildingsLoading) {
-        const [x, _, z] = cameraPosition;
-        dispatch(
-          fetchBuildings({
-            position: { x, z },
-            distance: DISTANCES.BUILDING_DISTANCE,
-          }),
-        );
-      }
-    }
-  }, [cameraPosition, dispatch, buildingsLoading, lastLoadedPosition]);
 
   const moveState = useRef({
     forward: false,

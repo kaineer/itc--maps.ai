@@ -1,14 +1,13 @@
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { buildingsSlice, fetchInitialBuildings } from "@slices/buildingsSlice";
 import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
 import { ViewCameraController } from "../../cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
-import type { ModelPosition, Building } from "../../../types/types";
+import type { Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { toast } from "sonner";
@@ -18,6 +17,8 @@ import { MarkerNotification } from "./MarkerNotification";
 
 import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
 import { useViewCamera, useViewMinimap } from "@hooks/useViewSlice";
+import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
+import { useBuildingsApi } from "@entities/buildings/lib/use.buildings.api";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -26,13 +27,12 @@ interface Props {
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
 
-  const buildings = useSelector(getBuildings);
-  const error = useSelector(getError);
+  const { buildings, error } = useBuildingsSlice();
 
   const { cameraPosition, cameraTarget, cameraFov } = useViewCamera();
+  const { initializeBuildings } = useBuildingsApi();
 
   const { minimapEnabled: showMinimap } = useViewMinimap();
 
@@ -52,9 +52,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   };
 
   useEffect(() => {
-    // Fetch initial position and buildings when component mounts
-    dispatch(fetchInitialBuildings());
-  }, [dispatch]);
+    initializeBuildings();
+  }, []);
 
   useEffect(() => {
     if (error) {

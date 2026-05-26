@@ -3,8 +3,8 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { useDispatch } from "react-redux";
 import { MouseEvent } from "react";
 import { ModelPosition, type Building } from "@.types/types";
-import { RemoveButton } from "./RemoveButton";
 import { viewSlice } from "@slices/viewSlice";
+import { RemoveButton } from "@components/kit/RemoveButton";
 
 interface Props {
   buildings: Building[];

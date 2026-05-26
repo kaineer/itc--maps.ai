@@ -1,20 +1,21 @@
-import { ModelPosition } from "@.types/buildings-types";
-import { viewSlice } from "@slices/viewSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { buildingsSlice } from "@slices/buildingsSlice";
+import { useSelector } from "react-redux";
+
+const {
+  getBuildings,
+  getSelectedBuildingId,
+  getLastLoadedPosition,
+  getLoading,
+  getError,
+} = buildingsSlice.selectors;
 
 export const useBuildingsSlice = () => {
-  const { getCameraPosition } = viewSlice.selectors;
-  const { updateCameraPosition } = viewSlice.actions;
-  const dispatch = useDispatch();
+  const buildings = useSelector(getBuildings);
+  const selectedBuildingId = useSelector(getSelectedBuildingId);
+  const lastLoadedPosition = useSelector(getLastLoadedPosition);
 
-  const cameraPosition = useSelector(getCameraPosition);
-  const setCameraPosition = (pos: ModelPosition) => {
-    dispatch(updateCameraPosition(pos));
-  };
+  const loading = useSelector(getLoading);
+  const error = useSelector(getError);
 
-  return {
-    // ???
-    cameraPosition,
-    setCameraPosition,
-  };
+  return { buildings, selectedBuildingId, lastLoadedPosition, loading, error };
 };

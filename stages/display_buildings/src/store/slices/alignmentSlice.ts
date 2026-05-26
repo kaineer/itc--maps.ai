@@ -620,13 +620,6 @@ export const alignmentSlice = createSlice({
     },
   },
 
-  // extraReducers: (builder) => {
-  //   builder.addCase(addPolygonWithModelRequest.fulfilled, (state, action) => {
-  //     if (action.payload) {
-  //       state.modelUUID = action.payload.modelId;
-  //     }
-  //   });
-  // },
   selectors: {
     getCurrentCamera: (state) => state.cameraStates[state.currentCameraView],
     getCurrentCameraView: (state) => state.currentCameraView,

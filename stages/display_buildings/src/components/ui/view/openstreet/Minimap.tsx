@@ -1,13 +1,13 @@
 import classes from "./Minimap.module.css";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { ModelPosition, QueryObjects } from "@.types/buildings-types";
-import { mercatorToMetrics, metricsToMercator } from "@utils/mercator";
+import { ModelPosition } from "@.types/buildings-types";
+import { metricsToMercator } from "@utils/mercator";
 import { useEffect } from "react";
 import { LatLngExpression, LeafletMouseEvent } from "leaflet";
 import { MapEvents } from "./MapEvents";
 import { MarkerPoint, minimapSlice } from "@slices/minimapSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { leafletTemplate } from "@utils/network";
 import { distance2dBetween } from "@components/shared/positionMath";
 import { DISTANCES } from "@utils/constants";
@@ -20,6 +20,10 @@ import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { viewSlice } from "@slices/viewSlice";
 import { useNotification } from "@hooks/useNotification";
 import { useLazyQueryTrackPointsQuery } from "@entities/tracks/model/tracks.api";
+import {
+  useMinimapMarkers,
+  useMinimapPosition,
+} from "@entities/minimap/lib/use.minimap.slice";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -57,17 +61,13 @@ export const Minimap = ({ mapCenter = [0, 0, 0] }: Props) => {
   const dispatch = useDispatch();
   const { notify } = useNotification();
 
-  const { getZoom, getCenter, getLastLoadedCenter, getMarkers } =
-    minimapSlice.selectors;
+  const { zoom, center, lastLoadedCenter } = useMinimapPosition();
+  const { markers } = useMinimapMarkers();
+
   const { setCenter, setLastLoadedCenter, setMarkers } = minimapSlice.actions;
   const { moveCameraToLocation, updateCameraTarget } = viewSlice.actions;
 
   const [fetchTrackPoints] = useLazyQueryTrackPointsQuery();
-
-  const zoom = useSelector(getZoom);
-  const center = useSelector(getCenter);
-  const lastLoadedCenter = useSelector(getLastLoadedCenter);
-  const markers = useSelector(getMarkers);
 
   const getMarker = (obj: unknown): MarkerPoint | null => {
     if (

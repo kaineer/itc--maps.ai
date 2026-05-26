@@ -2,10 +2,9 @@ import { UniqueItems } from "@components/shared/UniqueItems";
 import { Building } from "../../../types/types";
 import { RenderBuilding } from "../../building/ui/RenderBuilding";
 import { KeyboardModifiers } from "@utils/keyboardModifiers";
-import { minimapSlice } from "@slices/minimapSlice";
 import { MapItems } from "@components/shared/MapItems";
-import { useSelector } from "react-redux";
 import { TrackPointMarker } from "./TrackPointMarker";
+import { useMinimapMarkers } from "@entities/minimap/lib/use.minimap.slice";
 
 interface Props {
   buildings: Building[];
@@ -13,8 +12,7 @@ interface Props {
 }
 
 export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
-  const { getMarkers } = minimapSlice.selectors;
-  const markers = useSelector(getMarkers);
+  const { markers } = useMinimapMarkers();
 
   return (
     <>

@@ -96,43 +96,6 @@ export const PerspectiveCameraController = ({
     }
   }, [enabled, camera, cameraState, onCameraUpdate]);
 
-  // Update camera target when model changes
-  // useEffect(() => {
-  //   if (!enabled || !currentModel) return;
-
-  //   const center = calculateModelCenter();
-  //   if (!center) return;
-
-  //   // Check if current target matches model center
-  //   const currentTarget = cameraState.target;
-  //   const modelCenterArray = [center.x, center.y, center.z];
-
-  //   const targetsMatch =
-  //     Math.abs(currentTarget[0] - center.x) < 0.001 &&
-  //     Math.abs(currentTarget[1] - center.y) < 0.001 &&
-  //     Math.abs(currentTarget[2] - center.z) < 0.001;
-
-  //   if (!targetsMatch) {
-  //     // Update camera target in Redux to follow model center
-  //     dispatch(
-  //       updateCameraState({
-  //         view: "perspective",
-  //         cameraState: {
-  //           target: modelCenterArray,
-  //         },
-  //       }),
-  //     );
-  //   }
-  // }, [
-  //   enabled,
-  //   currentModel,
-  //   cameraState.target,
-  //   dispatch,
-  //   updateCameraState,
-  //   calculateModelCenter,
-  //   modelTransform.position,
-  // ]);
-
   // Keyboard event handler for camera control
   const handleKeyDown = useCallback(
     (event: KeyboardEvent) => {

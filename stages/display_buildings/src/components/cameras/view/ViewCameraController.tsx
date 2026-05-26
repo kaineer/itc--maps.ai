@@ -3,29 +3,28 @@ import { useFrame } from "@react-three/fiber";
 import { useDispatch, useSelector } from "react-redux";
 import * as THREE from "three";
 import { viewSlice } from "@slices/viewSlice";
-import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
+import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS } from "@utils/constants";
 import { AppDispatch } from "@store/index";
-import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
 import {
   directionTo,
   distance2dBetween,
   dotProduct2d,
 } from "@components/shared/positionMath";
-import { minimapSlice } from "@slices/minimapSlice";
 import { useViewCamera } from "@hooks/useViewSlice";
+import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
+import { useMinimapMarkers } from "@entities/minimap/lib/use.minimap.slice";
 
 export const ViewCameraController = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { getLastLoadedPosition, getLoading } = buildingsSlice.selectors;
-  const { getMarkers } = minimapSlice.selectors;
   const { cameraPosition, cameraTarget } = useViewCamera();
-  const markers = useSelector(getMarkers);
 
-  const lastLoadedPosition = useSelector(getLastLoadedPosition);
+  const { markers } = useMinimapMarkers();
+
+  const { lastLoadedPosition } = useBuildingsSlice();
+
   const { updateCameraPosition, updateCameraTarget, setActiveMarker } =
     viewSlice.actions;
-  const buildingsLoading = useSelector(getLoading);
 
   // Use refs to store current Redux state for useFrame callback
   const currentReduxState = useRef({
@@ -38,23 +37,6 @@ export const ViewCameraController = () => {
     currentReduxState.current.position = cameraPosition;
     currentReduxState.current.target = cameraTarget;
   }, [cameraPosition, cameraTarget]);
-
-  useEffect(() => {
-    if (
-      distance2dBetween(cameraPosition, lastLoadedPosition) >
-      DISTANCES.LAST_LOADED_CAMERA_DISTANCE
-    ) {
-      if (!buildingsLoading) {
-        const [x, _, z] = cameraPosition;
-        dispatch(
-          fetchBuildings({
-            position: { x, z },
-            distance: DISTANCES.BUILDING_DISTANCE,
-          }),
-        );
-      }
-    }
-  }, [cameraPosition, dispatch, buildingsLoading]);
 
   useEffect(() => {
     const closestMarker = (markers || []).find((marker) => {

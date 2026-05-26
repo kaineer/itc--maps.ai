@@ -1,96 +1,84 @@
-import { type Building, type ModelPosition } from "@.types/buildings-types";
-import { useCallback, useEffect, useState } from "react";
+import { useViewCamera } from "@hooks/useViewSlice";
+import { useBuildingsSlice } from "./use.buildings.slice";
 import {
   useLazyGetStartPositionQuery,
   useLazyPutBuildingsQuery,
 } from "../model/buildings.api";
+import { CAMERA_HEIGHTS, DISTANCES, EYE_LEVEL_HEIGHT } from "@utils/constants";
+import { useDispatch } from "react-redux";
+import { viewSlice } from "@slices/viewSlice";
+import { type ModelPosition } from "@.types/buildings-types";
+import { buildingsSlice } from "@slices/buildingsSlice";
+import { useEffect } from "react";
 import { distance2dBetween } from "@components/shared/positionMath";
-import { DISTANCES } from "@utils/constants";
-import { useNotification } from "@hooks/useNotification";
-import { useBuildingsSlice } from "./use.buildings.slice";
+import { parseLocationHash } from "@utils/parseLocationHash";
+
+const {
+  setGroundCenter,
+  updateCameraTarget,
+  updateCameraPosition,
+  clearCameraPreset,
+} = viewSlice.actions;
 
 export const useBuildingsApi = () => {
-  const [initialized, setInitialized] = useState(false);
+  const { cameraPosition } = useViewCamera();
+  const { lastLoadedPosition } = useBuildingsSlice();
+  const [getStartPosition] = useLazyGetStartPositionQuery();
+  const [getBuildingsInArea, { isLoading }] = useLazyPutBuildingsQuery();
+  const dispatch = useDispatch();
+  const { setBuildings, setLastLoadedPosition } = buildingsSlice.actions;
 
-  const [loadedPosition, setLoadedPosition] = useState<ModelPosition>([
-    0, 0, 0,
-  ]);
+  const fetchBuildings = async (x: number, z: number) => {
+    const buildings = await getBuildingsInArea({
+      position: { x, z },
+      distance: DISTANCES.BUILDING_DISTANCE,
+    }).unwrap();
 
-  const { cameraPosition, setCameraPosition } = useBuildingsSlice();
-
-  const [buildings, setBuildings] = useState<Building[]>([]);
-
-  const { notify } = useNotification();
-
-  const setLoadedPositionOnLoad = (pos: ModelPosition) => {
-    const [x, _, z] = pos;
-    const query = ["x=" + x, "z=" + z].join("&");
-    window.location.hash = query;
-
-    setLoadedPosition(pos);
+    dispatch(setBuildings(buildings));
+    dispatch(setLastLoadedPosition([x, EYE_LEVEL_HEIGHT, z]));
   };
 
-  // API
-  const [getStartPosition] = useLazyGetStartPositionQuery();
-  const [getBuildings, { isLoading: isBuildingsLoading }] =
-    useLazyPutBuildingsQuery();
+  const initializeViewCamera = (x: number, z: number) => {
+    const position = { x, z };
+    const cameraTarget: ModelPosition = [x, 0, z];
+    const cameraPosition: ModelPosition = [
+      x,
+      CAMERA_HEIGHTS.EYE_LEVEL,
+      z - DISTANCES.FROM_BUILDING,
+    ];
 
-  const fetchBuildings = useCallback(async () => {
-    try {
-      const buildingsList = await getBuildings({
-        position: {
-          x: cameraPosition[0],
-          z: cameraPosition[2],
-        },
-        distance: DISTANCES.BUILDING_DISTANCE,
-      }).unwrap();
+    dispatch(setGroundCenter(position));
+    dispatch(updateCameraTarget(cameraTarget));
+    dispatch(updateCameraPosition(cameraPosition));
+    dispatch(clearCameraPreset());
+  };
 
-      setLoadedPositionOnLoad(cameraPosition);
-      setBuildings(buildingsList);
-    } catch (err) {
-      notify("Не удается загрузить здания", err);
-      setBuildings([]);
-    }
-  }, [cameraPosition]);
-
-  useEffect(() => {
-    const { hash } = window.location;
-    const parts = hash.slice(1).split("&");
-    const fromHash = hash && Array.isArray(parts) && parts.length > 1;
-    const [x, z] = parts.map((p) => Number(p.split("=")[1]));
-
+  const initializeBuildings = async () => {
+    const result = parseLocationHash();
+    const { fromHash } = result;
     if (fromHash) {
-      setCameraPosition([x, 0, z]);
-      setInitialized(true);
-      fetchBuildings();
+      const { x, z } = result;
+      await fetchBuildings(x, z);
+      initializeViewCamera(x, z);
+    } else {
+      const { x, z } = await getStartPosition().unwrap();
+      await fetchBuildings(x, z);
+      initializeViewCamera(x, z);
     }
-  }, []);
-
-  useEffect(() => {
-    if (!initialized) {
-      // Дергаем загрузку исходной позиции
-      const fetcher = async () => {
-        const { x, z } = await getStartPosition().unwrap();
-        setCameraPosition([x, 0, z]);
-        setInitialized(true);
-      };
-
-      fetcher();
-    }
-  }, [initialized]);
+  };
 
   useEffect(() => {
     if (
-      !initialized ||
-      distance2dBetween(cameraPosition, loadedPosition) >
-        DISTANCES.LAST_LOADED_CAMERA_DISTANCE
+      distance2dBetween(cameraPosition, lastLoadedPosition) >
+      DISTANCES.LAST_LOADED_CAMERA_DISTANCE
     ) {
-      fetchBuildings();
+      const [x, _, z] = cameraPosition;
+      fetchBuildings(x, z);
     }
-  }, [cameraPosition, loadedPosition]);
+  }, [cameraPosition, lastLoadedPosition]);
 
   return {
-    buildings,
-    isBuildingsLoading,
+    initializeBuildings,
+    isLoading, // ???
   };
 };
