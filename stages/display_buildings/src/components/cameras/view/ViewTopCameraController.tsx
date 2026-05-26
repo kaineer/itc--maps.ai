@@ -7,13 +7,13 @@ import { MOVEMENT_SPEEDS, CAMERA_HEIGHTS, DISTANCES } from "@utils/constants";
 import { AppDispatch } from "@store/index";
 import { buildingsSlice, fetchBuildings } from "@slices/buildingsSlice";
 import { distance2dBetween } from "@components/shared/positionMath";
+import { useViewCamera } from "@hooks/useViewSlice";
 
 export const ViewTopCameraController = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { getCameraPosition, getCameraTarget } = viewSlice.selectors;
   const { getLastLoadedPosition, getLoading } = buildingsSlice.selectors;
-  const cameraPosition = useSelector(getCameraPosition);
-  const cameraTarget = useSelector(getCameraTarget);
+
+  const { cameraPosition, cameraTarget } = useViewCamera();
 
   const lastLoadedPosition = useSelector(getLastLoadedPosition);
   const { updateCameraPosition, updateCameraTarget } = viewSlice.actions;

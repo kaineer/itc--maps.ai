@@ -1,10 +1,8 @@
 import classes from "./DummyNotification.module.css";
-import { viewSlice } from "@slices/viewSlice";
-import { useSelector } from "react-redux";
+import { useViewMarkers } from "@hooks/useViewSlice";
 
 export const MarkerNotification = () => {
-  const { getActiveMarker } = viewSlice.selectors;
-  const activeMarker = useSelector(getActiveMarker);
+  const { activeMarker } = useViewMarkers();
 
   if (!activeMarker) return null;
 

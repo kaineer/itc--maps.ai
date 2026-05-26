@@ -21,7 +21,7 @@ export interface ViewCameraState {
   preset: boolean;
 }
 
-interface TrackPointData {
+export interface TrackPointData {
   trackId: TrackId;
   point: TrackPoint;
 }

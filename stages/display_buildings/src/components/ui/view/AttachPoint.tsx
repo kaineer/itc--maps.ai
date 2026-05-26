@@ -1,9 +1,8 @@
 import { NavigationButton } from "@components/kit/NavigationButton";
 import { Allow } from "@components/shared/Allow";
-import { viewSlice } from "@slices/viewSlice";
-import { usePutTrackPointMutation } from "@store/api/TracksApi";
+import { usePutTrackPointMutation } from "@entities/tracks/model/tracks.api";
+import { useViewCamera, useViewMarkers } from "@hooks/useViewSlice";
 import { IoIosAttach } from "react-icons/io";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -12,12 +11,11 @@ interface Props {
 }
 
 export const AttachPoint = ({ enabled = true }: Props) => {
-  const { getPointToAttach, getCameraPosition, getCameraTarget } =
-    viewSlice.selectors;
-  const pointToAttach = useSelector(getPointToAttach);
+  const { cameraPosition: position, cameraTarget: targetPosition } =
+    useViewCamera();
 
-  const position = useSelector(getCameraPosition);
-  const targetPosition = useSelector(getCameraTarget);
+  const { pointToAttach } = useViewMarkers();
+
   const navigate = useNavigate();
 
   const [updatePoint] = usePutTrackPointMutation();

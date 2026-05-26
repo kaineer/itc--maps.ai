@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { buildingsSlice, fetchInitialBuildings } from "@slices/buildingsSlice";
-import { viewSlice } from "@slices/viewSlice";
 import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
@@ -12,13 +11,13 @@ import { type AppDispatch } from "@store/index";
 import type { ModelPosition, Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
-import { BuildingFormsGroup } from "./BuildingFormsGroup";
 import { toast } from "sonner";
 import { ViewStage } from "@components/stage/ui/ViewStage";
 import { Minimap } from "./openstreet/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
 import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
+import { useViewCamera, useViewMinimap } from "@hooks/useViewSlice";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -29,22 +28,13 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
   const { getBuildings, getError } = buildingsSlice.selectors;
   const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
-  const {
-    getCameraPosition,
-    getCameraTarget,
-    getCameraFov,
-    getMinimapEnabled,
-    getActiveMarker,
-  } = viewSlice.selectors;
 
   const buildings = useSelector(getBuildings);
   const error = useSelector(getError);
 
-  const cameraPosition: ModelPosition = useSelector(getCameraPosition);
-  const cameraTarget: ModelPosition = useSelector(getCameraTarget);
-  const cameraFov = useSelector(getCameraFov);
-  const activeMarker = useSelector(getActiveMarker);
-  const showMinimap = useSelector(getMinimapEnabled);
+  const { cameraPosition, cameraTarget, cameraFov } = useViewCamera();
+
+  const { minimapEnabled: showMinimap } = useViewMinimap();
 
   const handleBuildingClick = (
     building: Building /* , keys: KeyboardModifiers */,

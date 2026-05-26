@@ -12,14 +12,14 @@ import {
   dotProduct2d,
 } from "@components/shared/positionMath";
 import { minimapSlice } from "@slices/minimapSlice";
+import { useViewCamera } from "@hooks/useViewSlice";
 
 export const ViewCameraController = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { getCameraPosition, getCameraTarget } = viewSlice.selectors;
+
   const { getLastLoadedPosition, getLoading } = buildingsSlice.selectors;
   const { getMarkers } = minimapSlice.selectors;
-  const cameraPosition = useSelector(getCameraPosition);
-  const cameraTarget = useSelector(getCameraTarget);
+  const { cameraPosition, cameraTarget } = useViewCamera();
   const markers = useSelector(getMarkers);
 
   const lastLoadedPosition = useSelector(getLastLoadedPosition);
