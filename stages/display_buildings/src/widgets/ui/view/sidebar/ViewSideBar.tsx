@@ -9,10 +9,6 @@ import { LuBuilding2 } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
 import { SideBarList } from "@widgets/sidebar/list/SideBarList";
-import {
-  useGetTracksListQuery,
-  useLazyGetTrackPointsQuery,
-} from "@store/api/TracksApi";
 import { useEffect, useState } from "react";
 import { Track, TrackPoint } from "@.types/track-types";
 import { almostNone } from "@components/shared/positionMath";
@@ -23,6 +19,10 @@ import { BuildingSelection } from "../forms/selection/BuildingSelection";
 import { EditPolygon } from "../forms/polygon/EditPolygon";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { Building } from "@.types/buildings-types";
+import {
+  useGetTracksListQuery,
+  useLazyGetTrackPointsQuery,
+} from "@entities/tracks/model/tracks.api";
 
 export const ViewSidebar = () => {
   const { isAuthenticated } = useAuthentication();

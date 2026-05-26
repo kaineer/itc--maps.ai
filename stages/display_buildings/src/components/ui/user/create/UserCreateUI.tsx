@@ -1,24 +1,23 @@
-import { CreateUser } from "@.types/user-request-types";
 import classes from "./UserCreateUI.module.css";
+import { CreateUser } from "@.types/user-request-types";
 import { UserForm } from "./UserForm";
-import { usePostUserMutation } from "@store/api/UsersApi";
 import { useNavigate } from "react-router";
-import { toast } from "sonner";
 import { NewUserSideBar } from "@widgets/ui/users/sidebar/NewUserSideBar";
+import { useNotification } from "@hooks/useNotification";
+import { usePostUserMutation } from "@entities/users/model/users.api";
 
 export const UserCreateUI = () => {
   const [createUser] = usePostUserMutation();
   const navigate = useNavigate();
+  const { notify } = useNotification();
 
   const handleCreateUser = async (user: Partial<CreateUser>) => {
     try {
-      await createUser(user);
-      toast.info("Создан новый пользователь " + user.login);
+      await createUser(user).unwrap();
+      notify("Создан новый пользователь " + user.login);
       navigate("/users");
     } catch (err) {
-      toast.error("Не удалось создать пользователя", {
-        description: String(err),
-      });
+      notify("Не удалось создать пользователя", err || new Error());
     }
   };
 

@@ -3,9 +3,12 @@ import { type MouseEvent } from "react";
 import { User } from "@.types/auth-types";
 import { Button } from "@components/kit/Button";
 import { useAuthentication } from "@hooks/useAuthentication";
-import { useDeleteUserMutation, usePutUserMutation } from "@store/api/UsersApi";
 import { getRoleIndex } from "@utils/roles";
-import { toast } from "sonner";
+import { useNotification } from "@hooks/useNotification";
+import {
+  useDeleteUserMutation,
+  usePutUserMutation,
+} from "@entities/users/model/users.api";
 
 interface Props {
   user: User;
@@ -14,6 +17,7 @@ interface Props {
 export const UserItemForm = ({ user }: Props) => {
   const { id, login, role, name } = user;
   const { user: currentUser } = useAuthentication();
+  const { notify, warn } = useNotification();
 
   const [deleteUser] = useDeleteUserMutation();
   const [updateUser] = usePutUserMutation();
@@ -32,16 +36,14 @@ export const UserItemForm = ({ user }: Props) => {
   const handleRemoveClick = enabledRemove
     ? async () => {
         try {
-          await deleteUser(id);
-          toast.info("Удален пользователь " + name);
+          await deleteUser(id).unwrap();
+          notify("Удален пользователь " + name);
         } catch (err) {
-          toast.error("Не удалось удалить пользователя", {
-            description: String(err),
-          });
+          notify("Не удалось удалить пользователя", err || new Error());
         }
       }
     : () => {
-        toast.warning("Харакири не наш путь");
+        warn("Харакири не наш путь");
       };
 
   return (

@@ -103,10 +103,13 @@ export const createBackendService = (
     }
   };
 
-  const callFetch = async (endpoint: string, options: CallFetchOptions) => {
+  const callFetch = async (
+    endpoint: string,
+    options: CallFetchOptions,
+  ): Promise<unknown> => {
     const fullUrl = joinUrl(url, endpoint);
-    const controller = new AbortController();
-    const { signal } = controller;
+    // const controller = new AbortController();
+    // const { signal } = controller;
 
     const method = options.method || defaultMethod;
     const headers = {
@@ -117,14 +120,16 @@ export const createBackendService = (
     const fetchOptions: FetchOptions = {
       method,
       headers,
-      signal,
+      // signal,
     };
 
     if (methodsWithBody.includes(method)) {
       fetchOptions.body = JSON.stringify(options.body || {});
     }
 
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    // const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const timeoutId = null;
+
     try {
       const response = await fetch(fullUrl, fetchOptions);
 
@@ -151,7 +156,8 @@ export const createBackendService = (
     } catch (error) {
       console.error({ error });
 
-      clearTimeout(timeoutId);
+      // if (timeoutId) clearTimeout(timeoutId);
+
       if (String(error).includes("AbortError")) {
         throw new MessageError(getCookie("http.toolong"));
       }
@@ -177,7 +183,7 @@ export const createBackendService = (
   };
 
   return {
-    get: (endpoint: string): Promise<unknown> => {
+    get(endpoint: string): Promise<unknown> {
       return callFetch(endpoint, { method: "GET", headers: jsonHeaders });
     },
     post(endpoint: string, body: unknown): Promise<unknown> {

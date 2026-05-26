@@ -1,8 +1,8 @@
 import { Button } from "@components/kit/Button";
 import classes from "./TrackListItem.module.css";
 import { Track } from "@.types/track-types";
-import { useDeleteTrackMutation } from "@store/api/TracksApi";
-import { toast } from "sonner";
+import { useNotification } from "@hooks/useNotification";
+import { useDeleteTrackMutation } from "@entities/tracks/model/tracks.api";
 
 interface Props {
   track: Track;
@@ -12,10 +12,15 @@ export const TrackListItem = ({ track }: Props) => {
   const { name } = track;
   const trackRoute = "/tracks/" + track.id;
   const [deleteItem] = useDeleteTrackMutation();
+  const { notify } = useNotification();
 
   const handleDelete = async () => {
-    await deleteItem(track.id);
-    toast.info("Экскурсия «" + name + "» удалена");
+    try {
+      await deleteItem(track.id).unwrap();
+      notify("Экскурсия «" + name + "» удалена");
+    } catch (err) {
+      notify("Не удалось удалить экскурсию", err || new Error());
+    }
   };
 
   return (

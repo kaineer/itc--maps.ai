@@ -29,6 +29,7 @@ export default defineConfig({
     alias: {
       "@slices": aliasPrefix("src/store/slices"),
       "@store": aliasPrefix("src/store"),
+      "@entities": aliasPrefix("src/entities"),
       "@utils": aliasPrefix("src/utils"),
       "@hooks": aliasPrefix("src/hooks"),
       "@contexts": aliasPrefix("src/contexts"),

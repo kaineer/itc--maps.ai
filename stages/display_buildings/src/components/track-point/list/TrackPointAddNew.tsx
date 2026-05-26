@@ -1,9 +1,9 @@
-import clsx from "clsx";
 import classes from "./TrackPointListItem.module.css";
+import clsx from "clsx";
 import { useRef, type KeyboardEvent } from "react";
-import { usePostTrackPointMutation } from "@store/api/TracksApi";
-import { toast } from "sonner";
 import { TrackId, TrackPoint } from "@.types/track-types";
+import { useNotification } from "@hooks/useNotification";
+import { usePostTrackPointMutation } from "@entities/tracks/model/tracks.api";
 
 interface Props {
   trackId: TrackId;
@@ -26,6 +26,7 @@ const createPointWithName = (name: string): Omit<TrackPoint, "id"> => {
 export const TrackPointAddNew = ({ trackId }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
   const [createPoint] = usePostTrackPointMutation();
+  const { notify } = useNotification();
 
   const handleKeydown = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -33,9 +34,15 @@ export const TrackPointAddNew = ({ trackId }: Props) => {
         const name = nameRef.current?.value || "";
         if (name) {
           nameRef.current.value = "";
-          await createPoint({ trackId, ...createPointWithName(name) });
-
-          toast.info("Создана точка экскурсии с именем «" + name + "»");
+          try {
+            await createPoint({
+              trackId,
+              ...createPointWithName(name),
+            }).unwrap();
+            notify("Создана точка экскурсии с именем «" + name + "»");
+          } catch (err) {
+            notify("Не удалось создать точку экскурсии", err || new Error());
+          }
         }
       }
     }

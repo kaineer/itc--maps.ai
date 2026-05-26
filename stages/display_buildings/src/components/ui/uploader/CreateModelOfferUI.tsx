@@ -2,7 +2,7 @@ import { FileUploadButton } from "@components/shared/ui/FileUploadButton";
 import classes from "./CreateModelOfferUI.module.css";
 import { type SubmitEvent, useRef, useState } from "react";
 import { toast } from "sonner";
-import { usePostModelMutation } from "@store/api/ModelOffersApi";
+import { usePostModelMutation } from "@entities/model-offers/model/model-offers.api";
 
 export const CreateModelOfferUI = () => {
   const addressRef = useRef<HTMLInputElement>(null);

@@ -12,7 +12,8 @@ import {
 } from "./slices/helpInfoSlice";
 import { rtkQueryErrorHandler } from "./middleware/unauthorized";
 
-import { apiMiddlewares, apiReducers } from "./api";
+import { apiReducers } from "./api";
+import { apiMiddlewares } from "./api/apiMiddlewares";
 
 export function setupStore() {
   const store = configureStore({

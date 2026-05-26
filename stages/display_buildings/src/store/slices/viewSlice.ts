@@ -252,6 +252,16 @@ export const initializeViewCamera = createAsyncThunk<{
   const camera = state.view.camera;
   const viewPosition = camera.position;
 
+  const loadStartPosition = async () => {
+    try {
+      const data = await backendService.get("buildings/start");
+      return data;
+    } catch (error) {
+      console.log(error);
+      debugger;
+    }
+  };
+
   // TODO: так быть не должно
   const viewTarget = camera.target || [
     viewPosition[0],
@@ -262,7 +272,8 @@ export const initializeViewCamera = createAsyncThunk<{
 
   const loadedPosition = fromHash
     ? { x, z }
-    : await backendService.get("buildings/start");
+    : // : await backendService.get("buildings/start");
+      await loadStartPosition();
   const presetPosition = { x: viewPosition[0], z: viewPosition[2] };
 
   const position = cameraPreset ? presetPosition : loadedPosition;

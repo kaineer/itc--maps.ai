@@ -8,7 +8,7 @@ import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { ModelData } from "@utils/modelTransform";
 import { modelsCache } from "@utils/modelsCache";
 import { ModelPosition } from "../../../types/types";
-import { toast } from "sonner";
+import { useNotification } from "@hooks/useNotification";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 
@@ -53,6 +53,8 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   const rotationStep = useSelector(getRotationStep);
   const scaleStep = useSelector(getScaleStep);
 
+  const { notify } = useNotification();
+
   const [currentModel, setCurrentModel] = useState<ModelData | null>(null);
 
   useEffect(() => {
@@ -71,13 +73,13 @@ export const TopCameraController = ({ enabled, onCameraUpdate }: Props) => {
   }, [modelUUID]);
 
   useEffect(() => {
-    toast.info("Шаг перемещения: " + String(positionStep) + "м");
+    notify("Шаг перемещения: " + String(positionStep) + "м");
   }, [positionStep]);
   useEffect(() => {
-    toast.info("Шаг поворота: " + String(rotationStep) + "градусов");
+    notify("Шаг поворота: " + String(rotationStep) + "градусов");
   }, [rotationStep]);
   useEffect(() => {
-    toast.info("Процент масштабирования: " + String(scaleStep));
+    notify("Процент масштабирования: " + String(scaleStep));
   }, [scaleStep]);
 
   // Key to direction mapping using event.code for layout independence

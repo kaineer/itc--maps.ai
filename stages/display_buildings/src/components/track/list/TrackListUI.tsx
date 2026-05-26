@@ -1,14 +1,14 @@
 import type { Track } from "@.types/track-types";
 import classes from "./TrackListUI.module.css";
-import { useGetTracksListQuery } from "@store/api/TracksApi";
 import { TrackListItem } from "./TrackListItem";
 import { TrackAddNew } from "./TrackAddNew";
 import { TracksSideBar } from "@widgets/ui/tracks/sidebar/TracksSideBar";
+import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
 
 export const TrackListUI = () => {
-  const { data, isLoading } = useGetTracksListQuery();
+  const { tracks, isTracksLoading } = useTracksApi();
 
-  if (!data || isLoading) return null;
+  if (!tracks || isTracksLoading) return null;
 
   return (
     <>
@@ -16,7 +16,7 @@ export const TrackListUI = () => {
       <div className={classes.container}>
         <h1 className={classes.header}>Экскурсии</h1>
         <TrackAddNew />
-        {data.map((track: Track) => (
+        {tracks.map((track: Track) => (
           <TrackListItem track={track} />
         ))}
       </div>

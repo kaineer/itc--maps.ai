@@ -1,10 +1,10 @@
 import { CenteredForm } from "@components/shared/ui/CenteredForm";
 import classes from "./EditPolygon.module.css";
 import { useCallback, useEffect, useState } from "react";
-import { usePatchPolygonMutation } from "@store/api/BuildingsApi";
 import { useSelector } from "react-redux";
 import { Building } from "@.types/buildings-types";
 import { alignmentSlice } from "@slices/alignmentSlice";
+import { usePatchPolygonMutation } from "@entities/buildings/model/buildings.api";
 
 interface Props {
   enabled: boolean;

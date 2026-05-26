@@ -1,10 +1,10 @@
 import classes from "./TrackPointListUI.module.css";
 
-import { useGetTrackPointsQuery } from "@store/api/TracksApi";
 import { useParams } from "react-router";
 import { TrackPointAddNew } from "./TrackPointAddNew";
 import { TrackPointListItem } from "./TrackPointListItem";
 import { TrackPointsSideBar } from "@widgets/ui/tracks/sidebar/TrackPointsSideBar";
+import { useGetTrackPointsQuery } from "@entities/tracks/model/tracks.api";
 
 export const TrackPointListUI = () => {
   const { trackId } = useParams();

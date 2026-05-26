@@ -1,12 +1,13 @@
-import { useSelector } from "react-redux";
 import classes from "./FinishAlignment.module.css";
+import { useSelector } from "react-redux";
 import clsx from "clsx";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { CreateModel } from "@.types/buildings-types";
-import { useCreateModelPositionMutation } from "@store/api/ModelsApi";
+import { useNotification } from "@hooks/useNotification";
+import { useCreateModelPositionMutation } from "@entities/models/model/models.api";
 
 interface Props {
   enabled?: boolean;
@@ -29,6 +30,7 @@ export const FinishAlignment = ({
   onToggled,
 }: Props) => {
   const navigate = useNavigate();
+  const { notify } = useNotification();
 
   const { getModelUUID, getSelectedPolygons, getModelTransform } =
     alignmentSlice.selectors;
@@ -70,11 +72,10 @@ export const FinishAlignment = ({
         address: address || void 0,
       };
 
-      createModel(transformData);
+      await createModel(transformData).unwrap();
       navigate("/view");
     } catch (err) {
-      //
-      toast.error(String(err));
+      notify("Не удалось сохранить выравнивание", err);
     }
   };
 

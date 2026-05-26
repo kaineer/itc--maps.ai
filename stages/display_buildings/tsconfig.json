@@ -20,6 +20,7 @@
       "@slices/*": ["src/store/slices/*"],
       "@store/*": ["src/store/*"],
       "@utils/*": ["src/utils/*"],
+      "@entities/*": ["src/entities/*"],
       "@hooks/*": ["src/hooks/*"],
       "@components/*": ["src/components/*"],
       "@contexts/*": ["src/contexts/*"],

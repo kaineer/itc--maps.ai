@@ -11,7 +11,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { leafletTemplate } from "@utils/network";
 import { distance2dBetween } from "@components/shared/positionMath";
 import { DISTANCES } from "@utils/constants";
-import { useLazyQueryTrackPointsQuery } from "@store/api/TracksApi";
 
 import L from "leaflet";
 // ✅ Правильное исправление иконок для react-leaflet 5.x
@@ -19,7 +18,8 @@ import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
 import { viewSlice } from "@slices/viewSlice";
-import { toast } from "sonner";
+import { useNotification } from "@hooks/useNotification";
+import { useLazyQueryTrackPointsQuery } from "@entities/tracks/model/tracks.api";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 
@@ -55,6 +55,7 @@ const ChangeView = ({ center, zoom }: ChangeViewProps) => {
 
 export const Minimap = ({ mapCenter = [0, 0, 0] }: Props) => {
   const dispatch = useDispatch();
+  const { notify } = useNotification();
 
   const { getZoom, getCenter, getLastLoadedCenter, getMarkers } =
     minimapSlice.selectors;
@@ -121,7 +122,8 @@ export const Minimap = ({ mapCenter = [0, 0, 0] }: Props) => {
   const handleMarker = (marker: MarkerPoint) => (e: LeafletMouseEvent) => {
     e.originalEvent.stopPropagation();
     const { position, target } = marker;
-    toast.info("Переход к маркеру " + marker.name);
+    notify("Переход к маркеру " + marker.name);
+
     dispatch(moveCameraToLocation(position));
     dispatch(updateCameraTarget(target));
   };

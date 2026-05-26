@@ -8,8 +8,8 @@ export const UnauthorizedRouter = () => (
   <BrowserRouter>
     <Routes>
       <Route index element={<IntroUI />} />
-      <Route path="login" element={<LoginUI />} />
-      <Route path="view" element={<ViewUI />} />
+      <Route path="/login" element={<LoginUI />} />
+      <Route path="/view" element={<ViewUI />} />
       <Route path="*" element={<Navigate to="/view" />} />
     </Routes>
   </BrowserRouter>

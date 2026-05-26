@@ -81,6 +81,10 @@ export const authenticationSlice = createSlice({
   name: "authentication",
   initialState,
   reducers: {
+    logout: (state) => {
+      state.user = null;
+      state.accessToken = null;
+    },
     cleanError: (state) => {
       state.error = null;
       state.errorDescription = null;

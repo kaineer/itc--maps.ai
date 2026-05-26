@@ -1,16 +1,8 @@
-import { userApi } from "./UsersApi";
-import { tracksApi } from "./TracksApi";
-import { buildingsApi } from "./BuildingsApi";
-import { modelsApi } from "./ModelsApi";
-import { modelOffersApi } from "./ModelOffersApi";
-
-export const apiMiddlewares = [
-  userApi.middleware,
-  tracksApi.middleware,
-  buildingsApi.middleware,
-  modelsApi.middleware,
-  modelOffersApi.middleware,
-];
+import { userApi } from "@entities/users/model/users.api";
+import { tracksApi } from "@entities/tracks/model/tracks.api";
+import { buildingsApi } from "@entities/buildings/model/buildings.api";
+import { modelsApi } from "@entities/models/model/models.api";
+import { modelOffersApi } from "@entities/model-offers/model/model-offers.api";
 
 export const apiReducers = {
   [userApi.reducerPath]: userApi.reducer,

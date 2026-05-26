@@ -1,16 +1,16 @@
 import { Button } from "@components/kit/Button";
 import classes from "./TrackPointListItem.module.css";
 import type { TrackId, TrackPoint } from "@.types/track-types";
-import {
-  useDeleteTrackPointMutation,
-  usePutTrackPointMutation,
-} from "@store/api/TracksApi";
-import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { viewSlice } from "@slices/viewSlice";
 import { useNavigate } from "react-router";
+import { useNotification } from "@hooks/useNotification";
 import { useRef, useState } from "react";
 import { almostNone } from "@components/shared/positionMath";
+import {
+  useDeleteTrackPointMutation,
+  usePutTrackPointMutation,
+} from "@entities/tracks/model/tracks.api";
 
 interface Props {
   trackId: TrackId;
@@ -30,12 +30,17 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
     setCameraPreset,
   } = viewSlice.actions;
   const navigate = useNavigate();
+  const { notify } = useNotification();
 
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const handleDelete = async () => {
-    await deleteItem({ trackId, id: point.id });
-    toast.info("Точка «" + name + "» удалена");
+    try {
+      await deleteItem({ trackId, id: point.id }).unwrap();
+      notify("Точка «" + name + "» удалена");
+    } catch (err) {
+      notify("Не удалось удалить точку", err || new Error());
+    }
   };
 
   const handleAttach = () => {
@@ -60,8 +65,12 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
 
       const updatedPoint = { ...point, trackId, description: newDescription };
 
-      await updatePoint(updatedPoint);
-      toast.info("Описание точки сохранено");
+      try {
+        await updatePoint(updatedPoint).unwrap();
+        notify("Описание точки сохранено");
+      } catch (err) {
+        notify("Не удалось изменить описание точки", err || new Error());
+      }
     }
   };
 
