@@ -1,18 +1,17 @@
 import classes from "./FinishAlignment.module.css";
 import { useSelector } from "react-redux";
-import clsx from "clsx";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import { CreateModel } from "@.types/buildings-types";
 import { useNotification } from "@hooks/useNotification";
 import { useCreateModelPositionMutation } from "@entities/models/model/models.api";
+import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
 
 interface Props {
-  enabled?: boolean;
-  className?: string;
-  onToggled: (value: boolean) => void;
+  enabled: boolean;
+  onClose?: () => void;
 }
 
 /**
@@ -24,23 +23,19 @@ interface Props {
  * - Uses CollapsibleForm as base component
  * - Integrates with Redux for UI mode switching
  */
+
 export const FinishAlignment = ({
   enabled = true,
-  className = "",
-  onToggled,
+  onClose = () => null,
 }: Props) => {
   const navigate = useNavigate();
   const { notify } = useNotification();
-
-  const { getModelUUID, getSelectedPolygons, getModelTransform } =
-    alignmentSlice.selectors;
-
+  const { getModelUUID, getModelTransform } = alignmentSlice.selectors;
   const [createModel] = useCreateModelPositionMutation();
-
   const modelUUID = useSelector(getModelUUID);
-  const selectedPolygons = useSelector(getSelectedPolygons);
   const modelTransform = useSelector(getModelTransform);
 
+  const { selectedPolygons } = useSelectedPolygons();
   /**
    * Handle save alignment button click
    * Saves current alignment to backend via PATCH /models/:modelId
@@ -49,20 +44,16 @@ export const FinishAlignment = ({
     if (!modelUUID) {
       return toast.error("Cannot save alignment: no model selected");
     }
-
     if (selectedPolygons.length === 0) {
       return toast.error("Cannot save alignment: no polygons selected");
     }
-
     const pa = selectedPolygons.find((p) => p.address);
     let address: string | null = null;
     if (pa) {
       address = pa.address;
     }
-
     try {
       const { position, rotation, scale } = modelTransform;
-
       const transformData: CreateModel = {
         id: modelUUID,
         position,
@@ -71,14 +62,12 @@ export const FinishAlignment = ({
         polygons: selectedPolygons.map((p) => p.id),
         address: address || void 0,
       };
-
       await createModel(transformData).unwrap();
       navigate("/view");
     } catch (err) {
       notify("Не удалось сохранить выравнивание", err);
     }
   };
-
   /**
    * Handle return to view mode button click
    * Switches UI mode from alignment back to view
@@ -86,24 +75,14 @@ export const FinishAlignment = ({
   const handleReturnToView = () => {
     navigate("/view");
   };
-
   return (
-    <CollapsibleForm
-      enabled={enabled}
-      className={clsx(classes.container, className)}
-      collapsedClassName={classes.collapsed}
-      expandedClassName={classes.expanded}
-      collapsed={{ buttonText: "✅", title: "Завершить выравнивание" }}
-      closeTitle="Скрыть панель завершения"
-      onToggled={onToggled}
-    >
+    <CenteredForm enabled={enabled} onClose={onClose}>
       <div className={classes.header}>
         <h3 className={classes.title}>Завершение выравнивания</h3>
         <p className={classes.subtitle}>
           Завершите процесс выравнивания 3D модели с полигоном здания
         </p>
       </div>
-
       <div className={classes.buttonsContainer}>
         <button
           onClick={handleSaveAlignment}
@@ -112,7 +91,6 @@ export const FinishAlignment = ({
         >
           Сохранить выравнивание
         </button>
-
         <button
           onClick={handleReturnToView}
           className={classes.returnButton}
@@ -121,7 +99,6 @@ export const FinishAlignment = ({
           Вернуться в режим просмотра
         </button>
       </div>
-
       <div className={classes.infoSection}>
         <div className={classes.infoItem}>
           <span className={classes.infoIcon}>💾</span>
@@ -130,7 +107,6 @@ export const FinishAlignment = ({
             модели относительно полигона в базу данных
           </span>
         </div>
-
         <div className={classes.infoItem}>
           <span className={classes.infoIcon}>👁️</span>
           <span className={classes.infoText}>
@@ -139,6 +115,6 @@ export const FinishAlignment = ({
           </span>
         </div>
       </div>
-    </CollapsibleForm>
+    </CenteredForm>
   );
 };

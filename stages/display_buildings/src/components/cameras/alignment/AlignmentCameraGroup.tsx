@@ -5,7 +5,7 @@ import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { AlignmentSliceLogger } from "../../testing/ui/AlignmentSliceLogger";
 import { Development } from "../../shared/Development";
 import { Match } from "../../shared/Match";
-import { CameraUpdateProps, EnabledProps } from "../../shared/types";
+import { CameraUpdateProps, EnabledProps } from "@.types/component-types";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 

@@ -1,7 +1,5 @@
-import { useSelector } from "react-redux";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import { EnabledProps } from "@.types/component-types";
 import { AlignmentStage } from "./AlignmentStage";
-import { EnabledProps } from "../../shared/types";
 
 interface Props extends EnabledProps {
   /**
@@ -22,17 +20,8 @@ interface Props extends EnabledProps {
  * inside AlignmentStage, which reads currentModel and modelTransform from Redux.
  */
 export const AlignmentStageContainer = ({
-  enabled = true,
+  enabled,
   onBuildingClick,
 }: Props) => {
-  const { getSelectedPolygons } = alignmentSlice.selectors;
-  const selectedPolygons = useSelector(getSelectedPolygons);
-
-  return (
-    <AlignmentStage
-      enabled={enabled}
-      selectedPolygons={selectedPolygons}
-      onBuildingClick={onBuildingClick}
-    />
-  );
+  return <AlignmentStage enabled={enabled} onBuildingClick={onBuildingClick} />;
 };

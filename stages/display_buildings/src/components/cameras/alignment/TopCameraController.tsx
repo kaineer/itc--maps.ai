@@ -4,10 +4,13 @@ import { Vector2, Vector3 } from "three";
 import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
-import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { ModelData } from "@utils/modelTransform";
 import { modelsCache } from "@utils/modelsCache";
-import { ModelPosition } from "../../../types/types";
+import {
+  CameraUpdateProps,
+  EnabledProps,
+  ModelPosition,
+} from "../../../types/types";
 import { useNotification } from "@hooks/useNotification";
 
 interface Props extends EnabledProps, CameraUpdateProps {}

@@ -4,6 +4,7 @@ import { useRef, type KeyboardEvent } from "react";
 import { TrackId, TrackPoint } from "@.types/track-types";
 import { useNotification } from "@hooks/useNotification";
 import { usePostTrackPointMutation } from "@entities/tracks/model/tracks.api";
+import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
 
 interface Props {
   trackId: TrackId;
@@ -25,7 +26,8 @@ const createPointWithName = (name: string): Omit<TrackPoint, "id"> => {
 
 export const TrackPointAddNew = ({ trackId }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
-  const [createPoint] = usePostTrackPointMutation();
+  // const [createPoint] = usePostTrackPointMutation();
+  const { createPoint } = useTrackPointsApi(trackId);
   const { notify } = useNotification();
 
   const handleKeydown = async (e: KeyboardEvent<HTMLInputElement>) => {
@@ -35,10 +37,7 @@ export const TrackPointAddNew = ({ trackId }: Props) => {
         if (name) {
           nameRef.current.value = "";
           try {
-            await createPoint({
-              trackId,
-              ...createPointWithName(name),
-            }).unwrap();
+            await createPoint(createPointWithName(name));
             notify("Создана точка экскурсии с именем «" + name + "»");
           } catch (err) {
             notify("Не удалось создать точку экскурсии", err || new Error());

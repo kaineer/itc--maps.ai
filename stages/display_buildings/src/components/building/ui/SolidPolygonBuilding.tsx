@@ -1,16 +1,14 @@
 import { BasePolygonBuilding } from "./BasePolygonBuilding";
 import { Building } from "../../../types/types";
-import { alignmentSlice } from "@slices/alignmentSlice";
-import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import {
   getKeyboardModifiers,
   KeyboardModifiers,
 } from "@utils/keyboardModifiers";
+import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
 
 interface Props {
   building: Building;
-  // onClick?: (buildingId: string) => void;
   onClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
@@ -18,8 +16,7 @@ export const SolidPolygonBuilding = ({
   building,
   onClick = () => null,
 }: Props) => {
-  const { getSelectedPolygons } = alignmentSlice.selectors;
-  const polygons = useSelector(getSelectedPolygons);
+  const { selectedPolygons: polygons } = useSelectedPolygons();
   const highlighted = Boolean(polygons.find((p) => p.id === building.id));
 
   const [opacity, setOpacity] = useState<number>(0.1);

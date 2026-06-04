@@ -1,5 +1,5 @@
 import classes from "./DummyNotification.module.css";
-import { useViewMarkers } from "@hooks/useViewSlice";
+import { useViewMarkers } from "@hooks/view/useViewSlice";
 
 export const MarkerNotification = () => {
   const { activeMarker } = useViewMarkers();

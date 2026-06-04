@@ -1,4 +1,4 @@
-import { useViewCamera } from "@hooks/useViewSlice";
+import { useViewCamera, useViewMarkers } from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "./use.buildings.slice";
 import {
   useLazyGetStartPositionQuery,
@@ -22,6 +22,7 @@ const {
 
 export const useBuildingsApi = () => {
   const { cameraPosition } = useViewCamera();
+  const { pointToAttach } = useViewMarkers();
   const { lastLoadedPosition } = useBuildingsSlice();
   const [getStartPosition] = useLazyGetStartPositionQuery();
   const [getBuildingsInArea, { isLoading }] = useLazyPutBuildingsQuery();
@@ -54,16 +55,24 @@ export const useBuildingsApi = () => {
   };
 
   const initializeBuildings = async () => {
+    const fetchBuildingsAndInitializeCamera = async (x: number, z: number) => {
+      await fetchBuildings(x, z);
+      initializeViewCamera(x, z);
+    };
+
+    // Если мы открываем view из списка точек
+    //   нужно оставить позицию камеры "как есть"
+    if (pointToAttach) return;
+
     const result = parseLocationHash();
     const { fromHash } = result;
+
     if (fromHash) {
       const { x, z } = result;
-      await fetchBuildings(x, z);
-      initializeViewCamera(x, z);
+      fetchBuildingsAndInitializeCamera(x, z);
     } else {
       const { x, z } = await getStartPosition().unwrap();
-      await fetchBuildings(x, z);
-      initializeViewCamera(x, z);
+      fetchBuildingsAndInitializeCamera(x, z);
     }
   };
 

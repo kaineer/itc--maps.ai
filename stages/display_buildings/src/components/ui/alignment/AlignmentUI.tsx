@@ -9,7 +9,7 @@ import { Lighting } from "../../static/Lighting";
 
 import { AlignmentStageContainer } from "../../stage/ui/AlignmentStageContainer";
 import { AlignmentCameraGroup } from "../../cameras/alignment/AlignmentCameraGroup";
-import { AlignmentUIGroup } from "./AlignmentUIGroup";
+import { AlignmentSideBar } from "@widgets/ui/alignment/sidebar/AlignmentSideBar";
 
 /**
  * AlignmentUI component for the alignment mode.
@@ -33,7 +33,7 @@ export const AlignmentUI = () => {
   return (
     <>
       {/* UI controls outside Canvas (camera info, controls, etc.) */}
-      <AlignmentUIGroup enabled={true} />
+      <AlignmentSideBar />
 
       {/* 3D Canvas for alignment visualization */}
       <Canvas
@@ -54,7 +54,7 @@ export const AlignmentUI = () => {
         <Ground position={currentCamera.position} />
 
         {/* Alignment stage: renders selected polygons and alignment model */}
-        <AlignmentStageContainer enabled={true} />
+        <AlignmentStageContainer />
 
         {/* Alignment camera controllers (switch between top/perspective) */}
         <AlignmentCameraGroup enabled={true} />

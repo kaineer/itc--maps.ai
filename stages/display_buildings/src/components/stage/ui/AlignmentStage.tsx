@@ -1,14 +1,9 @@
-import { Building } from "../../../types/types";
+import { Building, EnabledProps } from "../../../types/types";
 import { TransparentPolygonBuilding } from "../../building/ui/TransparentPolygonBuilding";
 import { AlignmentModel } from "../../alignment/AlignmentModel";
-import { EnabledProps } from "../../shared/types";
+import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
 
 interface Props extends EnabledProps {
-  /**
-   * Selected polygons (buildings) to display for alignment reference
-   */
-  selectedPolygons: Building[];
-
   /**
    * Optional callback when a building polygon is clicked
    */
@@ -30,14 +25,10 @@ interface Props extends EnabledProps {
  * The alignment model is positioned with its bottom face center at modelTransform.position,
  * matching how real 3D models should be positioned (bottom face on ground).
  */
-export const AlignmentStage = ({
-  enabled = true,
-  selectedPolygons,
-  onBuildingClick,
-}: Props) => {
-  if (!enabled) {
-    return null;
-  }
+export const AlignmentStage = ({ enabled = true, onBuildingClick }: Props) => {
+  const { selectedPolygons } = useSelectedPolygons();
+
+  if (!enabled) return null;
 
   return (
     <>

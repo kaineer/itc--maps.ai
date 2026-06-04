@@ -1,7 +1,7 @@
 import { NavigationButton } from "@components/kit/NavigationButton";
 import { Allow } from "@components/shared/Allow";
 import { usePutTrackPointMutation } from "@entities/tracks/model/tracks.api";
-import { useViewCamera, useViewMarkers } from "@hooks/useViewSlice";
+import { useViewCamera, useViewMarkers } from "@hooks/view/useViewSlice";
 import { IoIosAttach } from "react-icons/io";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";

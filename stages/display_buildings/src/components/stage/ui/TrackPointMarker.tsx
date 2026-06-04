@@ -20,6 +20,10 @@ export const TrackPointMarker = ({
   const [x, _, z] = position;
   const [tx, _2, tz] = target;
 
+  const handleClick = () => {
+    console.log({ position });
+  };
+
   // Вычисляем направление от position к target
   const direction = new Vector3(x - tx, 0, tz - z);
   const angle = Math.atan2(direction.x, direction.z);
@@ -31,7 +35,11 @@ export const TrackPointMarker = ({
   return (
     <group position={[-x, 0, z]}>
       {/* Основной цилиндр */}
-      <Cylinder args={[radius, radius, height, 32]} position={[0, 0, 0]}>
+      <Cylinder
+        args={[radius, radius, height, 32]}
+        position={[0, 0, 0]}
+        onClick={handleClick}
+      >
         <meshStandardMaterial transparent color={color} opacity={0.3} />
       </Cylinder>
 

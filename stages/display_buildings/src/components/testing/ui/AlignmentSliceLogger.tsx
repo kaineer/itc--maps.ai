@@ -33,8 +33,6 @@ export const AlignmentSliceLogger = ({
     getPositionStep,
     getRotationStep,
     getScaleStep,
-    getAlignmentTools,
-    getAlignmentProgress,
   } = alignmentSlice.selectors;
 
   // Select all state we want to monitor
@@ -46,8 +44,6 @@ export const AlignmentSliceLogger = ({
   const positionStep = useSelector(getPositionStep);
   const rotationStep = useSelector(getRotationStep);
   const scaleStep = useSelector(getScaleStep);
-  const alignmentTools = useSelector(getAlignmentTools);
-  const alignmentProgress = useSelector(getAlignmentProgress);
 
   // Log camera state changes
   useEffect(() => {

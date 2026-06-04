@@ -633,13 +633,6 @@ export const alignmentSlice = createSlice({
     getSelectedPolygons: (state) => state.selectedPolygons,
     getModelTransform: (state) => state.modelTransform,
 
-    // Alignment tools selectors
-    getAlignmentTools: (state) => ({
-      snapToPolygon: state.snapToPolygon,
-      showGrid: state.showGrid,
-      showAxes: state.showAxes,
-    }),
-
     // Step configuration selectors
     getPositionStep: (state) => state.positionStep,
     getRotationStep: (state): RotationStep =>

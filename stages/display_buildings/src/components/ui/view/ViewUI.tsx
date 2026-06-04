@@ -16,7 +16,7 @@ import { Minimap } from "./openstreet/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
 import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
-import { useViewCamera, useViewMinimap } from "@hooks/useViewSlice";
+import { useViewCamera, useViewMinimap } from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
 import { useBuildingsApi } from "@entities/buildings/lib/use.buildings.api";
 
@@ -47,10 +47,6 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     }
   };
 
-  const handleNotificationClose = () => {
-    // dispatch(disableNotification());
-  };
-
   useEffect(() => {
     initializeBuildings();
   }, []);
@@ -76,6 +72,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       <ViewSidebar />
 
       <MarkerNotification />
+      {/*
+       */}
 
       <Canvas
         camera={{
@@ -86,19 +84,23 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
       >
         <color attach="background" args={["#87CEEB"]} />
 
-        {/* Lighting for the scene */}
+        {/* Lighting for the scene
+         */}
         <Lighting />
 
-        {/* Ground plane for reference */}
+        {/* Ground plane for reference
+         */}
         <Ground position={cameraPosition} />
 
-        {/* Buildings */}
+        {/* Buildings
+         */}
         <ViewStage
           buildings={buildings}
           onBuildingClick={handleBuildingClick}
         />
 
-        {/* Camera controls for view mode */}
+        {/* Camera controls for view mode
+         */}
         <OrbitControls
           makeDefault
           enablePan={true}
@@ -108,10 +110,13 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           target={cameraTarget}
         />
 
-        {/* Camera movement controller (WASD controls) */}
+        {/* Camera movement controller (WASD controls)
+         */}
         <ViewCameraController />
       </Canvas>
 
+      {/*
+       */}
       {showMinimap && <Minimap mapCenter={cameraPosition} />}
     </>
   );

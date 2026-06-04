@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { calculateModelBoundingBox, ModelData } from "@utils/modelTransform";
 import { getDirectionFromKey } from "../../shared/ui/keyToDirection";
-import { CameraUpdateProps, EnabledProps } from "../../shared/types";
 import { modelsCache } from "@utils/modelsCache";
+import { CameraUpdateProps, EnabledProps } from "@.types/component-types";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 

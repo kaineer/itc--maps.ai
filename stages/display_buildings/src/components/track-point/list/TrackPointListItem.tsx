@@ -1,5 +1,5 @@
-import { Button } from "@components/kit/Button";
 import classes from "./TrackPointListItem.module.css";
+import { Button } from "@components/kit/Button";
 import type { TrackId, TrackPoint } from "@.types/track-types";
 import { useDispatch } from "react-redux";
 import { viewSlice } from "@slices/viewSlice";
@@ -7,10 +7,14 @@ import { useNavigate } from "react-router";
 import { useNotification } from "@hooks/useNotification";
 import { useRef, useState } from "react";
 import { almostNone } from "@components/shared/positionMath";
-import {
-  useDeleteTrackPointMutation,
-  usePutTrackPointMutation,
-} from "@entities/tracks/model/tracks.api";
+import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
+
+const {
+  setPointToAttach,
+  updateCameraPosition,
+  updateCameraTarget,
+  setCameraPreset,
+} = viewSlice.actions;
 
 interface Props {
   trackId: TrackId;
@@ -19,24 +23,17 @@ interface Props {
 
 export const TrackPointListItem = ({ trackId, point }: Props) => {
   const { name } = point;
-  const [deleteItem] = useDeleteTrackPointMutation();
-  const [updatePoint] = usePutTrackPointMutation();
-  const [showDescription, setShowDescription] = useState(false);
   const dispatch = useDispatch();
-  const {
-    setPointToAttach,
-    updateCameraPosition,
-    updateCameraTarget,
-    setCameraPreset,
-  } = viewSlice.actions;
   const navigate = useNavigate();
+  const [showDescription, setShowDescription] = useState(false);
   const { notify } = useNotification();
+  const { removePoint, updatePoint } = useTrackPointsApi(trackId);
 
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
   const handleDelete = async () => {
     try {
-      await deleteItem({ trackId, id: point.id }).unwrap();
+      await removePoint(point.id);
       notify("Точка «" + name + "» удалена");
     } catch (err) {
       notify("Не удалось удалить точку", err || new Error());
@@ -63,10 +60,8 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
     if (descriptionRef.current) {
       const newDescription = descriptionRef.current.value;
 
-      const updatedPoint = { ...point, trackId, description: newDescription };
-
       try {
-        await updatePoint(updatedPoint).unwrap();
+        await updatePoint({ ...point, description: newDescription });
         notify("Описание точки сохранено");
       } catch (err) {
         notify("Не удалось изменить описание точки", err || new Error());
