@@ -1,27 +1,25 @@
 import classes from "./BuildingEdit.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
-import clsx from "clsx";
-import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
-import { alignmentSlice } from "@slices/alignmentSlice";
-import { useSelector } from "react-redux";
 import {
-  Building,
   isBuildingWithModel,
   ModelMetadata,
   UpdateModel,
 } from "@.types/buildings-types";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
+import { toast } from "sonner";
+import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
 import {
   useDeleteModelMutation,
   useUpdateModelPositionMutation,
-} from "@store/api/ModelsApi";
-import { toast } from "sonner";
+} from "@entities/models/model/models.api";
+import { alignmentSlice } from "@slices/alignmentSlice";
+import { bind } from "@utils/bind";
 
 interface Props {
-  enabled?: boolean;
-  className?: string;
-  onToggled: (value: boolean) => void;
+  enabled: boolean;
+  onClose?: () => void;
 }
 
 /**
@@ -37,8 +35,7 @@ interface Props {
  */
 export const BuildingModelEdit = ({
   enabled = true,
-  className = "",
-  onToggled,
+  onClose = () => null,
 }: Props) => {
   const [rotation, setRotation] = useState<string>("");
   const [scale, setScale] = useState<string>("");
@@ -55,11 +52,10 @@ export const BuildingModelEdit = ({
 
   const metadataRef = useRef<HTMLTextAreaElement>(null);
 
-  const { getModelToEdit } = alignmentSlice.selectors;
-  const { dropModelToEdit } = alignmentSlice.actions;
-  const building: Building | null = useSelector(getModelToEdit);
+  const { modelToEdit: building } = useModelToEdit();
 
   const dispatch = useDispatch<AppDispatch>();
+  const { dropModelToEdit } = alignmentSlice.actions;
   const [removeModel] = useDeleteModelMutation();
   const [updateModel] = useUpdateModelPositionMutation();
 
@@ -153,6 +149,7 @@ export const BuildingModelEdit = ({
       })
       .finally(() => {
         dispatch(dropModelToEdit());
+        onClose();
       });
   };
 
@@ -217,31 +214,31 @@ export const BuildingModelEdit = ({
    * Handle Enter key press in form inputs
    */
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSave();
-    }
+    bind({
+      Enter: handleSave,
+    })(event);
+
+    // if (event.key === "Enter") {
+    //   handleSave();
+    // }
   };
 
   const toggleMetadata = (e) => {
-    if (e.ctrlKey) {
-      setShowMetadata((prev) => !prev);
-    }
+    bind({
+      ctrl: () => setShowMetadata((prev) => !prev),
+    })(e);
+    // if (e.ctrlKey) {
+    //   setShowMetadata((prev) => !prev);
+    // }
   };
 
   if (!building || !building.model) return null;
 
   return (
-    <CollapsibleForm
+    <CenteredForm
       enabled={enabled}
-      className={clsx(classes.container, className)}
-      collapsedClassName={classes.collapsed}
-      expandedClassName={classes.expanded}
-      collapsed={{
-        buttonText: "⚙️",
-        title: "Нажмите для редактирования модели",
-      }}
       closeTitle="Скрыть форму редактирования модели"
-      onToggled={onToggled}
+      onClose={onClose}
     >
       <div className={classes.editHeader}>
         <h3 className={classes.title}>Редактировать модель</h3>
@@ -394,6 +391,6 @@ export const BuildingModelEdit = ({
           </span>
         </div>
       )}
-    </CollapsibleForm>
+    </CenteredForm>
   );
 };

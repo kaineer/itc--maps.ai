@@ -22,7 +22,6 @@ const {
 
 export const useBuildingsApi = () => {
   const { cameraPosition } = useViewCamera();
-  const { pointToAttach } = useViewMarkers();
   const { lastLoadedPosition } = useBuildingsSlice();
   const [getStartPosition] = useLazyGetStartPositionQuery();
   const [getBuildingsInArea, { isLoading }] = useLazyPutBuildingsQuery();
@@ -59,10 +58,6 @@ export const useBuildingsApi = () => {
       await fetchBuildings(x, z);
       initializeViewCamera(x, z);
     };
-
-    // Если мы открываем view из списка точек
-    //   нужно оставить позицию камеры "как есть"
-    if (pointToAttach) return;
 
     const result = parseLocationHash();
     const { fromHash } = result;

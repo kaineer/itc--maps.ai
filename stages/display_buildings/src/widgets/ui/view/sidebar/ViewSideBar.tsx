@@ -16,6 +16,8 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { Building } from "@.types/buildings-types";
 import { AttachPointSidebarItem } from "./AttachPointSidebarItem";
 import { TracksSidebarLists } from "./TrackSidebarLists";
+import { BuildingModelEdit } from "@components/ui/view/BuildingModelEdit";
+import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
 
 export const ViewSidebar = () => {
   const { isAuthenticated } = useAuthentication();
@@ -28,6 +30,8 @@ export const ViewSidebar = () => {
   const { getSelectedPolygons } = alignmentSlice.selectors;
   const selectedPolygons: Building[] = useSelector(getSelectedPolygons);
   const polygon = selectedPolygons.length === 1 ? selectedPolygons[0] : "";
+
+  const { modelToEdit } = useModelToEdit();
 
   const handleToggleMinimap = () => {
     if (minimapEnabled) {
@@ -61,6 +65,12 @@ export const ViewSidebar = () => {
           label="Изменить полигон"
           form={EditPolygon}
           displayWhen={() => !!polygon}
+        />
+        <SideBarItem
+          icon={LuBuilding2}
+          label="Изменить модель"
+          form={BuildingModelEdit}
+          displayWhen={() => modelToEdit}
         />
         <TracksSidebarLists />
       </Allow>

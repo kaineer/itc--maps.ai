@@ -16,7 +16,11 @@ import { Minimap } from "./openstreet/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
 import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
-import { useViewCamera, useViewMinimap } from "@hooks/view/useViewSlice";
+import {
+  useViewCamera,
+  useViewMarkers,
+  useViewMinimap,
+} from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
 import { useBuildingsApi } from "@entities/buildings/lib/use.buildings.api";
 
@@ -30,6 +34,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
 
   const { buildings, error } = useBuildingsSlice();
+  const { pointToAttach } = useViewMarkers();
 
   const { cameraPosition, cameraTarget, cameraFov } = useViewCamera();
   const { initializeBuildings } = useBuildingsApi();
@@ -48,7 +53,9 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
   };
 
   useEffect(() => {
-    initializeBuildings();
+    if (!pointToAttach) {
+      initializeBuildings();
+    }
   }, []);
 
   useEffect(() => {
