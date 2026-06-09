@@ -35,6 +35,16 @@ export const createModelsCache = () => {
     }
   };
 
+  /**
+   * Load model and fix it
+   *
+   * * Fix all half-transparencies
+   * * Remove light sources
+   *
+   * @param modelId
+   * @param model
+   * @returns
+   */
   const getModelData = (modelId: string, model: THREE.Group) => {
     const boundingBox = new THREE.Box3().setFromObject(model);
     let vertexCount = 0;
@@ -59,6 +69,24 @@ export const createModelsCache = () => {
     // Second pass: fix material properties to prevent transparency issues
     let materialCount = 0;
     model.traverse((child) => {
+      // Handle lights - удалить полностью
+      if (child instanceof THREE.Light) {
+        // Уменьшаем интенсивность
+        child.intensity = 0;
+        // Или задать очень маленькое значение
+        // child.intensity = 0.01;
+
+        // Для точечных/направленных источников можно также уменьшить дальность
+        if (
+          child instanceof THREE.PointLight ||
+          child instanceof THREE.SpotLight
+        ) {
+          child.distance = 0.1;
+        }
+
+        return; // не обрабатываем как Mesh        if (child.parent) {
+      }
+
       if (child instanceof THREE.Mesh) {
         const mesh = child as THREE.Mesh;
 

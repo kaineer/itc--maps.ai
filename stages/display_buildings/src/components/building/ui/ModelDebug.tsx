@@ -10,8 +10,7 @@ interface Props {
 }
 
 export const ModelDebug = ({ building }: Props) => {
-  const { model: modelId, modelMetadata } = building;
-  const { position, rotation, scale } = modelMetadata || {};
+  const { model: modelId } = building;
   const [modelData, setModelData] = useState<ModelData | null>(null);
   const [debugInfo, setDebugInfo] = useState<string>("");
 

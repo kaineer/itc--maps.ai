@@ -24,10 +24,12 @@ export const UserItemForm = ({ user }: Props) => {
   const enabledRemove = login !== currentUser?.login;
 
   const handleRoleChange = (newRole: string) => () => {
-    updateUser({
-      id,
-      role: getRoleIndex(newRole),
-    });
+    if (role !== newRole) {
+      updateUser({
+        id,
+        role: getRoleIndex(newRole),
+      });
+    }
   };
 
   const variation = (active: boolean) =>

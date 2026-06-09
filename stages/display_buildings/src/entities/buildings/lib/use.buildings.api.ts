@@ -1,4 +1,4 @@
-import { useViewCamera, useViewMarkers } from "@hooks/view/useViewSlice";
+import { useViewCamera } from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "./use.buildings.slice";
 import {
   useLazyGetStartPositionQuery,
@@ -26,15 +26,18 @@ export const useBuildingsApi = () => {
   const [getStartPosition] = useLazyGetStartPositionQuery();
   const [getBuildingsInArea, { isLoading }] = useLazyPutBuildingsQuery();
   const dispatch = useDispatch();
-  const { setBuildings, setLastLoadedPosition } = buildingsSlice.actions;
+  const { setLastLoadedPosition } = buildingsSlice.actions;
 
   const fetchBuildings = async (x: number, z: number) => {
-    const buildings = await getBuildingsInArea({
+    await getBuildingsInArea({
       position: { x, z },
       distance: DISTANCES.BUILDING_DISTANCE,
     }).unwrap();
 
-    dispatch(setBuildings(buildings));
+    // NOTE: Почему мы здесь не используем полученные здания?
+    //   Потому, что dispatch(setBuildings(...)) вызывается прямо в запросе
+    //   в ключе onQueryStarted
+    //
     dispatch(setLastLoadedPosition([x, EYE_LEVEL_HEIGHT, z]));
   };
 
@@ -83,6 +86,5 @@ export const useBuildingsApi = () => {
 
   return {
     initializeBuildings,
-    isLoading, // ???
   };
 };

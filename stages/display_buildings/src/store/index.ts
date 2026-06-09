@@ -14,6 +14,7 @@ import { rtkQueryErrorHandler } from "./middleware/unauthorized";
 
 import { apiReducers } from "./api";
 import { apiMiddlewares } from "./api/apiMiddlewares";
+import { tracksSlice } from "@entities/tracks/model/tracks.slice";
 
 export function setupStore() {
   const store = configureStore({
@@ -26,6 +27,7 @@ export function setupStore() {
       [helpInfoSlice.reducerPath]: helpInfoSlice.reducer,
       [authenticationSlice.reducerPath]: authenticationSlice.reducer,
       [minimapSlice.reducerPath]: minimapSlice.reducer,
+      [tracksSlice.reducerPath]: tracksSlice.reducer,
       // Add other reducers here as they are created
 
       // API

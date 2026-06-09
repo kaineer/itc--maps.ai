@@ -1,13 +1,17 @@
 import classes from "./TrackPointListItem.module.css";
 import { Button } from "@components/kit/Button";
 import type { TrackId, TrackPoint } from "@.types/track-types";
+import { KeyboardEvent, MouseEvent } from "react";
 import { useDispatch } from "react-redux";
 import { viewSlice } from "@slices/viewSlice";
 import { useNavigate } from "react-router";
 import { useNotification } from "@hooks/useNotification";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { almostNone } from "@components/shared/positionMath";
 import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
+import { bind } from "@utils/bind";
+import { tracksSlice } from "@entities/tracks/model/tracks.slice";
+import { useCurrentPointId } from "@entities/tracks/lib/use.track.slice";
 
 const {
   setPointToAttach,
@@ -25,9 +29,11 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
   const { name } = point;
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [showDescription, setShowDescription] = useState(false);
   const { notify } = useNotification();
   const { removePoint, updatePoint } = useTrackPointsApi(trackId);
+  const { isPointCurrent } = useCurrentPointId();
+  const { setCurrentPoint } = tracksSlice.actions;
+  const showDescription = isPointCurrent(point);
 
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
 
@@ -52,9 +58,17 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
     navigate("/view");
   };
 
-  const handleDescription = () => {
-    setShowDescription((prev) => !prev);
+  const handleDescription = (e: MouseEvent<HTMLElement>) => {
+    if (!isPointCurrent(point)) {
+      dispatch(setCurrentPoint(point));
+    }
+    e.stopPropagation();
   };
+
+  const handleKeydown = (e: KeyboardEvent<HTMLTextAreaElement>) =>
+    bind({
+      "ctrl+Enter": handleSaveDescription,
+    })(e);
 
   const handleSaveDescription = async () => {
     if (descriptionRef.current) {
@@ -62,7 +76,8 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
 
       try {
         await updatePoint({ ...point, description: newDescription });
-        notify("Описание точки сохранено");
+        notify("Описание точки «" + point.name + "» сохранено");
+        dispatch(setCurrentPoint(null));
       } catch (err) {
         notify("Не удалось изменить описание точки", err || new Error());
       }
@@ -70,7 +85,10 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
   };
 
   return (
-    <div className={classes.container}>
+    <div
+      className={classes.container}
+      onClick={() => dispatch(setCurrentPoint(point))}
+    >
       <div className={classes.firstRow}>
         <div className={classes.content}>{name}</div>
         <Button variation="green small" onClick={handleAttach}>
@@ -87,6 +105,7 @@ export const TrackPointListItem = ({ trackId, point }: Props) => {
         <div className={classes.secondRow}>
           <textarea
             ref={descriptionRef}
+            onKeyDown={handleKeydown}
             defaultValue={point.description}
           ></textarea>
           <Button variation="black small" onClick={handleSaveDescription}>

@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import { Building } from "@.types/buildings-types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { usePatchPolygonMutation } from "@entities/buildings/model/buildings.api";
+import { bind } from "@utils/bind";
 
 interface Props {
   enabled: boolean;
@@ -89,16 +90,15 @@ export const EditPolygon = ({ enabled, onClose = () => null }: Props) => {
   /**
    * Handle Enter key press in form inputs
    */
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSave();
-    }
-  };
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) =>
+    bind({
+      Enter: handleSave,
+    })(event);
 
   if (!polygon) return null;
 
   return (
-    <CenteredForm enabled={enabled} onClose={onClose}>
+    <CenteredForm enabled={enabled} dismissable={true} onClose={onClose}>
       <div className={classes.editHeader}>
         <h3 className={classes.title}>Исправить здание</h3>
         <p className={classes.subtitle}>

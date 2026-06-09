@@ -5,9 +5,11 @@ import {
 } from "@.types/buildings-types";
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { createBackendService } from "@services/backendService";
+import { buildingsSlice } from "@slices/buildingsSlice";
 
 const backendService = createBackendService();
 const { baseQuery } = backendService;
+const { setBuildings } = buildingsSlice.actions;
 
 export const buildingsApi = createApi({
   reducerPath: "building/api",
@@ -33,6 +35,14 @@ export const buildingsApi = createApi({
         },
       }),
       providesTags: ["buildingList"],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setBuildings(data));
+        } catch (err) {
+          console.error(err);
+        }
+      },
     }),
     PatchPolygon: build.mutation<Building, UpdateBuilding>({
       query: ({ id, address, height }) => ({

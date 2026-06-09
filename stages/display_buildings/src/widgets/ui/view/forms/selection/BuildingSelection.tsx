@@ -52,7 +52,7 @@ export const BuildingSelection = ({ enabled, onClose = () => null }: Props) => {
   };
 
   return (
-    <CenteredForm enabled={enabled} onClose={onClose}>
+    <CenteredForm enabled={enabled} dismissable={true} onClose={onClose}>
       <div className={classes.selectHeader}>
         <h3 className={classes.title}>Настройка модели</h3>
       </div>

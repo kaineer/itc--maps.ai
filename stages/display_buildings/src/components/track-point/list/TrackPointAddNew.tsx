@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { useRef, type KeyboardEvent } from "react";
 import { TrackId, TrackPoint } from "@.types/track-types";
 import { useNotification } from "@hooks/useNotification";
-import { usePostTrackPointMutation } from "@entities/tracks/model/tracks.api";
 import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
+import { bind } from "@utils/bind";
 
 interface Props {
   trackId: TrackId;
@@ -26,12 +26,11 @@ const createPointWithName = (name: string): Omit<TrackPoint, "id"> => {
 
 export const TrackPointAddNew = ({ trackId }: Props) => {
   const nameRef = useRef<HTMLInputElement>(null);
-  // const [createPoint] = usePostTrackPointMutation();
   const { createPoint } = useTrackPointsApi(trackId);
   const { notify } = useNotification();
 
-  const handleKeydown = async (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+  const handleKeydown = bind({
+    Enter: async () => {
       if (nameRef.current) {
         const name = nameRef.current?.value || "";
         if (name) {
@@ -44,8 +43,8 @@ export const TrackPointAddNew = ({ trackId }: Props) => {
           }
         }
       }
-    }
-  };
+    },
+  });
 
   return (
     <input

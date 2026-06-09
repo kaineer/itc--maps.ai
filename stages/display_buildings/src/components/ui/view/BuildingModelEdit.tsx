@@ -217,10 +217,6 @@ export const BuildingModelEdit = ({
     bind({
       Enter: handleSave,
     })(event);
-
-    // if (event.key === "Enter") {
-    //   handleSave();
-    // }
   };
 
   const toggleMetadata = (e) => {

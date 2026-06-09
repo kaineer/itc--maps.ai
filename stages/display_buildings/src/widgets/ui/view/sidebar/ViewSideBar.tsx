@@ -70,7 +70,7 @@ export const ViewSidebar = () => {
           icon={LuBuilding2}
           label="Изменить модель"
           form={BuildingModelEdit}
-          displayWhen={() => modelToEdit}
+          displayWhen={() => Boolean(modelToEdit)}
         />
         <TracksSidebarLists />
       </Allow>

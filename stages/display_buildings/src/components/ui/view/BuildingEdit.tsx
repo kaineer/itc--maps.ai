@@ -4,9 +4,10 @@ import clsx from "clsx";
 import { CollapsibleForm } from "@components/shared/ui/CollapsibleForm";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { useSelector } from "react-redux";
-import { usePatchPolygonMutation } from "@store/api/BuildingsApi";
 import { Building } from "@.types/buildings-types";
 import { Allow } from "@components/shared/Allow";
+import { bind } from "@utils/bind";
+import { usePatchPolygonMutation } from "@entities/buildings/model/buildings.api";
 
 interface Props {
   enabled?: boolean;
@@ -105,11 +106,10 @@ export const BuildingEdit = ({
   /**
    * Handle Enter key press in form inputs
    */
-  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
-      handleSave();
-    }
-  };
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) =>
+    bind({
+      Enter: handleSave,
+    })(event);
 
   if (!polygon) return null;
 

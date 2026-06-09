@@ -19,15 +19,9 @@ export const TrackPointListUI = () => {
         <h1 className={classes.header}>Экскурсия: {name}</h1>
         <TrackPointAddNew trackId={trackId} />
 
-        {points.map((point) => {
-          return (
-            <TrackPointListItem
-              key={point.id}
-              trackId={trackId}
-              point={point}
-            />
-          );
-        })}
+        {points.map((point) => (
+          <TrackPointListItem key={point.id} trackId={trackId} point={point} />
+        ))}
       </div>
     </>
   );
