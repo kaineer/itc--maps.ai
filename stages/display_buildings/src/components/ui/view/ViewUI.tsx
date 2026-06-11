@@ -11,7 +11,7 @@ import type { Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { toast } from "sonner";
-import { Minimap } from "./openstreet/Minimap";
+import { Minimap } from "../../../widgets/view/minimap/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
 import { ViewSidebar } from "@widgets/view/sidebar/ViewSideBar";

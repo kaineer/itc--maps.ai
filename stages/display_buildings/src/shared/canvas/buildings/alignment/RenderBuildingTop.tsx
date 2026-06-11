@@ -1,7 +1,7 @@
 import { Building } from "@.types/buildings-types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DoubleSide, Mesh, Shape, ShapeGeometry, Vector2 } from "three";
-import { ModelBuilding } from "../../../shared/canvas/buildings/view/ModelBuilding";
+import { ModelBuilding } from "../view/ModelBuilding";
 import { UI_COLORS } from "@utils/constants";
 
 interface Props {

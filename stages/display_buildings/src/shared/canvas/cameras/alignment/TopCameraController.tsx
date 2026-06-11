@@ -7,7 +7,7 @@ import { ModelData } from "@utils/modelTransform";
 import { modelsCache } from "@utils/modelsCache";
 import { useNotification } from "@hooks/useNotification";
 import { CameraUpdateProps, EnabledProps, ModelPosition } from "@.types/types";
-import { getDirectionFromKey } from "@components/shared/ui/keyToDirection";
+import { getDirectionFromKey } from "@shared/lib/keyboard/keyToDirection";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 

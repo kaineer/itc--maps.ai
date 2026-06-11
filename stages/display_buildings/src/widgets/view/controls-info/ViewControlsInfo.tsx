@@ -16,8 +16,6 @@ import classes from "./ViewControlsInfo.module.css";
 import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "@utils/constants";
 import { FeatureInfoSection } from "@kit/control-info/FeatureInfoSection";
 import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
-import { Development } from "@components/shared/Development";
-import { LoggingInfoFooter } from "@components/shared/ui/LoggingInfoFooter";
 import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
 
 const detailedInfo = [
@@ -193,10 +191,6 @@ export const ViewControlsInfo = ({
           ))}
         </div>
       )}
-
-      <Development>
-        <LoggingInfoFooter />
-      </Development>
     </>
   );
 

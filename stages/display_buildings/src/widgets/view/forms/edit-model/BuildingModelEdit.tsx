@@ -1,5 +1,11 @@
 import classes from "./BuildingModelEdit.module.css";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+} from "react";
 import {
   isBuildingWithModel,
   ModelMetadata,
@@ -217,13 +223,10 @@ export const BuildingModelEdit = ({
     })(event);
   };
 
-  const toggleMetadata = (e) => {
+  const toggleMetadata = (e: MouseEvent<HTMLElement>) => {
     bind({
       ctrl: () => setShowMetadata((prev) => !prev),
     })(e);
-    // if (e.ctrlKey) {
-    //   setShowMetadata((prev) => !prev);
-    // }
   };
 
   if (!building || !building.model) return null;

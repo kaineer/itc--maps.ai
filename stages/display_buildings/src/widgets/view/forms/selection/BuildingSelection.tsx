@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import { SelectedBuildings } from "./buildings/SelectedBuildings";
-import { StartAlignmentButton } from "@components/shared/ui/StartAlignmentButton";
+import { StartAlignmentButton } from "@widgets/view/forms/selection/button/StartAlignmentButton";
 import { CenteredForm } from "@kit/centered-form/CenteredForm";
 
 interface Props {

@@ -40,6 +40,7 @@ export default defineConfig({
       "@services": aliasPrefix("src/services"),
       "@.types": aliasPrefix("src/types"),
       "@widgets": aliasPrefix("src/widgets"),
+      "@shared": aliasPrefix("src/shared"),
     },
   },
 });

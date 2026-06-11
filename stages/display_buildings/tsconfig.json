@@ -30,6 +30,7 @@
       "@widgets/*": ["src/widgets/*"],
       "@canvas/*": ["src/shared/canvas/*"],
       "@kit/*": ["src/shared/kit/*"],
+      "@shared/*": ["src/shared/*"],
     },
 
     /* Linting */

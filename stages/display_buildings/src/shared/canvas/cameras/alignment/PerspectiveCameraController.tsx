@@ -6,7 +6,7 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { calculateModelBoundingBox, ModelData } from "@utils/modelTransform";
 import { modelsCache } from "@utils/modelsCache";
 import { CameraUpdateProps, EnabledProps } from "@.types/component-types";
-import { getDirectionFromKey } from "@components/shared/ui/keyToDirection";
+import { getDirectionFromKey } from "@shared/lib/keyboard/keyToDirection";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 
@@ -29,7 +29,6 @@ export const PerspectiveCameraController = ({
   const modelUUID = useSelector(getModelUUID);
   const [currentModel, setCurrentModel] = useState<ModelData | null>(null);
   const cameraState = useSelector(getPerspectiveCameraState);
-  const modelTransform = useSelector(getModelTransform);
 
   useEffect(() => {
     const fetchCurrentModel = async () => {
