@@ -24,22 +24,18 @@ export const useBuildingsApi = () => {
   const { cameraPosition } = useViewCamera();
   const { lastLoadedPosition } = useBuildingsSlice();
   const [getStartPosition] = useLazyGetStartPositionQuery();
-  const [getBuildingsInArea, { isLoading }] = useLazyPutBuildingsQuery();
+  const [getBuildingsInArea] = useLazyPutBuildingsQuery();
   const dispatch = useDispatch();
-  const { setLastLoadedPosition } = buildingsSlice.actions;
 
-  const fetchBuildings = async (x: number, z: number) => {
-    await getBuildingsInArea({
+  // NOTE: Почему мы здесь не используем полученные здания?
+  //   Потому, что dispatch(setBuildings(...)) вызывается прямо в запросе
+  //   в ключе onQueryStarted
+  //
+  const fetchBuildings = async (x: number, z: number) =>
+    getBuildingsInArea({
       position: { x, z },
       distance: DISTANCES.BUILDING_DISTANCE,
     }).unwrap();
-
-    // NOTE: Почему мы здесь не используем полученные здания?
-    //   Потому, что dispatch(setBuildings(...)) вызывается прямо в запросе
-    //   в ключе onQueryStarted
-    //
-    dispatch(setLastLoadedPosition([x, EYE_LEVEL_HEIGHT, z]));
-  };
 
   const initializeViewCamera = (x: number, z: number) => {
     const position = { x, z };

@@ -1,6 +1,6 @@
 import classes from "./TrackPointListItem.module.css";
 import clsx from "clsx";
-import { useRef, type KeyboardEvent } from "react";
+import { useRef } from "react";
 import { TrackId, TrackPoint } from "@.types/track-types";
 import { useNotification } from "@hooks/useNotification";
 import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";

@@ -27,6 +27,8 @@
       "@services/*": ["src/services/*"],
       "@.types/*": ["src/types/*"],
       "@widgets/*": ["src/widgets/*"],
+      "@canvas/*": ["src/shared/canvas/*"],
+      "@kit/*": ["src/shared/kit/*"],
     },
 
     /* Linting */

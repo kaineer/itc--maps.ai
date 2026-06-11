@@ -2,20 +2,19 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { ViewControlsInfo } from "../../cameras/view/ViewControlsInfo";
+import { ViewControlsInfo } from "../../../widgets/view/controls-info/ViewControlsInfo";
 import { Ground } from "../../static/Ground";
 import { Lighting } from "../../static/Lighting";
-import { ViewCameraController } from "../../cameras/view/ViewCameraController";
+import { ViewCameraController } from "../../../shared/canvas/cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
 import type { Building } from "../../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { toast } from "sonner";
-import { ViewStage } from "@components/stage/ui/ViewStage";
 import { Minimap } from "./openstreet/Minimap";
 import { MarkerNotification } from "./MarkerNotification";
 
-import { ViewSidebar } from "@widgets/ui/view/sidebar/ViewSideBar";
+import { ViewSidebar } from "@widgets/view/sidebar/ViewSideBar";
 import {
   useViewCamera,
   useViewMarkers,
@@ -23,6 +22,7 @@ import {
 } from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
 import { useBuildingsApi } from "@entities/buildings/lib/use.buildings.api";
+import { ViewStage } from "@canvas/stages/view/ViewStage";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;

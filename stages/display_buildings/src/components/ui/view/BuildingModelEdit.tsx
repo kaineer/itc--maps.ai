@@ -74,9 +74,7 @@ export const BuildingModelEdit = ({
       setGroundLevel(String(position[1] || 0));
 
       setMetadata({
-        position: building.modelMetadata.position,
-        rotation: building.modelMetadata.rotation,
-        scale: building.modelMetadata.scale,
+        ...building.modelMetadata,
         address: building.address,
       });
     }

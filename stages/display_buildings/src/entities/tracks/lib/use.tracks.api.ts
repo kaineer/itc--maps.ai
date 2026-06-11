@@ -24,7 +24,9 @@ export const useTracksApi = () => {
 };
 
 export const useTrackPointsApi = (trackId: TrackId = "") => {
-  const { data, isLoading } = useGetTrackPointsQuery(trackId);
+  const { data, isLoading } = useGetTrackPointsQuery(trackId, {
+    skip: !trackId,
+  });
   const [createPointRequest] = usePostTrackPointMutation();
   const [removePointRequest] = useDeleteTrackPointMutation();
   const [updatePointRequest] = usePutTrackPointMutation();

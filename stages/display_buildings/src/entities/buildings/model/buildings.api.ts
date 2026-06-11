@@ -3,18 +3,13 @@ import {
   type BuildingNode,
   type UpdateBuilding,
 } from "@.types/buildings-types";
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { createBackendService } from "@services/backendService";
 import { buildingsSlice } from "@slices/buildingsSlice";
+import { buildingsAndModelsApi } from "@store/api/buildingsAndModelsApi";
+import { EYE_LEVEL_HEIGHT } from "@utils/constants";
 
-const backendService = createBackendService();
-const { baseQuery } = backendService;
-const { setBuildings } = buildingsSlice.actions;
+const { setBuildings, setLastLoadedPosition } = buildingsSlice.actions;
 
-export const buildingsApi = createApi({
-  reducerPath: "building/api",
-  baseQuery,
-  tagTypes: ["buildingList"],
+export const buildingsApi = buildingsAndModelsApi.injectEndpoints({
   endpoints: (build) => ({
     GetStartPosition: build.query<{ x: number; z: number }, void>({
       query: () => ({
@@ -34,11 +29,13 @@ export const buildingsApi = createApi({
           distance,
         },
       }),
-      providesTags: ["buildingList"],
-      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+      providesTags: ["buildingsList"],
+      onQueryStarted: async ({ position }, { dispatch, queryFulfilled }) => {
         try {
           const { data } = await queryFulfilled;
+          const { x, z } = position;
           dispatch(setBuildings(data));
+          dispatch(setLastLoadedPosition([x, EYE_LEVEL_HEIGHT, z]));
         } catch (err) {
           console.error(err);
         }
@@ -53,7 +50,7 @@ export const buildingsApi = createApi({
           height,
         },
       }),
-      invalidatesTags: ["buildingList"],
+      invalidatesTags: ["buildingsList"],
     }),
   }),
 });
