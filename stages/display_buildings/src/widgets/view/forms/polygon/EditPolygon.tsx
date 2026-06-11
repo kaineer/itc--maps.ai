@@ -1,4 +1,4 @@
-import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { CenteredForm } from "@kit/centered-form/CenteredForm";
 import classes from "./EditPolygon.module.css";
 import { useCallback, useEffect, useState } from "react";
 import { useSelector } from "react-redux";

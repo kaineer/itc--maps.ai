@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { CreateModel } from "@.types/buildings-types";
 import { useNotification } from "@hooks/useNotification";
 import { useCreateModelPositionMutation } from "@entities/models/model/models.api";
-import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { CenteredForm } from "@kit/centered-form/CenteredForm";
 import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
 
 interface Props {

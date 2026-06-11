@@ -1,7 +1,6 @@
 import classes from "./UserItemForm.module.css";
-import { type MouseEvent } from "react";
 import { User } from "@.types/auth-types";
-import { Button } from "@components/kit/Button";
+import { Button } from "@kit/common/Button";
 import { useAuthentication } from "@hooks/useAuthentication";
 import { getRoleIndex } from "@utils/roles";
 import { useNotification } from "@hooks/useNotification";

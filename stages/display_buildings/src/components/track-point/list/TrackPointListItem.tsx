@@ -1,5 +1,5 @@
 import classes from "./TrackPointListItem.module.css";
-import { Button } from "@components/kit/Button";
+import { Button } from "@kit/common/Button";
 import type { TrackId, TrackPoint } from "@.types/track-types";
 import { KeyboardEvent, MouseEvent } from "react";
 import { useDispatch } from "react-redux";

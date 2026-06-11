@@ -1,4 +1,4 @@
-import { FileUploadButton } from "@components/shared/ui/FileUploadButton";
+import { FileUploadButton } from "@kit/file-upload/FileUploadButton";
 import classes from "./CreateModelOfferUI.module.css";
 import { type SubmitEvent, useRef, useState } from "react";
 import { toast } from "sonner";

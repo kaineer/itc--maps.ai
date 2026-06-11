@@ -1,11 +1,11 @@
 import classes from "./LoginUI.module.css";
-import { useRef, useEffect, MouseEvent, useCallback, useState } from "react";
+import { useRef, useEffect, MouseEvent, useCallback } from "react";
 import { useAuthentication } from "@hooks/useAuthentication";
-import { Input } from "@components/kit/Input";
-import { Button } from "@components/kit/Button";
-import { Column } from "@components/kit/Container";
 import { toast } from "sonner";
 import clsx from "clsx";
+import { Column } from "@kit/common/Container";
+import { Button } from "@kit/common/Button";
+import { Input } from "@kit/common/Input";
 
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);

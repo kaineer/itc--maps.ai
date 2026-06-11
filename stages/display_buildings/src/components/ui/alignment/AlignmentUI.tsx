@@ -4,8 +4,8 @@ import { Canvas } from "@react-three/fiber";
 import { useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
-import { Ground } from "../../static/Ground";
-import { Lighting } from "../../static/Lighting";
+import { Ground } from "@canvas/static/Ground";
+import { Lighting } from "@canvas/static/Lighting";
 
 import { AlignmentSideBar } from "@widgets/alignment/sidebar/AlignmentSideBar";
 import { AlignmentStageContainer } from "@canvas/stages/alignment/AlignmentStageContainer";

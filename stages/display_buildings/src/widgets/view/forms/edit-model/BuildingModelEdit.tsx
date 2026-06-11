@@ -1,4 +1,4 @@
-import classes from "./BuildingEdit.module.css";
+import classes from "./BuildingModelEdit.module.css";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   isBuildingWithModel,
@@ -8,7 +8,7 @@ import {
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
 import { toast } from "sonner";
-import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { CenteredForm } from "@kit/centered-form/CenteredForm";
 import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
 import {
   useDeleteModelMutation,

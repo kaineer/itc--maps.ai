@@ -1,3 +1,5 @@
+// Форма остается здесь до момента, пока поиск названия не начнет работаеть на бэке
+
 // import classes from "./BuildingSearch.module.css";
 // import { useState, KeyboardEvent, useRef, useEffect } from "react";
 // import { useDispatch, useSelector } from "react-redux";

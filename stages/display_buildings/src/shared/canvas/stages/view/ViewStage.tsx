@@ -1,10 +1,10 @@
-import { UniqueItems } from "@components/shared/UniqueItems";
 import { Building } from "../../../../types/types";
 import { RenderBuilding } from "../../buildings/view/RenderBuilding";
 import { KeyboardModifiers } from "@utils/keyboardModifiers";
-import { MapItems } from "@components/shared/MapItems";
 import { TrackPointMarker } from "../../../../components/stage/ui/TrackPointMarker";
 import { useMinimapMarkers } from "@entities/minimap/lib/use.minimap.slice";
+import { MapItems } from "@kit/utils/MapItems";
+import { UniqueItems } from "@kit/utils/UniqueItems";
 
 interface Props {
   buildings: Building[];

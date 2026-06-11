@@ -3,7 +3,7 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { TopCameraController } from "./TopCameraController";
 import { PerspectiveCameraController } from "./PerspectiveCameraController";
 import { CameraUpdateProps, EnabledProps } from "@.types/component-types";
-import { Match } from "@components/shared/Match";
+import { Match } from "@kit/utils/Match";
 
 interface Props extends EnabledProps, CameraUpdateProps {}
 

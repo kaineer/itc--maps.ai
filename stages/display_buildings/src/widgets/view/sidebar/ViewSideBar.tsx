@@ -4,14 +4,14 @@ import { LuBuilding2 } from "react-icons/lu";
 
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
-import { Allow } from "@components/shared/Allow";
+import { Allow } from "@kit/utils/Allow";
 import { BuildingSelection } from "../forms/selection/BuildingSelection";
 import { EditPolygon } from "../forms/polygon/EditPolygon";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { Building } from "@.types/buildings-types";
 import { AttachPointSidebarItem } from "./AttachPointSidebarItem";
 import { TracksSidebarLists } from "./TrackSidebarLists";
-import { BuildingModelEdit } from "@components/ui/view/BuildingModelEdit";
+import { BuildingModelEdit } from "@widgets/view/forms/edit-model/BuildingModelEdit";
 import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
 import { AuthSidebarItems } from "@widgets/sidebar/common/AuthSidebarItems";
 import { TracksSidebarItem } from "@widgets/sidebar/common/TracksSidebarItem";

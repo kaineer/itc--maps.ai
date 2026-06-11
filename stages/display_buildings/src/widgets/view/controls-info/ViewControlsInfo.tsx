@@ -10,15 +10,15 @@
  * - DetailedMetaInfo for additional information
  * - Consistent styling with other control info components
  */
-import { ControlInfoSection } from "@components/shared/ui/controlInfo/ControlInfoSection";
+import { ControlInfoSection } from "@kit/control-info/ControlInfoSection";
 import classes from "./ViewControlsInfo.module.css";
 
 import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "@utils/constants";
-import { FeatureInfoSection } from "@components/shared/ui/controlInfo/FeatureInfoSection";
-import { DetailedMetaInfo } from "@components/shared/ui/controlInfo/DetailedMetaInfo";
+import { FeatureInfoSection } from "@kit/control-info/FeatureInfoSection";
+import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
 import { Development } from "@components/shared/Development";
 import { LoggingInfoFooter } from "@components/shared/ui/LoggingInfoFooter";
-import { CollapsibleControlInfo } from "@components/shared/ui/controlInfo/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
 
 const detailedInfo = [
   {

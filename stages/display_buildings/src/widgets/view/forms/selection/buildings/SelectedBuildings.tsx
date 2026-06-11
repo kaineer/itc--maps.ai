@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { MouseEvent } from "react";
 import { ModelPosition, type Building } from "@.types/types";
 import { viewSlice } from "@slices/viewSlice";
-import { RemoveButton } from "@components/kit/RemoveButton";
+import { RemoveButton } from "@kit/common/RemoveButton";
 
 interface Props {
   buildings: Building[];

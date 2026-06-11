@@ -5,13 +5,13 @@ import {
   prepareInitialTransform,
 } from "@slices/alignmentSlice";
 import { modelUploadSlice } from "@slices/modelUploadSlice";
-import { FileUploadButton } from "@components/shared/ui/FileUploadButton";
+import { FileUploadButton } from "@kit/file-upload/FileUploadButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
 
 import { SelectedBuildings } from "./buildings/SelectedBuildings";
 import { StartAlignmentButton } from "@components/shared/ui/StartAlignmentButton";
-import { CenteredForm } from "@components/shared/ui/CenteredForm";
+import { CenteredForm } from "@kit/centered-form/CenteredForm";
 
 interface Props {
   enabled: boolean;

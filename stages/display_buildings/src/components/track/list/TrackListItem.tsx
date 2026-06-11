@@ -1,4 +1,4 @@
-import { Button } from "@components/kit/Button";
+import { Button } from "@kit/common/Button";
 import classes from "./TrackListItem.module.css";
 import { Track } from "@.types/track-types";
 import { useNotification } from "@hooks/useNotification";

@@ -1,4 +1,4 @@
-import { AllowRoute } from "@components/shared/AllowRoute";
+import { AllowRoute } from "@kit/utils/AllowRoute";
 import { TrackPointListUI } from "@components/track-point/list/TrackPointListUI";
 import { TrackListUI } from "@components/track/list/TrackListUI";
 import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";

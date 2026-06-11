@@ -19,6 +19,7 @@
     "paths": {
       "@slices/*": ["src/store/slices/*"],
       "@store/*": ["src/store/*"],
+      "@app/*": ["src/app/*"],
       "@utils/*": ["src/utils/*"],
       "@entities/*": ["src/entities/*"],
       "@hooks/*": ["src/hooks/*"],

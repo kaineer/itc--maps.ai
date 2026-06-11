@@ -1,8 +1,8 @@
 import classes from "./App.module.css";
 import { Provider } from "react-redux";
 import { setupStore } from "./store";
-import { AppContent } from "@components/root/AppContent";
 import { AuthInitialization } from "@components/shared/AuthInitialization";
+import { AppContent } from "@app/routes/AppContent";
 import { Toaster } from "sonner";
 
 const App = () => {

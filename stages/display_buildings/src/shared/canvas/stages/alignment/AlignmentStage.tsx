@@ -1,7 +1,7 @@
 import { TransparentPolygonBuilding } from "@canvas/buildings/alignment/TransparentPolygonBuilding";
-import { Building, EnabledProps } from "../../../../types/types";
-import { AlignmentModel } from "../../../../components/alignment/AlignmentModel";
 import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
+import { AlignmentModel } from "@canvas/buildings/alignment/AlignmentModel";
+import type { Building, EnabledProps } from "@.types/types";
 
 interface Props extends EnabledProps {
   /**

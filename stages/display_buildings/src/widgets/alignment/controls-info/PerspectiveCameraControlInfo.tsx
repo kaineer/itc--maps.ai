@@ -1,10 +1,7 @@
+import { ControlInfoSection } from "@kit/control-info/ControlInfoSection";
 import classes from "./PerspectiveCameraControlInfo.module.css";
-
-import { CollapsibleControlInfo } from "../../shared/ui/controlInfo/CollapsibleControlInfo";
-import { Development } from "../../shared/Development";
-import { ControlInfoSection } from "../../shared/ui/controlInfo/ControlInfoSection";
-import { DetailedMetaInfo } from "../../shared/ui/controlInfo/DetailedMetaInfo";
-import { LoggingInfoFooter } from "../../shared/ui/LoggingInfoFooter";
+import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
+import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
 
 const detailedInfo = [
   {
@@ -101,10 +98,6 @@ export const PerspectiveCameraControlInfo = ({
           ))}
         </div>
       )}
-
-      <Development>
-        <LoggingInfoFooter />
-      </Development>
     </>
   );
 

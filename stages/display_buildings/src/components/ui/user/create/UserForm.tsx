@@ -1,9 +1,9 @@
 import { useRef, MouseEvent } from "react";
 import classes from "./UserForm.module.css";
 import { CreateUser } from "@.types/user-request-types";
-import { Input } from "@components/kit/Input";
-import { Button } from "@components/kit/Button";
-import { Column } from "@components/kit/Container";
+import { Column } from "@kit/common/Container";
+import { Button } from "@kit/common/Button";
+import { Input } from "@kit/common/Input";
 
 interface Props {
   onCreateUser: (newUser: Partial<CreateUser>) => Promise<void>;

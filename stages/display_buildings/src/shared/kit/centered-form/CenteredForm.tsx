@@ -1,6 +1,5 @@
-import { useEffect, type ReactNode } from "react";
+import { useEffect, type ReactNode, type KeyboardEvent } from "react";
 import classes from "./CenteredForm.module.css";
-import { KeyboardEvent } from "react";
 
 interface CenteredFormProps {
   enabled: boolean;

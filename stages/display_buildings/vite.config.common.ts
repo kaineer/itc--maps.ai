@@ -34,6 +34,7 @@ export default defineConfig({
       "@hooks": aliasPrefix("src/hooks"),
       "@contexts": aliasPrefix("src/contexts"),
       "@components": aliasPrefix("src/components"),
+      "@app": aliasPrefix("src/app"),
       "@canvas": aliasPrefix("src/shared/canvas"),
       "@kit": aliasPrefix("src/shared/kit"),
       "@services": aliasPrefix("src/services"),
