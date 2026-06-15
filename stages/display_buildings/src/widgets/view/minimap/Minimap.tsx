@@ -121,8 +121,8 @@ export const Minimap = ({ mapCenter = [0, 0, 0] }: Props) => {
 
   const handleMarker = (marker: MarkerPoint) => (e: LeafletMouseEvent) => {
     e.originalEvent.stopPropagation();
-    const { position, target } = marker;
-    notify("Переход к маркеру " + marker.name);
+    const { position, target, name } = marker;
+    notify("Переход к маркеру " + name);
 
     dispatch(moveCameraToLocation(position));
     dispatch(updateCameraTarget(target));
