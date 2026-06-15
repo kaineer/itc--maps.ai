@@ -1,7 +1,7 @@
 import classes from "./App.module.css";
 import { Provider } from "react-redux";
 import { setupStore } from "./store";
-import { AuthInitialization } from "@components/shared/AuthInitialization";
+import { AuthInitialization } from "@entities/users/ui/AuthInitialization";
 import { AppContent } from "@app/routes/AppContent";
 import { Toaster } from "sonner";
 

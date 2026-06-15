@@ -1,6 +1,6 @@
 import { ModelPosition } from "@.types/buildings-types";
-import { Cone, Cylinder } from "@react-three/drei";
-import { DoubleSide, MathUtils, Vector3 } from "three";
+import { Cylinder } from "@react-three/drei";
+import { Vector3 } from "three";
 
 interface Props {
   position: ModelPosition;

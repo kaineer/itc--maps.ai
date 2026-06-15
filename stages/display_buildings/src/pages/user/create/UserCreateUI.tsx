@@ -1,10 +1,12 @@
 import classes from "./UserCreateUI.module.css";
-import { CreateUser } from "@.types/user-request-types";
-import { UserForm } from "./UserForm";
 import { useNavigate } from "react-router";
+
+import { CreateUser } from "@.types/user-request-types";
+
 import { useNotification } from "@hooks/useNotification";
 import { usePostUserMutation } from "@entities/users/model/users.api";
 import { NewUserSideBar } from "@widgets/users/sidebar/NewUserSideBar";
+import { UserForm } from "@widgets/users/create/UserForm";
 
 export const UserCreateUI = () => {
   const [createUser] = usePostUserMutation();

@@ -15,7 +15,7 @@ import {
   distanceBetween,
   scaleToLength,
   directionTo,
-} from "../../components/shared/positionMath";
+} from "../../shared/lib/position/positionMath";
 import { Vector3, Box3 } from "three";
 import { CAMERA_HEIGHTS } from "@utils/constants";
 import { modelsCache } from "@utils/modelsCache";

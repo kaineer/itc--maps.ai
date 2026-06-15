@@ -10,7 +10,7 @@ import { viewSlice } from "@slices/viewSlice";
 import { type ModelPosition } from "@.types/buildings-types";
 import { buildingsSlice } from "@slices/buildingsSlice";
 import { useEffect } from "react";
-import { distance2dBetween } from "@components/shared/positionMath";
+import { distance2dBetween } from "@shared/lib/position/positionMath";
 import { parseLocationHash } from "@utils/parseLocationHash";
 
 const {

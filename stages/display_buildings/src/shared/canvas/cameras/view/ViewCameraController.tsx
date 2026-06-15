@@ -9,7 +9,7 @@ import {
   directionTo,
   distance2dBetween,
   dotProduct2d,
-} from "@components/shared/positionMath";
+} from "@shared/lib/position/positionMath";
 import { useViewCamera } from "@hooks/view/useViewSlice";
 import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
 import { useMinimapMarkers } from "@entities/minimap/lib/use.minimap.slice";

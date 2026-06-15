@@ -1,8 +1,8 @@
 import classes from "./TrackPointListUI.module.css";
 
 import { useParams } from "react-router";
-import { TrackPointAddNew } from "./TrackPointAddNew";
-import { TrackPointListItem } from "./TrackPointListItem";
+import { TrackPointAddNew } from "../../../widgets/tracks/points-list/TrackPointAddNew";
+import { TrackPointListItem } from "../../../widgets/tracks/points-list/TrackPointListItem";
 import { TrackPointsSideBar } from "@widgets/tracks/sidebar/TrackPointsSideBar";
 import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
 

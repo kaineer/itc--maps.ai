@@ -7,9 +7,9 @@ import { alignmentSlice } from "@slices/alignmentSlice";
 import { Ground } from "@canvas/static/Ground";
 import { Lighting } from "@canvas/static/Lighting";
 
-import { AlignmentSideBar } from "@widgets/alignment/sidebar/AlignmentSideBar";
 import { AlignmentStageContainer } from "@canvas/stages/alignment/AlignmentStageContainer";
 import { AlignmentCameraGroup } from "@canvas/cameras/alignment/AlignmentCameraGroup";
+import { AlignmentUIGroup } from "../../widgets/alignment/group/AlignmentUIGroup";
 
 /**
  * AlignmentUI component for the alignment mode.
@@ -33,7 +33,7 @@ export const AlignmentUI = () => {
   return (
     <>
       {/* UI controls outside Canvas (camera info, controls, etc.) */}
-      <AlignmentSideBar />
+      <AlignmentUIGroup enabled={true} />
 
       {/* 3D Canvas for alignment visualization */}
       <Canvas

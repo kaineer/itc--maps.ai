@@ -31,6 +31,7 @@
       "@canvas/*": ["src/shared/canvas/*"],
       "@kit/*": ["src/shared/kit/*"],
       "@shared/*": ["src/shared/*"],
+      "@pages/*": ["src/pages/*"],
     },
 
     /* Linting */

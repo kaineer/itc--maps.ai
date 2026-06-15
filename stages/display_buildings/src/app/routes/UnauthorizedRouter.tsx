@@ -1,7 +1,6 @@
-// import { CreateModelOffer } from "@components/ui/anonymous/CreateModelOffer";
-import { IntroUI } from "@components/ui/intro/IntroUI";
-import { LoginUI } from "@components/ui/login/LoginUI";
-import { ViewUI } from "@components/ui/view/ViewUI";
+import { ViewUI } from "@pages/view/ViewUI";
+import { IntroUI } from "@pages/intro/IntroUI";
+import { LoginUI } from "@pages/user/login/LoginUI";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 
 export const UnauthorizedRouter = () => (

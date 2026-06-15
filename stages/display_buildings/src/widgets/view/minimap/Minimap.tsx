@@ -9,7 +9,7 @@ import { MapEvents } from "./MapEvents";
 import { MarkerPoint, minimapSlice } from "@slices/minimapSlice";
 import { useDispatch } from "react-redux";
 import { leafletTemplate } from "@utils/network";
-import { distance2dBetween } from "@components/shared/positionMath";
+import { distance2dBetween } from "@shared/lib/position/positionMath";
 import { DISTANCES } from "@utils/constants";
 
 import L from "leaflet";

@@ -1,4 +1,4 @@
-import { FinishAlignment } from "@components/ui/alignment/FinishAlignment";
+import { FinishAlignment } from "@widgets/alignment/forms/save/FinishAlignment";
 import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
 import { FaRegSave } from "react-icons/fa";
 

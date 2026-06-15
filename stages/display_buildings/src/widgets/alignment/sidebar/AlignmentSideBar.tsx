@@ -1,6 +1,6 @@
 import { HoveringSideBar } from "@kit/sidebar/HoveringSideBar";
-import { FinishAlignmentSidebarItem } from "./FinishAlignmentSidebarItem";
 import { AuthSidebarItems } from "@widgets/sidebar/common/AuthSidebarItems";
+import { FinishAlignmentSidebarItem } from "./FinishAlignmentSidebarItem";
 
 export const AlignmentSideBar = () => {
   return (

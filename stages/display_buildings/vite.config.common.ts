@@ -41,6 +41,7 @@ export default defineConfig({
       "@.types": aliasPrefix("src/types"),
       "@widgets": aliasPrefix("src/widgets"),
       "@shared": aliasPrefix("src/shared"),
+      "@pages": aliasPrefix("src/pages"),
     },
   },
 });

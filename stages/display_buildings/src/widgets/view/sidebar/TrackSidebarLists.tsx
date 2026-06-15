@@ -1,5 +1,5 @@
 import type { Track, TrackPoint } from "@.types/track-types";
-import { almostNone } from "@components/shared/positionMath";
+import { almostNone } from "@shared/lib/position/positionMath";
 import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
 import { useLazyGetTrackPointsQuery } from "@entities/tracks/model/tracks.api";
 import { SideBarList } from "@kit/sidebar/list/SideBarList";

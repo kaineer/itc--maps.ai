@@ -1,13 +1,13 @@
 import { AllowRoute } from "@kit/utils/AllowRoute";
-import { TrackPointListUI } from "@components/track-point/list/TrackPointListUI";
-import { TrackListUI } from "@components/track/list/TrackListUI";
-import { AlignmentUI } from "@components/ui/alignment/AlignmentUI";
-import { IntroUI } from "@components/ui/intro/IntroUI";
-import { CreateModelOfferUI } from "@components/ui/uploader/CreateModelOfferUI";
-import { UserCreateUI } from "@components/ui/user/create/UserCreateUI";
-import { UserListUI } from "@components/ui/user/list/UserListUI";
-import { ViewUI } from "@components/ui/view/ViewUI";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
+import { IntroUI } from "@pages/intro/IntroUI";
+import { TrackListUI } from "@pages/tracks/list/TrackListUI";
+import { TrackPointListUI } from "@pages/tracks/points-list/TrackPointListUI";
+import { ViewUI } from "@pages/view/ViewUI";
+import { AlignmentUI } from "@pages/alignment/AlignmentUI";
+import { CreateModelOfferUI } from "@components/ui/uploader/CreateModelOfferUI";
+import { UserListUI } from "@pages/user/list/UserListUI";
+import { UserCreateUI } from "@pages/user/create/UserCreateUI";
 
 const defaultRoute = "/view";
 

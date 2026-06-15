@@ -1,11 +1,10 @@
 import { useSelector } from "react-redux";
 import { alignmentSlice } from "@slices/alignmentSlice";
-import { FinishAlignment } from "./FinishAlignment";
 import { EnabledProps } from "@.types/component-types";
-import { TopCameraControlInfo } from "@components/cameras/alignment/TopCameraControlInfo";
-import { PerspectiveCameraControlInfo } from "@components/cameras/alignment/PerspectiveCameraControlInfo";
-import { Match } from "@components/shared/Match";
-import { ButtonsGroup } from "@components/kit/ButtonsGroup";
+import { AlignmentSideBar } from "@widgets/alignment/sidebar/AlignmentSideBar";
+import { Match } from "@kit/utils/Match";
+import { TopCameraControlInfo } from "@widgets/alignment/controls-info/TopCameraControlInfo";
+import { PerspectiveCameraControlInfo } from "@widgets/alignment/controls-info/PerspectiveCameraControlInfo";
 
 interface Props extends EnabledProps {
   className?: string;
@@ -42,9 +41,7 @@ export const AlignmentUIGroup = ({ enabled, className = "" }: Props) => {
 
   return (
     <>
-      <ButtonsGroup>
-        <FinishAlignment onToggled={() => null} />
-      </ButtonsGroup>
+      <AlignmentSideBar />
       <Match
         value={currentCameraView}
         top={() => <TopCameraControlInfo />}

@@ -2,17 +2,17 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { ViewControlsInfo } from "../../../widgets/view/controls-info/ViewControlsInfo";
+import { ViewControlsInfo } from "../../widgets/view/controls-info/ViewControlsInfo";
 import { Ground } from "@canvas/static/Ground";
 import { Lighting } from "@canvas/static/Lighting";
 import { ViewCameraController } from "@canvas/cameras/view/ViewCameraController";
 import { type AppDispatch } from "@store/index";
-import type { Building } from "../../../types/types";
+import type { Building } from "../../types/types";
 import { alignmentSlice } from "@slices/alignmentSlice";
 
 import { toast } from "sonner";
-import { Minimap } from "../../../widgets/view/minimap/Minimap";
-import { MarkerNotification } from "./MarkerNotification";
+import { Minimap } from "../../widgets/view/minimap/Minimap";
+import { MarkerNotification } from "../../components/ui/view.legacy/MarkerNotification";
 
 import { ViewSidebar } from "@widgets/view/sidebar/ViewSideBar";
 import {

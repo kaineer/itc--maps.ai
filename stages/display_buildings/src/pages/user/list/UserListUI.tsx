@@ -1,8 +1,8 @@
 import classes from "./UserListUI.module.css";
 import { User } from "@.types/auth-types";
-import { UserItemForm } from "./UserItemForm";
 import { UsersSideBar } from "@widgets/users/sidebar/UsersSideBar";
 import { useGetUserListQuery } from "@entities/users/model/users.api";
+import { UserItemForm } from "@widgets/users/list/UserItemForm";
 
 export const UserListUI = () => {
   const { data, isLoading } = useGetUserListQuery();
