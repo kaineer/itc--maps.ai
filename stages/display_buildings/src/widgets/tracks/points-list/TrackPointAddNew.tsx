@@ -1,10 +1,10 @@
 import classes from "./TrackPointListItem.module.css";
 import clsx from "clsx";
 import { useRef } from "react";
-import { TrackId, TrackPoint } from "@.types/track-types";
-import { useNotification } from "@hooks/useNotification";
-import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
-import { bind } from "@utils/bind";
+import { TrackId, TrackPoint } from "@entities/tracks";
+import { useNotification } from "@shared/lib/useNotification";
+import { useTrackPointsApi } from "@entities/tracks";
+import { bind } from "@shared/lib/bind";
 
 interface Props {
   trackId: TrackId;
