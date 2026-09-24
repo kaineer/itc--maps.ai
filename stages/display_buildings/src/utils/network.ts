@@ -21,11 +21,12 @@ const tryToLoad = (key: string): unknown => {
 
 const loadedBackendConfig = tryToLoad("ekb3d/backend");
 
+const viteBackend = import.meta.env.VITE_HOST;
+
 const backendConfig: NetworkConfigItem =
   (loadedBackendConfig as NetworkConfigItem | null) || {
     protocol: "http",
-    // host: "10.1.0.72",
-    host: "127.0.0.1",
+    host: viteBackend || "10.1.0.72",
     port: 8080,
   };
 

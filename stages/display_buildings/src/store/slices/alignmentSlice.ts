@@ -221,7 +221,7 @@ export const alignmentSlice = createSlice({
           });
       } else {
         if (building.address) {
-          toast.info(building.address);
+          toast.info("Выбрано: " + building.address);
         }
 
         state.selectedPolygons.push(building);
