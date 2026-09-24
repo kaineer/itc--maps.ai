@@ -9,7 +9,7 @@ import { Lighting } from "@canvas/static/Lighting";
 
 import { AlignmentStageContainer } from "@canvas/stages/alignment/AlignmentStageContainer";
 import { AlignmentCameraGroup } from "@canvas/cameras/alignment/AlignmentCameraGroup";
-import { AlignmentUIGroup } from "../../widgets/alignment/group/AlignmentUIGroup";
+import { AlignmentUIGroup } from "@widgets/alignment/group/AlignmentUIGroup";
 
 /**
  * AlignmentUI component for the alignment mode.

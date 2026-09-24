@@ -23,6 +23,7 @@ import { uiSlice } from "./uiSlice";
 // import { useAuthentication } from "@hooks/useAuthentication";
 // import { createAuthService } from "@services/authService";
 import { createBackendService } from "@services/backendService";
+import { toast } from "sonner";
 
 export type WorldDirection = "north" | "south" | "east" | "west";
 
@@ -204,13 +205,26 @@ export const alignmentSlice = createSlice({
       state.modelUUID = action.payload;
     },
 
-    addPolygonForAlignment: (state, action: PayloadAction<Building>) => {
+    togglePolygonForAlignment: (
+      state,
+      action: PayloadAction<Building>
+    ) => {
       const building = action.payload;
+
       const alreadyAdded = state.selectedPolygons.some(
         (p) => p.id === building.id,
       );
-      if (!alreadyAdded) {
-        state.selectedPolygons.push(action.payload);
+      if (alreadyAdded) {
+        state.selectedPolygons =
+          state.selectedPolygons.filter((b) => {
+            return b.id !== building.id;
+          });
+      } else {
+        if (building.address) {
+          toast.info(building.address);
+        }
+
+        state.selectedPolygons.push(building);
       }
     },
 

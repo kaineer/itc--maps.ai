@@ -1,5 +1,5 @@
 import { KeyboardModifiers } from "@utils/keyboardModifiers";
-import { Building } from "../../../types/types";
+import { Building } from "../../../../types/types";
 import { ModelBuilding } from "./ModelBuilding";
 import { SolidPolygonBuilding } from "./SolidPolygonBuilding";
 

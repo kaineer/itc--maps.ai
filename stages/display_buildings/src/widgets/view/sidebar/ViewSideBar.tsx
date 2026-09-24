@@ -5,8 +5,6 @@ import { LuBuilding2 } from "react-icons/lu";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuthentication } from "@hooks/useAuthentication";
 import { Allow } from "@kit/utils/Allow";
-import { BuildingSelection } from "../forms/selection/BuildingSelection";
-import { EditPolygon } from "../forms/polygon/EditPolygon";
 import { alignmentSlice } from "@slices/alignmentSlice";
 import { Building } from "@.types/buildings-types";
 import { AttachPointSidebarItem } from "./AttachPointSidebarItem";
@@ -18,6 +16,8 @@ import { TracksSidebarItem } from "@widgets/sidebar/common/TracksSidebarItem";
 import { UserListSidebarItem } from "@widgets/sidebar/common/UserlistSidebarItem";
 import { HoveringSideBar } from "@kit/sidebar/HoveringSideBar";
 import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { BuildingSelection } from "../forms/selection/BuildingSelection";
+import { EditPolygon } from "../forms/polygon/EditPolygon";
 
 export const ViewSidebar = () => {
   const { isAuthenticated } = useAuthentication();

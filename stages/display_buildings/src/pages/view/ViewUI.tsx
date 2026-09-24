@@ -31,7 +31,8 @@ interface Props {
 
 export const ViewUI = ({ onBuildingSelect }: Props) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { addPolygonForAlignment, selectModelToEdit } = alignmentSlice.actions;
+  const { togglePolygonForAlignment, selectModelToEdit } =
+    alignmentSlice.actions;
 
   const { buildings, error } = useBuildingsSlice();
   const { pointToAttach } = useViewMarkers();
@@ -47,7 +48,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     if (building.model) {
       dispatch(selectModelToEdit(building));
     } else {
-      dispatch(addPolygonForAlignment(building));
+      dispatch(togglePolygonForAlignment(building));
       onBuildingSelect && onBuildingSelect(building);
     }
   };
