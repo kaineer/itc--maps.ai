@@ -117,6 +117,11 @@ const defaultTopCamera: CameraState = {
   cameraHeightMode: "eyeLevel",
 };
 
+const defaultCamera: Record<CameraView, CameraState> = {
+  perspective: defaultPerspectiveCamera,
+  top: defaultTopCamera,
+};
+
 const initialState: AlignmentState = {
   currentCameraView: defaultCameraView,
   cameraStates: {
@@ -180,14 +185,7 @@ export const alignmentSlice = createSlice({
 
     resetCamera: (state, action: PayloadAction<CameraView>) => {
       const view = action.payload;
-      switch (view) {
-        case "perspective":
-          state.cameraStates[view] = defaultPerspectiveCamera;
-          break;
-        case "top":
-          state.cameraStates[view] = defaultTopCamera;
-          break;
-      }
+      state.cameraStates[view] = defaultCamera[view];
     },
 
     resetAllCameras: (state) => {

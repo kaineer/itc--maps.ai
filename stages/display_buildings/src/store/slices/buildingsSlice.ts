@@ -32,8 +32,7 @@ export const buildingsSlice = createSlice({
     // Select or deselect a building for operations like alignment or model setup
     setSelectedBuilding: (state, action: PayloadAction<string | null>) => {
       state.selectedBuildingId = action.payload;
-    },
-    // Set buildings directly (for testing and development)
+    }, // Set buildings directly (for testing and development)
     setBuildings: (state, action: PayloadAction<Building[]>) => {
       state.buildings = action.payload;
     },
