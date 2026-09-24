@@ -3,8 +3,8 @@ import { AppDispatch } from "@store/index";
 import {
   alignmentSlice,
   prepareInitialTransform,
-} from "@slices/alignmentSlice";
-import { modelUploadSlice } from "@slices/modelUploadSlice";
+} from "@features/align-model";
+import { modelUploadSlice } from "@entities/models";
 import { FileUploadButton } from "@kit/file-upload/FileUploadButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";

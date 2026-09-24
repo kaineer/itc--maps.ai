@@ -1,17 +1,19 @@
 import classes from "./TrackPointListItem.module.css";
 import { Button } from "@kit/common/Button";
-import type { TrackId, TrackPoint } from "@.types/track-types";
+import type { TrackId, TrackPoint } from "@entities/tracks";
 import { KeyboardEvent, MouseEvent } from "react";
 import { useDispatch } from "react-redux";
-import { viewSlice } from "@slices/viewSlice";
+import { viewSlice } from "@features/explore-view";
 import { useNavigate } from "react-router";
-import { useNotification } from "@hooks/useNotification";
+import { useNotification } from "@shared/lib/useNotification";
 import { useRef } from "react";
 import { almostNone } from "@shared/lib/position/positionMath";
-import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
-import { bind } from "@utils/bind";
-import { tracksSlice } from "@entities/tracks/model/tracks.slice";
-import { useCurrentPointId } from "@entities/tracks/lib/use.track.slice";
+import {
+  useTrackPointsApi,
+  tracksSlice,
+  useCurrentPointId,
+} from "@entities/tracks";
+import { bind } from "@shared/lib/bind";
 
 const {
   setPointToAttach,

@@ -10,18 +10,18 @@ import {
   isBuildingWithModel,
   ModelMetadata,
   UpdateModel,
-} from "@.types/buildings-types";
+} from "@entities/buildings";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
 import { toast } from "sonner";
 import { CenteredForm } from "@kit/centered-form/CenteredForm";
-import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
+import { useModelToEdit } from "@features/align-model";
 import {
   useDeleteModelMutation,
   useUpdateModelPositionMutation,
-} from "@entities/models/model/models.api";
-import { alignmentSlice } from "@slices/alignmentSlice";
-import { bind } from "@utils/bind";
+} from "@entities/models";
+import { alignmentSlice } from "@features/align-model";
+import { bind } from "@shared/lib/bind";
 
 interface Props {
   enabled: boolean;

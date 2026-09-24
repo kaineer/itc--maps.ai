@@ -1,21 +1,20 @@
-import { viewSlice } from "@slices/viewSlice";
+import { viewSlice } from "@features/explore-view";
 import { GoMoveToTop } from "react-icons/go";
 import { LuBuilding2 } from "react-icons/lu";
 
 import { useDispatch, useSelector } from "react-redux";
-import { useAuthentication } from "@hooks/useAuthentication";
-import { Allow } from "@kit/utils/Allow";
-import { alignmentSlice } from "@slices/alignmentSlice";
-import { Building } from "@.types/buildings-types";
-import { AttachPointSidebarItem } from "./AttachPointSidebarItem";
+import { useAuthentication } from "@entities/session";
+import { Allow } from "@entities/session";
+import { alignmentSlice } from "@features/align-model";
+import { Building } from "@entities/buildings";
+import { AttachPointSidebarItem } from "@features/attach-track-point";
 import { TracksSidebarLists } from "./TrackSidebarLists";
 import { BuildingModelEdit } from "@widgets/view/forms/edit-model/BuildingModelEdit";
-import { useModelToEdit } from "@hooks/alignment/useAlignmentSlice";
+import { useModelToEdit } from "@features/align-model";
 import { AuthSidebarItems } from "@widgets/sidebar/common/AuthSidebarItems";
 import { TracksSidebarItem } from "@widgets/sidebar/common/TracksSidebarItem";
 import { UserListSidebarItem } from "@widgets/sidebar/common/UserlistSidebarItem";
-import { HoveringSideBar } from "@kit/sidebar/HoveringSideBar";
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { HoveringSideBar, SideBarItem } from "@features/app-chrome";
 import { BuildingSelection } from "../forms/selection/BuildingSelection";
 import { EditPolygon } from "../forms/polygon/EditPolygon";
 

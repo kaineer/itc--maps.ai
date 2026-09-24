@@ -1,5 +1,5 @@
 import classes from "./Button.module.css";
-import { getVariationClasses } from "@utils/classes";
+import { getVariationClasses } from "@shared/lib/classes";
 import clsx from "clsx";
 import { ReactNode, MouseEvent } from "react";
 

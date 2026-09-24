@@ -1,11 +1,11 @@
-import { AllowRoute } from "@kit/utils/AllowRoute";
+import { AllowRoute } from "@entities/session";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { IntroUI } from "@pages/intro/IntroUI";
 import { TrackListUI } from "@pages/tracks/list/TrackListUI";
 import { TrackPointListUI } from "@pages/tracks/points-list/TrackPointListUI";
 import { ViewUI } from "@pages/view/ViewUI";
 import { AlignmentUI } from "@pages/alignment/AlignmentUI";
-import { CreateModelOfferUI } from "@components/ui/uploader/CreateModelOfferUI";
+import { ModelOfferCreateUI } from "@pages/model-offer-create/ModelOfferCreateUI";
 import { UserListUI } from "@pages/user/list/UserListUI";
 import { UserCreateUI } from "@pages/user/create/UserCreateUI";
 
@@ -21,7 +21,7 @@ export const AuthorizedRouter = () => (
         path="offers/create"
         element={
           <AllowRoute role="Uploader,Creator,Admin" redirect={defaultRoute}>
-            <CreateModelOfferUI />
+            <ModelOfferCreateUI />
           </AllowRoute>
         }
       />

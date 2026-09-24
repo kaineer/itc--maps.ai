@@ -1,10 +1,10 @@
 import classes from "./UserCreateUI.module.css";
 import { useNavigate } from "react-router";
 
-import { CreateUser } from "@.types/user-request-types";
+import { CreateUser } from "@entities/users";
 
-import { useNotification } from "@hooks/useNotification";
-import { usePostUserMutation } from "@entities/users/model/users.api";
+import { useNotification } from "@shared/lib/useNotification";
+import { usePostUserMutation } from "@entities/users";
 import { NewUserSideBar } from "@widgets/users/sidebar/NewUserSideBar";
 import { UserForm } from "@widgets/users/create/UserForm";
 

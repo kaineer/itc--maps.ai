@@ -1,7 +1,10 @@
 import classes from "./FileUploadButton.module.css";
 
 import { useRef, useState, ChangeEvent } from 'react';
-import { useFileUpload, UseFileUploadOptions } from '../../../hooks/useFileUpload';
+import {
+  useFileUpload,
+  type UseFileUploadOptions,
+} from "@shared/lib/useFileUpload";
 
 export interface Props extends UseFileUploadOptions {
   uploadEndpoint?: string;

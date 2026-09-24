@@ -1,5 +1,5 @@
 import { FinishAlignment } from "@widgets/alignment/forms/save/FinishAlignment";
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { SideBarItem } from "@features/app-chrome";
 import { FaRegSave } from "react-icons/fa";
 
 export const FinishAlignmentSidebarItem = () => {

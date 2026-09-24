@@ -1,5 +1,5 @@
 import { BasePolygonBuilding } from "../BasePolygonBuilding";
-import { Building } from "../../../../types/types";
+import type { Building } from "@shared/model/buildings-types";
 
 interface Props {
   building: Building;

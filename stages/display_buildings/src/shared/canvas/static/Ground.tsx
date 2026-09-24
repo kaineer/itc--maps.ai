@@ -1,5 +1,5 @@
-import { UI_COLORS } from "@utils/constants";
-import { ModelPosition } from "src/types/types";
+import { UI_COLORS } from "@shared/config/constants";
+import type { ModelPosition } from "@shared/model/buildings-types";
 
 interface Props {
   position: ModelPosition;

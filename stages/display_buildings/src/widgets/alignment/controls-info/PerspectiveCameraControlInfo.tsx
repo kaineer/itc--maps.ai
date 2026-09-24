@@ -1,7 +1,7 @@
 import { ControlInfoSection } from "@kit/control-info/ControlInfoSection";
 import classes from "./PerspectiveCameraControlInfo.module.css";
 import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
-import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "@features/control-hints";
 
 const detailedInfo = [
   {

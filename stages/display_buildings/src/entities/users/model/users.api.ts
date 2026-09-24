@@ -1,12 +1,8 @@
-import { User, UserId } from "@.types/auth-types";
-import {
-  CreateUser,
-  UpdateUser,
-  UserResponse,
-} from "@.types/user-request-types";
+import type { User, UserId } from "./types";
+import type { CreateUser, UpdateUser, UserResponse } from "./types";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { createBackendService } from "@services/backendService";
-import { getRoleName } from "@utils/roles";
+import { createBackendService } from "@shared/api";
+import { getRoleName } from "@entities/session/lib/roles";
 
 const backendService = createBackendService();
 const { baseQuery } = backendService;

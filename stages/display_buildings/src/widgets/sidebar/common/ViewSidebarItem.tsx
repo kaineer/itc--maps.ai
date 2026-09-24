@@ -1,7 +1,7 @@
 import { FaStreetView } from "react-icons/fa6";
 import { useSelector } from "react-redux";
-import { buildingsSlice } from "@slices/buildingsSlice";
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { buildingsSlice } from "@entities/buildings";
+import { SideBarItem } from "@features/app-chrome";
 
 export const ViewSidebarItem = () => {
   const { getLastLoadedPosition } = buildingsSlice.selectors;

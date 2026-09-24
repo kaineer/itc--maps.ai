@@ -1,5 +1,5 @@
-import { useAuthentication } from "@hooks/useAuthentication";
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { useAuthentication } from "@entities/session";
+import { SideBarItem } from "@features/app-chrome";
 import { IoIosLogOut } from "react-icons/io";
 import { IoLogInOutline } from "react-icons/io5";
 

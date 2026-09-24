@@ -1,4 +1,4 @@
-import { minimapSlice } from "@slices/minimapSlice";
+import { minimapSlice } from "../model/minimap.slice";
 import { useSelector } from "react-redux";
 
 const { getCenter, getZoom, getLastLoadedCenter, getMarkers } =

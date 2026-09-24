@@ -4,7 +4,7 @@ import { useParams } from "react-router";
 import { TrackPointAddNew } from "../../../widgets/tracks/points-list/TrackPointAddNew";
 import { TrackPointListItem } from "../../../widgets/tracks/points-list/TrackPointListItem";
 import { TrackPointsSideBar } from "@widgets/tracks/sidebar/TrackPointsSideBar";
-import { useTrackPointsApi } from "@entities/tracks/lib/use.tracks.api";
+import { useTrackPointsApi } from "@entities/tracks";
 
 export const TrackPointListUI = () => {
   const { trackId } = useParams();

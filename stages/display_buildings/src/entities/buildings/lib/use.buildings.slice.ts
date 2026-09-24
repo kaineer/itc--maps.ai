@@ -1,4 +1,4 @@
-import { buildingsSlice } from "@slices/buildingsSlice";
+import { buildingsSlice } from "../model/buildings.slice";
 import { useSelector } from "react-redux";
 
 const {

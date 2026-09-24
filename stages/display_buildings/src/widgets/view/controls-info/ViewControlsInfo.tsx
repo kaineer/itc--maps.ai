@@ -13,10 +13,10 @@
 import { ControlInfoSection } from "@kit/control-info/ControlInfoSection";
 import classes from "./ViewControlsInfo.module.css";
 
-import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "@utils/constants";
+import { CAMERA_HEIGHTS, MOVEMENT_SPEEDS } from "@shared/config/constants";
 import { FeatureInfoSection } from "@kit/control-info/FeatureInfoSection";
 import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
-import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "@features/control-hints";
 
 const detailedInfo = [
   {

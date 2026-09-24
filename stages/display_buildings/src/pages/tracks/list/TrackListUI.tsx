@@ -1,7 +1,7 @@
 import classes from "./TrackListUI.module.css";
-import type { Track } from "@.types/track-types";
+import type { Track } from "@entities/tracks";
 import { TracksSideBar } from "@widgets/tracks/sidebar/TracksSideBar";
-import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
+import { useTracksApi } from "@entities/tracks";
 import { TrackAddNew } from "@widgets/tracks/list/TrackAddNew";
 import { TrackListItem } from "@widgets/tracks/list/TrackListItem";
 

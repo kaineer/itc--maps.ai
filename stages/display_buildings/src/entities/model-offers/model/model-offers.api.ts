@@ -1,6 +1,6 @@
-import { CreateModelOffer } from "@.types/model-offer-types";
+import { CreateModelOffer } from "@entities/model-offers";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { createBackendService } from "@services/backendService";
+import { createBackendService } from "@shared/api";
 
 const backendService = createBackendService();
 const { baseQuery } = backendService;

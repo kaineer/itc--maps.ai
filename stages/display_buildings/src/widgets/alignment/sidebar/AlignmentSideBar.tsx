@@ -1,4 +1,4 @@
-import { HoveringSideBar } from "@kit/sidebar/HoveringSideBar";
+import { HoveringSideBar } from "@features/app-chrome";
 import { AuthSidebarItems } from "@widgets/sidebar/common/AuthSidebarItems";
 import { FinishAlignmentSidebarItem } from "./FinishAlignmentSidebarItem";
 

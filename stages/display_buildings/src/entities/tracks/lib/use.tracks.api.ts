@@ -1,4 +1,4 @@
-import { TrackId, TrackPoint, TrackPointId } from "@.types/track-types";
+import { TrackId, TrackPoint, TrackPointId } from "@entities/tracks";
 import {
   useGetTracksListQuery,
   usePostTrackMutation,

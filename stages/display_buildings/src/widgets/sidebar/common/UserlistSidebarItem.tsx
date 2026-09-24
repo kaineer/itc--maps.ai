@@ -1,4 +1,4 @@
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { SideBarItem } from "@features/app-chrome";
 import { PiUserList } from "react-icons/pi";
 
 export const UserListSidebarItem = () => {

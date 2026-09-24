@@ -1,8 +1,8 @@
-import { useAuthentication } from "@hooks/useAuthentication";
+import { useAuthentication } from "@entities/session";
 import { UnauthorizedRouter } from "./UnauthorizedRouter";
 import { AuthorizedRouter } from "./AuthorizedRouter";
 import { useEffect } from "react";
-import { uiSlice } from "@slices/uiSlice";
+import { uiSlice } from "@features/app-chrome";
 import { useDispatch } from "react-redux";
 
 export const AppContent = () => {

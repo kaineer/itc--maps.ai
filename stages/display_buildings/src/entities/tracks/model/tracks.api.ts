@@ -1,4 +1,4 @@
-import { QueryObjects } from "@.types/buildings-types";
+import { QueryObjects } from "@entities/buildings";
 import type {
   CreateTrack,
   CreateTrackPoint,
@@ -8,9 +8,9 @@ import type {
   TrackPoint,
   TrackWithPoints,
   UpdateTrackPoint,
-} from "@.types/track-types";
+} from "@entities/tracks";
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { createBackendService } from "@services/backendService";
+import { createBackendService } from "@shared/api";
 
 const backendService = createBackendService();
 const { baseQuery } = backendService;

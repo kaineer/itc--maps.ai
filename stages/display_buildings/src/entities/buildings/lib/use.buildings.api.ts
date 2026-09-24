@@ -1,17 +1,17 @@
-import { useViewCamera } from "@hooks/view/useViewSlice";
+import { useViewCamera } from "@features/explore-view";
 import { useBuildingsSlice } from "./use.buildings.slice";
 import {
   useLazyGetStartPositionQuery,
   useLazyPutBuildingsQuery,
 } from "../model/buildings.api";
-import { CAMERA_HEIGHTS, DISTANCES, EYE_LEVEL_HEIGHT } from "@utils/constants";
+import { CAMERA_HEIGHTS, DISTANCES, EYE_LEVEL_HEIGHT } from "@shared/config/constants";
 import { useDispatch } from "react-redux";
-import { viewSlice } from "@slices/viewSlice";
-import { type ModelPosition } from "@.types/buildings-types";
-import { buildingsSlice } from "@slices/buildingsSlice";
+import { viewSlice } from "@features/explore-view";
+import { type ModelPosition } from "@entities/buildings";
+import { buildingsSlice } from "../model/buildings.slice";
 import { useEffect } from "react";
 import { distance2dBetween } from "@shared/lib/position/positionMath";
-import { parseLocationHash } from "@utils/parseLocationHash";
+import { parseLocationHash } from "@shared/lib/parseLocationHash";
 
 const {
   setGroundCenter,

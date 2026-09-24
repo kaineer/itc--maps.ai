@@ -1,6 +1,6 @@
 import { useRef, MouseEvent } from "react";
 import classes from "./UserForm.module.css";
-import { CreateUser } from "@.types/user-request-types";
+import { CreateUser } from "@entities/users";
 import { Column } from "@kit/common/Container";
 import { Button } from "@kit/common/Button";
 import { Input } from "@kit/common/Input";

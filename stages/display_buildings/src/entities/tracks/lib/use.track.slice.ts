@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import { tracksSlice } from "../model/tracks.slice";
-import { type TrackPoint } from "@.types/track-types";
+import { type TrackPoint } from "@entities/tracks";
 
 const { getCurrentPoint } = tracksSlice.selectors;
 

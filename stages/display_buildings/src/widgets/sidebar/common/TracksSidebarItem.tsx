@@ -1,4 +1,4 @@
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { SideBarItem } from "@features/app-chrome";
 import { FaListUl } from "react-icons/fa";
 
 export const TracksSidebarItem = () => {

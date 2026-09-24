@@ -1,6 +1,6 @@
-import { minimapSlice } from "@slices/minimapSlice";
-import { viewSlice } from "@slices/viewSlice";
-import { mercatorToMetrics } from "@utils/mercator";
+import { minimapSlice } from "@entities/minimap";
+import { viewSlice } from "@features/explore-view";
+import { mercatorToMetrics } from "@shared/lib/mercator";
 import { useMapEvents } from "react-leaflet";
 import { useDispatch } from "react-redux";
 

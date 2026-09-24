@@ -5,24 +5,23 @@ import { OrbitControls } from "@react-three/drei";
 import { ViewControlsInfo } from "../../widgets/view/controls-info/ViewControlsInfo";
 import { Ground } from "@canvas/static/Ground";
 import { Lighting } from "@canvas/static/Lighting";
-import { ViewCameraController } from "@canvas/cameras/view/ViewCameraController";
+import { ViewCameraController } from "@features/explore-view";
 import { type AppDispatch } from "@store/index";
-import type { Building } from "../../types/types";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import type { Building } from "@entities/buildings";
+import { alignmentSlice } from "@features/align-model";
 
 import { toast } from "sonner";
 import { Minimap } from "../../widgets/view/minimap/Minimap";
-import { MarkerNotification } from "../../components/ui/view.legacy/MarkerNotification";
+import { MarkerNotification } from "@widgets/view/notifications/MarkerNotification";
 
 import { ViewSidebar } from "@widgets/view/sidebar/ViewSideBar";
 import {
   useViewCamera,
   useViewMarkers,
   useViewMinimap,
-} from "@hooks/view/useViewSlice";
-import { useBuildingsSlice } from "@entities/buildings/lib/use.buildings.slice";
-import { useBuildingsApi } from "@entities/buildings/lib/use.buildings.api";
-import { ViewStage } from "@canvas/stages/view/ViewStage";
+} from "@features/explore-view";
+import { useBuildingsSlice, useBuildingsApi } from "@entities/buildings";
+import { ViewStage } from "@widgets/view/scene/ViewStage";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;

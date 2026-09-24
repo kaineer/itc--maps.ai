@@ -1,13 +1,13 @@
 import classes from "./FinishAlignment.module.css";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import { alignmentSlice } from "@features/align-model";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
-import { CreateModel } from "@.types/buildings-types";
-import { useNotification } from "@hooks/useNotification";
-import { useCreateModelPositionMutation } from "@entities/models/model/models.api";
+import { CreateModel } from "@entities/buildings";
+import { useNotification } from "@shared/lib/useNotification";
+import { useCreateModelPositionMutation } from "@entities/models";
 import { CenteredForm } from "@kit/centered-form/CenteredForm";
-import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
+import { useSelectedPolygons } from "@features/align-model";
 
 interface Props {
   enabled: boolean;

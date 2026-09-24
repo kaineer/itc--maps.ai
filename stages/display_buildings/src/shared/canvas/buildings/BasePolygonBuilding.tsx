@@ -1,8 +1,8 @@
 import { useRef } from "react";
 import * as THREE from "three";
-import { Building } from "../../../types/types";
+import type { Building } from "@shared/model/buildings-types";
 import { ThreeEvent } from "@react-three/fiber";
-import { UI_COLORS } from "@utils/constants";
+import { UI_COLORS } from "@shared/config/constants";
 
 type OnClickFunction = (building: Building) => void;
 

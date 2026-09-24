@@ -1,9 +1,11 @@
-import type { Track, TrackPoint } from "@.types/track-types";
+import type { Track, TrackPoint } from "@entities/tracks";
 import { almostNone } from "@shared/lib/position/positionMath";
-import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
-import { useLazyGetTrackPointsQuery } from "@entities/tracks/model/tracks.api";
-import { SideBarList } from "@kit/sidebar/list/SideBarList";
-import { viewSlice } from "@slices/viewSlice";
+import {
+  useTracksApi,
+  useLazyGetTrackPointsQuery,
+} from "@entities/tracks";
+import { SideBarList } from "@features/app-chrome";
+import { viewSlice } from "@features/explore-view";
 import { useState } from "react";
 import { FaListUl, FaRegBuilding } from "react-icons/fa";
 import { useDispatch } from "react-redux";

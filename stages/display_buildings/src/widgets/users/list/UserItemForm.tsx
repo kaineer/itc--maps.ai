@@ -1,13 +1,13 @@
 import classes from "./UserItemForm.module.css";
-import { User } from "@.types/auth-types";
+import type { User } from "@entities/users";
 import { Button } from "@kit/common/Button";
-import { useAuthentication } from "@hooks/useAuthentication";
-import { getRoleIndex } from "@utils/roles";
-import { useNotification } from "@hooks/useNotification";
+import { useAuthentication } from "@entities/session";
+import { getRoleIndex } from "@entities/session/lib/roles";
+import { useNotification } from "@shared/lib/useNotification";
 import {
   useDeleteUserMutation,
   usePutUserMutation,
-} from "@entities/users/model/users.api";
+} from "@entities/users";
 
 interface Props {
   user: User;

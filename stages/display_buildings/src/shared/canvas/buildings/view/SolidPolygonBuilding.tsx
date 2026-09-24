@@ -1,23 +1,21 @@
 import { BasePolygonBuilding } from "../BasePolygonBuilding";
-import { Building } from "../../../../types/types";
+import type { Building } from "@shared/model/buildings-types";
 import { useEffect, useState } from "react";
 import {
   getKeyboardModifiers,
   KeyboardModifiers,
-} from "@utils/keyboardModifiers";
-import { useSelectedPolygons } from "@hooks/alignment/useAlignmentSlice";
-
+} from "@shared/lib/keyboardModifiers";
 interface Props {
   building: Building;
+  highlighted?: boolean;
   onClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
 export const SolidPolygonBuilding = ({
   building,
+  highlighted = false,
   onClick = () => null,
 }: Props) => {
-  const { selectedPolygons: polygons } = useSelectedPolygons();
-  const highlighted = Boolean(polygons.find((p) => p.id === building.id));
 
   const [opacity, setOpacity] = useState<number>(0.1);
 

@@ -5,7 +5,7 @@ import type {
   CreateModel,
   ModelId,
   UpdateModel,
-} from "@.types/buildings-types";
+} from "@entities/buildings";
 import { buildingsAndModelsApi } from "@store/api/buildingsAndModelsApi";
 
 export const modelsApi = buildingsAndModelsApi.injectEndpoints({

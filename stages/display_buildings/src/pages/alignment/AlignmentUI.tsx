@@ -2,13 +2,13 @@ import styles from "./AlignmentUI.module.css";
 
 import { Canvas } from "@react-three/fiber";
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import { alignmentSlice } from "@features/align-model";
 
 import { Ground } from "@canvas/static/Ground";
 import { Lighting } from "@canvas/static/Lighting";
 
-import { AlignmentStageContainer } from "@canvas/stages/alignment/AlignmentStageContainer";
-import { AlignmentCameraGroup } from "@canvas/cameras/alignment/AlignmentCameraGroup";
+import { AlignmentStageContainer } from "@widgets/alignment/scene/AlignmentStageContainer";
+import { AlignmentCameraGroup } from "@features/align-model";
 import { AlignmentUIGroup } from "@widgets/alignment/group/AlignmentUIGroup";
 
 /**

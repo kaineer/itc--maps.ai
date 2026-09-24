@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
-import { alignmentSlice } from "@slices/alignmentSlice";
-import { EnabledProps } from "@.types/component-types";
+import { alignmentSlice } from "@features/align-model";
+import { EnabledProps } from "@shared/model/component-types";
 import { AlignmentSideBar } from "@widgets/alignment/sidebar/AlignmentSideBar";
 import { Match } from "@kit/utils/Match";
 import { TopCameraControlInfo } from "@widgets/alignment/controls-info/TopCameraControlInfo";

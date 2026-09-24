@@ -1,9 +1,9 @@
 import classes from "./SelectedBuildings.module.css";
-import { alignmentSlice } from "@slices/alignmentSlice";
+import { alignmentSlice } from "@features/align-model";
 import { useDispatch } from "react-redux";
 import { MouseEvent } from "react";
-import { ModelPosition, type Building } from "@.types/types";
-import { viewSlice } from "@slices/viewSlice";
+import type { Building, ModelPosition } from "@entities/buildings";
+import { viewSlice } from "@features/explore-view";
 import { RemoveButton } from "@kit/common/RemoveButton";
 
 interface Props {

@@ -1,7 +1,7 @@
 /**
  * Help info about topCameraController
  */
-import { CollapsibleControlInfo } from "@kit/control-info/CollapsibleControlInfo";
+import { CollapsibleControlInfo } from "@features/control-hints";
 import classes from "./TopCameraControlInfo.module.css";
 import { DetailedMetaInfo } from "@kit/control-info/DetailedMetaInfo";
 import { ControlInfoSection } from "@kit/control-info/ControlInfoSection";

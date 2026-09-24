@@ -1,4 +1,4 @@
-import { ModelPosition } from "@.types/buildings-types";
+import { ModelPosition } from "@entities/buildings";
 import { Cylinder } from "@react-three/drei";
 import { Vector3 } from "three";
 

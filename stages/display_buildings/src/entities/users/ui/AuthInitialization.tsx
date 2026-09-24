@@ -1,9 +1,9 @@
 import { ReactNode, useEffect } from "react";
 import { useDispatch } from "react-redux";
 
-import { authFromLocalStorage } from "@slices/authenticationSlice";
+import { authFromLocalStorage } from "@entities/session";
 import { AppDispatch } from "@store/index";
-import { useAuthentication } from "@hooks/useAuthentication";
+import { useAuthentication } from "@entities/session";
 
 interface Props {
   children: ReactNode;

@@ -1,29 +1,29 @@
 import classes from "./Minimap.module.css";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import { ModelPosition } from "@.types/buildings-types";
-import { metricsToMercator } from "@utils/mercator";
+import { ModelPosition } from "@entities/buildings";
+import { metricsToMercator } from "@shared/lib/mercator";
 import { useEffect } from "react";
 import { LatLngExpression, LeafletMouseEvent } from "leaflet";
 import { MapEvents } from "./MapEvents";
-import { MarkerPoint, minimapSlice } from "@slices/minimapSlice";
+import { MarkerPoint, minimapSlice } from "@entities/minimap";
 import { useDispatch } from "react-redux";
-import { leafletTemplate } from "@utils/network";
+import { leafletTemplate } from "@shared/lib/network";
 import { distance2dBetween } from "@shared/lib/position/positionMath";
-import { DISTANCES } from "@utils/constants";
+import { DISTANCES } from "@shared/config/constants";
 
 import L from "leaflet";
 // ✅ Правильное исправление иконок для react-leaflet 5.x
 import iconUrl from "leaflet/dist/images/marker-icon.png";
 import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
 import shadowUrl from "leaflet/dist/images/marker-shadow.png";
-import { viewSlice } from "@slices/viewSlice";
-import { useNotification } from "@hooks/useNotification";
-import { useLazyQueryTrackPointsQuery } from "@entities/tracks/model/tracks.api";
+import { viewSlice } from "@features/explore-view";
+import { useNotification } from "@shared/lib/useNotification";
+import { useLazyQueryTrackPointsQuery } from "@entities/tracks";
 import {
   useMinimapMarkers,
   useMinimapPosition,
-} from "@entities/minimap/lib/use.minimap.slice";
+} from "@entities/minimap";
 
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 

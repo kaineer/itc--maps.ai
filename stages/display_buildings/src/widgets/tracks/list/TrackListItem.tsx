@@ -1,10 +1,9 @@
 import { Button } from "@kit/common/Button";
 import classes from "./TrackListItem.module.css";
-import { Track } from "@.types/track-types";
-import { useNotification } from "@hooks/useNotification";
-import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
+import { Track } from "@entities/tracks";
+import { useNotification } from "@shared/lib/useNotification";
+import { useTracksApi, useTrack } from "@entities/tracks";
 import { Link } from "react-router";
-import { useTrack } from "@entities/tracks/lib/use.track";
 
 interface Props {
   track: Track;

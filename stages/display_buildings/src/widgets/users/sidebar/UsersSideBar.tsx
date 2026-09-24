@@ -1,5 +1,4 @@
-import { HoveringSideBar } from "@kit/sidebar/HoveringSideBar";
-import { SideBarItem } from "@kit/sidebar/item/SideBarItem";
+import { HoveringSideBar, SideBarItem } from "@features/app-chrome";
 import { AuthSidebarItems } from "@widgets/sidebar/common/AuthSidebarItems";
 import { ViewSidebarItem } from "@widgets/sidebar/common/ViewSidebarItem";
 import { RiUserAddLine } from "react-icons/ri";

@@ -1,4 +1,4 @@
-import { type TrackPointId, type TrackPoint } from "@.types/track-types";
+import { type TrackPointId, type TrackPoint } from "@entities/tracks";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface SliceState {

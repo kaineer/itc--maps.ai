@@ -2,10 +2,10 @@ import {
   type Building,
   type BuildingNode,
   type UpdateBuilding,
-} from "@.types/buildings-types";
-import { buildingsSlice } from "@slices/buildingsSlice";
+} from "@entities/buildings";
+import { buildingsSlice } from "../model/buildings.slice";
 import { buildingsAndModelsApi } from "@store/api/buildingsAndModelsApi";
-import { EYE_LEVEL_HEIGHT } from "@utils/constants";
+import { EYE_LEVEL_HEIGHT } from "@shared/config/constants";
 
 const { setBuildings, setLastLoadedPosition } = buildingsSlice.actions;
 

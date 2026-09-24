@@ -1,6 +1,6 @@
 import classes from "./LoginUI.module.css";
 import { useRef, useEffect, MouseEvent, useCallback } from "react";
-import { useAuthentication } from "@hooks/useAuthentication";
+import { useAuthentication } from "@entities/session";
 import { toast } from "sonner";
 import clsx from "clsx";
 import { Column } from "@kit/common/Container";
