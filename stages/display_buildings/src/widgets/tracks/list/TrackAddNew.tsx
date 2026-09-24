@@ -1,9 +1,9 @@
 import classes from "./TrackListItem.module.css";
 import clsx from "clsx";
 import { useRef, useState, type KeyboardEvent } from "react";
-import { useTracksApi } from "@entities/tracks";
-import { useNotification } from "@shared/lib/useNotification";
-import { bind } from "@shared/lib/bind";
+import { useTracksApi } from "@entities/tracks/lib/use.tracks.api";
+import { useNotification } from "@hooks/useNotification";
+import { bind } from "@utils/bind";
 
 export const TrackAddNew = () => {
   const nameRef = useRef<HTMLInputElement>(null);
