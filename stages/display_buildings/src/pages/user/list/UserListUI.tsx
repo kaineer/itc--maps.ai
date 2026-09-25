@@ -1,0 +1,20 @@
+import classes from "./UserListUI.module.css";
+import type { User } from "@entities/users";
+import { UsersSideBar } from "@widgets/users/sidebar/UsersSideBar";
+import { useGetUserListQuery } from "@entities/users";
+import { UserItemForm } from "@widgets/users/list/UserItemForm";
+
+export const UserListUI = () => {
+  const { data, isLoading } = useGetUserListQuery();
+
+  if (!data || isLoading) return null;
+
+  return (
+    <div className={classes.container}>
+      <UsersSideBar />
+      {data.map((user: User) => (
+        <UserItemForm user={user} />
+      ))}
+    </div>
+  );
+};

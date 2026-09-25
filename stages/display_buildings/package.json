@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "type": "commonjs",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "teste": "vitest",
-    "preview": "vite preview"
+    "dev": "vite --config vite.config.common.ts",
+    "build": "vite --config vite.config.common.ts build",
+    "test": "vitest --config vite.config.common.ts",
+    "preview": "vite --config vite.config.common.ts preview"
   },
   "dependencies": {
     "@react-three/drei": "10.7.7",

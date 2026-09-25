@@ -7,6 +7,7 @@ from typing import Any, Dict, List
 
 EARTH_RADIUS = 6378137  # Earth's radius in meters
 
+
 def lat_lng_to_mercator(lat: float, lng: float):
     """
     Convert latitude and longitude to Mercator projection coordinates.
@@ -83,6 +84,31 @@ def transform_coordinates(
         return lat_lng_to_linear(lat, lng, bounds)
 
 
+def parse_building_tags(building):
+    result = {}
+    for tag in building.findall("tag"):
+        k = tag.get("k")
+        v = tag.get("v")
+
+        if k == "building":
+            result["is_building"] = True
+        elif k == "addr:street":
+            result["street"] = v
+        elif k == "addr:housenumber":
+            result["housenumber"] = v
+        elif k == "height":
+            try:
+                result["height"] = float(v)
+            except (ValueError, TypeError):
+                pass
+        elif k == "building:levels":
+            try:
+                result["building_levels"] = int(v)
+            except (ValueError, TypeError):
+                pass
+    return result
+
+
 def parse_buildings(
     xml_file_path: str, output_file_path: str, itc_file_path: str, translation_type: str
 ) -> None:
@@ -129,6 +155,8 @@ def parse_buildings(
     # Create dictionaries to store nodes and ways
     nodes_dict = {}
     buildings = []
+    member_ways = {}
+    wrong_buildings = 0
     itc_building = None
 
     # First pass: collect all nodes
@@ -151,49 +179,93 @@ def parse_buildings(
             continue
 
         # Check if this way is a building
-        is_building = False
-        street = None
-        housenumber = None
-        height = None
-        building_levels = None
+        obj = parse_building_tags(way)
 
-        # Check tags for building information
-        for tag in way.findall("tag"):
-            k = tag.get("k")
-            v = tag.get("v")
+        is_building = obj.get("is_building", False)
+        street = obj.get("street", None)
+        housenumber = obj.get("housenumber", None)
+        height = obj.get("height", None)
+        building_levels = obj.get("building_levels", 1)
 
-            if k == "building":
-                is_building = True
-            elif k == "addr:street":
-                street = v
-            elif k == "addr:housenumber":
-                housenumber = v
-            elif k == "height":
-                try:
-                    height = float(v)
-                except (ValueError, TypeError):
-                    pass
-            elif k == "building:levels":
-                try:
-                    building_levels = float(v)
-                except (ValueError, TypeError):
-                    pass
+        # Get all node coordinates for this way
+        nodes = []
+        for nd in way.findall("nd"):
+            ref = nd.get("ref")
+            if ref and ref in nodes_dict:
+                node_data = nodes_dict[ref]
+                # Transform coordinates based on translation type
+                xz_coords = transform_coordinates(
+                    node_data["lat"], node_data["lon"], translation_type, bounds
+                )
+                # Invert X coordinate to fix mirroring issue
+                xz_coords["x"] = -xz_coords["x"]
+                nodes.append(xz_coords)
+
+        # Build address string
+        address_parts = []
+        if street:
+            address_parts.append(street)
+        if housenumber:
+            address_parts.append(housenumber)
+        address = ", ".join(address_parts) if address_parts else None
+
+        # Calculate height
+        if height is not None:
+            # Use direct height value if available
+            final_height = height
+        elif building_levels is not None:
+            # Calculate height from building levels (3 meters per floor)
+            final_height = building_levels * 3
+        else:
+            # Default height of 3 meters
+            final_height = 3
+
+        # Create building object
+        building_obj = {
+            "id": way_id,
+            "nodes": nodes,
+            "address": address,
+            "height": final_height,
+        }
 
         # If it's a building, process it
         if is_building:
-            # Get all node coordinates for this way
+            buildings.append(building_obj)
+
+            # Check if this is the ITC building (Чкалова, 3)
+            if address and "Чкалова" in address and housenumber == "3":
+                itc_building = building_obj
+                print(f"Found ITC building: {address}")
+        else:
+            member_ways[way_id] = building_obj
+
+    print("Processing complex buildings...")
+    for relation in root.findall("relation"):
+        is_building_wrong = False
+        relation_id = relation.get("id")
+        if not relation_id:
+            continue
+
+        #
+        obj = parse_building_tags(relation)
+
+        is_building = obj.get("is_building", False)
+        street = obj.get("street", None)
+        housenumber = obj.get("housenumber", None)
+        height = obj.get("height", None)
+        building_levels = obj.get("building_levels", 1)
+
+        if is_building:
             nodes = []
-            for nd in way.findall("nd"):
-                ref = nd.get("ref")
-                if ref and ref in nodes_dict:
-                    node_data = nodes_dict[ref]
-                    # Transform coordinates based on translation type
-                    xz_coords = transform_coordinates(
-                        node_data["lat"], node_data["lon"], translation_type, bounds
-                    )
-                    # Invert X coordinate to fix mirroring issue
-                    xz_coords["x"] = -xz_coords["x"]
-                    nodes.append(xz_coords)
+
+            for member in relation.findall("member"):
+                member_id = member.get("ref")
+                if member_id in member_ways:
+                    member_nodes = member_ways[member_id]["nodes"]
+                    nodes = nodes + member_nodes
+                else:
+                    print("Wrong member_id:", member_id)
+                    is_building_wrong = True
 
             # Build address string
             address_parts = []
@@ -214,9 +286,8 @@ def parse_buildings(
                 # Default height of 3 meters
                 final_height = 3
 
-            # Create building object
             building_obj = {
-                "id": way_id,
+                "id": relation_id,
                 "nodes": nodes,
                 "address": address,
                 "height": final_height,
@@ -224,12 +295,12 @@ def parse_buildings(
 
             buildings.append(building_obj)
 
-            # Check if this is the ITC building (Чкалова, 3)
-            if address and "Чкалова" in address and housenumber == "3":
-                itc_building = building_obj
-                print(f"Found ITC building: {address}")
+            if is_building_wrong:
+                print("Wrong building address:", address)
+                wrong_buildings += 1
 
     print(f"Found {len(buildings)} buildings")
+    print(f"Found {wrong_buildings} unfinished buildings")
 
     # Save buildings to JSON file
     output_data = {"buildings": buildings}
