@@ -6,7 +6,7 @@ export const useHelpKnown = (mode: KnownMode) => {
   const { getKnown } = helpInfoSlice.selectors;
   const { setKnown } = helpInfoSlice.actions;
 
-  const isKnown = (useSelector(getKnown) || {})[mode];
+  const isKnown = useSelector(getKnown)[mode];
 
   const setIsKnown = () => {
     dispatch(setKnown(mode));
