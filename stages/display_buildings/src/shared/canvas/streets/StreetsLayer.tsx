@@ -1,72 +1,59 @@
 import { useMemo } from "react";
 import * as THREE from "three";
-import { mergeGeometries } from "three/examples/jsm/utils/BufferGeometryUtils.js";
+import { ThreeEvent } from "@react-three/fiber";
 import type { Street } from "@shared/model/streets-types";
 import { UI_COLORS } from "@shared/config/constants";
+import { MapItems } from "@kit/utils/MapItems";
 
 interface Props {
   streets: Street[];
+  onStreetClick?: (street: Street) => void;
 }
 
 const STREET_Y = 0.12;
 
-const streetGeometry = (street: Street, originX: number, originZ: number) => {
-  if (!street.nodes || street.nodes.length < 3) return null;
-
-  const shape = new THREE.Shape();
-  street.nodes.forEach((node, index) => {
-    const lx = node.x - originX;
-    // −lz: после rotateX(−π/2) получается мировое z, нормаль вверх
-    const lz = -(node.z - originZ);
-    if (index === 0) {
-      shape.moveTo(lx, lz);
-    } else {
-      shape.lineTo(lx, lz);
-    }
-  });
-
-  const geom = new THREE.ShapeGeometry(shape);
-  geom.rotateX(-Math.PI / 2);
-  return geom;
-};
-
-/**
- * Один mesh на все улицы.
- * Перекрывающиеся сегменты иначе z-fight'ятся (здания — объёмные боксы, им это не грозит).
- * depthWrite=false: overlapping одного цвета не мерцают.
- */
-export const StreetsLayer = ({ streets }: Props) => {
+const StreetMesh = ({
+  street,
+  onStreetClick,
+}: {
+  street: Street;
+  onStreetClick?: (street: Street) => void;
+}) => {
   const { geometry, origin } = useMemo(() => {
-    if (!streets.length) {
+    if (!street.nodes || street.nodes.length < 3) {
       return { geometry: null, origin: null };
     }
 
-    const firstNode = streets.find((s) => s.nodes?.length)?.nodes?.[0];
-    if (!firstNode) {
-      return { geometry: null, origin: null };
-    }
+    const originX = street.nodes[0].x;
+    const originZ = street.nodes[0].z;
 
-    const originX = firstNode.x;
-    const originZ = firstNode.z;
+    const shape = new THREE.Shape();
+    street.nodes.forEach((node, index) => {
+      const lx = node.x - originX;
+      // −lz: после rotateX(−π/2) получается мировое z, нормаль вверх
+      const lz = -(node.z - originZ);
+      if (index === 0) {
+        shape.moveTo(lx, lz);
+      } else {
+        shape.lineTo(lx, lz);
+      }
+    });
 
-    const parts = streets
-      .map((street) => streetGeometry(street, originX, originZ))
-      .filter((g): g is THREE.ShapeGeometry => g != null);
-
-    if (!parts.length) {
-      return { geometry: null, origin: null };
-    }
-
-    const merged = mergeGeometries(parts, false);
-    parts.forEach((part) => part.dispose());
+    const geom = new THREE.ShapeGeometry(shape);
+    geom.rotateX(-Math.PI / 2);
 
     return {
-      geometry: merged,
+      geometry: geom,
       origin: { x: originX, z: originZ },
     };
-  }, [streets]);
+  }, [street.nodes]);
 
   if (!geometry || !origin) return null;
+
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    event.stopPropagation();
+    onStreetClick?.(street);
+  };
 
   return (
     <mesh
@@ -74,6 +61,7 @@ export const StreetsLayer = ({ streets }: Props) => {
       position={[origin.x, STREET_Y, origin.z]}
       renderOrder={1}
       receiveShadow
+      onClick={handleClick}
     >
       <meshStandardMaterial
         color={UI_COLORS.STREET}
@@ -85,5 +73,24 @@ export const StreetsLayer = ({ streets }: Props) => {
         polygonOffsetUnits={-1}
       />
     </mesh>
+  );
+};
+
+/**
+ * Отдельный mesh на сегмент — нужен клик по конкретной улице.
+ * depthWrite=false: перекрытия одного цвета не мерцают.
+ */
+export const StreetsLayer = ({ streets, onStreetClick }: Props) => {
+  return (
+    <MapItems
+      items={streets}
+      render={(street) => (
+        <StreetMesh
+          key={street.id}
+          street={street}
+          onStreetClick={onStreetClick}
+        />
+      )}
+    />
   );
 };

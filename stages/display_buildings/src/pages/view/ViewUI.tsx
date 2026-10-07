@@ -21,7 +21,7 @@ import {
   useViewMinimap,
 } from "@features/explore-view";
 import { useBuildingsSlice, useBuildingsApi } from "@entities/buildings";
-import { useStreetsSlice } from "@entities/streets";
+import { useStreetsSlice, type Street } from "@entities/streets";
 import { ViewStage } from "@widgets/view/scene/ViewStage";
 
 interface Props {
@@ -51,6 +51,12 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     } else {
       dispatch(togglePolygonForAlignment(building));
       onBuildingSelect && onBuildingSelect(building);
+    }
+  };
+
+  const handleStreetClick = (street: Street) => {
+    if (street.name) {
+      toast.info("Выбрано: " + street.name);
     }
   };
 
@@ -107,6 +113,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
           buildings={buildings}
           streets={streets}
           onBuildingClick={handleBuildingClick}
+          onStreetClick={handleStreetClick}
         />
 
         {/* Camera controls for view mode

@@ -12,12 +12,14 @@ interface Props {
   buildings: Building[];
   streets?: Street[];
   onBuildingClick?: (building: Building, keys: KeyboardModifiers) => void;
+  onStreetClick?: (street: Street) => void;
 }
 
 export const ViewStage = ({
   buildings,
   streets = [],
   onBuildingClick,
+  onStreetClick,
 }: Props) => {
   const { markers } = useMinimapMarkers();
   const { selectedPolygons } = useSelectedPolygons();
@@ -40,7 +42,9 @@ export const ViewStage = ({
         )}
       />
       {/* После зданий: depthWrite=false, иначе перекрытия сегментов мерцают */}
-      {streets.length > 0 && <StreetsLayer streets={streets} />}
+      {streets.length > 0 && (
+        <StreetsLayer streets={streets} onStreetClick={onStreetClick} />
+      )}
       <MapItems
         items={markers}
         render={(marker) => {
