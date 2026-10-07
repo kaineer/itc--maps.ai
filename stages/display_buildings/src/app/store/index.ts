@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { uiSlice } from "@features/app-chrome";
 import { buildingsSlice } from "@entities/buildings";
+import { streetsSlice } from "@entities/streets";
 import { alignmentSlice } from "@features/align-model";
 import { viewSlice } from "@features/explore-view";
 import { modelUploadSlice } from "@entities/models";
@@ -21,6 +22,7 @@ export function setupStore() {
     reducer: {
       [uiSlice.reducerPath]: uiSlice.reducer,
       [buildingsSlice.reducerPath]: buildingsSlice.reducer,
+      [streetsSlice.reducerPath]: streetsSlice.reducer,
       [alignmentSlice.reducerPath]: alignmentSlice.reducer,
       [viewSlice.reducerPath]: viewSlice.reducer,
       [modelUploadSlice.reducerPath]: modelUploadSlice.reducer,

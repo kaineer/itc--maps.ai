@@ -192,6 +192,7 @@ export const UI_COLORS = {
   ANONYMOUS: "#696969",
   HIGHLIGHTED: "#E8D0A9",
   GROUND: "#F5F5DC",
+  STREET: "#C8C2B4",
 };
 
 // Re-export commonly used constants for backward compatibility

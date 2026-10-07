@@ -6,8 +6,8 @@ const { baseQuery } = createBackendService();
 export const buildingsAndModelsApi = createApi({
   reducerPath: "base/api",
   baseQuery,
-  tagTypes: ["buildingsList", "model"],
+  tagTypes: ["buildingsList", "streetsList", "model"],
   endpoints: () => ({}),
 });
 
-export const {} = buildingsAndModelsApi;
+export const { } = buildingsAndModelsApi;

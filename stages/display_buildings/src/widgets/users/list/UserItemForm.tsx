@@ -4,10 +4,7 @@ import { Button } from "@kit/common/Button";
 import { useAuthentication } from "@entities/session";
 import { getRoleIndex } from "@entities/session/lib/roles";
 import { useNotification } from "@shared/lib/useNotification";
-import {
-  useDeleteUserMutation,
-  usePutUserMutation,
-} from "@entities/users";
+import { useDeleteUserMutation, usePutUserMutation } from "@entities/users";
 
 interface Props {
   user: User;
@@ -47,19 +44,33 @@ export const UserItemForm = ({ user }: Props) => {
         warn("Харакири не наш путь");
       };
 
+  const RoleButton = ({
+    roleName,
+    title,
+    role,
+  }: {
+    roleName: string;
+    title: string;
+    role: string;
+  }) => {
+    return (
+      <Button
+        key={roleName}
+        variation={variation(role === roleName)}
+        onClick={handleRoleChange(roleName)}
+      >
+        {title}
+      </Button>
+    );
+  };
+
   return (
     <div className={classes.container}>
       <h1 className={classes.header}>{login}</h1>
       <div className={classes.roles}>
         <h1 className={classes.sectionHeader}>Роль</h1>
         <div className={classes.roleButtons}>
-          <Button
-            key="admin"
-            variation={variation(role === "Admin")}
-            onClick={handleRoleChange("Admin")}
-          >
-            Администратор
-          </Button>
+          <RoleButton role={role} roleName="Admin" title="Администратор" />
           <Button
             key="creator"
             variation={variation(role === "Creator")}

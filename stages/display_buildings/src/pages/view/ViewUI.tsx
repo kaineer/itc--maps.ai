@@ -21,6 +21,7 @@ import {
   useViewMinimap,
 } from "@features/explore-view";
 import { useBuildingsSlice, useBuildingsApi } from "@entities/buildings";
+import { useStreetsSlice } from "@entities/streets";
 import { ViewStage } from "@widgets/view/scene/ViewStage";
 
 interface Props {
@@ -34,6 +35,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
     alignmentSlice.actions;
 
   const { buildings, error } = useBuildingsSlice();
+  const { streets } = useStreetsSlice();
   const { pointToAttach } = useViewMarkers();
 
   const { cameraPosition, cameraTarget, cameraFov } = useViewCamera();
@@ -103,6 +105,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
          */}
         <ViewStage
           buildings={buildings}
+          streets={streets}
           onBuildingClick={handleBuildingClick}
         />
 

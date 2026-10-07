@@ -4,14 +4,21 @@ import { useSelectedPolygons } from "@features/align-model";
 import { MapItems } from "@kit/utils/MapItems";
 import { UniqueItems } from "@kit/utils/UniqueItems";
 import { Building } from "@entities/buildings";
+import type { Street } from "@entities/streets";
 import { RenderBuilding } from "@features/explore-view";
+import { StreetsLayer } from "@canvas/streets/StreetsLayer";
 
 interface Props {
   buildings: Building[];
+  streets?: Street[];
   onBuildingClick?: (building: Building, keys: KeyboardModifiers) => void;
 }
 
-export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
+export const ViewStage = ({
+  buildings,
+  streets = [],
+  onBuildingClick,
+}: Props) => {
   const { markers } = useMinimapMarkers();
   const { selectedPolygons } = useSelectedPolygons();
 
@@ -32,6 +39,8 @@ export const ViewStage = ({ buildings, onBuildingClick }: Props) => {
           />
         )}
       />
+      {/* После зданий: depthWrite=false, иначе перекрытия сегментов мерцают */}
+      {streets.length > 0 && <StreetsLayer streets={streets} />}
       <MapItems
         items={markers}
         render={(marker) => {

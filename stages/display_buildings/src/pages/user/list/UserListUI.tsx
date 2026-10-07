@@ -5,14 +5,14 @@ import { useGetUserListQuery } from "@entities/users";
 import { UserItemForm } from "@widgets/users/list/UserItemForm";
 
 export const UserListUI = () => {
-  const { data, isLoading } = useGetUserListQuery();
+  const { data: users, isLoading } = useGetUserListQuery();
 
-  if (!data || isLoading) return null;
+  if (!users || isLoading) return null;
 
   return (
     <div className={classes.container}>
       <UsersSideBar />
-      {data.map((user: User) => (
+      {users.map((user: User) => (
         <UserItemForm user={user} />
       ))}
     </div>

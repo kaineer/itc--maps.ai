@@ -1,6 +1,7 @@
 # Intermediate build files
 stages/import/map_data.xml
 stages/import/buildings.json
+stages/import/streets.json
 stages/import/itc.json
 
 public/
