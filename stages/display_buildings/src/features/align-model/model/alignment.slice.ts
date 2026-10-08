@@ -23,8 +23,8 @@ import { uiSlice } from "@features/app-chrome";
 // import { useAuthentication } from "@entities/session";
 // import { createAuthService } from "@shared/api";
 import { createBackendService } from "@shared/api";
-import { toast } from "sonner";
 import type { WorldDirection } from "@shared/lib/keyboard/directions";
+import { useNotification } from "@shared/lib/useNotification";
 
 export type { WorldDirection };
 
@@ -209,6 +209,7 @@ export const alignmentSlice = createSlice({
       action: PayloadAction<Building>
     ) => {
       const building = action.payload;
+      const { info } = useNotification();
 
       const alreadyAdded = state.selectedPolygons.some(
         (p) => p.id === building.id,
@@ -220,7 +221,7 @@ export const alignmentSlice = createSlice({
           });
       } else {
         if (building.address) {
-          toast.info("Выбрано: " + building.address);
+          info("Выбрано: " + building.address);
         }
 
         state.selectedPolygons.push(building);

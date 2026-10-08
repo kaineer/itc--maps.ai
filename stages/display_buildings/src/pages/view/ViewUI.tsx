@@ -10,7 +10,6 @@ import { type AppDispatch } from "@store/index";
 import type { Building } from "@entities/buildings";
 import { alignmentSlice } from "@features/align-model";
 
-import { toast } from "sonner";
 import { Minimap } from "../../widgets/view/minimap/Minimap";
 import { MarkerNotification } from "@widgets/view/notifications/MarkerNotification";
 
@@ -23,6 +22,7 @@ import {
 import { useBuildingsSlice, useBuildingsApi } from "@entities/buildings";
 import { useStreetsSlice, type Street } from "@entities/streets";
 import { ViewStage } from "@widgets/view/scene/ViewStage";
+import { useNotification } from "@shared/lib/useNotification";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;
@@ -43,6 +43,8 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   const { minimapEnabled: showMinimap } = useViewMinimap();
 
+  const { info, error: toastError } = useNotification();
+
   const handleBuildingClick = (
     building: Building /* , keys: KeyboardModifiers */,
   ) => {
@@ -56,7 +58,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   const handleStreetClick = (street: Street) => {
     if (street.name) {
-      toast.info(street.name);
+      info(street.name);
     }
   };
 
@@ -68,7 +70,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   useEffect(() => {
     if (error) {
-      toast.error(String(error));
+      toastError(String(error));
     }
   }, [error]);
 

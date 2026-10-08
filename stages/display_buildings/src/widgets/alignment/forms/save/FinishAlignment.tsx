@@ -36,16 +36,19 @@ export const FinishAlignment = ({
   const modelTransform = useSelector(getModelTransform);
 
   const { selectedPolygons } = useSelectedPolygons();
+
+  const { error: toastError } = useNotification();
+
   /**
    * Handle save alignment button click
    * Saves current alignment to backend via PATCH /models/:modelId
    */
   const handleSaveAlignment = async () => {
     if (!modelUUID) {
-      return toast.error("Cannot save alignment: no model selected");
+      return toastError("Cannot save alignment: no model selected");
     }
     if (selectedPolygons.length === 0) {
-      return toast.error("Cannot save alignment: no polygons selected");
+      return toastError("Cannot save alignment: no polygons selected");
     }
     const pa = selectedPolygons.find((p) => p.address);
     let address: string | null = null;

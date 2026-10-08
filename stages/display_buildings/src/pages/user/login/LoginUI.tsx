@@ -6,11 +6,13 @@ import clsx from "clsx";
 import { Column } from "@kit/common/Container";
 import { Button } from "@kit/common/Button";
 import { Input } from "@kit/common/Input";
+import { useNotification } from "@shared/lib/useNotification";
 
 export const LoginUI = () => {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passRef = useRef<HTMLInputElement | null>(null);
 
+  const { error: toastError } = useNotification();
   const { login, error, cleanError } = useAuthentication() || {};
 
   const className = clsx(classes.login, {
@@ -19,7 +21,7 @@ export const LoginUI = () => {
 
   useEffect(() => {
     if (error && error.title) {
-      toast.error(error.title, {
+      toastError(error.title, {
         description: error.description,
         duration: 5000,
       });

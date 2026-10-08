@@ -3,6 +3,7 @@ import classes from "./CreateModelOfferUI.module.css";
 import { type SubmitEvent, useRef, useState } from "react";
 import { toast } from "sonner";
 import { usePostModelMutation } from "@entities/model-offers";
+import { useNotification } from "@shared/lib/useNotification";
 
 export const CreateModelOfferUI = () => {
   const addressRef = useRef<HTMLInputElement>(null);
@@ -10,6 +11,8 @@ export const CreateModelOfferUI = () => {
   const [modelId, setModelId] = useState<string | null>(null);
 
   const [postModel] = usePostModelMutation();
+
+  const { success } = useNotification();
 
   const resetInputs = () => {
     addressRef.current?.value && (addressRef.current.value = "");
@@ -24,7 +27,7 @@ export const CreateModelOfferUI = () => {
 
     if (address && description && modelId) {
       postModel({ address, description, modelId }).then(() => {
-        toast.success("Модель для адреса " + address + " успешно добавлена!");
+        success("Модель для адреса " + address + " успешно добавлена!");
         resetInputs();
       });
     }

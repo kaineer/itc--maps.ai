@@ -13,7 +13,6 @@ import {
 } from "@entities/buildings";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@store/index";
-import { toast } from "sonner";
 import { CenteredForm } from "@kit/centered-form/CenteredForm";
 import { useModelToEdit } from "@features/align-model";
 import {
@@ -22,6 +21,7 @@ import {
 } from "@entities/models";
 import { alignmentSlice } from "@features/align-model";
 import { bind } from "@shared/lib/bind";
+import { useNotification } from "@shared/lib/useNotification";
 
 interface Props {
   enabled: boolean;
@@ -64,6 +64,8 @@ export const BuildingModelEdit = ({
   const { dropModelToEdit } = alignmentSlice.actions;
   const [removeModel] = useDeleteModelMutation();
   const [updateModel] = useUpdateModelPositionMutation();
+
+  const { info } = useNotification();
 
   useEffect(() => {
     if (building && building.model && building.modelMetadata) {
@@ -140,7 +142,7 @@ export const BuildingModelEdit = ({
 
         setSuccess(`Изменения сохранены: ${changes.join(", ")}`);
 
-        toast.info("Изменения сохранены", {
+        info("Изменения сохранены", {
           description: changes.join(", "),
           duration: 10000,
         });
