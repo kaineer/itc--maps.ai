@@ -56,7 +56,7 @@ export const ViewUI = ({ onBuildingSelect }: Props) => {
 
   const handleStreetClick = (street: Street) => {
     if (street.name) {
-      toast.info("Выбрано: " + street.name);
+      toast.info(street.name);
     }
   };
 
