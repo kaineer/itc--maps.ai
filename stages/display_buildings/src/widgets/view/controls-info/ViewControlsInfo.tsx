@@ -67,10 +67,6 @@ export const ViewControlsInfo = ({
           keys: ["WASD"],
           description: "Движение вперед/назад/влево/вправо",
         },
-        {
-          keys: ["LeftShift", "WASD"],
-          description: "Быстрое движение (в 10 раз быстрее)",
-        },
       ],
     },
     {
