@@ -8,10 +8,12 @@ import { modelUploadSlice } from "@entities/models";
 import { FileUploadButton } from "@kit/file-upload/FileUploadButton";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router";
+import { useEffect, useRef } from "react";
 
 import { SelectedBuildings } from "./buildings/SelectedBuildings";
 import { StartAlignmentButton } from "@widgets/view/forms/selection/button/StartAlignmentButton";
 import { CenteredForm } from "@kit/centered-form/CenteredForm";
+import { useNotification } from "@shared/lib/useNotification";
 
 interface Props {
   enabled: boolean;
@@ -25,13 +27,25 @@ export const BuildingSelection = ({ enabled, onClose = () => null }: Props) => {
   const { selectModelForAlignment } = alignmentSlice.actions;
   const { getLoading } = modelUploadSlice.selectors;
   const navigate = useNavigate();
+  const { notify } = useNotification();
 
   const selectedPolygons = useSelector(getSelectedPolygons);
   const loadedModel = useSelector(getModelUUID);
   const fileIsLoading = useSelector(getLoading);
   const canStartAlignment = useSelector(getCanStartAlignment);
+  const prevCountRef = useRef(selectedPolygons.length);
 
   const buttonText = fileIsLoading ? "Загружаю..." : "Выберите модель";
+
+  useEffect(() => {
+    const prevCount = prevCountRef.current;
+    prevCountRef.current = selectedPolygons.length;
+
+    if (enabled && prevCount > 0 && selectedPolygons.length === 0) {
+      notify("Список выбранных полигонов очищен");
+      onClose();
+    }
+  }, [enabled, selectedPolygons.length, onClose, notify]);
 
   const handleUploadSuccess = ({ model: modelId }: { model: string }) => {
     dispatch(selectModelForAlignment(modelId));
