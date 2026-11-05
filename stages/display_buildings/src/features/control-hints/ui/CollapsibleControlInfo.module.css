@@ -5,7 +5,8 @@
     position: absolute;
     top: 20px;
     right: 20px;
-    z-index: 1000;
+    /* Above minimap (incl. Leaflet zoom controls contained in its stacking context) */
+    z-index: var(--z-popover);
     /* Container for absolute positioning needs explicit dimensions */
     max-height: 80vh;
 }
