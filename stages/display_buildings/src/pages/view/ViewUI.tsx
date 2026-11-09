@@ -23,6 +23,8 @@ import { useBuildingsSlice, useBuildingsApi } from "@entities/buildings";
 import { useStreetsSlice, type Street } from "@entities/streets";
 import { ViewStage } from "@widgets/view/scene/ViewStage";
 import { useNotification } from "@shared/lib/useNotification";
+// TODO: вернуть панель регулировки ambient, когда понадобится
+// import { AmbientLightControls } from "@widgets/view/lighting/AmbientLightControls";
 
 interface Props {
   // onBuildingSelect?: (buildingId: string) => void;

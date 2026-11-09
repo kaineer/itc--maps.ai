@@ -1,8 +1,19 @@
-export const Lighting = () => {
+export const DEFAULT_AMBIENT_INTENSITY = 3;
+export const DEFAULT_AMBIENT_COLOR = "#ffffff";
+
+interface Props {
+  ambientIntensity?: number;
+  ambientColor?: string;
+}
+
+export const Lighting = ({
+  ambientIntensity = DEFAULT_AMBIENT_INTENSITY,
+  ambientColor = DEFAULT_AMBIENT_COLOR,
+}: Props) => {
   return (
     <>
       {/* Ambient Light */}
-      <ambientLight intensity={3} color="#ffffff" />
+      <ambientLight intensity={ambientIntensity} color={ambientColor} />
 
       {/* Directional Light */}
       <directionalLight
