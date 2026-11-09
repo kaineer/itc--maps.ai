@@ -191,7 +191,8 @@ export const UI_COLORS = {
   BUILDING: "#708090",
   ANONYMOUS: "#696969",
   HIGHLIGHTED: "#E8D0A9",
-  GROUND: "#F5F5DC",
+  // GROUND: "#F5F5DC",
+  GROUND: "#404040",
   STREET: "#C8C2B4",
 };
 
