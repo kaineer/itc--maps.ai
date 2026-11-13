@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import * as THREE from "three";
+import { Line } from "@react-three/drei";
 import { ThreeEvent } from "@react-three/fiber";
 import type { Street } from "@shared/model/streets-types";
 import { UI_COLORS } from "@shared/config/constants";
@@ -11,6 +12,8 @@ interface Props {
 }
 
 const STREET_Y = 0.12;
+const STREET_EDGE_Y = 0.02;
+const STREET_EDGE_WIDTH = 1.5;
 
 const StreetMesh = ({
   street,
@@ -19,9 +22,9 @@ const StreetMesh = ({
   street: Street;
   onStreetClick?: (street: Street) => void;
 }) => {
-  const { geometry, origin } = useMemo(() => {
+  const { geometry, origin, edgePoints } = useMemo(() => {
     if (!street.nodes || street.nodes.length < 3) {
-      return { geometry: null, origin: null };
+      return { geometry: null, origin: null, edgePoints: [] as THREE.Vector3[] };
     }
 
     const originX = street.nodes[0].x;
@@ -42,9 +45,16 @@ const StreetMesh = ({
     const geom = new THREE.ShapeGeometry(shape);
     geom.rotateX(-Math.PI / 2);
 
+    const points = street.nodes.map(
+      (node) =>
+        new THREE.Vector3(node.x - originX, STREET_EDGE_Y, node.z - originZ),
+    );
+    points.push(points[0].clone());
+
     return {
       geometry: geom,
       origin: { x: originX, z: originZ },
+      edgePoints: points,
     };
   }, [street.nodes]);
 
@@ -56,23 +66,34 @@ const StreetMesh = ({
   };
 
   return (
-    <mesh
-      geometry={geometry}
-      position={[origin.x, STREET_Y, origin.z]}
-      renderOrder={1}
-      receiveShadow
-      onClick={handleClick}
-    >
-      <meshStandardMaterial
-        color={UI_COLORS.STREET}
-        roughness={0.92}
-        metalness={0}
-        depthWrite={false}
-        polygonOffset
-        polygonOffsetFactor={-1}
-        polygonOffsetUnits={-1}
-      />
-    </mesh>
+    <group position={[origin.x, STREET_Y, origin.z]}>
+      <mesh
+        geometry={geometry}
+        renderOrder={1}
+        receiveShadow
+        onClick={handleClick}
+      >
+        <meshStandardMaterial
+          color={UI_COLORS.STREET}
+          roughness={0.92}
+          metalness={0}
+          depthWrite={false}
+          polygonOffset
+          polygonOffsetFactor={-1}
+          polygonOffsetUnits={-1}
+        />
+      </mesh>
+      {edgePoints.length > 1 && (
+        <Line
+          points={edgePoints}
+          color={UI_COLORS.STREET_EDGE}
+          lineWidth={STREET_EDGE_WIDTH}
+          toneMapped={false}
+          depthWrite={false}
+          renderOrder={2}
+        />
+      )}
+    </group>
   );
 };
 

@@ -188,12 +188,15 @@ export const UI_CONSTANTS = {
 } as const;
 
 export const UI_COLORS = {
-  BUILDING: "#708090",
-  ANONYMOUS: "#696969",
+  BUILDING: "#f5f3ed",
+  ANONYMOUS: "#f5f3ed",
+  BUILDING_EDGE: "#a8a8a8",
   HIGHLIGHTED: "#E8D0A9",
   // GROUND: "#F5F5DC",
-  GROUND: "#404040",
-  STREET: "#C8C2B4",
+  // GROUND: "#404040",
+  GROUND: "#bdbcb3",
+  STREET: "#c0c0c0",
+  STREET_EDGE: "#bcbbb7",
 };
 
 // Re-export commonly used constants for backward compatibility
