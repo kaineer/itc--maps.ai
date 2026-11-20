@@ -1,3 +1,4 @@
-domgis*.curl
 domgis_cache/
 domgis_pages/
+*.curl
+yandex_geocode_cache.json

@@ -119,6 +119,12 @@ const currentModel = useAppSelector(state => state.alignment.currentModel);
 - Model transform includes: position, rotation, scale
 - Rotation steps: [1, 2, 5, 10, 15, 30, 60, 90] degrees
 
+### Yandex reverse-geocode addresses (stages/import)
+- Script: `stages/import/yandex_enrich_addresses.py` (cache: `yandex_geocode_cache.json`, key via `check.curl` + `Referer: https://localhost/`)
+- **Real address criterion**: accept only `kind=house` with both `street` and `house`, and a digit in the housenumber. Street-only replies (e.g. «переулок Базовый») are **not** addresses — do not write them into `buildings.json`.
+- Floors: match DomGIS (`domgis_houses.json`) only after a real address; if no floors — leave height as-is.
+- Daily free quota ~1000; skip ids already in the cache on later runs.
+
 ### Troubleshooting Notes
 - Chrome DevTools: Console logs inside `console.group()` may not display after clear
 - Solution: Ensure some logs are outside groups

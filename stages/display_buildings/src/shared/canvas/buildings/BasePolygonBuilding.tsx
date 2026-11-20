@@ -15,9 +15,8 @@ interface Props {
 }
 
 const EDGE_LINE_WIDTH = 2;
-/** Push edges off surfaces to reduce depth fighting with the fill. */
-const EDGE_OUTSET = 0.05;
-const EDGE_Z_EPS = 0.025;
+/** Tiny lift along extrusion axis only — no footprint outset (outset leaks behind neighbors). */
+const EDGE_Z_EPS = 0.01;
 
 const handleClick =
   (onClick: OnClickFunction, building: Building) =>
@@ -80,15 +79,6 @@ const buildLocalFootprint = (nodes: Building["nodes"]): Footprint | null => {
   return { shape, localPoints, originX, originZ };
 };
 
-const outsetPoints = (
-  points: Array<[number, number]>,
-  amount: number,
-): Array<[number, number]> =>
-  points.map(([x, y]) => {
-    const len = Math.hypot(x, y) || 1;
-    return [x + (x / len) * amount, y + (y / len) * amount];
-  });
-
 const edgeKey = (a: number, b: number) =>
   a < b ? `${a},${b}` : `${b},${a}`;
 
@@ -105,28 +95,27 @@ const pushSegment = (
 };
 
 /**
- * Outer cage (top/bottom/verticals) plus internal roof/floor triangulation edges.
+ * Outer cage (top/bottom/verticals) plus internal roof triangulation edges.
  * Coordinates are in extrude local space (XY footprint, Z up the extrusion).
  */
 const buildEdgePoints = (
   localPoints: Array<[number, number]>,
   height: number,
 ): THREE.Vector3[] => {
-  const ring = outsetPoints(localPoints, EDGE_OUTSET);
-  const n = ring.length;
+  const n = localPoints.length;
   const z0 = EDGE_Z_EPS;
   const z1 = height + EDGE_Z_EPS;
   const out: THREE.Vector3[] = [];
 
   for (let i = 0; i < n; i++) {
-    const [x0, y0] = ring[i];
-    const [x1, y1] = ring[(i + 1) % n];
+    const [x0, y0] = localPoints[i];
+    const [x1, y1] = localPoints[(i + 1) % n];
     pushSegment(out, x0, y0, z0, x1, y1, z0);
     pushSegment(out, x0, y0, z1, x1, y1, z1);
     pushSegment(out, x0, y0, z0, x0, y0, z1);
   }
 
-  // Internal edges on top (and bottom) from earcut triangulation
+  // Internal edges on roof only (bottom internals stay under the ground/roads)
   const contour = localPoints.map(([x, y]) => new THREE.Vector2(x, y));
   let tris: number[][];
   try {
@@ -140,16 +129,14 @@ const buildEdgePoints = (
     boundary.add(edgeKey(i, (i + 1) % n));
   }
 
-  const inner = outsetPoints(localPoints, EDGE_OUTSET * 0.35);
   for (const tri of tris) {
     for (let e = 0; e < 3; e++) {
       const a = tri[e];
       const b = tri[(e + 1) % 3];
       if (boundary.has(edgeKey(a, b))) continue;
-      const [x0, y0] = inner[a];
-      const [x1, y1] = inner[b];
+      const [x0, y0] = localPoints[a];
+      const [x1, y1] = localPoints[b];
       pushSegment(out, x0, y0, z1, x1, y1, z1);
-      pushSegment(out, x0, y0, z0, x1, y1, z0);
     }
   }
 
@@ -186,6 +173,8 @@ export const BasePolygonBuilding = ({
     return null;
   }
 
+  const opaque = opacity >= 0.99;
+
   return (
     <group
       position={[footprint.originX, 0, footprint.originZ]}
@@ -204,11 +193,10 @@ export const BasePolygonBuilding = ({
           color={color}
           roughness={0.8}
           metalness={0.2}
-          transparent={opacity < 1.0}
+          transparent={!opaque}
           opacity={opacity}
-          polygonOffset
-          polygonOffsetFactor={1}
-          polygonOffsetUnits={1}
+          depthWrite
+          depthTest
         />
       </mesh>
       {edgePoints.length > 0 && (
@@ -218,9 +206,13 @@ export const BasePolygonBuilding = ({
           lineWidth={EDGE_LINE_WIDTH}
           color={UI_COLORS.BUILDING_EDGE}
           toneMapped={false}
-          transparent={opacity < 1.0}
+          transparent={!opaque}
           opacity={opacity}
-          depthWrite={false}
+          depthTest
+          depthWrite
+          polygonOffset
+          polygonOffsetFactor={-1}
+          polygonOffsetUnits={-1}
         />
       )}
     </group>

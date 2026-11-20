@@ -1,0 +1,242 @@
+{
+  "itc": {
+    "id": "59831701",
+    "address": "улица Чкалова, 3",
+    "height": 12,
+    "lat": 56.81400323375884,
+    "lng": 60.584557344444455
+  },
+  "itc_reverse": {
+    "text": "Россия, Свердловская область, Екатеринбург, улица Чкалова, 3",
+    "kind": "house",
+    "precision": "exact",
+    "components": {
+      "country": "Россия",
+      "province": "Уральский федеральный округ",
+      "area": "муниципальное образование Екатеринбург",
+      "locality": "Екатеринбург",
+      "street": "улица Чкалова",
+      "house": "3"
+    },
+    "house": "3",
+    "street": "улица Чкалова"
+  },
+  "referer": "https://localhost/",
+  "summary": {
+    "house": 10,
+    "proposed_address": 10,
+    "gis_floors": 2,
+    "height_gain": 1,
+    "n": 10
+  },
+  "results": [
+    {
+      "id": "382159120",
+      "d_itc": 103.0,
+      "lat": 56.81375504006228,
+      "lng": 60.585363744999995,
+      "osm_building": "roof",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Фурманова, 134",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Фурманова",
+      "house": "134",
+      "proposed_address": "улица Фурманова, 134",
+      "parsed": [
+        "фурманова",
+        "134"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "399979088",
+      "d_itc": 134.4,
+      "lat": 56.81448408335244,
+      "lng": 60.583729449999986,
+      "osm_building": "yes",
+      "osm_levels": null,
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Чкалова, 1",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Чкалова",
+      "house": "1",
+      "proposed_address": "улица Чкалова, 1",
+      "parsed": [
+        "чкалова",
+        "1"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "158441456",
+      "d_itc": 139.3,
+      "lat": 56.81467216008241,
+      "lng": 60.584825220000006,
+      "osm_building": "yes",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, Ясная улица, 1к5",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "Ясная улица",
+      "house": "1к5",
+      "proposed_address": "Ясная улица, 1к5",
+      "parsed": [
+        "ясная",
+        "1к5"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "75836994",
+      "d_itc": 207.1,
+      "lat": 56.81494480001185,
+      "lng": 60.58526698333334,
+      "osm_building": "yes",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, Ясная улица, 1к5",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "Ясная улица",
+      "house": "1к5",
+      "proposed_address": "Ясная улица, 1к5",
+      "parsed": [
+        "ясная",
+        "1к5"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "158932422",
+      "d_itc": 262.7,
+      "lat": 56.81458311431227,
+      "lng": 60.58244882857142,
+      "osm_building": "roof",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Чкалова, 1",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Чкалова",
+      "house": "1",
+      "proposed_address": "улица Чкалова, 1",
+      "parsed": [
+        "чкалова",
+        "1"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "605923710",
+      "d_itc": 362.0,
+      "lat": 56.81279124001773,
+      "lng": 60.58217616,
+      "osm_building": "yes",
+      "osm_levels": null,
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Обувщиков, 62",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Обувщиков",
+      "house": "62",
+      "proposed_address": "улица Обувщиков, 62",
+      "parsed": [
+        "обувщиков",
+        "62"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "210393209",
+      "d_itc": 400.2,
+      "lat": 56.81218788001042,
+      "lng": 60.58594513999999,
+      "osm_building": "yes",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Фурманова, 123",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Фурманова",
+      "house": "123",
+      "proposed_address": "улица Фурманова, 123",
+      "parsed": [
+        "фурманова",
+        "123"
+      ],
+      "gis_match": {
+        "floors": 16,
+        "height": 48.0,
+        "gis": "620146, обл Свердловская, г Екатеринбург, ул Фурманова, д. 123"
+      },
+      "new_height": 48.0
+    },
+    {
+      "id": "152324510",
+      "d_itc": 421.7,
+      "lat": 56.812373640017086,
+      "lng": 60.586899679999995,
+      "osm_building": "garages",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, Московская улица, 120",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "Московская улица",
+      "house": "120",
+      "proposed_address": "Московская улица, 120",
+      "parsed": [
+        "московская",
+        "120"
+      ],
+      "gis_match": null,
+      "new_height": null
+    },
+    {
+      "id": "210393216",
+      "d_itc": 438.1,
+      "lat": 56.81216071667912,
+      "lng": 60.586596450000016,
+      "osm_building": "yes",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, улица Автономных Республик, 31",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "улица Автономных Республик",
+      "house": "31",
+      "proposed_address": "улица Автономных Республик, 31",
+      "parsed": [
+        "автономных республик",
+        "31"
+      ],
+      "gis_match": {
+        "floors": 1,
+        "height": 3.0,
+        "gis": "620146, обл Свердловская, г Екатеринбург, ул Автономных Республик, д. 31"
+      },
+      "new_height": 3.0
+    },
+    {
+      "id": "152324353",
+      "d_itc": 450.1,
+      "lat": 56.81222360005231,
+      "lng": 60.5869607,
+      "osm_building": "garages",
+      "osm_levels": "1",
+      "yandex_text": "Россия, Свердловская область, Екатеринбург, Московская улица, 120",
+      "yandex_kind": "house",
+      "yandex_precision": "exact",
+      "street": "Московская улица",
+      "house": "120",
+      "proposed_address": "Московская улица, 120",
+      "parsed": [
+        "московская",
+        "120"
+      ],
+      "gis_match": null,
+      "new_height": null
+    }
+  ]
+}
