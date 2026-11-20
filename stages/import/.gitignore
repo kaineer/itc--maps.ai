@@ -2,3 +2,6 @@ domgis_cache/
 domgis_pages/
 *.curl
 yandex_geocode_cache.json
+
+# too big
+domgis_houses.json
